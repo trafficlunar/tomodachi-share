@@ -5,26 +5,35 @@ import { Icon } from "@iconify/react";
 
 export default function Header() {
 	return (
-		<div className="fixed w-full p-4 flex justify-between items-center bg-amber-100 border-b-2 border-amber-200">
-			<Link href={"/"} className="font-black text-3xl">
+		<div className="fixed w-full p-4 flex justify-between items-center bg-amber-50 border-b-4 border-amber-200 shadow-md">
+			<Link href={"/"} className="font-black text-3xl tracking-wide text-orange-400">
 				TomodachiShare
 			</Link>
 
 			<SearchBar />
 
-			<ul className="flex gap-2 items-center">
+			<ul className="flex gap-3 items-center">
 				<li>
-					<Link href={"/login"} className="flex justify-center items-center p-0.5 bg-orange-400 border-2 rounded">
-						<Icon icon="ri:dice-fill" fontSize={32} />
+					<Link
+						href={"/random"}
+						className="flex justify-center items-center p-1.5 bg-orange-300 border-2 border-orange-400 rounded-full shadow-md hover:bg-orange-400"
+					>
+						<Icon icon="mdi:dice-3" fontSize={28} />
 					</Link>
 				</li>
 				<li>
-					<Link href={"/login"} className="flex justify-center items-center px-4 py-1.5 bg-orange-400 border-2 rounded">
+					<Link
+						href={"/submit"}
+						className="flex justify-center items-center px-5 py-2 bg-orange-300 border-2 border-orange-400 rounded-full shadow-md hover:bg-orange-400"
+					>
 						Submit
 					</Link>
 				</li>
 				<li>
-					<Link href={"/login"} className="flex justify-center items-center px-4 py-1.5 bg-orange-400 border-2 rounded">
+					<Link
+						href={"/login"}
+						className="flex justify-center items-center px-5 py-2 bg-orange-300 border-2 border-orange-400 rounded-full shadow-md hover:bg-orange-400"
+					>
 						Login
 					</Link>
 				</li>

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Lexend } from "next/font/google";
 
 import "./globals.css";
 import Header from "./components/header";
 
-const inter = Inter({
+const lexend = Lexend({
 	subsets: ["latin"],
 });
 
@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`${inter.className} antialiased flex flex-col items-center`}>
+			<body className={`${lexend.className} antialiased flex flex-col items-center`}>
 				<Header />
 				{children}
 			</body>
