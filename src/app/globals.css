@@ -11,3 +11,7 @@ body {
 	background-position: 0 0, 10px 10px;
 	background-size: 20px 20px;
 }
+
+.button {
+	@apply flex justify-center items-center px-5 py-2 bg-orange-300 border-2 border-orange-400 rounded-full shadow-md hover:bg-orange-400;
+}
