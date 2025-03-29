@@ -1,13 +1,14 @@
 import Link from "next/link";
-import { getServerSession } from "next-auth";
 import { Icon } from "@iconify/react";
+
+import { auth } from "@/lib/auth";
 
 import SearchBar from "./search-bar";
 import ProfileOverview from "./profile-overview";
 import LogoutButton from "./logout-button";
 
 export default async function Header() {
-	const session = await getServerSession();
+	const session = await auth();
 
 	return (
 		<div className="sticky top-0 z-50 w-full p-4 grid grid-cols-3 gap-2 gap-x-4 items-center bg-amber-50 border-b-4 border-amber-200 shadow-md max-lg:grid-cols-2 max-sm:grid-cols-1">

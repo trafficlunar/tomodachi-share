@@ -1,7 +1,7 @@
-import { getServerSession } from "next-auth";
+import { auth } from "@/lib/auth";
 
 export default async function ProfileOverview() {
-	const session = await getServerSession();
+	const session = await auth();
 
 	return (
 		<li title="Your profile">
