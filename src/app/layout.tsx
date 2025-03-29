@@ -23,7 +23,7 @@ export default function RootLayout({
 			<body className={`${lexend.className} antialiased flex flex-col items-center`}>
 				<Header />
 
-				<div className="px-4 py-8">{children}</div>
+				<div className="px-4 py-8 max-w-7xl w-full">{children}</div>
 			</body>
 		</html>
 	);
