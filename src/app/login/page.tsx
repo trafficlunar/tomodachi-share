@@ -13,9 +13,9 @@ export default async function LoginPage() {
 	}
 
 	return (
-		<div className="flex flex-col items-center">
-			<h1 className="text-3xl font-medium">Welcome to TomodachiShare!</h1>
-			<h2 className="text-lg">Choose your login method</h2>
+		<div className="flex flex-col">
+			<h1 className="text-3xl font-medium text-center">Welcome to TomodachiShare!</h1>
+			<h2 className="text-lg text-center">Choose your login method</h2>
 
 			<LoginButtons />
 		</div>
