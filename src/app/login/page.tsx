@@ -1,11 +1,10 @@
 import { getServerSession } from "next-auth";
 
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import LoginButtons from "../components/login-buttons";
-import { redirect, RedirectType } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
-	const session = await getServerSession(authOptions);
+	const session = await getServerSession();
 
 	// If the user is already logged in, redirect
 	if (session) {

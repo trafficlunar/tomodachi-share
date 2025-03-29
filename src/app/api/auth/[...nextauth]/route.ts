@@ -1,8 +1,8 @@
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
 import Github from "next-auth/providers/github";
 
-export const authOptions: AuthOptions = {
+const handler = NextAuth({
 	pages: {
 		signIn: "/login",
 	},
@@ -16,8 +16,6 @@ export const authOptions: AuthOptions = {
 			clientSecret: process.env.GITHUB_SECRET!,
 		}),
 	],
-};
-
-const handler = NextAuth(authOptions);
+});
 
 export { handler as GET, handler as POST };
