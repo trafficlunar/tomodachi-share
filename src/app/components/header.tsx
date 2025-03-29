@@ -21,18 +21,18 @@ export default async function Header() {
 
 			<ul className="flex justify-end gap-3 items-center h-11 *:h-full max-lg:col-span-2 max-sm:justify-center">
 				<li title="Random Mii">
-					<Link href={"/random"} className="button !p-0 h-full aspect-square">
+					<Link href={"/random"} className="pill button !p-0 h-full aspect-square">
 						<Icon icon="mdi:dice-3" fontSize={28} />
 					</Link>
 				</li>
 				<li>
-					<Link href={"/submit"} className="button h-full">
+					<Link href={"/submit"} className="pill button h-full">
 						Submit
 					</Link>
 				</li>
 				{!session?.user ? (
 					<li>
-						<Link href={"/login"} className="button h-full">
+						<Link href={"/login"} className="pill button h-full">
 							Login
 						</Link>
 					</li>
