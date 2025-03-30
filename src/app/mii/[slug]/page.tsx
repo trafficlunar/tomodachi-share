@@ -28,10 +28,10 @@ export default async function ProfilePage({ params }: Props) {
 	});
 
 	return (
-		<div className="flex gap-2">
+		<div className="flex gap-2 max-sm:flex-col">
 			<img src="https://placehold.co/400x300" alt="mii" className="rounded-xl" />
 			<div className="flex flex-col gap-1 p-4">
-				<h1 className="text-5xl font-extrabold">{mii?.name}</h1>
+				<h1 className="text-5xl font-extrabold break-words">{mii?.name}</h1>
 				<div id="tags" className="flex gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
 					{mii?.tags.map((tag) => (
 						<Link href={{ pathname: "/", query: { tags: tag } }} key={tag}>

@@ -21,18 +21,18 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 
 	return (
 		<div>
-			<div className="flex gap-4">
+			<div className="flex gap-4 mb-2">
 				<Image
 					src={user?.image ?? "/missing.webp"}
 					alt="profile picture"
 					width={128}
 					height={128}
-					className="rounded-full border-2 border-amber-500 shadow"
+					className="aspect-square rounded-full border-2 border-amber-500 shadow"
 				/>
 
 				<div className="flex flex-col">
-					<h1 className="text-4xl font-extrabold">{user?.name}</h1>
-					<h2 className="text-lg font-semibold">@{user?.username}</h2>
+					<h1 className="text-4xl font-extrabold w-full break-words">{user?.name}</h1>
+					<h2 className="text-lg font-semibold break-words">@{user?.username}</h2>
 
 					<h4 className="mt-auto">
 						Liked <span className="font-bold">{likedMiis}</span> Miis

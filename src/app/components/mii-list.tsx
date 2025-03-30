@@ -123,7 +123,7 @@ export default async function MiiList({ searchParams, userId }: Props) {
 								<LikeButton likes={mii.likes} isLoggedIn={session?.user != null} />
 
 								{userId == null && (
-									<Link href={`/profile/${mii.user.id}`} className="text-sm text-right text-ellipsis">
+									<Link href={`/profile/${mii.user.id}`} className="text-sm text-right overflow-hidden text-ellipsis">
 										@{mii.user?.username}
 									</Link>
 								)}

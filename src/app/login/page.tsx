@@ -12,7 +12,7 @@ export default async function LoginPage() {
 	}
 
 	return (
-		<div className="flex flex-col">
+		<div>
 			<h1 className="text-3xl font-medium text-center">Welcome to TomodachiShare!</h1>
 			<h2 className="text-lg text-center">Choose your login method</h2>
 

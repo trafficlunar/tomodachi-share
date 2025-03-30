@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 
 export default function SearchBar() {
 	return (
-		<div className="max-w-md w-full flex rounded-xl focus-within:ring-[3px] ring-orange-400/35 transition shadow-md">
+		<div className="max-w-md w-full flex rounded-xl focus-within:ring-[3px] ring-orange-400/50 transition shadow-md">
 			<input
 				type="text"
 				placeholder="Search..."
