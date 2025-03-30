@@ -1,14 +1,40 @@
+import { Prisma } from "@prisma/client";
+
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 import LikeButton from "./components/like-button";
 
-export default async function Page() {
+export default async function Page({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
 	const session = await auth();
+	const resolvedSearchParams = await searchParams;
+
+	// sort search param
+	const orderBy: { createdAt?: Prisma.SortOrder; likes?: Prisma.SortOrder } = {};
+
+	if (resolvedSearchParams.sort === "newest") {
+		orderBy.createdAt = "desc";
+	} else if (resolvedSearchParams.sort === "likes") {
+		orderBy.likes = "desc";
+	} else {
+		orderBy.createdAt = "desc"; // Default to newest if no valid sort is provided
+	}
+
+	// tag search param
+	const rawTags = resolvedSearchParams.tags;
+	const tagFilter =
+		typeof rawTags === "string"
+			? rawTags
+					.split(",")
+					.map((tag) => tag.trim())
+					.filter((tag) => tag.length > 0)
+			: [];
+	const where = tagFilter.length > 0 ? { tags: { hasSome: tagFilter } } : undefined;
 
 	const miiCount = prisma.mii.count();
 	const miis = await prisma.mii.findMany({
-		orderBy: { createdAt: "desc" },
+		where: where,
+		orderBy,
 	});
 
 	return (
@@ -19,6 +45,7 @@ export default async function Page() {
 				</p>
 
 				<div className="flex gap-2">
+					{/* todo: replace with react-select */}
 					<div className="pill gap-2">
 						<label htmlFor="sort">Filter:</label>
 						<span>todo</span>
