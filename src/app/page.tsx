@@ -78,7 +78,9 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ [
 					>
 						<img src="https://placehold.co/600x400" alt="mii" className="rounded-xl" />
 						<div className="p-4">
-							<h3 className="font-bold text-2xl">{mii.name}</h3>
+							<h3 className="font-bold text-2xl overflow-hidden text-ellipsis line-clamp-2" title={mii.name}>
+								{mii.name}
+							</h3>
 							<div id="tags" className="flex gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
 								{mii.tags.map((tag) => (
 									<span key={tag}>{tag}</span>
