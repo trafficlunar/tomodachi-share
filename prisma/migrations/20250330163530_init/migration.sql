@@ -1,7 +1,8 @@
 -- CreateTable
 CREATE TABLE "users" (
-    "id" TEXT NOT NULL,
-    "name" TEXT,
+    "id" SERIAL NOT NULL,
+    "username" TEXT,
+    "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
@@ -13,7 +14,7 @@ CREATE TABLE "users" (
 
 -- CreateTable
 CREATE TABLE "accounts" (
-    "userId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
     "type" TEXT NOT NULL,
     "provider" TEXT NOT NULL,
     "providerAccountId" TEXT NOT NULL,
@@ -33,7 +34,7 @@ CREATE TABLE "accounts" (
 -- CreateTable
 CREATE TABLE "sessions" (
     "sessionToken" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL
@@ -41,10 +42,11 @@ CREATE TABLE "sessions" (
 
 -- CreateTable
 CREATE TABLE "miis" (
-    "id" BIGSERIAL NOT NULL,
-    "userId" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "name" VARCHAR(64) NOT NULL,
     "pictures" TEXT[],
+    "tags" TEXT[],
     "likes" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -53,11 +55,14 @@ CREATE TABLE "miis" (
 
 -- CreateTable
 CREATE TABLE "likes" (
-    "userId" TEXT NOT NULL,
-    "miiId" BIGINT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "miiId" INTEGER NOT NULL,
 
     CONSTRAINT "likes_pkey" PRIMARY KEY ("userId","miiId")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
