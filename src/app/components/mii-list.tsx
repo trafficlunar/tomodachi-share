@@ -104,11 +104,13 @@ export default async function MiiList({ searchParams, userId }: Props) {
 						key={mii.id}
 						className="flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3 transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600"
 					>
-						<img src="https://placehold.co/600x400" alt="mii" className="rounded-xl" />
+						<Link href={`/mii/${mii.id}`}>
+							<img src="https://placehold.co/600x400" alt="mii" className="rounded-xl" />
+						</Link>
 						<div className="p-4 flex flex-col gap-1 h-full">
-							<h3 className="font-bold text-2xl overflow-hidden text-ellipsis line-clamp-2" title={mii.name}>
+							<Link href={`/mii/${mii.id}`} className="font-bold text-2xl overflow-hidden text-ellipsis line-clamp-2" title={mii.name}>
 								{mii.name}
-							</h3>
+							</Link>
 							<div id="tags" className="flex gap-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
 								{mii.tags.map((tag) => (
 									<Link href={{ query: { tags: tag } }} key={tag}>

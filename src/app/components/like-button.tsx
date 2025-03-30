@@ -7,9 +7,10 @@ import { Icon } from "@iconify/react";
 interface Props {
 	likes: number;
 	isLoggedIn: boolean;
+	big?: boolean;
 }
 
-export default function LikeButton({ likes, isLoggedIn }: Props) {
+export default function LikeButton({ likes, isLoggedIn, big }: Props) {
 	const [isLiked, setIsLiked] = useState(false);
 	const [likesState, setLikesState] = useState(likes);
 
@@ -23,7 +24,7 @@ export default function LikeButton({ likes, isLoggedIn }: Props) {
 	};
 
 	return (
-		<button onClick={onClick} className="flex items-center gap-2 text-xl text-red-400 cursor-pointer">
+		<button onClick={onClick} className={`flex items-center gap-2 text-red-400 cursor-pointer ${big ? "text-3xl" : "text-xl"}`}>
 			<Icon icon={isLiked ? "icon-park-solid:like" : "icon-park-outline:like"} />
 			<span>{likesState}</span>
 		</button>
