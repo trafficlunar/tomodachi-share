@@ -111,7 +111,9 @@ export default async function MiiList({ searchParams, userId }: Props) {
 							</h3>
 							<div id="tags" className="flex gap-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
 								{mii.tags.map((tag) => (
-									<span key={tag}>{tag}</span>
+									<Link href={{ query: { tags: tag } }} key={tag}>
+										{tag}
+									</Link>
 								))}
 							</div>
 
