@@ -31,7 +31,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ [
 			: [];
 	const where = tagFilter.length > 0 ? { tags: { hasSome: tagFilter } } : undefined;
 
-	const miiCount = prisma.mii.count();
+	const totalMiiCount = await prisma.mii.count();
+	const shownMiiCount = await prisma.mii.count({ where });
 	const miis = await prisma.mii.findMany({
 		where: where,
 		orderBy,
@@ -41,7 +42,15 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ [
 		<div className="w-full">
 			<div className="flex justify-between items-end mb-2">
 				<p className="text-lg">
-					<span className="font-extrabold">{miiCount}</span> Miis
+					{totalMiiCount == shownMiiCount ? (
+						<>
+							<span className="font-extrabold">{totalMiiCount}</span> Miis
+						</>
+					) : (
+						<>
+							<span className="font-extrabold">{shownMiiCount}</span> of <span className="font-extrabold">{totalMiiCount}</span> Miis
+						</>
+					)}
 				</p>
 
 				<div className="flex gap-2">
