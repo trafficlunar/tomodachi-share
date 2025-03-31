@@ -8,6 +8,7 @@ import Link from "next/link";
 
 interface Props {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+	// for use on profiles
 	userId?: number;
 }
 
@@ -38,7 +39,7 @@ export default async function MiiList({ searchParams, userId }: Props) {
 	const whereTags = tagFilter.length > 0 ? { tags: { hasSome: tagFilter } } : undefined;
 
 	// If the mii list is on a user's profile, don't query for the username
-	const include =
+	const userInclude =
 		userId == null
 			? {
 					user: {
@@ -63,8 +64,23 @@ export default async function MiiList({ searchParams, userId }: Props) {
 			userId,
 		},
 		orderBy,
-		include,
+		include: {
+			...userInclude,
+			likedBy: {
+				where: {
+					userId: Number(session?.user.id),
+				},
+				select: {
+					userId: true,
+				},
+			},
+		},
 	});
+
+	const formattedMiis = miis.map((mii) => ({
+		...mii,
+		isLikedByUser: mii.likedBy.length > 0, // True if the user has liked the Mii
+	}));
 
 	return (
 		<div className="w-full">
@@ -99,13 +115,13 @@ export default async function MiiList({ searchParams, userId }: Props) {
 			</div>
 
 			<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-sm:grid-cols-2 max-[25rem]:grid-cols-1">
-				{miis.map((mii) => (
+				{formattedMiis.map((mii) => (
 					<div
 						key={mii.id}
 						className="flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3 transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600"
 					>
 						<Link href={`/mii/${mii.id}`}>
-							<img src="https://placehold.co/600x400" alt="mii" className="rounded-xl" />
+							<img src="https://placehold.co/600x400" alt="mii" className="rounded-xl border-2 border-zinc-300" />
 						</Link>
 						<div className="p-4 flex flex-col gap-1 h-full">
 							<Link href={`/mii/${mii.id}`} className="font-bold text-2xl overflow-hidden text-ellipsis line-clamp-2" title={mii.name}>
@@ -120,7 +136,7 @@ export default async function MiiList({ searchParams, userId }: Props) {
 							</div>
 
 							<div className="mt-auto grid grid-cols-2 items-center">
-								<LikeButton likes={mii.likes} isLoggedIn={session?.user != null} />
+								<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLikedByUser} isLoggedIn={session?.user != null} />
 
 								{userId == null && (
 									<Link href={`/profile/${mii.user.id}`} className="text-sm text-right overflow-hidden text-ellipsis">

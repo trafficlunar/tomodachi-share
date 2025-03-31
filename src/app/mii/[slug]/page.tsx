@@ -27,9 +27,18 @@ export default async function ProfilePage({ params }: Props) {
 		},
 	});
 
+	const isLiked = await prisma.like.findUnique({
+		where: {
+			userId_miiId: {
+				userId: Number(session?.user.id),
+				miiId: Number(slug),
+			},
+		},
+	});
+
 	return (
 		<div className="flex gap-2 max-sm:flex-col">
-			<img src="https://placehold.co/400x300" alt="mii" className="rounded-xl" />
+			<img src="https://placehold.co/400x300" alt="mii" className="rounded-xl border-2 border-zinc-300 shadow-lg" />
 			<div className="flex flex-col gap-1 p-4">
 				<h1 className="text-5xl font-extrabold break-words">{mii?.name}</h1>
 				<div id="tags" className="flex gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
@@ -50,7 +59,7 @@ export default async function ProfilePage({ params }: Props) {
 				</div>
 
 				<div className="mt-auto">
-					<LikeButton likes={mii?.likes ?? 0} isLoggedIn={session?.user != null} big />
+					<LikeButton likes={mii?.likes ?? 0} miiId={mii?.id} isLiked={isLiked != null} isLoggedIn={session?.user != null} big />
 				</div>
 			</div>
 		</div>
