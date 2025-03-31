@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+import Carousel from "@/app/components/carousel";
 import LikeButton from "@/app/components/like-button";
 
 interface Props {
@@ -38,7 +39,8 @@ export default async function ProfilePage({ params }: Props) {
 
 	return (
 		<div className="flex gap-2 max-sm:flex-col">
-			<img src="https://placehold.co/400x300" alt="mii" className="rounded-xl border-2 border-zinc-300 shadow-lg" />
+			<Carousel images={["https://placehold.co/600x400", "https://placehold.co/600x400", "https://placehold.co/600x400"]} className="shadow-lg" />
+
 			<div className="flex flex-col gap-1 p-4">
 				<h1 className="text-5xl font-extrabold break-words">{mii?.name}</h1>
 				<div id="tags" className="flex gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
