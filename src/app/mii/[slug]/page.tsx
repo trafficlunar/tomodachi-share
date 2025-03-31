@@ -10,7 +10,7 @@ interface Props {
 	params: Promise<{ slug: string }>;
 }
 
-export default async function ProfilePage({ params }: Props) {
+export default async function MiiPage({ params }: Props) {
 	const { slug } = await params;
 	const session = await auth();
 
@@ -25,14 +25,14 @@ export default async function ProfilePage({ params }: Props) {
 					username: true,
 				},
 			},
-		},
-	});
-
-	const isLiked = await prisma.like.findUnique({
-		where: {
-			userId_miiId: {
-				userId: Number(session?.user.id),
-				miiId: Number(slug),
+			likedBy: {
+				where: {
+					userId: Number(session?.user.id),
+				},
+				select: { userId: true },
+			},
+			_count: {
+				select: { likedBy: true }, // Get total like count
 			},
 		},
 	});
@@ -61,7 +61,13 @@ export default async function ProfilePage({ params }: Props) {
 				</div>
 
 				<div className="mt-auto">
-					<LikeButton likes={mii?.likes ?? 0} miiId={mii?.id} isLiked={isLiked != null} isLoggedIn={session?.user != null} big />
+					<LikeButton
+						likes={mii?._count.likedBy ?? 0}
+						miiId={mii?.id}
+						isLiked={(mii?.likedBy ?? []).length > 0}
+						isLoggedIn={session?.user != null}
+						big
+					/>
 				</div>
 			</div>
 		</div>

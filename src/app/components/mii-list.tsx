@@ -75,11 +75,15 @@ export default async function MiiList({ searchParams, userId }: Props) {
 					userId: true,
 				},
 			},
+			_count: {
+				select: { likedBy: true },
+			},
 		},
 	});
 
 	const formattedMiis = miis.map((mii) => ({
 		...mii,
+		likes: mii._count.likedBy,
 		isLikedByUser: mii.likedBy.length > 0, // True if the user has liked the Mii
 	}));
 

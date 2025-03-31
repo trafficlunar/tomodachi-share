@@ -21,7 +21,7 @@ export async function PATCH(request: Request) {
 		});
 
 		if (existingLike) {
-			// Delete the like if it exists
+			// Remove the like if it exists
 			await tx.like.delete({
 				where: {
 					userId_miiId: {
@@ -30,31 +30,21 @@ export async function PATCH(request: Request) {
 					},
 				},
 			});
-
-			const updatedMii = await tx.mii.update({
-				where: { id: miiId },
-				data: { likes: { decrement: 1 } },
-				select: { likes: true },
-			});
-
-			return { liked: false, count: updatedMii.likes };
 		} else {
-			// Create a new like if it doesn't exist
+			// Add a like if it doesn't exist
 			await tx.like.create({
 				data: {
 					userId: Number(session.user.id),
 					miiId,
 				},
 			});
-
-			const updatedMii = await tx.mii.update({
-				where: { id: miiId },
-				data: { likes: { increment: 1 } },
-				select: { likes: true },
-			});
-
-			return { liked: true, count: updatedMii.likes };
 		}
+
+		const likeCount = await tx.like.count({
+			where: { miiId },
+		});
+
+		return { liked: !existingLike, count: likeCount };
 	});
 
 	return Response.json({ success: true, liked: result.liked, count: result.count });

@@ -47,7 +47,6 @@ CREATE TABLE "miis" (
     "name" VARCHAR(64) NOT NULL,
     "pictures" TEXT[],
     "tags" TEXT[],
-    "likes" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "miis_pkey" PRIMARY KEY ("id")
