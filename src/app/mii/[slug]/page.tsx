@@ -39,7 +39,7 @@ export default async function MiiPage({ params }: Props) {
 
 	return (
 		<div className="flex gap-2 max-sm:flex-col">
-			<Carousel images={["https://placehold.co/600x400", "https://placehold.co/600x400", "https://placehold.co/600x400"]} className="shadow-lg" />
+			<Carousel images={mii?.images && mii?.images.length > 0 ? mii?.images : ["/missing.webp"]} className="shadow-lg" />
 
 			<div className="flex flex-col gap-1 p-4">
 				<h1 className="text-5xl font-extrabold break-words">{mii?.name}</h1>
