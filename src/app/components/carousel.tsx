@@ -30,28 +30,32 @@ export default function Carousel({ images, className }: Props) {
 				<div className="flex">
 					{images.map((src, index) => (
 						<div key={index} className="flex-[0_0_100%]">
-							<img src={src} alt="" className="w-full h-auto" />
+							<img src={src} alt="" className="w-full h-auto aspect-[3/2] object-contain" />
 						</div>
 					))}
 				</div>
 			</div>
 
-			<button onClick={scrollPrev} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl cursor-pointer">
-				<Icon icon="ic:round-chevron-left" />
-			</button>
-			<button onClick={scrollNext} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl cursor-pointer">
-				<Icon icon="ic:round-chevron-right" />
-			</button>
+			{images.length > 1 && (
+				<>
+					<button onClick={scrollPrev} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl cursor-pointer">
+						<Icon icon="ic:round-chevron-left" />
+					</button>
+					<button onClick={scrollNext} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl cursor-pointer">
+						<Icon icon="ic:round-chevron-right" />
+					</button>
 
-			<div className="flex justify-center gap-2 absolute left-1/2 -translate-x-1/2 bottom-2">
-				{scrollSnaps.map((_, index) => (
-					<button
-						key={index}
-						onClick={() => scrollTo(index)}
-						className={`size-1.5 rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
-					/>
-				))}
-			</div>
+					<div className="flex justify-center gap-2 absolute left-1/2 -translate-x-1/2 bottom-2">
+						{scrollSnaps.map((_, index) => (
+							<button
+								key={index}
+								onClick={() => scrollTo(index)}
+								className={`size-1.5 rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
+							/>
+						))}
+					</div>
+				</>
+			)}
 		</div>
 	);
 }
