@@ -11,7 +11,7 @@ export default async function Header() {
 	const session = await auth();
 
 	return (
-		<div className="sticky top-0 z-50 w-full p-4 grid grid-cols-3 gap-2 gap-x-4 items-center bg-amber-50 border-b-4 border-amber-200 shadow-md max-lg:grid-cols-2 max-sm:grid-cols-1">
+		<div className="sticky top-0 z-50 w-full p-4 grid grid-cols-3 gap-2 gap-x-4 items-center bg-amber-50 border-b-4 border-amber-500 shadow-md max-lg:grid-cols-2 max-sm:grid-cols-1">
 			<Link href={"/"} className="font-black text-3xl tracking-wide text-orange-400 max-sm:text-center max-sm:col-span-3">
 				TomodachiShare
 			</Link>

@@ -33,7 +33,7 @@ export default function UsernameForm() {
 				value={username}
 				onChange={(e) => setUsername(e.target.value)}
 				required
-				className="pill !bg-orange-200 outline-0 focus:ring-[3px] ring-orange-400/50 transition w-96 mt-8 mb-2"
+				className="pill input w-96 mt-8 mb-2"
 			/>
 
 			<button type="submit" className="pill button w-min">
