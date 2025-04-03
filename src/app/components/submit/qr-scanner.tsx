@@ -25,8 +25,10 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytes }: Props) {
 	}, [isOpen]);
 
 	const handleScan = (result: IDetectedBarcode[]) => {
+		// todo: fix scan, use jsQR instead, data is wrong
 		setIsOpen(false);
 
+		// Convert to bytes
 		const encoder = new TextEncoder();
 		const byteArray = encoder.encode(result[0].rawValue);
 

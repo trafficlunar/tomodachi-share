@@ -12,8 +12,10 @@
 	"dependencies": {
 		"@auth/prisma-adapter": "2.7.2",
 		"@prisma/client": "^6.5.0",
+		"@trafficlunar/asmcrypto.js": "^1.0.2",
 		"@yudiel/react-qr-scanner": "2.2.2-beta.2",
 		"embla-carousel-react": "^8.5.2",
+		"jsqr": "^1.4.0",
 		"next": "15.2.4",
 		"next-auth": "5.0.0-beta.25",
 		"react": "^19.0.0",
