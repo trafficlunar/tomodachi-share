@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"@auth/prisma-adapter": "2.7.2",
+		"@pretendonetwork/mii-js": "github:PretendoNetwork/mii-js#publish-and-eslint",
 		"@prisma/client": "^6.5.0",
 		"@trafficlunar/asmcrypto.js": "^1.0.2",
 		"@yudiel/react-qr-scanner": "2.2.2-beta.2",
@@ -18,6 +19,7 @@
 		"jsqr": "^1.4.0",
 		"next": "15.2.4",
 		"next-auth": "5.0.0-beta.25",
+		"qrcode-generator": "^1.4.4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"react-dropzone": "^14.3.8",

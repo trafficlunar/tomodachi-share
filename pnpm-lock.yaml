@@ -11,6 +11,9 @@ importers:
       '@auth/prisma-adapter':
         specifier: 2.7.2
         version: 2.7.2(@prisma/client@6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2))
+      '@pretendonetwork/mii-js':
+        specifier: github:PretendoNetwork/mii-js#publish-and-eslint
+        version: https://codeload.github.com/PretendoNetwork/mii-js/tar.gz/8b857460b61dde9729eff848d99fd3ef9128f2a5
       '@prisma/client':
         specifier: ^6.5.0
         version: 6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)
@@ -32,6 +35,9 @@ importers:
       next-auth:
         specifier: 5.0.0-beta.25
         version: 5.0.0-beta.25(next@15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+      qrcode-generator:
+        specifier: ^1.4.4
+        version: 1.4.4
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -626,6 +632,10 @@ packages:
   '@panva/hkdf@1.2.1':
     resolution: {integrity: sha512-6oclG6Y3PiDFcoyk8srjLfVKyMfVCKJ27JwNPViuXziFpmdz+MZnZN/aKY0JGXgYuO/VghU0jcOAZgWXZ1Dmrw==}
 
+  '@pretendonetwork/mii-js@https://codeload.github.com/PretendoNetwork/mii-js/tar.gz/8b857460b61dde9729eff848d99fd3ef9128f2a5':
+    resolution: {tarball: https://codeload.github.com/PretendoNetwork/mii-js/tar.gz/8b857460b61dde9729eff848d99fd3ef9128f2a5}
+    version: 1.0.4
+
   '@prisma/client@6.5.0':
     resolution: {integrity: sha512-M6w1Ql/BeiGoZmhMdAZUXHu5sz5HubyVcKukbLs3l0ELcQb8hTUJxtGEChhv4SVJ0QJlwtLnwOLgIRQhpsm9dw==}
     engines: {node: '>=18.18'}
@@ -1000,6 +1010,9 @@ packages:
 
   barcode-detector@3.0.1:
     resolution: {integrity: sha512-3fCzG/Py4SVgZJhubD1mt7rVprtHEVWrxQN4FUOG0oulPE4193evbgyptxcOYsfTNEtMlWc+Ec9tdxhjlR4/Ww==}
+
+  bit-buffer@0.2.5:
+    resolution: {integrity: sha512-x1yGnmXvFg6e3DiyRztElbcn1bsCTFSoM/ncAzY62uE0JdTl5xlKJd0ooqLYoPbhdsnpehSIQrdIvclcZJYwiA==}
 
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
@@ -1934,6 +1947,9 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
+  qrcode-generator@1.4.4:
+    resolution: {integrity: sha512-HM7yY8O2ilqhmULxGMpcHSF1EhJJ9yBj8gvDEuZ6M+KGJ0YY2hKpnXvRD+hZPLrDVck3ExIGhmPtSdcjC+guuw==}
+
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
@@ -2722,6 +2738,10 @@ snapshots:
 
   '@panva/hkdf@1.2.1': {}
 
+  '@pretendonetwork/mii-js@https://codeload.github.com/PretendoNetwork/mii-js/tar.gz/8b857460b61dde9729eff848d99fd3ef9128f2a5':
+    dependencies:
+      bit-buffer: 0.2.5
+
   '@prisma/client@6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)':
     optionalDependencies:
       prisma: 6.5.0(typescript@5.8.2)
@@ -3108,6 +3128,8 @@ snapshots:
       zxing-wasm: 2.1.0(@types/emscripten@1.40.1)
     transitivePeerDependencies:
       - '@types/emscripten'
+
+  bit-buffer@0.2.5: {}
 
   brace-expansion@1.1.11:
     dependencies:
@@ -4200,6 +4222,8 @@ snapshots:
       react-is: 16.13.1
 
   punycode@2.3.1: {}
+
+  qrcode-generator@1.4.4: {}
 
   queue-microtask@1.2.3: {}
 
