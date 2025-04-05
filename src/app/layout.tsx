@@ -4,6 +4,7 @@ import { Lexend } from "next/font/google";
 
 import "./globals.css";
 import Header from "./components/header";
+import Footer from "./components/footer";
 
 const lexend = Lexend({
 	subsets: ["latin"],
@@ -26,6 +27,7 @@ export default function RootLayout({
 
 				<Header />
 				<div className="px-4 py-8 max-w-7xl w-full">{children}</div>
+				<Footer />
 			</body>
 		</html>
 	);
