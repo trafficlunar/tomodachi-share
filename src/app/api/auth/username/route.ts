@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { auth } from "@/lib/auth";
@@ -11,28 +12,28 @@ const usernameSchema = z
 
 export async function GET() {
 	const session = await auth();
-	if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	return Response.json({ username: session.user.username });
+	return NextResponse.json({ username: session.user.username });
 }
 
 export async function PATCH(request: Request) {
 	const session = await auth();
-	if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 	const { username } = await request.json();
-	if (!username) return Response.json({ error: "Username is required" }, { status: 400 });
+	if (!username) return NextResponse.json({ error: "Username is required" }, { status: 400 });
 
 	const validation = usernameSchema.safeParse(username);
-	if (!validation.success) return Response.json({ error: validation.error.errors[0].message }, { status: 400 });
+	if (!validation.success) return NextResponse.json({ error: validation.error.errors[0].message }, { status: 400 });
 
 	const existingUser = await prisma.user.findUnique({ where: { username } });
-	if (existingUser) return Response.json({ error: "Username is already taken" }, { status: 400 });
+	if (existingUser) return NextResponse.json({ error: "Username is already taken" }, { status: 400 });
 
 	await prisma.user.update({
 		where: { email: session.user?.email ?? undefined },
 		data: { username },
 	});
 
-	return Response.json({ success: true });
+	return NextResponse.json({ success: true });
 }

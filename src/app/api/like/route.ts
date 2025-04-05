@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -5,10 +7,10 @@ export async function PATCH(request: Request) {
 	// todo: rate limit
 
 	const session = await auth();
-	if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 	const { miiId } = await request.json();
-	if (!miiId) return Response.json({ error: "Mii ID is required" }, { status: 400 });
+	if (!miiId) return NextResponse.json({ error: "Mii ID is required" }, { status: 400 });
 
 	const result = await prisma.$transaction(async (tx) => {
 		const existingLike = await tx.like.findUnique({
@@ -47,5 +49,5 @@ export async function PATCH(request: Request) {
 		return { liked: !existingLike, count: likeCount };
 	});
 
-	return Response.json({ success: true, liked: result.liked, count: result.count });
+	return NextResponse.json({ success: true, liked: result.liked, count: result.count });
 }

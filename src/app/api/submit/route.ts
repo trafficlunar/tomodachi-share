@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
@@ -17,20 +19,20 @@ const uploadsDirectory = path.join(process.cwd(), "public", "mii");
 
 export async function POST(request: Request) {
 	const session = await auth();
-	if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });
+	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 	const { name, tags, qrBytesRaw } = await request.json();
-	if (!name) return Response.json({ error: "Name is required" }, { status: 400 });
-	if (!tags || tags.length == 0) return Response.json({ error: "At least one tag is required" }, { status: 400 });
-	if (!qrBytesRaw || qrBytesRaw.length == 0) return Response.json({ error: "A QR code is required" }, { status: 400 });
+	if (!name) return NextResponse.json({ error: "Name is required" }, { status: 400 });
+	if (!tags || tags.length == 0) return NextResponse.json({ error: "At least one tag is required" }, { status: 400 });
+	if (!qrBytesRaw || qrBytesRaw.length == 0) return NextResponse.json({ error: "A QR code is required" }, { status: 400 });
 
 	const nameValidation = nameSchema.safeParse(name);
-	if (!nameValidation.success) return Response.json({ error: nameValidation.error.errors[0].message }, { status: 400 });
+	if (!nameValidation.success) return NextResponse.json({ error: nameValidation.error.errors[0].message }, { status: 400 });
 	const tagsValidation = tagsSchema.safeParse(tags);
-	if (!tagsValidation.success) return Response.json({ error: tagsValidation.error.errors[0].message }, { status: 400 });
+	if (!tagsValidation.success) return NextResponse.json({ error: tagsValidation.error.errors[0].message }, { status: 400 });
 
 	// Validate QR code size
-	if (qrBytesRaw.length !== 372) return Response.json({ error: "QR code size is not a valid Tomodachi Life QR code" }, { status: 400 });
+	if (qrBytesRaw.length !== 372) return NextResponse.json({ error: "QR code size is not a valid Tomodachi Life QR code" }, { status: 400 });
 
 	const qrBytes = new Uint8Array(qrBytesRaw);
 
@@ -47,7 +49,7 @@ export async function POST(request: Request) {
 		decrypted = AES_CCM.decrypt(content, MII_DECRYPTION_KEY, nonceWithZeros, undefined, 16);
 	} catch (error) {
 		console.warn("Failed to decrypt QR code:", error);
-		return Response.json({ error: "Failed to decrypt QR code. It may be invalid or corrupted." }, { status: 400 });
+		return NextResponse.json({ error: "Failed to decrypt QR code. It may be invalid or corrupted." }, { status: 400 });
 	}
 
 	const result = new Uint8Array(96);
@@ -57,7 +59,7 @@ export async function POST(request: Request) {
 
 	// Check if QR code is valid (after decryption)
 	if (result.length !== 0x60 || (result[0x16] !== 0 && result[0x17] !== 0))
-		return Response.json({ error: "QR code is not a valid Mii QR code" }, { status: 400 });
+		return NextResponse.json({ error: "QR code is not a valid Mii QR code" }, { status: 400 });
 
 	// Convert to Mii class
 	let mii: Mii;
@@ -75,7 +77,7 @@ export async function POST(request: Request) {
 		}
 	} catch (error) {
 		console.warn("Mii data is not valid:", error);
-		return Response.json({ error: "Mii data is not valid" }, { status: 400 });
+		return NextResponse.json({ error: "Mii data is not valid" }, { status: 400 });
 	}
 
 	// Create Mii in database
@@ -112,7 +114,7 @@ export async function POST(request: Request) {
 		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
 		console.error("Failed to download Mii image:", error);
-		return Response.json({ error: "Failed to download Mii image" }, { status: 500 });
+		return NextResponse.json({ error: "Failed to download Mii image" }, { status: 500 });
 	}
 
 	try {
@@ -140,10 +142,10 @@ export async function POST(request: Request) {
 
 		// todo: upload user images
 
-		return Response.json({ success: true, id: miiRecord.id });
+		return NextResponse.json({ success: true, id: miiRecord.id });
 	} catch (error) {
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
 		console.error("Error processing Mii files:", error);
-		return Response.json({ error: "Failed to process and store Mii files" }, { status: 500 });
+		return NextResponse.json({ error: "Failed to process and store Mii files" }, { status: 500 });
 	}
 }
