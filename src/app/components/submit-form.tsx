@@ -7,11 +7,12 @@ import { useDropzone } from "react-dropzone";
 import { Icon } from "@iconify/react";
 
 import { AES_CCM } from "@trafficlunar/asmcrypto.js";
-import Mii from "@pretendonetwork/mii-js";
 import qrcode from "qrcode-generator";
 
 import { MII_DECRYPTION_KEY } from "@/lib/constants";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
+
+import Mii from "@/utils/mii.js/mii";
 
 import TagSelector from "./submit/tag-selector";
 import QrUpload from "./submit/qr-upload";

@@ -3,13 +3,14 @@ import path from "path";
 import sharp from "sharp";
 
 import { AES_CCM } from "@trafficlunar/asmcrypto.js";
-import Mii from "@pretendonetwork/mii-js";
 import qrcode from "qrcode-generator";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { MII_DECRYPTION_KEY } from "@/lib/constants";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
+
+import Mii from "@/utils/mii.js/mii";
 
 const uploadsDirectory = path.join(process.cwd(), "public", "uploads");
 
@@ -32,7 +33,8 @@ export async function POST(request: Request) {
 
 	const qrBytes = new Uint8Array(qrBytesRaw);
 
-	// Decrypt the QR code
+	// Decrypt the Mii part of the QR code
+	// (Credits to kazuki-4ys)
 	const nonce = qrBytes.subarray(0, 8);
 	const content = qrBytes.subarray(8, 0x70);
 

@@ -11,9 +11,6 @@ importers:
       '@auth/prisma-adapter':
         specifier: 2.7.2
         version: 2.7.2(@prisma/client@6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2))
-      '@pretendonetwork/mii-js':
-        specifier: github:PretendoNetwork/mii-js#publish-and-eslint
-        version: https://codeload.github.com/PretendoNetwork/mii-js/tar.gz/8b857460b61dde9729eff848d99fd3ef9128f2a5
       '@prisma/client':
         specifier: ^6.5.0
         version: 6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)
@@ -23,6 +20,9 @@ importers:
       '@yudiel/react-qr-scanner':
         specifier: 2.2.2-beta.2
         version: 2.2.2-beta.2(@types/emscripten@1.40.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      bit-buffer:
+        specifier: ^0.2.5
+        version: 0.2.5
       embla-carousel-react:
         specifier: ^8.5.2
         version: 8.5.2(react@19.1.0)
@@ -744,10 +744,6 @@ packages:
 
   '@panva/hkdf@1.2.1':
     resolution: {integrity: sha512-6oclG6Y3PiDFcoyk8srjLfVKyMfVCKJ27JwNPViuXziFpmdz+MZnZN/aKY0JGXgYuO/VghU0jcOAZgWXZ1Dmrw==}
-
-  '@pretendonetwork/mii-js@https://codeload.github.com/PretendoNetwork/mii-js/tar.gz/8b857460b61dde9729eff848d99fd3ef9128f2a5':
-    resolution: {tarball: https://codeload.github.com/PretendoNetwork/mii-js/tar.gz/8b857460b61dde9729eff848d99fd3ef9128f2a5}
-    version: 1.0.4
 
   '@prisma/client@6.5.0':
     resolution: {integrity: sha512-M6w1Ql/BeiGoZmhMdAZUXHu5sz5HubyVcKukbLs3l0ELcQb8hTUJxtGEChhv4SVJ0QJlwtLnwOLgIRQhpsm9dw==}
@@ -2932,10 +2928,6 @@ snapshots:
   '@nolyfill/is-core-module@1.0.39': {}
 
   '@panva/hkdf@1.2.1': {}
-
-  '@pretendonetwork/mii-js@https://codeload.github.com/PretendoNetwork/mii-js/tar.gz/8b857460b61dde9729eff848d99fd3ef9128f2a5':
-    dependencies:
-      bit-buffer: 0.2.5
 
   '@prisma/client@6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)':
     optionalDependencies:

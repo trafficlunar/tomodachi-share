@@ -11,10 +11,10 @@
 	},
 	"dependencies": {
 		"@auth/prisma-adapter": "2.7.2",
-		"@pretendonetwork/mii-js": "github:PretendoNetwork/mii-js#publish-and-eslint",
 		"@prisma/client": "^6.5.0",
 		"@trafficlunar/asmcrypto.js": "^1.0.2",
 		"@yudiel/react-qr-scanner": "2.2.2-beta.2",
+		"bit-buffer": "^0.2.5",
 		"embla-carousel-react": "^8.5.2",
 		"jsqr": "^1.4.0",
 		"next": "15.2.4",
