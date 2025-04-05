@@ -101,7 +101,7 @@ export async function POST(request: Request) {
 	// Download the image of the Mii
 	let studioBuffer: Buffer;
 	try {
-		const studioUrl = mii.studioUrl({ width: 128 });
+		const studioUrl = mii.studioUrl({ width: 512 });
 		const studioResponse = await fetch(studioUrl);
 
 		if (!studioResponse.ok) {
