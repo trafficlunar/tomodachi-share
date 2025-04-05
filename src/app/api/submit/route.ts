@@ -60,14 +60,22 @@ export async function POST(request: Request) {
 		return Response.json({ error: "QR code is not a valid Mii QR code" }, { status: 400 });
 
 	// Convert to Mii class
-	const buffer = Buffer.from(result);
-	const mii = new Mii(buffer);
-	const tomodachiLifeMii = TomodachiLifeMii.fromBytes(qrBytes);
+	let mii: Mii;
+	let tomodachiLifeMii: TomodachiLifeMii;
 
-	if (tomodachiLifeMii.hairDyeEnabled) {
-		mii.hairColor = tomodachiLifeMii.studioHairColor;
-		mii.eyebrowColor = tomodachiLifeMii.studioHairColor;
-		mii.facialHairColor = tomodachiLifeMii.studioHairColor;
+	try {
+		const buffer = Buffer.from(result);
+		mii = new Mii(buffer);
+		tomodachiLifeMii = TomodachiLifeMii.fromBytes(qrBytes);
+
+		if (tomodachiLifeMii.hairDyeEnabled) {
+			mii.hairColor = tomodachiLifeMii.studioHairColor;
+			mii.eyebrowColor = tomodachiLifeMii.studioHairColor;
+			mii.facialHairColor = tomodachiLifeMii.studioHairColor;
+		}
+	} catch (error) {
+		console.warn("Mii data is not valid:", error);
+		return Response.json({ error: "Mii data is not valid" }, { status: 400 });
 	}
 
 	// Create Mii in database
