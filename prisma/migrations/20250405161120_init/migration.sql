@@ -45,10 +45,12 @@ CREATE TABLE "miis" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "name" VARCHAR(64) NOT NULL,
-    "qrCodeUrl" TEXT NOT NULL,
-    "studioUrl" TEXT NOT NULL,
     "images" TEXT[],
     "tags" TEXT[],
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "islandName" TEXT NOT NULL,
+    "allowedCopying" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "miis_pkey" PRIMARY KEY ("id")

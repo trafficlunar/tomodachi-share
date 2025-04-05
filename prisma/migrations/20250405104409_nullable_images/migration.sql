@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "miis" ALTER COLUMN "qrCodeUrl" DROP NOT NULL,
-ALTER COLUMN "studioUrl" DROP NOT NULL;

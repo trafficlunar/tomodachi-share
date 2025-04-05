@@ -13,7 +13,7 @@ import { nameSchema, tagsSchema } from "@/lib/schemas";
 import Mii from "@/utils/mii.js/mii";
 import TomodachiLifeMii from "@/utils/tomodachi-life-mii";
 
-const uploadsDirectory = path.join(process.cwd(), "public", "uploads");
+const uploadsDirectory = path.join(process.cwd(), "public", "mii");
 
 export async function POST(request: Request) {
 	const session = await auth();
@@ -76,14 +76,17 @@ export async function POST(request: Request) {
 			userId: Number(session.user.id),
 			name,
 			tags,
+
+			firstName: tomodachiLifeMii.firstName,
+			lastName: tomodachiLifeMii.lastName,
+			islandName: tomodachiLifeMii.islandName,
+			allowedCopying: mii.allowCopying,
 		},
 	});
 
 	// Ensure directories exist
-	await Promise.all([
-		fs.mkdir(path.join(uploadsDirectory, "studio"), { recursive: true }),
-		fs.mkdir(path.join(uploadsDirectory, "qr-code"), { recursive: true }),
-	]);
+	const miiUploadsDirectory = path.join(uploadsDirectory, miiRecord.id.toString());
+	await fs.mkdir(miiUploadsDirectory, { recursive: true });
 
 	// Download the image of the Mii
 	let studioBuffer: Buffer;
@@ -107,7 +110,7 @@ export async function POST(request: Request) {
 	try {
 		// Compress and upload
 		const studioWebpBuffer = await sharp(studioBuffer).webp({ quality: 85 }).toBuffer();
-		const studioFileLocation = path.join(uploadsDirectory, "studio", `${miiRecord.id}.webp`);
+		const studioFileLocation = path.join(miiUploadsDirectory, "mii.webp");
 
 		await fs.writeFile(studioFileLocation, studioWebpBuffer);
 
@@ -124,21 +127,10 @@ export async function POST(request: Request) {
 
 		// Compress and upload
 		const codeWebpBuffer = await sharp(codeBuffer).webp({ quality: 85 }).toBuffer();
-		const codeFileLocation = path.join(uploadsDirectory, "qr-code", `${miiRecord.id}.webp`);
+		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
 		await fs.writeFile(codeFileLocation, codeWebpBuffer);
 
 		// todo: upload user images
-
-		// Update database to use images
-		await prisma.mii.update({
-			where: {
-				id: miiRecord.id,
-			},
-			data: {
-				studioUrl: studioFileLocation,
-				qrCodeUrl: codeFileLocation,
-			},
-		});
 
 		return Response.json({ success: true, id: miiRecord.id });
 	} catch (error) {
