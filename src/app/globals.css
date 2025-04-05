@@ -23,3 +23,17 @@ body {
 .input {
 	@apply !bg-orange-200 outline-0 focus:ring-[3px] ring-orange-400/50 transition placeholder:text-black/40;
 }
+
+.checkbox {
+	@apply flex items-center justify-center appearance-none size-5 bg-orange-300 border-2 border-orange-400 rounded-md cursor-pointer checked:bg-orange-400;
+}
+
+.checkbox::after {
+	content: "";
+	@apply hidden size-3.5 bg-cover bg-no-repeat;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 13l4 4L19 7' /%3E%3C/svg%3E");
+}
+
+.checkbox:checked::after {
+	@apply block;
+}
