@@ -11,6 +11,7 @@ import { MII_DECRYPTION_KEY } from "@/lib/constants";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 
 import Mii from "@/utils/mii.js/mii";
+import TomodachiLifeMii from "@/utils/tomodachi-life-mii";
 
 const uploadsDirectory = path.join(process.cwd(), "public", "uploads");
 
@@ -61,6 +62,13 @@ export async function POST(request: Request) {
 	// Convert to Mii class
 	const buffer = Buffer.from(result);
 	const mii = new Mii(buffer);
+	const tomodachiLifeMii = TomodachiLifeMii.fromBytes(qrBytes);
+
+	if (tomodachiLifeMii.hairDyeEnabled) {
+		mii.hairColor = tomodachiLifeMii.studioHairColor;
+		mii.eyebrowColor = tomodachiLifeMii.studioHairColor;
+		mii.facialHairColor = tomodachiLifeMii.studioHairColor;
+	}
 
 	// Create Mii in database
 	const miiRecord = await prisma.mii.create({

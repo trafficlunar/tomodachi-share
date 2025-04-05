@@ -13,6 +13,7 @@ import { MII_DECRYPTION_KEY } from "@/lib/constants";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 
 import Mii from "@/utils/mii.js/mii";
+import TomodachiLifeMii from "@/utils/tomodachi-life-mii";
 
 import TagSelector from "./submit/tag-selector";
 import QrUpload from "./submit/qr-upload";
@@ -107,9 +108,16 @@ export default function SubmitForm() {
 				return;
 			}
 
-			// Convert to Mii class
+			// Convert to Mii classes
 			const buffer = Buffer.from(result);
 			const mii = new Mii(buffer);
+			const tomodachiLifeMii = TomodachiLifeMii.fromBytes(qrBytes);
+
+			if (tomodachiLifeMii.hairDyeEnabled) {
+				mii.hairColor = tomodachiLifeMii.studioHairColor;
+				mii.eyebrowColor = tomodachiLifeMii.studioHairColor;
+				mii.facialHairColor = tomodachiLifeMii.studioHairColor;
+			}
 
 			try {
 				setStudioUrl(mii.studioUrl({ width: 128 }));
