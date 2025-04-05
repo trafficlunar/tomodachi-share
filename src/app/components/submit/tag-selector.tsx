@@ -2,20 +2,21 @@
 
 import CreatableSelect from "react-select/creatable";
 
-const options = [
-	{ value: "anime", label: "anime" },
-	{ value: "art", label: "art" },
-	{ value: "cartoon", label: "cartoon" },
-	{ value: "celebrity", label: "celebrity" },
-	{ value: "games", label: "games" },
-	{ value: "history", label: "history" },
-	{ value: "meme", label: "meme" },
-	{ value: "movie", label: "movie" },
-	{ value: "oc", label: "oc" },
-	{ value: "tv", label: "tv" },
-];
+interface Props {
+	tags: string[];
+	setTags: React.Dispatch<React.SetStateAction<string[]>>;
+}
 
-export default function TagSelector() {
+interface Option {
+	label: string;
+	value: string;
+}
+
+const stringToOption = (input: string) => ({ value: input, label: input });
+
+const options = ["anime", "art", "cartoon", "celebrity", "games", "history", "meme", "movie", "oc", "tv"].map(stringToOption);
+
+export default function TagSelector({ tags, setTags }: Props) {
 	// todo: tag validating
 
 	return (
@@ -23,7 +24,9 @@ export default function TagSelector() {
 			isMulti
 			placeholder="Select or create tags..."
 			options={options}
-			className="pill input col-span-2 w-full !py-0.5"
+			value={tags.map(stringToOption)}
+			onChange={(newValue) => setTags(newValue.map((option) => option.value))}
+			className="pill input col-span-2 w-full min-h-11 !py-0.5"
 			styles={{
 				control: (provided) => ({
 					...provided,

@@ -6,10 +6,10 @@ import { Icon } from "@iconify/react";
 import jsQR from "jsqr";
 
 interface Props {
-	setQrBytes: React.Dispatch<React.SetStateAction<Uint8Array>>;
+	setQrBytesRaw: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export default function QrUpload({ setQrBytes }: Props) {
+export default function QrUpload({ setQrBytesRaw }: Props) {
 	const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
 		acceptedFiles.forEach((file) => {
 			// Scan QR code
@@ -28,7 +28,7 @@ export default function QrUpload({ setQrBytes }: Props) {
 					const imageData = ctx.getImageData(0, 0, image.width, image.height);
 					const decoded = jsQR(imageData.data, image.width, image.height);
 
-					setQrBytes(new Uint8Array(decoded?.binaryData!));
+					setQrBytesRaw(decoded?.binaryData!);
 				};
 				image.src = event.target!.result as string;
 			};

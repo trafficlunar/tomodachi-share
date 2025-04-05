@@ -61,11 +61,13 @@ model Session {
 }
 
 model Mii {
-  id     Int      @id @default(autoincrement())
-  userId Int
-  name   String   @db.VarChar(64)
-  images String[]
-  tags   String[]
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  name      String   @db.VarChar(64)
+  qrCodeUrl String?
+  studioUrl String?
+  images    String[]
+  tags      String[]
 
   createdAt DateTime @default(now())
 

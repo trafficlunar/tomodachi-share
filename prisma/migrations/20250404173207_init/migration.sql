@@ -45,7 +45,9 @@ CREATE TABLE "miis" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "name" VARCHAR(64) NOT NULL,
-    "pictures" TEXT[],
+    "qrCodeUrl" TEXT NOT NULL,
+    "studioUrl" TEXT NOT NULL,
+    "images" TEXT[],
     "tags" TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

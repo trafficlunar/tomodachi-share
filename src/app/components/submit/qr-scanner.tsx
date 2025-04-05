@@ -9,10 +9,10 @@ import QrFinder from "../qr-finder";
 interface Props {
 	isOpen: boolean;
 	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	setQrBytes: React.Dispatch<React.SetStateAction<Uint8Array>>;
+	setQrBytesRaw: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export default function QrScanner({ isOpen, setIsOpen, setQrBytes }: Props) {
+export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 	const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
 
 	useEffect(() => {
@@ -29,10 +29,10 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytes }: Props) {
 		setIsOpen(false);
 
 		// Convert to bytes
-		const encoder = new TextEncoder();
-		const byteArray = encoder.encode(result[0].rawValue);
+		// const encoder = new TextEncoder();
+		// const byteArray = encoder.encode(result[0].rawValue);
 
-		setQrBytes(byteArray);
+		// setQrBytes(byteArray);
 	};
 
 	if (isOpen)

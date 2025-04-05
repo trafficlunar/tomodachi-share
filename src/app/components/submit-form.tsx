@@ -1,5 +1,7 @@
 "use client";
 
+import { redirect } from "next/navigation";
+
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Icon } from "@iconify/react";
@@ -8,11 +10,12 @@ import { AES_CCM } from "@trafficlunar/asmcrypto.js";
 import Mii from "@pretendonetwork/mii-js";
 import qrcode from "qrcode-generator";
 
+import { MII_DECRYPTION_KEY } from "@/lib/constants";
+import { nameSchema, tagsSchema } from "@/lib/schemas";
+
 import TagSelector from "./submit/tag-selector";
 import QrUpload from "./submit/qr-upload";
 import QrScanner from "./submit/qr-scanner";
-
-const key = new Uint8Array([0x59, 0xfc, 0x81, 0x7e, 0x64, 0x46, 0xea, 0x61, 0x90, 0x34, 0x7b, 0x20, 0xe9, 0xbd, 0xce, 0x52]);
 
 export default function SubmitForm() {
 	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -22,15 +25,53 @@ export default function SubmitForm() {
 	});
 
 	const [isQrScannerOpen, setIsQrScannerOpen] = useState(false);
-	const [qrBytes, setQrBytes] = useState<Uint8Array>(new Uint8Array());
-
 	const [studioUrl, setStudioUrl] = useState<string | undefined>();
 	const [generatedQrCodeUrl, setGeneratedQrCodeUrl] = useState<string | undefined>();
 
+	const [error, setError] = useState<string | undefined>(undefined);
+
+	const [name, setName] = useState("");
+	const [tags, setTags] = useState<string[]>([]);
+	const [qrBytesRaw, setQrBytesRaw] = useState<number[]>([]);
+
+	const handleSubmit = async (event: React.FormEvent) => {
+		event.preventDefault();
+
+		// Validate before sending request
+		const nameValidation = nameSchema.safeParse(name);
+		if (!nameValidation.success) {
+			setError(nameValidation.error.errors[0].message);
+			return;
+		}
+		const tagsValidation = tagsSchema.safeParse(tags);
+		if (!tagsValidation.success) {
+			setError(tagsValidation.error.errors[0].message);
+			return;
+		}
+
+		// Send request to server
+		const response = await fetch("/api/submit", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ name, tags, qrBytesRaw }),
+		});
+		const { id, error } = await response.json();
+
+		if (!response.ok) {
+			setError(error);
+			return;
+		}
+
+		redirect(`/mii/${id}`);
+	};
+
 	useEffect(() => {
-		if (qrBytes.length == 0) return;
+		if (qrBytesRaw.length == 0) return;
+		const qrBytes = new Uint8Array(qrBytesRaw);
 
 		const decode = async () => {
+			setError("");
+
 			// Decrypt the QR code
 			const nonce = qrBytes.subarray(0, 8);
 			const content = qrBytes.subarray(8, 0x70);
@@ -38,32 +79,51 @@ export default function SubmitForm() {
 			const nonceWithZeros = new Uint8Array(12);
 			nonceWithZeros.set(nonce, 0);
 
-			const decrypted = AES_CCM.decrypt(content, key, nonceWithZeros, undefined, 16);
+			let decrypted: Uint8Array<ArrayBufferLike> = new Uint8Array();
+			try {
+				decrypted = AES_CCM.decrypt(content, MII_DECRYPTION_KEY, nonceWithZeros, undefined, 16);
+			} catch (error) {
+				console.warn("Failed to decrypt QR code:", error);
+				setError("Failed to decrypt QR code. It may be invalid or corrupted.");
+				return;
+			}
+
 			const result = new Uint8Array(96);
 			result.set(decrypted.subarray(0, 12), 0);
 			result.set(nonce, 12);
 			result.set(decrypted.subarray(12), 20);
 
+			// Check if QR code is valid (after decryption)
+			if (result.length !== 0x60 || (result[0x16] !== 0 && result[0x17] !== 0)) {
+				setError("QR code is not a valid Mii QR code");
+				return;
+			}
+
 			// Convert to Mii class
 			const buffer = Buffer.from(result);
 			const mii = new Mii(buffer);
 
-			setStudioUrl(mii.studioUrl({ width: 128 }));
+			try {
+				setStudioUrl(mii.studioUrl({ width: 128 }));
 
-			// Generate a new QR code for aesthetic reasons
-			const byteString = String.fromCharCode(...qrBytes);
-			const generatedCode = qrcode(0, "L");
-			generatedCode.addData(byteString, "Byte");
-			generatedCode.make();
+				// Generate a new QR code for aesthetic reasons
+				const byteString = String.fromCharCode(...qrBytes);
+				const generatedCode = qrcode(0, "L");
+				generatedCode.addData(byteString, "Byte");
+				generatedCode.make();
 
-			setGeneratedQrCodeUrl(generatedCode.createDataURL());
+				setGeneratedQrCodeUrl(generatedCode.createDataURL());
+			} catch (error) {
+				console.warn("Failed to get and/or generate Mii images:", error);
+				setError("Failed to get and/or generate Mii images");
+			}
 		};
 
 		decode();
-	}, [qrBytes]);
+	}, [qrBytesRaw]);
 
 	return (
-		<form onSubmit={(e) => e.preventDefault()} className="grid grid-cols-2">
+		<form onSubmit={handleSubmit} className="grid grid-cols-2">
 			<div className="p-4 flex flex-col gap-2">
 				<div className="flex justify-center gap-2">
 					<img
@@ -110,6 +170,8 @@ export default function SubmitForm() {
 						minLength={2}
 						maxLength={64}
 						placeholder="Type your mii's name here..."
+						value={name}
+						onChange={(e) => setName(e.target.value)}
 					/>
 				</div>
 
@@ -117,13 +179,13 @@ export default function SubmitForm() {
 					<label htmlFor="tags" className="font-semibold">
 						Tags
 					</label>
-					<TagSelector />
+					<TagSelector tags={tags} setTags={setTags} />
 				</div>
 
 				<fieldset className="border-t-2 border-b-2 border-black p-3 flex flex-col items-center gap-2">
 					<legend className="px-2">QR Code</legend>
 
-					<QrUpload setQrBytes={setQrBytes} />
+					<QrUpload setQrBytesRaw={setQrBytesRaw} />
 
 					<span>or</span>
 
@@ -132,12 +194,16 @@ export default function SubmitForm() {
 						Use your camera
 					</button>
 
-					<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytes={setQrBytes} />
+					<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
 				</fieldset>
 
-				<button type="submit" className="pill button w-min ml-auto">
-					Submit
-				</button>
+				<div className="flex justify-between items-center">
+					{error && <span className="text-red-400 font-semibold">Error: {error}</span>}
+
+					<button type="submit" className="pill button w-min ml-auto mb-auto">
+						Submit
+					</button>
+				</div>
 			</div>
 		</form>
 	);
