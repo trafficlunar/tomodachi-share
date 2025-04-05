@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -36,6 +37,8 @@ export default async function MiiPage({ params }: Props) {
 			},
 		},
 	});
+
+	if (!mii) redirect("/404");
 
 	return (
 		<div className="flex gap-2 max-sm:flex-col">

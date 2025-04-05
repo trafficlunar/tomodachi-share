@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
+import { prisma } from "@/lib/prisma";
 import MiiList from "@/app/components/mii-list";
 
 interface Props {
@@ -18,6 +19,8 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 	});
 
 	const likedMiis = await prisma.like.count({ where: { userId: Number(slug) } });
+
+	if (!user) redirect("/404");
 
 	return (
 		<div>
