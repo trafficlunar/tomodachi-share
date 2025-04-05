@@ -72,7 +72,14 @@ export default function SubmitForm() {
 		const decode = async () => {
 			setError("");
 
-			// Decrypt the QR code
+			// Validate QR code size
+			if (qrBytesRaw.length !== 372) {
+				setError("QR code size is not a valid Tomodachi Life QR code");
+				return;
+			}
+
+			// Decrypt the Mii part of the QR code
+			// (Credits to kazuki-4ys)
 			const nonce = qrBytes.subarray(0, 8);
 			const content = qrBytes.subarray(8, 0x70);
 

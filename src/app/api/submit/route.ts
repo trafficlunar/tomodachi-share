@@ -8,7 +8,7 @@ import qrcode from "qrcode-generator";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { MII_DECRYPTION_KEY, MII_QR_SIZES } from "@/lib/constants";
+import { MII_DECRYPTION_KEY } from "@/lib/constants";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 
 const uploadsDirectory = path.join(process.cwd(), "public", "uploads");
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 	if (!tagsValidation.success) return Response.json({ error: tagsValidation.error.errors[0].message }, { status: 400 });
 
 	// Validate QR code size
-	if (!MII_QR_SIZES.includes(qrBytesRaw.length)) return Response.json({ error: "QR code is not a valid Mii QR code size" }, { status: 400 });
+	if (qrBytesRaw.length !== 372) return Response.json({ error: "QR code size is not a valid Tomodachi Life QR code" }, { status: 400 });
 
 	const qrBytes = new Uint8Array(qrBytesRaw);
 
