@@ -26,12 +26,14 @@ export default async function MiiPage({ params }: Props) {
 					username: true,
 				},
 			},
-			likedBy: {
-				where: {
-					userId: Number(session?.user.id),
-				},
-				select: { userId: true },
-			},
+			likedBy: session?.user
+				? {
+						where: {
+							userId: Number(session.user.id),
+						},
+						select: { userId: true },
+				  }
+				: false,
 			_count: {
 				select: { likedBy: true }, // Get total like count
 			},
