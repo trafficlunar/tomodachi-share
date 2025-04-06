@@ -148,8 +148,8 @@ export default function SubmitForm() {
 	}, [qrBytesRaw]);
 
 	return (
-		<form onSubmit={handleSubmit} className="grid grid-cols-2">
-			<div className="p-4 flex flex-col gap-2">
+		<form onSubmit={handleSubmit} className="grid grid-cols-2 max-md:grid-cols-1">
+			<div className="p-4 flex flex-col gap-2 max-md:order-2">
 				<div className="flex justify-center gap-2">
 					<img
 						src={studioUrl}
@@ -221,14 +221,14 @@ export default function SubmitForm() {
 
 					<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
 				</fieldset>
+			</div>
 
-				<div className="flex justify-between items-center">
-					{error && <span className="text-red-400 font-semibold">Error: {error}</span>}
+			<div className="flex justify-between items-center px-4 min-md:col-start-2 max-md:order-3">
+				{error && <span className="text-red-400 font-bold">Error: {error}</span>}
 
-					<button type="submit" className="pill button w-min ml-auto mb-auto">
-						Submit
-					</button>
-				</div>
+				<button type="submit" className="pill button w-min ml-auto mb-auto">
+					Submit
+				</button>
 			</div>
 		</form>
 	);

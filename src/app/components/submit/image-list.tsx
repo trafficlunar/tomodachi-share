@@ -28,7 +28,7 @@ export default function ImageList({ files, setFiles }: Props) {
 		<DragDropContext onDragEnd={handleDragEnd}>
 			<Droppable droppableId="imageDroppable">
 				{(provided) => (
-					<div ref={provided.innerRef} {...provided.droppableProps} className="flex flex-col px-12">
+					<div ref={provided.innerRef} {...provided.droppableProps} className="flex flex-col px-12 max-lg:px-0 max-md:px-12 max-[32rem]:px-0">
 						{files.map((file, index) => (
 							<Draggable key={file.name} draggableId={file.name} index={index}>
 								{(provided) => (
