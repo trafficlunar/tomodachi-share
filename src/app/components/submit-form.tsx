@@ -151,16 +151,14 @@ export default function SubmitForm() {
 		<form onSubmit={handleSubmit} className="grid grid-cols-2 max-md:grid-cols-1">
 			<div className="p-4 flex flex-col gap-2 max-md:order-2">
 				<div className="flex justify-center gap-2">
-					<img
-						src={studioUrl}
-						alt="Nintendo Studio URL"
-						className="aspect-square size-32 bg-orange-100 rounded-xl border-2 border-amber-500 text-[0px]"
-					/>
-					<img
-						src={generatedQrCodeUrl}
-						alt="Generated QR Code"
-						className="aspect-square size-32 bg-orange-100 rounded-xl border-2 border-amber-500 text-[0px]"
-					/>
+					<div className="relative flex justify-center items-center size-32 aspect-square bg-orange-100 rounded-xl border-2 border-amber-500">
+						{!studioUrl && <span className="absolute text-center font-light">Mii</span>}
+						<img src={studioUrl} alt="Nintendo Studio URL" className="size-full rounded-xl text-[0px]" />
+					</div>
+					<div className="relative flex justify-center items-center size-32 aspect-square bg-orange-100 rounded-xl border-2 border-amber-500">
+						{!generatedQrCodeUrl && <span className="absolute text-center font-light">QR Code</span>}
+						<img src={generatedQrCodeUrl} alt="Generated QR Code" className="size-full rounded-xl text-[0px]" />
+					</div>
 				</div>
 
 				<div className="p-2 border-2 bg-orange-200 border-amber-500 rounded-2xl shadow-lg h-48">
