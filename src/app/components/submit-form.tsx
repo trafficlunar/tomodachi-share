@@ -221,12 +221,12 @@ export default function SubmitForm() {
 				</fieldset>
 			</div>
 
-			<div className="flex justify-between items-center px-4 min-md:col-start-2 max-md:order-3">
-				{error && <span className="text-red-400 font-bold">Error: {error}</span>}
-
-				<button type="submit" className="pill button w-min ml-auto mb-auto">
+			<div className="flex flex-col justify-center items-center gap-2 px-4 min-md:col-span-2 max-md:order-3">
+				<button type="submit" className="pill button w-min">
 					Submit
 				</button>
+
+				{error && <span className="text-red-400 font-bold">Error: {error}</span>}
 			</div>
 		</form>
 	);
