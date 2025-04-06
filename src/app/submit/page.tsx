@@ -7,5 +7,10 @@ export default async function SubmitPage() {
 
 	if (!session) redirect("/login");
 
-	return <SubmitForm />;
+	return (
+		<div>
+			<h1 className="text-2xl font-bold text-center">Submit your Mii</h1>
+			<SubmitForm />
+		</div>
+	);
 }
