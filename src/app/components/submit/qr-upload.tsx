@@ -44,11 +44,11 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 	});
 
 	return (
-		<div className="p-2 border-2 bg-orange-100 border-amber-500 rounded-2xl shadow-lg w-full">
+		<div className="p-2 border-2 bg-orange-200 border-amber-500 rounded-2xl shadow-lg w-full">
 			<div
 				{...getRootProps({
 					className:
-						"bg-orange-100 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border border-2 border-dashed border-amber-500 select-none h-full",
+						"bg-orange-200 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border border-2 border-dashed border-amber-500 select-none h-full",
 				})}
 			>
 				<input {...getInputProps({ multiple: false })} />

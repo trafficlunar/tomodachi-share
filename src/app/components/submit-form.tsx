@@ -2,8 +2,8 @@
 
 import { redirect } from "next/navigation";
 
-import { useEffect, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import { useCallback, useEffect, useState } from "react";
+import { FileWithPath, useDropzone } from "react-dropzone";
 import { Icon } from "@iconify/react";
 
 import { AES_CCM } from "@trafficlunar/asmcrypto.js";
@@ -16,11 +16,20 @@ import Mii from "@/utils/mii.js/mii";
 import TomodachiLifeMii from "@/utils/tomodachi-life-mii";
 
 import TagSelector from "./submit/tag-selector";
+import ImageList from "./submit/image-list";
 import QrUpload from "./submit/qr-upload";
 import QrScanner from "./submit/qr-scanner";
 
 export default function SubmitForm() {
-	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+	const [files, setFiles] = useState<FileWithPath[]>([]);
+
+	const handleDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+		setFiles((prev) => [...prev, ...acceptedFiles]);
+	}, []);
+
+	const { getRootProps, getInputProps } = useDropzone({
+		onDrop: handleDrop,
+		maxFiles: 3,
 		accept: {
 			"image/*": [".png", ".jpg", ".jpeg", ".bmp", ".webp"],
 		},
@@ -154,14 +163,14 @@ export default function SubmitForm() {
 					/>
 				</div>
 
-				<div className="p-2 border-2 bg-orange-100 border-amber-500 rounded-2xl shadow-lg h-48">
+				<div className="p-2 border-2 bg-orange-200 border-amber-500 rounded-2xl shadow-lg h-48">
 					<div
 						{...getRootProps({
 							className:
-								"bg-orange-100 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border border-2 border-dashed border-amber-500 select-none h-full",
+								"bg-orange-200 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border border-2 border-dashed border-amber-500 select-none h-full",
 						})}
 					>
-						<input {...getInputProps({ multiple: false })} />
+						<input {...getInputProps()} />
 						<Icon icon="material-symbols:upload" fontSize={64} />
 						<p className="text-center">
 							Drag and drop your images here
@@ -171,7 +180,7 @@ export default function SubmitForm() {
 					</div>
 				</div>
 
-				{/* todo: show file list here */}
+				<ImageList files={files} setFiles={setFiles} />
 			</div>
 
 			<div className="p-4 flex flex-col gap-2">
