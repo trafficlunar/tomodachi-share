@@ -12,8 +12,8 @@ import { prisma } from "@/lib/prisma";
 import { MII_DECRYPTION_KEY } from "@/lib/constants";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 
-import Mii from "@/utils/mii.js/mii";
-import TomodachiLifeMii from "@/utils/tomodachi-life-mii";
+import Mii from "@/lib/mii.js/mii";
+import TomodachiLifeMii from "@/lib/tomodachi-life-mii";
 
 const uploadsDirectory = path.join(process.cwd(), "public", "mii");
 
