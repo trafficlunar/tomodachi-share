@@ -132,7 +132,13 @@ export default async function MiiList({ searchParams, userId, where }: Props) {
 							key={mii.id}
 							className="flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3 transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600"
 						>
-							<Carousel images={[`/mii/${mii.id}/mii.webp`, `/mii/${mii.id}/qr-code.webp`, ...mii.images]} />
+							<Carousel
+								images={[
+									`/mii/${mii.id}/mii.webp`,
+									`/mii/${mii.id}/qr-code.webp`,
+									...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image${index}.webp`),
+								]}
+							/>
 
 							<div className="p-4 flex flex-col gap-1 h-full">
 								<Link href={`/mii/${mii.id}`} className="font-bold text-2xl overflow-hidden text-ellipsis line-clamp-2" title={mii.name}>

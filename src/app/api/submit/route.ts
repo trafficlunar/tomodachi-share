@@ -4,14 +4,14 @@ import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 
-import { AES_CCM } from "@trafficlunar/asmcrypto.js";
 import qrcode from "qrcode-generator";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { MII_DECRYPTION_KEY } from "@/lib/constants";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 
+import { validateImage } from "@/lib/images";
+import { convertQrCode } from "@/lib/qr-codes";
 import Mii from "@/lib/mii.js/mii";
 import TomodachiLifeMii from "@/lib/tomodachi-life-mii";
 
@@ -21,63 +21,50 @@ export async function POST(request: Request) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const { name, tags, qrBytesRaw } = await request.json();
+	const formData = await request.formData();
+
+	const name = formData.get("name") as string;
+	const tags: string[] = JSON.parse(formData.get("tags") as string);
+	const qrBytesRaw: number[] = JSON.parse(formData.get("qrBytesRaw") as string);
+
+	const image1 = formData.get("image1") as File;
+	const image2 = formData.get("image2") as File;
+	const image3 = formData.get("image3") as File;
+
 	if (!name) return NextResponse.json({ error: "Name is required" }, { status: 400 });
 	if (!tags || tags.length == 0) return NextResponse.json({ error: "At least one tag is required" }, { status: 400 });
 	if (!qrBytesRaw || qrBytesRaw.length == 0) return NextResponse.json({ error: "A QR code is required" }, { status: 400 });
 
 	const nameValidation = nameSchema.safeParse(name);
 	if (!nameValidation.success) return NextResponse.json({ error: nameValidation.error.errors[0].message }, { status: 400 });
+
 	const tagsValidation = tagsSchema.safeParse(tags);
 	if (!tagsValidation.success) return NextResponse.json({ error: tagsValidation.error.errors[0].message }, { status: 400 });
 
-	// Validate QR code size
 	if (qrBytesRaw.length !== 372) return NextResponse.json({ error: "QR code size is not a valid Tomodachi Life QR code" }, { status: 400 });
+
+	// Validate image files
+	const images: File[] = [];
+
+	for (const img of [image1, image2, image3]) {
+		if (!img) break;
+
+		const imageValidation = await validateImage(img);
+		if (imageValidation.valid) {
+			images.push(img);
+		} else {
+			return NextResponse.json({ error: imageValidation.error }, { status: imageValidation.status ?? 400 });
+		}
+	}
 
 	const qrBytes = new Uint8Array(qrBytesRaw);
 
-	// Decrypt the Mii part of the QR code
-	// (Credits to kazuki-4ys)
-	const nonce = qrBytes.subarray(0, 8);
-	const content = qrBytes.subarray(8, 0x70);
-
-	const nonceWithZeros = new Uint8Array(12);
-	nonceWithZeros.set(nonce, 0);
-
-	let decrypted: Uint8Array<ArrayBufferLike> = new Uint8Array();
+	// Convert QR code to JS
+	let conversion: { mii: Mii; tomodachiLifeMii: TomodachiLifeMii };
 	try {
-		decrypted = AES_CCM.decrypt(content, MII_DECRYPTION_KEY, nonceWithZeros, undefined, 16);
+		conversion = convertQrCode(qrBytes);
 	} catch (error) {
-		console.warn("Failed to decrypt QR code:", error);
-		return NextResponse.json({ error: "Failed to decrypt QR code. It may be invalid or corrupted." }, { status: 400 });
-	}
-
-	const result = new Uint8Array(96);
-	result.set(decrypted.subarray(0, 12), 0);
-	result.set(nonce, 12);
-	result.set(decrypted.subarray(12), 20);
-
-	// Check if QR code is valid (after decryption)
-	if (result.length !== 0x60 || (result[0x16] !== 0 && result[0x17] !== 0))
-		return NextResponse.json({ error: "QR code is not a valid Mii QR code" }, { status: 400 });
-
-	// Convert to Mii class
-	let mii: Mii;
-	let tomodachiLifeMii: TomodachiLifeMii;
-
-	try {
-		const buffer = Buffer.from(result);
-		mii = new Mii(buffer);
-		tomodachiLifeMii = TomodachiLifeMii.fromBytes(qrBytes);
-
-		if (tomodachiLifeMii.hairDyeEnabled) {
-			mii.hairColor = tomodachiLifeMii.studioHairColor;
-			mii.eyebrowColor = tomodachiLifeMii.studioHairColor;
-			mii.facialHairColor = tomodachiLifeMii.studioHairColor;
-		}
-	} catch (error) {
-		console.warn("Mii data is not valid:", error);
-		return NextResponse.json({ error: "Mii data is not valid" }, { status: 400 });
+		return NextResponse.json({ error }, { status: 400 });
 	}
 
 	// Create Mii in database
@@ -87,10 +74,10 @@ export async function POST(request: Request) {
 			name,
 			tags,
 
-			firstName: tomodachiLifeMii.firstName,
-			lastName: tomodachiLifeMii.lastName,
-			islandName: tomodachiLifeMii.islandName,
-			allowedCopying: mii.allowCopying,
+			firstName: conversion.tomodachiLifeMii.firstName,
+			lastName: conversion.tomodachiLifeMii.lastName,
+			islandName: conversion.tomodachiLifeMii.islandName,
+			allowedCopying: conversion.mii.allowCopying,
 		},
 	});
 
@@ -101,7 +88,7 @@ export async function POST(request: Request) {
 	// Download the image of the Mii
 	let studioBuffer: Buffer;
 	try {
-		const studioUrl = mii.studioUrl({ width: 512 });
+		const studioUrl = conversion.mii.studioUrl({ width: 512 });
 		const studioResponse = await fetch(studioUrl);
 
 		if (!studioResponse.ok) {
@@ -113,6 +100,7 @@ export async function POST(request: Request) {
 	} catch (error) {
 		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
+
 		console.error("Failed to download Mii image:", error);
 		return NextResponse.json({ error: "Failed to download Mii image" }, { status: 500 });
 	}
@@ -138,14 +126,41 @@ export async function POST(request: Request) {
 		// Compress and upload
 		const codeWebpBuffer = await sharp(codeBuffer).webp({ quality: 85 }).toBuffer();
 		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
+
 		await fs.writeFile(codeFileLocation, codeWebpBuffer);
-
-		// todo: upload user images
-
-		return NextResponse.json({ success: true, id: miiRecord.id });
 	} catch (error) {
+		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
+
 		console.error("Error processing Mii files:", error);
 		return NextResponse.json({ error: "Failed to process and store Mii files" }, { status: 500 });
 	}
+
+	// Compress and upload user images
+	try {
+		await Promise.all(
+			images.map(async (image, index) => {
+				const buffer = Buffer.from(await image.arrayBuffer());
+				const webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer();
+				const fileLocation = path.join(miiUploadsDirectory, `image${index}.webp`);
+
+				await fs.writeFile(fileLocation, webpBuffer);
+			})
+		);
+
+		// Update database to tell it how many images exist
+		await prisma.mii.update({
+			where: {
+				id: miiRecord.id,
+			},
+			data: {
+				imageCount: images.length,
+			},
+		});
+	} catch (error) {
+		console.error("Error uploading user images:", error);
+		return NextResponse.json({ error: "Failed to store user images" }, { status: 500 });
+	}
+
+	return NextResponse.json({ success: true, id: miiRecord.id });
 }

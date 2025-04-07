@@ -43,7 +43,11 @@ export default async function MiiPage({ params }: Props) {
 
 	if (!mii) redirect("/404");
 
-	const images = [`/mii/${mii.id}/mii.webp`, `/mii/${mii.id}/qr-code.webp`, ...mii.images];
+	const images = [
+		`/mii/${mii.id}/mii.webp`,
+		`/mii/${mii.id}/qr-code.webp`,
+		...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image${index}.webp`),
+	];
 
 	return (
 		<div>

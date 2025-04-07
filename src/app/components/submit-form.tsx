@@ -6,12 +6,10 @@ import { useCallback, useEffect, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
 import { Icon } from "@iconify/react";
 
-import { AES_CCM } from "@trafficlunar/asmcrypto.js";
 import qrcode from "qrcode-generator";
 
-import { MII_DECRYPTION_KEY } from "@/lib/constants";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
-
+import { convertQrCode } from "@/lib/qr-codes";
 import Mii from "@/lib/mii.js/mii";
 import TomodachiLifeMii from "@/lib/tomodachi-life-mii";
 
@@ -61,10 +59,18 @@ export default function SubmitForm() {
 		}
 
 		// Send request to server
+		const formData = new FormData();
+		formData.append("name", name);
+		formData.append("tags", JSON.stringify(tags));
+		formData.append("qrBytesRaw", JSON.stringify(qrBytesRaw));
+		files.forEach((file, index) => {
+			// image1, image2, etc.
+			formData.append(`image${index + 1}`, file);
+		});
+
 		const response = await fetch("/api/submit", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ name, tags, qrBytesRaw }),
+			body: formData,
 		});
 		const { id, error } = await response.json();
 
@@ -80,7 +86,7 @@ export default function SubmitForm() {
 		if (qrBytesRaw.length == 0) return;
 		const qrBytes = new Uint8Array(qrBytesRaw);
 
-		const decode = async () => {
+		const preview = async () => {
 			setError("");
 
 			// Validate QR code size
@@ -89,47 +95,17 @@ export default function SubmitForm() {
 				return;
 			}
 
-			// Decrypt the Mii part of the QR code
-			// (Credits to kazuki-4ys)
-			const nonce = qrBytes.subarray(0, 8);
-			const content = qrBytes.subarray(8, 0x70);
-
-			const nonceWithZeros = new Uint8Array(12);
-			nonceWithZeros.set(nonce, 0);
-
-			let decrypted: Uint8Array<ArrayBufferLike> = new Uint8Array();
+			// Convert QR code to JS
+			let conversion: { mii: Mii; tomodachiLifeMii: TomodachiLifeMii };
 			try {
-				decrypted = AES_CCM.decrypt(content, MII_DECRYPTION_KEY, nonceWithZeros, undefined, 16);
+				conversion = convertQrCode(qrBytes);
 			} catch (error) {
-				console.warn("Failed to decrypt QR code:", error);
-				setError("Failed to decrypt QR code. It may be invalid or corrupted.");
+				setError(error as string);
 				return;
-			}
-
-			const result = new Uint8Array(96);
-			result.set(decrypted.subarray(0, 12), 0);
-			result.set(nonce, 12);
-			result.set(decrypted.subarray(12), 20);
-
-			// Check if QR code is valid (after decryption)
-			if (result.length !== 0x60 || (result[0x16] !== 0 && result[0x17] !== 0)) {
-				setError("QR code is not a valid Mii QR code");
-				return;
-			}
-
-			// Convert to Mii classes
-			const buffer = Buffer.from(result);
-			const mii = new Mii(buffer);
-			const tomodachiLifeMii = TomodachiLifeMii.fromBytes(qrBytes);
-
-			if (tomodachiLifeMii.hairDyeEnabled) {
-				mii.hairColor = tomodachiLifeMii.studioHairColor;
-				mii.eyebrowColor = tomodachiLifeMii.studioHairColor;
-				mii.facialHairColor = tomodachiLifeMii.studioHairColor;
 			}
 
 			try {
-				setStudioUrl(mii.studioUrl({ width: 128 }));
+				setStudioUrl(conversion.mii.studioUrl({ width: 128 }));
 
 				// Generate a new QR code for aesthetic reasons
 				const byteString = String.fromCharCode(...qrBytes);
@@ -139,12 +115,11 @@ export default function SubmitForm() {
 
 				setGeneratedQrCodeUrl(generatedCode.createDataURL());
 			} catch (error) {
-				console.warn("Failed to get and/or generate Mii images:", error);
 				setError("Failed to get and/or generate Mii images");
 			}
 		};
 
-		decode();
+		preview();
 	}, [qrBytesRaw]);
 
 	return (
