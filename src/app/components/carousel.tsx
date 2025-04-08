@@ -25,7 +25,7 @@ export default function Carousel({ images, className }: Props) {
 	const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
 
 	return (
-		<div className="relative max-w-lg h-fit">
+		<div className="relative w-full h-fit">
 			<div className={`overflow-hidden rounded-xl bg-zinc-300 border-2 border-zinc-300 ${className}`} ref={emblaRef}>
 				<div className="flex">
 					{images.map((src, index) => (
