@@ -24,7 +24,6 @@
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"react-dropzone": "^14.3.8",
-		"react-select": "^5.10.1",
 		"react-webcam": "^7.2.0",
 		"sharp": "^0.34.0",
 		"zod": "^3.24.2"
