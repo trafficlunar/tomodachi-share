@@ -187,7 +187,7 @@ export default function SubmitForm() {
 
 					<span>or</span>
 
-					<button onClick={() => setIsQrScannerOpen(true)} className="pill button gap-2">
+					<button type="button" onClick={() => setIsQrScannerOpen(true)} className="pill button gap-2">
 						<Icon icon="mdi:camera" fontSize={20} />
 						Use your camera
 					</button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
 import { Icon } from "@iconify/react";
 import jsQR from "jsqr";
@@ -10,6 +10,8 @@ interface Props {
 }
 
 export default function QrUpload({ setQrBytesRaw }: Props) {
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+
 	const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
 		acceptedFiles.forEach((file) => {
 			// Scan QR code
@@ -17,7 +19,9 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 			reader.onload = async (event) => {
 				const image = new Image();
 				image.onload = () => {
-					const canvas = document.createElement("canvas");
+					const canvas = canvasRef.current;
+					if (!canvas) return;
+
 					const ctx = canvas.getContext("2d");
 					if (!ctx) return;
 
@@ -26,9 +30,10 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 					ctx.drawImage(image, 0, 0, image.width, image.height);
 
 					const imageData = ctx.getImageData(0, 0, image.width, image.height);
-					const decoded = jsQR(imageData.data, image.width, image.height);
+					const code = jsQR(imageData.data, image.width, image.height);
+					if (!code) return;
 
-					setQrBytesRaw(decoded?.binaryData!);
+					setQrBytesRaw(code.binaryData!);
 				};
 				image.src = event.target!.result as string;
 			};
@@ -59,6 +64,8 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 					or click to open
 				</p>
 			</div>
+
+			<canvas ref={canvasRef} className="hidden" />
 		</div>
 	);
 }
