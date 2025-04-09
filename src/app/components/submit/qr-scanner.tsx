@@ -15,6 +15,8 @@ interface Props {
 }
 
 export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
+	const [isVisible, setIsVisible] = useState(false);
+
 	const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
 
 	const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
@@ -86,6 +88,20 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 			.catch(() => setPermissionGranted(false));
 	};
 
+	const close = () => {
+		setIsVisible(false);
+		setTimeout(() => {
+			setIsOpen(false);
+		}, 300);
+	};
+
+	useEffect(() => {
+		if (isOpen) {
+			// slight delay to trigger animation
+			setTimeout(() => setIsVisible(true), 10);
+		}
+	}, [isOpen]);
+
 	useEffect(() => {
 		if (!isOpen) return;
 		requestPermission();
@@ -108,12 +124,21 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 
 	return (
 		<div className="fixed inset-0 flex items-center justify-center z-40">
-			<div onClick={() => setIsOpen(false)} className="z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs"></div>
+			<div
+				onClick={close}
+				className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
+					isVisible ? "opacity-100" : "opacity-0"
+				}`}
+			/>
 
-			<div className="z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg p-6 w-full max-w-md">
+			<div
+				className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg p-6 w-full max-w-md transition-discrete duration-300 ${
+					isVisible ? "scale-100 opacity-100" : "scale-75 opacity-0"
+				}`}
+			>
 				<div className="flex justify-between items-center mb-2">
 					<h2 className="text-xl font-bold">Scan QR Code</h2>
-					<button onClick={() => setIsOpen(false)} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+					<button onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 						<Icon icon="material-symbols:close-rounded" />
 					</button>
 				</div>
@@ -177,7 +202,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 				</div>
 
 				<div className="mt-4 flex justify-center">
-					<button type="button" onClick={() => setIsOpen(false)} className="pill button">
+					<button type="button" onClick={close} className="pill button">
 						Cancel
 					</button>
 				</div>

@@ -21,7 +21,7 @@ export default function ImageViewer({ src, alt, width, height, className }: Prop
 		setIsVisible(false);
 		setTimeout(() => {
 			setIsOpen(false);
-		}, 300); // duration matches animation timing
+		}, 300);
 	};
 
 	useEffect(() => {
@@ -43,7 +43,7 @@ export default function ImageViewer({ src, alt, width, height, className }: Prop
 							className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
 								isVisible ? "opacity-100" : "opacity-0"
 							}`}
-						></div>
+						/>
 
 						<div
 							className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl mx-4 shadow-lg w-full max-w-xl relative transition-discrete duration-300 ${
