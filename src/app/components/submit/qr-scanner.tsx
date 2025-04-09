@@ -107,8 +107,10 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 flex items-center justify-center z-40 backdrop-brightness-75 backdrop-blur-xs">
-			<div className="bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg p-6 w-full max-w-md">
+		<div className="fixed inset-0 flex items-center justify-center z-40">
+			<div onClick={() => setIsOpen(false)} className="z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs"></div>
+
+			<div className="z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg p-6 w-full max-w-md">
 				<div className="flex justify-between items-center mb-2">
 					<h2 className="text-xl font-bold">Scan QR Code</h2>
 					<button onClick={() => setIsOpen(false)} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
