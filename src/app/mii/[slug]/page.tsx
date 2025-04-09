@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -7,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 
 import Carousel from "@/app/components/carousel";
 import LikeButton from "@/app/components/like-button";
+import ImageViewer from "@/app/components/image-viewer";
 
 interface Props {
 	params: Promise<{ slug: string }>;
@@ -108,12 +108,12 @@ export default async function MiiPage({ params }: Props) {
 			<div className="overflow-x-scroll">
 				<div className="flex gap-2 w-max py-4">
 					{images.map((src, index) => (
-						<Image
+						<ImageViewer
 							key={index}
 							src={src}
+							alt="mii screenshot"
 							width={256}
 							height={170}
-							alt="mii screenshots"
 							className="rounded-xl bg-zinc-300 border-2 border-zinc-300 shadow-md aspect-[3/2] h-full object-contain"
 						/>
 					))}
