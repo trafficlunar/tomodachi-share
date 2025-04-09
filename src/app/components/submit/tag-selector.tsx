@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, KeyboardEvent } from "react";
-import { useCombobox, useMultipleSelection } from "downshift";
+import React, { useState } from "react";
+import { useCombobox } from "downshift";
 import { Icon } from "@iconify/react";
 
 interface Props {
@@ -135,7 +135,7 @@ export default function TagSelector({ tags, setTags }: Props) {
 								setInputValue("");
 							}}
 						>
-							Add "{inputValue}"
+							Add &quot;{inputValue}&quot;
 						</li>
 					)}
 				</ul>

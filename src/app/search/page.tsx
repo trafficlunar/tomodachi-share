@@ -25,7 +25,7 @@ export default async function SearchPage({ searchParams }: Props) {
 	return (
 		<div>
 			<p className="text-lg">
-				Search results for "<span className="font-bold">{query}</span>"
+				Search results for &quot;<span className="font-bold">{query}</span>&quot;
 			</p>
 			<MiiList
 				searchParams={searchParams}

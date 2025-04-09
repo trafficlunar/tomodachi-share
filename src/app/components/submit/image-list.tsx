@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FileWithPath } from "react-dropzone";
 import { DragDropContext, Draggable, Droppable, DropResult } from "@hello-pangea/dnd";
 import { Icon } from "@iconify/react";
@@ -37,7 +38,7 @@ export default function ImageList({ files, setFiles }: Props) {
 										{...provided.draggableProps}
 										className="w-full p-4 rounded-xl bg-orange-100 border-2 border-amber-500 flex gap-2 shadow-md my-1"
 									>
-										<img
+										<Image
 											src={URL.createObjectURL(file)}
 											alt={file.name}
 											className="aspect-[3/2] object-contain w-24 rounded-md bg-orange-300 border-2 border-orange-400"

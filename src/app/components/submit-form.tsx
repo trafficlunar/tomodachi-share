@@ -17,6 +17,7 @@ import TagSelector from "./submit/tag-selector";
 import ImageList from "./submit/image-list";
 import QrUpload from "./submit/qr-upload";
 import QrScanner from "./submit/qr-scanner";
+import Image from "next/image";
 
 export default function SubmitForm() {
 	const [files, setFiles] = useState<FileWithPath[]>([]);
@@ -114,7 +115,7 @@ export default function SubmitForm() {
 				generatedCode.make();
 
 				setGeneratedQrCodeUrl(generatedCode.createDataURL());
-			} catch (error) {
+			} catch {
 				setError("Failed to get and/or generate Mii images");
 			}
 		};
@@ -128,11 +129,23 @@ export default function SubmitForm() {
 				<div className="flex justify-center gap-2">
 					<div className="relative flex justify-center items-center size-32 aspect-square bg-orange-100 rounded-xl border-2 border-amber-500">
 						{!studioUrl && <span className="absolute text-center font-light">Mii</span>}
-						<img src={studioUrl} alt="Nintendo Studio URL" className="size-full rounded-xl text-[0px]" />
+						<Image
+							src={studioUrl ?? "/missing.webp"}
+							width={128}
+							height={128}
+							alt="Nintendo Studio URL"
+							className="size-full rounded-xl text-[0px]"
+						/>
 					</div>
 					<div className="relative flex justify-center items-center size-32 aspect-square bg-orange-100 rounded-xl border-2 border-amber-500">
 						{!generatedQrCodeUrl && <span className="absolute text-center font-light">QR Code</span>}
-						<img src={generatedQrCodeUrl} alt="Generated QR Code" className="size-full rounded-xl text-[0px]" />
+						<Image
+							src={generatedQrCodeUrl ?? "/missing.webp"}
+							width={128}
+							height={128}
+							alt="Generated QR Code"
+							className="size-full rounded-xl text-[0px]"
+						/>
 					</div>
 				</div>
 

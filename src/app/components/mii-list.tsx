@@ -11,7 +11,7 @@ interface Props {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 	// for use on profiles
 	userId?: number;
-	where?: Record<string, any>;
+	where?: Record<string, object>;
 }
 
 export default async function MiiList({ searchParams, userId, where }: Props) {

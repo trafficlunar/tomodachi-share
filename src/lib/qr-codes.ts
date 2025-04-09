@@ -15,7 +15,7 @@ export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: 
 	let decrypted: Uint8Array<ArrayBufferLike> = new Uint8Array();
 	try {
 		decrypted = AES_CCM.decrypt(content, MII_DECRYPTION_KEY, nonceWithZeros, undefined, 16);
-	} catch (error) {
+	} catch {
 		throw new Error("Failed to decrypt QR code. It may be invalid or corrupted");
 	}
 
@@ -40,7 +40,7 @@ export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: 
 		}
 
 		return { mii, tomodachiLifeMii };
-	} catch (error) {
+	} catch {
 		throw new Error("Mii data is not valid");
 	}
 }

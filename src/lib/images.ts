@@ -6,7 +6,7 @@ const MIN_IMAGE_DIMENSIONS = 128;
 const MAX_IMAGE_DIMENSIONS = 1024;
 const MAX_IMAGE_SIZE = 1024 * 1024; // 1 MB
 
-const THRESHOLD = 0.5;
+// const THRESHOLD = 0.5;
 
 // tf.enableProdMode();
 

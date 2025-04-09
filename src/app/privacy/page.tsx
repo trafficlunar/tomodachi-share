@@ -89,8 +89,8 @@ export default function PrivacyPage() {
 					<section>
 						<p className="mb-2">
 							Your data, including your Miis, will be retained for as long as you have an account on the site. You may request that your data be
-							deleted at any time by going to your profile page, clicking the settings icon, and clicking the 'Delete Account' button. Upon clicking,
-							your data will be promptly removed from our servers.
+							deleted at any time by going to your profile page, clicking the settings icon, and clicking the &apos;Delete Account&apos; button. Upon
+							clicking, your data will be promptly removed from our servers.
 						</p>
 					</section>
 				</li>

@@ -9,14 +9,5 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ [
 		redirect("/create-username");
 	}
 
-	// await prisma.mii.create({
-	// 	data: {
-	// 		userId: 1,
-	// 		name: "Himmel",
-	// 		pictures: ["https://placehold.co/600x400", "/missing.webp"],
-	// 		tags: ["Anime", "Osaka"],
-	// 	},
-	// });
-
 	return <MiiList searchParams={searchParams} />;
 }

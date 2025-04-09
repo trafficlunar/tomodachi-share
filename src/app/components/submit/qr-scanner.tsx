@@ -97,12 +97,12 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 				setSelectedDeviceId(videoDevices[0].deviceId);
 			}
 		});
-	}, [isOpen]);
+	}, [isOpen, selectedDeviceId]);
 
 	useEffect(() => {
 		if (!isOpen && !permissionGranted) return;
 		requestRef.current = requestAnimationFrame(scanQRCode);
-	}, [permissionGranted]);
+	}, [isOpen, permissionGranted, scanQRCode]);
 
 	if (!isOpen) return null;
 

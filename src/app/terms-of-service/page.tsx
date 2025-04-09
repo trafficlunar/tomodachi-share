@@ -51,7 +51,7 @@ export default function PrivacyPage() {
 							<a href="/privacy" className="text-blue-700">
 								Privacy Policy
 							</a>{" "}
-							(see "Data Deletion") or email me at{" "}
+							(see &quot;Data Deletion&quot;) or email me at{" "}
 							<a href="mailto:hello@trafficlunar.net" className="text-blue-700">
 								hello@trafficlunar.net
 							</a>
@@ -70,8 +70,8 @@ export default function PrivacyPage() {
 
 					<section>
 						<p className="mb-2">
-							This service is provided "as is" and without any warranties. We are not responsible for any user-generated content or the actions of
-							users on the site. You use the site at your own risk.
+							This service is provided &quot;as is&quot; and without any warranties. We are not responsible for any user-generated content or the
+							actions of users on the site. You use the site at your own risk.
 						</p>
 						<p>
 							We do not guarantee continuous or secure access to the service and are not liable for any damages resulting from interruptions, loss of
@@ -109,8 +109,8 @@ export default function PrivacyPage() {
 
 					<section>
 						<p className="mb-2">
-							This site is not affiliated with, endorsed by, or associated with Nintendo in any way. "Mii" and all related character designs are
-							trademarks of Nintendo Co., Ltd.
+							This site is not affiliated with, endorsed by, or associated with Nintendo in any way. &quot;Mii&quot; and all related character designs
+							are trademarks of Nintendo Co., Ltd.
 						</p>
 						<p>
 							All Mii-related content is shared by users under the assumption that it does not violate any third-party rights. If you believe your

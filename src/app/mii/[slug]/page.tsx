@@ -112,7 +112,7 @@ export default async function MiiPage({ params }: Props) {
 							key={index}
 							src={src}
 							width={256}
-							height={1}
+							height={170}
 							alt="mii screenshots"
 							className="rounded-xl bg-zinc-300 border-2 border-zinc-300 shadow-md aspect-[3/2] h-full object-contain"
 						/>
