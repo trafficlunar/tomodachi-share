@@ -37,7 +37,7 @@ export default async function MiiList({ searchParams, userId, where }: Props) {
 					.map((tag) => tag.trim())
 					.filter((tag) => tag.length > 0)
 			: [];
-	const whereTags = tagFilter.length > 0 ? { tags: { hasSome: tagFilter } } : undefined;
+	const whereTags = tagFilter.length > 0 ? { tags: { hasEvery: tagFilter } } : undefined;
 
 	// If the mii list is on a user's profile, don't query for the username
 	const userInclude =
