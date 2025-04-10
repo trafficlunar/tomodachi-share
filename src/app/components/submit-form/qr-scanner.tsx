@@ -143,7 +143,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 					</button>
 				</div>
 
-				{devices.length > 0 && (
+				{devices.length > 1 && (
 					<div className="mb-4 flex flex-col gap-1">
 						<label className="text-sm font-semibold">Camera:</label>
 						<div className="relative w-full">
