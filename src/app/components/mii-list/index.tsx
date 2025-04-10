@@ -4,9 +4,9 @@ import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-import Carousel from "./carousel";
-import LikeButton from "./like-button";
 import SortSelect from "./sort-select";
+import Carousel from "../carousel";
+import LikeButton from "../like-button";
 
 interface Props {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

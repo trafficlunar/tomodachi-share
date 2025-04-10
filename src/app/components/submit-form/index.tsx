@@ -1,6 +1,7 @@
 "use client";
 
 import { redirect } from "next/navigation";
+import Image from "next/image";
 
 import { useCallback, useEffect, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
@@ -13,11 +14,10 @@ import { convertQrCode } from "@/lib/qr-codes";
 import Mii from "@/lib/mii.js/mii";
 import TomodachiLifeMii from "@/lib/tomodachi-life-mii";
 
-import TagSelector from "./submit/tag-selector";
-import ImageList from "./submit/image-list";
-import QrUpload from "./submit/qr-upload";
-import QrScanner from "./submit/qr-scanner";
-import Image from "next/image";
+import TagSelector from "./tag-selector";
+import ImageList from "./image-list";
+import QrUpload from "./qr-upload";
+import QrScanner from "./qr-scanner";
 
 export default function SubmitForm() {
 	const [files, setFiles] = useState<FileWithPath[]>([]);
