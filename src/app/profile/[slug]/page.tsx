@@ -24,9 +24,9 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 		},
 	});
 
-	const likedMiis = await prisma.like.count({ where: { userId: Number(slug) } });
-
 	if (!user) redirect("/404");
+
+	const likedMiis = await prisma.like.count({ where: { userId: Number(slug) } });
 
 	return (
 		<div>
