@@ -9,14 +9,14 @@ interface Props {
 	setTags: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const tagRegex = /^[a-z]*$/;
-const predefinedItems = ["anime", "art", "cartoon", "celebrity", "games", "history", "meme", "movie", "oc", "tv"];
+const tagRegex = /^[a-z-]*$/;
+const predefinedTags = ["anime", "art", "cartoon", "celebrity", "games", "history", "meme", "movie", "oc", "tv"];
 
 export default function TagSelector({ tags, setTags }: Props) {
 	const [inputValue, setInputValue] = useState<string>("");
 
 	const getFilteredItems = (): string[] =>
-		predefinedItems.filter((item) => item.toLowerCase().includes(inputValue?.toLowerCase() || "")).filter((item) => !tags.includes(item));
+		predefinedTags.filter((item) => item.toLowerCase().includes(inputValue?.toLowerCase() || "")).filter((item) => !tags.includes(item));
 
 	const filteredItems = getFilteredItems();
 	const isMaxItemsSelected = tags.length >= 8;
@@ -36,7 +36,7 @@ export default function TagSelector({ tags, setTags }: Props) {
 		inputValue,
 		items: filteredItems,
 		onInputValueChange: ({ inputValue }) => {
-			if (!tagRegex.test(inputValue)) return;
+			if (inputValue && !tagRegex.test(inputValue)) return;
 			setInputValue(inputValue || "");
 		},
 		onStateChange: ({ type, selectedItem }) => {

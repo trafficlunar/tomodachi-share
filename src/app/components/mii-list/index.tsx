@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import SortSelect from "./sort-select";
 import Carousel from "../carousel";
 import LikeButton from "../like-button";
+import FilterSelect from "./filter-select";
 
 interface Props {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -94,7 +95,7 @@ export default async function MiiList({ searchParams, userId, where }: Props) {
 
 	return (
 		<div className="w-full">
-			<div className="flex justify-between items-end mb-2">
+			<div className="flex justify-between items-end mb-2 max-[32rem]:flex-col max-[32rem]:items-center">
 				<p className="text-lg">
 					{totalMiiCount == shownMiiCount ? (
 						<>
@@ -108,12 +109,7 @@ export default async function MiiList({ searchParams, userId, where }: Props) {
 				</p>
 
 				<div className="flex gap-2">
-					{/* todo: replace with react-select */}
-					<div className="pill gap-2">
-						<label htmlFor="sort">Filter:</label>
-						<span>todo</span>
-					</div>
-
+					<FilterSelect />
 					<SortSelect />
 				</div>
 			</div>
