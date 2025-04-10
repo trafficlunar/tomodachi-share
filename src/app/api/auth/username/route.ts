@@ -10,13 +10,6 @@ const usernameSchema = z
 	.max(20, "Username cannot be more than 20 characters long")
 	.regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores");
 
-export async function GET() {
-	const session = await auth();
-	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-	return NextResponse.json({ username: session.user.username });
-}
-
 export async function PATCH(request: Request) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -30,10 +23,15 @@ export async function PATCH(request: Request) {
 	const existingUser = await prisma.user.findUnique({ where: { username } });
 	if (existingUser) return NextResponse.json({ error: "Username is already taken" }, { status: 400 });
 
-	await prisma.user.update({
-		where: { email: session.user?.email ?? undefined },
-		data: { username },
-	});
+	try {
+		await prisma.user.update({
+			where: { email: session.user?.email ?? undefined },
+			data: { username },
+		});
+	} catch (error) {
+		console.error("Failed to update username:", error);
+		return NextResponse.json({ error: "Failed to update username" }, { status: 500 });
+	}
 
 	return NextResponse.json({ success: true });
 }

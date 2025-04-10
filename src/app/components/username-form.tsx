@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 export default function UsernameForm() {
 	const [username, setUsername] = useState("");
-	const [error, setError] = useState(null);
+	const [error, setError] = useState<string | undefined>(undefined);
 
 	const handleSubmit = async (event: FormEvent) => {
 		event.preventDefault();
