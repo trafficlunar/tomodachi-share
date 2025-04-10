@@ -1,10 +1,13 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
+
+import { Icon } from "@iconify/react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Icon } from "@iconify/react";
-import Link from "next/link";
+
+import DeleteAccount from "@/app/components/profile-settings/delete-account";
 
 export default async function ProfileSettingsPage() {
 	const session = await auth();
@@ -106,9 +109,7 @@ export default async function ProfileSettingsPage() {
 						<p className="text-sm text-zinc-500">This will permanently remove your account and all uploaded Miis. This action cannot be undone</p>
 					</div>
 
-					<button name="deletion" className="pill button w-fit h-min ml-auto !bg-red-400 !border-red-500 hover:!bg-red-500">
-						Delete Account
-					</button>
+					<DeleteAccount />
 				</div>
 			</div>
 		</div>
