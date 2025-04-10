@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 
 import Carousel from "./carousel";
 import LikeButton from "./like-button";
+import SortSelect from "./sort-select";
 
 interface Props {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -18,18 +19,16 @@ export default async function MiiList({ searchParams, userId, where }: Props) {
 	const session = await auth();
 	const resolvedSearchParams = await searchParams;
 
-	// sort search param
-	const orderBy: { createdAt?: Prisma.SortOrder; likes?: Prisma.SortOrder } = {};
+	// Sort search param
+	// Defaults to newest
+	const orderBy: Prisma.MiiOrderByWithRelationInput =
+		resolvedSearchParams.sort === "newest"
+			? { createdAt: "desc" }
+			: resolvedSearchParams.sort === "likes"
+			? { likedBy: { _count: "desc" } }
+			: { createdAt: "desc" };
 
-	if (resolvedSearchParams.sort === "newest") {
-		orderBy.createdAt = "desc";
-	} else if (resolvedSearchParams.sort === "likes") {
-		orderBy.likes = "desc";
-	} else {
-		orderBy.createdAt = "desc"; // Default to newest if no valid sort is provided
-	}
-
-	// tag search param
+	// Tag search param
 	const rawTags = resolvedSearchParams.tags;
 	const tagFilter =
 		typeof rawTags === "string"
@@ -115,13 +114,7 @@ export default async function MiiList({ searchParams, userId, where }: Props) {
 						<span>todo</span>
 					</div>
 
-					<div className="pill gap-2">
-						<label htmlFor="sort">Sort:</label>
-						<select name="sort">
-							<option value="likes">Likes</option>
-							<option value="newest">Newest</option>
-						</select>
-					</div>
+					<SortSelect />
 				</div>
 			</div>
 
