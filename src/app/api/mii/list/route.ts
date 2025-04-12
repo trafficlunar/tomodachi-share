@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
 	const parsed = searchSchema.safeParse(Object.fromEntries(request.nextUrl.searchParams));
 	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
 
-	const { query, sort, tags, userId, page = 0, limit = 20 } = parsed.data;
+	const { q: query, sort, tags, userId, page = 1, limit = 20 } = parsed.data;
 
 	const where: Prisma.MiiWhereInput = {
 		// Searching
@@ -89,9 +89,11 @@ export async function GET(request: NextRequest) {
 		},
 	};
 
+	const skip = (page - 1) * limit;
+
 	const [totalCount, filteredCount, list] = await Promise.all([
 		prisma.mii.count({ where: userId ? { userId } : {} }),
-		prisma.mii.count({ where }),
+		prisma.mii.count({ where, skip, take: limit }),
 		prisma.mii.findMany({ where, orderBy, select, skip: (page - 1) * limit, take: limit }),
 	]);
 
