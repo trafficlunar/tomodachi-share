@@ -4,10 +4,10 @@ import { z } from "zod";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { nameSchema } from "@/lib/schemas";
+import { querySchema } from "@/lib/schemas";
 
 const searchSchema = z.object({
-	query: nameSchema.optional(),
+	q: querySchema.optional(),
 	sort: z.enum(["newest", "likes"], { message: "Sort must be either 'newest' or 'likes'" }).default("newest"),
 	tags: z
 		.string()

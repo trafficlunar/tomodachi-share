@@ -9,6 +9,15 @@ export const nameSchema = z
 		message: "Name can only contain letters, numbers, dashes, underscores, apostrophes, and spaces.",
 	});
 
+export const querySchema = z
+	.string()
+	.trim()
+	.min(2, { message: "Search query must be at least 2 characters long" })
+	.max(64, { message: "Search query cannot be more than 64 characters long" })
+	.regex(/^[a-zA-Z0-9-_. ']+$/, {
+		message: "Search query can only contain letters, numbers, dashes, underscores, apostrophes, and spaces.",
+	});
+
 export const tagsSchema = z
 	.array(
 		z

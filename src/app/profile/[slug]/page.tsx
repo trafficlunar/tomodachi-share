@@ -11,10 +11,9 @@ import MiiList from "@/app/components/mii-list";
 
 interface Props {
 	params: Promise<{ slug: string }>;
-	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function ProfilePage({ params, searchParams }: Props) {
+export default async function ProfilePage({ params }: Props) {
 	const session = await auth();
 	const { slug } = await params;
 
@@ -59,7 +58,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 				</div>
 			</div>
 
-			<MiiList searchParams={searchParams} userId={user?.id} />
+			<MiiList isLoggedIn={session?.user != null} userId={user?.id} />
 		</div>
 	);
 }

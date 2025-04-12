@@ -1,18 +1,23 @@
 "use client";
 
+import { redirect, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
-import { redirect } from "next/navigation";
-import { nameSchema } from "@/lib/schemas";
+import { querySchema } from "@/lib/schemas";
 
 export default function SearchBar() {
+	const searchParams = useSearchParams();
 	const [query, setQuery] = useState("");
 
 	const handleSearch = () => {
-		const result = nameSchema.safeParse(query);
+		const result = querySchema.safeParse(query);
 		if (!result.success) redirect("/");
 
-		redirect(`/search?q=${query}`);
+		// Clone current search params and add query param
+		const params = new URLSearchParams(searchParams.toString());
+		params.set("q", query);
+
+		redirect(`/?${params.toString()}`);
 	};
 
 	const handleKeyDown = (event: React.KeyboardEvent) => {
