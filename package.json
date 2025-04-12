@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"@auth/prisma-adapter": "2.7.2",
+		"@bprogress/next": "^3.2.11",
 		"@hello-pangea/dnd": "^18.0.1",
 		"@prisma/client": "^6.6.0",
 		"@trafficlunar/asmcrypto.js": "^1.0.2",
