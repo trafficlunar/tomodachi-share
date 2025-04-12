@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
 			{
 				hostname: "cdn.discordapp.com",
 			},
+			{
+				hostname: "studio.mii.nintendo.com",
+			},
 		],
 	},
 };

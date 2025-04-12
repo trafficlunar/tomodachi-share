@@ -127,17 +127,18 @@ export default function SubmitForm() {
 		<form onSubmit={handleSubmit} className="grid grid-cols-2 max-md:grid-cols-1">
 			<div className="p-4 flex flex-col gap-2 max-md:order-2">
 				<div className="flex justify-center gap-2">
-					<div className="relative flex justify-center items-center size-32 aspect-square bg-orange-100 rounded-xl border-2 border-amber-500">
+					<div className="relative flex justify-center items-center size-33 aspect-square bg-orange-100 rounded-xl border-2 border-amber-500">
 						{!studioUrl && <span className="absolute text-center font-light">Mii</span>}
 						<Image
 							src={studioUrl ?? "/missing.webp"}
 							width={128}
 							height={128}
+							quality={100}
 							alt="Nintendo Studio URL"
 							className="size-full rounded-xl text-[0px]"
 						/>
 					</div>
-					<div className="relative flex justify-center items-center size-32 aspect-square bg-orange-100 rounded-xl border-2 border-amber-500">
+					<div className="relative flex justify-center items-center size-33 aspect-square bg-orange-100 rounded-xl border-2 border-amber-500">
 						{!generatedQrCodeUrl && <span className="absolute text-center font-light">QR Code</span>}
 						<Image
 							src={generatedQrCodeUrl ?? "/missing.webp"}
