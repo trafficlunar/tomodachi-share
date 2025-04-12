@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { auth } from "@/lib/auth";
@@ -10,7 +10,7 @@ const usernameSchema = z
 	.max(20, "Username cannot be more than 20 characters long")
 	.regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores");
 
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

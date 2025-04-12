@@ -3,20 +3,13 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { redirect } from "next/navigation";
-import { z } from "zod";
-
-const searchSchema = z
-	.string()
-	.trim()
-	.min(2)
-	.max(64)
-	.regex(/^[a-zA-Z0-9_]+$/);
+import { nameSchema } from "@/lib/schemas";
 
 export default function SearchBar() {
 	const [query, setQuery] = useState("");
 
 	const handleSearch = () => {
-		const result = searchSchema.safeParse(query);
+		const result = nameSchema.safeParse(query);
 		if (!result.success) redirect("/");
 
 		redirect(`/search?q=${query}`);

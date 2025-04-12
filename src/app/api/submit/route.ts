@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 
 import fs from "fs/promises";
 import path from "path";
@@ -17,31 +18,33 @@ import TomodachiLifeMii from "@/lib/tomodachi-life-mii";
 
 const uploadsDirectory = path.join(process.cwd(), "public", "mii");
 
+const submitSchema = z.object({
+	name: nameSchema,
+	tags: tagsSchema,
+	qrBytesRaw: z
+		.array(z.number(), { required_error: "A QR code is required" })
+		.length(372, { message: "QR code size is not a valid Tomodachi Life QR code" }),
+	image1: z.instanceof(File).optional(),
+	image2: z.instanceof(File).optional(),
+	image3: z.instanceof(File).optional(),
+});
+
 export async function POST(request: Request) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 	const formData = await request.formData();
+	const parsed = submitSchema.safeParse({
+		name: formData.get("name"),
+		tags: JSON.parse(formData.get("tags") as string),
+		qrBytesRaw: JSON.parse(formData.get("qrBytesRaw") as string),
+		image1: formData.get("image1"),
+		image2: formData.get("image2"),
+		image3: formData.get("image3"),
+	});
 
-	const name = formData.get("name") as string;
-	const tags: string[] = JSON.parse(formData.get("tags") as string);
-	const qrBytesRaw: number[] = JSON.parse(formData.get("qrBytesRaw") as string);
-
-	const image1 = formData.get("image1") as File;
-	const image2 = formData.get("image2") as File;
-	const image3 = formData.get("image3") as File;
-
-	if (!name) return NextResponse.json({ error: "Name is required" }, { status: 400 });
-	if (!tags || tags.length == 0) return NextResponse.json({ error: "At least one tag is required" }, { status: 400 });
-	if (!qrBytesRaw || qrBytesRaw.length == 0) return NextResponse.json({ error: "A QR code is required" }, { status: 400 });
-
-	const nameValidation = nameSchema.safeParse(name);
-	if (!nameValidation.success) return NextResponse.json({ error: nameValidation.error.errors[0].message }, { status: 400 });
-
-	const tagsValidation = tagsSchema.safeParse(tags);
-	if (!tagsValidation.success) return NextResponse.json({ error: tagsValidation.error.errors[0].message }, { status: 400 });
-
-	if (qrBytesRaw.length !== 372) return NextResponse.json({ error: "QR code size is not a valid Tomodachi Life QR code" }, { status: 400 });
+	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
+	const { name, tags, qrBytesRaw, image1, image2, image3 } = parsed.data;
 
 	// Validate image files
 	const images: File[] = [];

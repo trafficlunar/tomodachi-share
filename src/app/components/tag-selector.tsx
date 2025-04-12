@@ -9,7 +9,7 @@ interface Props {
 	setTags: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const tagRegex = /^[a-z-]*$/;
+const tagRegex = /^[a-z0-9-_]*$/;
 const predefinedTags = ["anime", "art", "cartoon", "celebrity", "games", "history", "meme", "movie", "oc", "tv"];
 
 export default function TagSelector({ tags, setTags }: Props) {

@@ -1,16 +1,24 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function PATCH(request: Request) {
+const likeSchema = z.object({
+	miiId: z.coerce.number().int({ message: "Mii ID must be an integer" }).positive({ message: "Mii ID must be valid" }),
+});
+
+export async function PATCH(request: NextRequest) {
 	// todo: rate limit
 
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const { miiId } = await request.json();
-	if (!miiId) return NextResponse.json({ error: "Mii ID is required" }, { status: 400 });
+	const body = await request.json();
+	const parsed = likeSchema.safeParse(body);
+
+	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
+	const { miiId } = parsed.data;
 
 	const result = await prisma.$transaction(async (tx) => {
 		const existingLike = await tx.like.findUnique({
