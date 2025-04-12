@@ -101,7 +101,7 @@ export default function SubmitForm() {
 			try {
 				conversion = convertQrCode(qrBytes);
 			} catch (error) {
-				setError(error as string);
+				setError(error instanceof Error ? error.message : String(error));
 				return;
 			}
 

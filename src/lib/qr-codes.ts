@@ -40,7 +40,8 @@ export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: 
 		}
 
 		return { mii, tomodachiLifeMii };
-	} catch {
+	} catch (error) {
+		console.error(error);
 		throw new Error("Mii data is not valid");
 	}
 }
