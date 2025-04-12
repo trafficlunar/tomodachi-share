@@ -70,8 +70,6 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		const code = jsQR(imageData.data, imageData.width, imageData.height);
 		if (!code) return;
 
-		console.log(code);
-
 		// Cancel animation frame to stop scanning
 		if (requestRef.current) {
 			cancelAnimationFrame(requestRef.current);
@@ -148,7 +146,11 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 						<label className="text-sm font-semibold">Camera:</label>
 						<div className="relative w-full">
 							{/* Toggle button to open the dropdown */}
-							<button type="button" {...getToggleButtonProps()} className="pill input w-full !px-2 !py-0.5 !justify-between text-sm">
+							<button
+								type="button"
+								{...getToggleButtonProps({}, { suppressRefError: true })}
+								className="pill input w-full !px-2 !py-0.5 !justify-between text-sm"
+							>
 								{selectedItem?.label || "Select a camera"}
 
 								<Icon icon="tabler:chevron-down" className="ml-2 size-5" />
@@ -156,7 +158,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 
 							{/* Dropdown menu */}
 							<ul
-								{...getMenuProps()}
+								{...getMenuProps({}, { suppressRefError: true })}
 								className={`absolute z-50 w-full bg-orange-200 border-2 border-orange-400 rounded-lg mt-1 shadow-lg max-h-60 overflow-y-auto ${
 									isDropdownOpen ? "block" : "hidden"
 								}`}
