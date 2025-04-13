@@ -22,7 +22,7 @@ export default function LikeButton({ likes, isLiked, miiId, isLoggedIn, big }: P
 		setIsLikedState((prev) => !prev);
 		setLikesState((prev) => (isLiked ? prev - 1 : prev + 1));
 
-		const response = await fetch("/api/like", { method: "PATCH", body: JSON.stringify({ miiId }) });
+		const response = await fetch("/api/mii/like", { method: "PATCH", body: JSON.stringify({ miiId }) });
 		const { liked, count } = await response.json();
 
 		setIsLikedState(liked);
