@@ -104,7 +104,7 @@ export default function MiiList({ isLoggedIn, userId }: Props) {
 									<Link href={`/mii/${mii.id}`} className="font-bold text-2xl overflow-hidden text-ellipsis line-clamp-2" title={mii.name}>
 										{mii.name}
 									</Link>
-									<div id="tags" className="flex gap-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
+									<div id="tags" className="flex flex-wrap gap-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
 										{mii.tags.map((tag) => (
 											<Link href={{ query: { tags: tag } }} key={tag}>
 												{tag}
