@@ -9,6 +9,7 @@ import Carousel from "../carousel";
 import LikeButton from "../like-button";
 import FilterSelect from "./filter-select";
 import Pagination from "./pagination";
+import Skeleton from "./skeleton";
 
 interface Props {
 	isLoggedIn: boolean;
@@ -106,9 +107,9 @@ export default function MiiList({ isLoggedIn, userId }: Props) {
 									<Link href={`/mii/${mii.id}`} className="font-bold text-2xl overflow-hidden text-ellipsis text-nowrap" title={mii.name}>
 										{mii.name}
 									</Link>
-									<div id="tags" className="flex flex-wrap gap-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
+									<div id="tags" className="flex flex-wrap gap-1">
 										{mii.tags.map((tag) => (
-											<Link href={{ query: { tags: tag } }} key={tag}>
+											<Link href={{ query: { tags: tag } }} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
 												{tag}
 											</Link>
 										))}
@@ -130,8 +131,15 @@ export default function MiiList({ isLoggedIn, userId }: Props) {
 				) : (
 					<p className="text-xl font-semibold text-center mt-10">No results found.</p>
 				)
+			) : error ? (
+				<p className="text-xl text-red-400 font-semibold text-center mt-10">Error: {error}</p>
 			) : (
-				<>{error && <p className="text-xl text-red-400 font-semibold text-center mt-10">Error: {error}</p>}</>
+				// Show skeleton when data is loading
+				<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-sm:grid-cols-2 max-[25rem]:grid-cols-1">
+					{Array.from({ length: 24 }).map((_, i) => (
+						<Skeleton key={i} />
+					))}
+				</div>
 			)}
 
 			{data && <Pagination lastPage={data.lastPage} />}
