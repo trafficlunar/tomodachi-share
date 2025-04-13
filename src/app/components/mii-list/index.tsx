@@ -8,6 +8,7 @@ import SortSelect from "./sort-select";
 import Carousel from "../carousel";
 import LikeButton from "../like-button";
 import FilterSelect from "./filter-select";
+import Pagination from "./pagination";
 
 interface Props {
 	isLoggedIn: boolean;
@@ -18,6 +19,7 @@ interface Props {
 interface ApiResponse {
 	total: number;
 	filtered: number;
+	lastPage: number;
 	miis: {
 		id: number;
 		user?: {
@@ -131,6 +133,8 @@ export default function MiiList({ isLoggedIn, userId }: Props) {
 			) : (
 				<>{error && <p className="text-xl text-red-400 font-semibold text-center mt-10">Error: {error}</p>}</>
 			)}
+
+			{data && <Pagination lastPage={data.lastPage} />}
 		</div>
 	);
 }
