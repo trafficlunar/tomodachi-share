@@ -103,7 +103,7 @@ export default function MiiList({ isLoggedIn, userId }: Props) {
 								/>
 
 								<div className="p-4 flex flex-col gap-1 h-full">
-									<Link href={`/mii/${mii.id}`} className="font-bold text-2xl overflow-hidden text-ellipsis line-clamp-2" title={mii.name}>
+									<Link href={`/mii/${mii.id}`} className="font-bold text-2xl overflow-hidden text-ellipsis text-nowrap" title={mii.name}>
 										{mii.name}
 									</Link>
 									<div id="tags" className="flex flex-wrap gap-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
