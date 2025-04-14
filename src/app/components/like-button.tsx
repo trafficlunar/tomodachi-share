@@ -17,7 +17,7 @@ interface Props {
 
 export default function LikeButton({ likes, isLiked, miiId, isLoggedIn, disabled, abbreviate, big }: Props) {
 	const [isLikedState, setIsLikedState] = useState(isLiked);
-	const [likesState, setLikesState] = useState(10000);
+	const [likesState, setLikesState] = useState(likes);
 
 	const onClick = async () => {
 		if (disabled) return;
