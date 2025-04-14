@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Icon } from "@iconify/react";
 
@@ -22,10 +22,6 @@ export default function Carousel({ images, className }: Props) {
 		emblaApi.on("select", () => setSelectedIndex(emblaApi.selectedScrollSnap()));
 	}, [emblaApi]);
 
-	const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
-	const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
-	const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
-
 	return (
 		<div className="relative w-full h-fit">
 			<div className={`overflow-hidden rounded-xl bg-zinc-300 border-2 border-zinc-300 ${className ?? ""}`} ref={emblaRef}>
@@ -40,10 +36,22 @@ export default function Carousel({ images, className }: Props) {
 
 			{images.length > 1 && (
 				<>
-					<button onClick={scrollPrev} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl cursor-pointer">
+					<button
+						onClick={() => emblaApi?.scrollPrev()}
+						disabled={!emblaApi?.canScrollPrev()}
+						className={`absolute left-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl transition-opacity ${
+							emblaApi?.canScrollPrev() ? "opacity-100 cursor-pointer" : "opacity-50"
+						}`}
+					>
 						<Icon icon="ic:round-chevron-left" />
 					</button>
-					<button onClick={scrollNext} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl cursor-pointer">
+					<button
+						onClick={() => emblaApi?.scrollNext()}
+						disabled={!emblaApi?.canScrollNext()}
+						className={`absolute right-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl transition-opacity ${
+							emblaApi?.canScrollNext() ? "opacity-100 cursor-pointer" : "opacity-50"
+						}`}
+					>
 						<Icon icon="ic:round-chevron-right" />
 					</button>
 
@@ -51,8 +59,8 @@ export default function Carousel({ images, className }: Props) {
 						{scrollSnaps.map((_, index) => (
 							<button
 								key={index}
-								onClick={() => scrollTo(index)}
-								className={`size-1.5 rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
+								onClick={() => emblaApi?.scrollTo(index)}
+								className={`size-1.5 cursor-pointer rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
 							/>
 						))}
 					</div>
