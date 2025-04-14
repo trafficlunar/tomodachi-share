@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 import SortSelect from "./sort-select";
 import Carousel from "../carousel";
@@ -36,29 +36,11 @@ interface ApiResponse {
 	}[];
 }
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export default function MiiList({ isLoggedIn, userId }: Props) {
 	const searchParams = useSearchParams();
-
-	const [data, setData] = useState<ApiResponse>();
-	const [error, setError] = useState<string | undefined>();
-
-	const getData = async () => {
-		const response = await fetch(`/api/mii/list?${searchParams.toString()}`);
-		const data = await response.json();
-
-		if (!response.ok) {
-			setError(data.error);
-			return;
-		}
-
-		setData(data);
-	};
-
-	useEffect(() => {
-		getData();
-	}, [searchParams.toString()]);
-
-	// todo: show skeleton when data is undefined
+	const { data, error } = useSWR<ApiResponse>(`/api/mii/list?${searchParams.toString()}`, fetcher);
 
 	return (
 		<div className="w-full">
