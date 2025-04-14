@@ -4,21 +4,20 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-const likeSchema = z.object({
-	miiId: z.coerce.number().int({ message: "Mii ID must be an integer" }).positive({ message: "Mii ID must be valid" }),
-});
+const slugSchema = z.coerce
+	.number({ message: "Mii ID must be a number" })
+	.int({ message: "Mii ID must be an integer" })
+	.positive({ message: "Mii ID must be valid" });
 
-export async function PATCH(request: NextRequest) {
-	// todo: rate limit
-
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const body = await request.json();
-	const parsed = likeSchema.safeParse(body);
+	const { id: slugId } = await params;
+	const parsed = slugSchema.safeParse(slugId);
 
 	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
-	const { miiId } = parsed.data;
+	const miiId = parsed.data;
 
 	const result = await prisma.$transaction(async (tx) => {
 		const existingLike = await tx.like.findUnique({

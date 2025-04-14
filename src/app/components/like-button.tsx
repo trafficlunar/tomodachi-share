@@ -6,31 +6,38 @@ import { Icon } from "@iconify/react";
 
 interface Props {
 	likes: number;
-	miiId: number | undefined;
+	miiId?: number | undefined;
 	isLiked: boolean;
-	isLoggedIn: boolean;
+	isLoggedIn?: boolean;
+	disabled?: boolean;
 	big?: boolean;
 }
 
-export default function LikeButton({ likes, isLiked, miiId, isLoggedIn, big }: Props) {
+export default function LikeButton({ likes, isLiked, miiId, isLoggedIn, disabled, big }: Props) {
 	const [isLikedState, setIsLikedState] = useState(isLiked);
 	const [likesState, setLikesState] = useState(likes);
 
 	const onClick = async () => {
+		if (disabled) return;
 		if (!isLoggedIn) redirect("/login");
 
-		setIsLikedState((prev) => !prev);
-		setLikesState((prev) => (isLiked ? prev - 1 : prev + 1));
+		setIsLikedState(!isLikedState);
+		setLikesState(isLikedState ? likesState - 1 : likesState + 1);
 
-		const response = await fetch("/api/mii/like", { method: "PATCH", body: JSON.stringify({ miiId }) });
-		const { liked, count } = await response.json();
+		const response = await fetch(`/api/mii/${miiId}/like`, { method: "PATCH" });
 
-		setIsLikedState(liked);
-		setLikesState(count);
+		if (response.ok) {
+			const { liked, count } = await response.json();
+			setIsLikedState(liked);
+			setLikesState(count);
+		} else {
+			setIsLikedState(isLikedState);
+			setLikesState(likesState);
+		}
 	};
 
 	return (
-		<button onClick={onClick} className={`flex items-center gap-2 text-red-400 cursor-pointer ${big ? "text-3xl" : "text-xl"}`}>
+		<button onClick={onClick} className={`flex items-center gap-2 text-red-400 ${disabled ? "" : "cursor-pointer"} ${big ? "text-3xl" : "text-xl"}`}>
 			<Icon icon={isLikedState ? "icon-park-solid:like" : "icon-park-outline:like"} />
 			<span>{likesState}</span>
 		</button>
