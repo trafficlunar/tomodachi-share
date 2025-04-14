@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { redirect } from "next/navigation";
 import { Icon } from "@iconify/react";
+import { abbreviateNumber } from "@/lib/abbreviation";
 
 interface Props {
 	likes: number;
@@ -10,12 +11,13 @@ interface Props {
 	isLiked: boolean;
 	isLoggedIn?: boolean;
 	disabled?: boolean;
+	abbreviate?: boolean;
 	big?: boolean;
 }
 
-export default function LikeButton({ likes, isLiked, miiId, isLoggedIn, disabled, big }: Props) {
+export default function LikeButton({ likes, isLiked, miiId, isLoggedIn, disabled, abbreviate, big }: Props) {
 	const [isLikedState, setIsLikedState] = useState(isLiked);
-	const [likesState, setLikesState] = useState(likes);
+	const [likesState, setLikesState] = useState(10000);
 
 	const onClick = async () => {
 		if (disabled) return;
@@ -39,7 +41,7 @@ export default function LikeButton({ likes, isLiked, miiId, isLoggedIn, disabled
 	return (
 		<button onClick={onClick} className={`flex items-center gap-2 text-red-400 ${disabled ? "" : "cursor-pointer"} ${big ? "text-3xl" : "text-xl"}`}>
 			<Icon icon={isLikedState ? "icon-park-solid:like" : "icon-park-outline:like"} />
-			<span>{likesState}</span>
+			<span>{abbreviate ? abbreviateNumber(likesState) : likesState}</span>
 		</button>
 	);
 }

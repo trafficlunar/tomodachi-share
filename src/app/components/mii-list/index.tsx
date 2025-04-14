@@ -101,7 +101,7 @@ export default function MiiList({ isLoggedIn, userId }: Props) {
 									</div>
 
 									<div className="mt-auto grid grid-cols-2 items-center">
-										<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} isLoggedIn={isLoggedIn} />
+										<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} isLoggedIn={isLoggedIn} abbreviate />
 
 										{!userId ? (
 											<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis">
