@@ -4,12 +4,15 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import useSWR from "swr";
 
+import { Icon } from "@iconify/react";
+
+import Skeleton from "./skeleton";
+import FilterSelect from "./filter-select";
 import SortSelect from "./sort-select";
 import Carousel from "../carousel";
 import LikeButton from "../like-button";
-import FilterSelect from "./filter-select";
+import DeleteMiiButton from "../delete-mii";
 import Pagination from "./pagination";
-import Skeleton from "./skeleton";
 
 interface Props {
 	isLoggedIn: boolean;
@@ -86,7 +89,7 @@ export default function MiiList({ isLoggedIn, userId }: Props) {
 								/>
 
 								<div className="p-4 flex flex-col gap-1 h-full">
-									<Link href={`/mii/${mii.id}`} className="font-bold text-2xl overflow-hidden text-ellipsis text-nowrap" title={mii.name}>
+									<Link href={`/mii/${mii.id}`} className="font-bold text-2xl line-clamp-1" title={mii.name}>
 										{mii.name}
 									</Link>
 									<div id="tags" className="flex flex-wrap gap-1">
@@ -100,10 +103,17 @@ export default function MiiList({ isLoggedIn, userId }: Props) {
 									<div className="mt-auto grid grid-cols-2 items-center">
 										<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} isLoggedIn={isLoggedIn} />
 
-										{userId == null && (
+										{!userId ? (
 											<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis">
 												@{mii.user?.username}
 											</Link>
+										) : (
+											<div className="flex gap-1 text-2xl justify-end text-zinc-400">
+												<Link href={`/edit/${mii.id}`}>
+													<Icon icon="mdi:pencil" />
+												</Link>
+												<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likes} />
+											</div>
 										)}
 									</div>
 								</div>

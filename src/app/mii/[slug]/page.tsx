@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { Icon } from "@iconify/react";
+
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 import Carousel from "@/app/components/carousel";
 import LikeButton from "@/app/components/like-button";
 import ImageViewer from "@/app/components/image-viewer";
+import DeleteMiiButton from "@/app/components/delete-mii";
 
 interface Props {
 	params: Promise<{ slug: string }>;
@@ -86,23 +89,32 @@ export default async function MiiPage({ params }: Props) {
 					</div>
 				</div>
 
-				<section className="p-6 bg-orange-100 rounded-2xl shadow-lg border-2 border-orange-400 h-min">
-					<legend className="text-lg font-semibold mb-2">Mii Info</legend>
-					<ul className="text-sm *:flex *:justify-between *:items-center">
-						<li>
-							Name:{" "}
-							<span className="text-right">
-								{mii.firstName} {mii.lastName}
-							</span>
-						</li>
-						<li>
-							From: <span className="text-right">{mii.islandName} Island</span>
-						</li>
-						<li>
-							Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox" />
-						</li>
-					</ul>
-				</section>
+				<div className="flex flex-col gap-2">
+					<section className="p-6 bg-orange-100 rounded-2xl shadow-lg border-2 border-orange-400 h-min">
+						<legend className="text-lg font-semibold mb-2">Mii Info</legend>
+						<ul className="text-sm *:flex *:justify-between *:items-center">
+							<li>
+								Name:{" "}
+								<span className="text-right">
+									{mii.firstName} {mii.lastName}
+								</span>
+							</li>
+							<li>
+								From: <span className="text-right">{mii.islandName} Island</span>
+							</li>
+							<li>
+								Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox" />
+							</li>
+						</ul>
+					</section>
+
+					<div className="flex gap-1 text-4xl justify-end text-orange-400">
+						<Link href={`/edit/${mii.id}`}>
+							<Icon icon="mdi:pencil" />
+						</Link>
+						<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy ?? 0} />
+					</div>
+				</div>
 			</div>
 
 			<div className="overflow-x-scroll">
