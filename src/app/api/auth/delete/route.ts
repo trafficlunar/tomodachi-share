@@ -5,11 +5,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function DELETE() {
 	const session = await auth();
-	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	if (!session || !session.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 	try {
 		await prisma.user.delete({
-			where: { id: Number(session.user?.id!) },
+			where: { id: Number(session.user.id) },
 		});
 	} catch (error) {
 		console.error("Failed to delete user:", error);

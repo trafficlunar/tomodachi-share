@@ -28,7 +28,7 @@ export default function Carousel({ images, className }: Props) {
 
 	return (
 		<div className="relative w-full h-fit">
-			<div className={`overflow-hidden rounded-xl bg-zinc-300 border-2 border-zinc-300 ${className}`} ref={emblaRef}>
+			<div className={`overflow-hidden rounded-xl bg-zinc-300 border-2 border-zinc-300 ${className ?? ""}`} ref={emblaRef}>
 				<div className="flex">
 					{images.map((src, index) => (
 						<div key={index} className="flex-[0_0_100%]">

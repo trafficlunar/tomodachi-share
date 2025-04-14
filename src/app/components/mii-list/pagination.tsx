@@ -1,9 +1,9 @@
 "use client";
 
-import { redirect, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Icon } from "@iconify/react";
 
 interface Props {
