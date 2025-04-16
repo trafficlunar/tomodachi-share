@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-import DeleteAccount from "@/app/components/profile-settings/delete-account";
+import ProfileSettings from "@/app/components/profile-settings";
 
 export default async function ProfileSettingsPage() {
 	const session = await auth();
@@ -46,72 +46,7 @@ export default async function ProfileSettingsPage() {
 				</div>
 			</div>
 
-			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl p-4 flex flex-col gap-4">
-				<div>
-					<h2 className="text-2xl font-bold">Profile Settings</h2>
-					<p className="text-sm text-zinc-500">Update your account info, username, and preferences.</p>
-				</div>
-
-				{/* Separator */}
-				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-					<hr className="flex-grow border-zinc-300" />
-					<span>Account Info</span>
-					<hr className="flex-grow border-zinc-300" />
-				</div>
-
-				{/* Change Name */}
-				<div className="grid grid-cols-2">
-					<div>
-						<label htmlFor="deletion" className="font-semibold">
-							Change Name
-						</label>
-						<p className="text-sm text-zinc-500">This is the name shown on your profile — feel free to change it anytime</p>
-					</div>
-
-					<div className="flex justify-end gap-1">
-						<input type="text" className="pill input w-full max-w-64" />
-						<button className="pill button aspect-square !p-1 text-2xl">
-							<Icon icon="material-symbols:check-rounded" />
-						</button>
-					</div>
-				</div>
-
-				{/* Change Username */}
-				<div className="grid grid-cols-2">
-					<div>
-						<label htmlFor="deletion" className="font-semibold">
-							Change Username
-						</label>
-						<p className="text-sm text-zinc-500">Your unique tag on the site. Can only be changed once every 90 days</p>
-					</div>
-
-					<div className="flex justify-end gap-1">
-						<input type="text" className="pill input w-full max-w-64" />
-						<button className="pill button aspect-square !p-1 text-2xl">
-							<Icon icon="material-symbols:check-rounded" />
-						</button>
-					</div>
-				</div>
-
-				{/* Separator */}
-				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-					<hr className="flex-grow border-zinc-300" />
-					<span>Danger Zone</span>
-					<hr className="flex-grow border-zinc-300" />
-				</div>
-
-				{/* Delete Account */}
-				<div className="grid grid-cols-2">
-					<div>
-						<label htmlFor="deletion" className="font-semibold">
-							Delete Account
-						</label>
-						<p className="text-sm text-zinc-500">This will permanently remove your account and all uploaded Miis. This action cannot be undone</p>
-					</div>
-
-					<DeleteAccount />
-				</div>
-			</div>
+			<ProfileSettings name={session.user.name} username={session.user.username} />
 		</div>
 	);
 }
