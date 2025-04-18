@@ -51,7 +51,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 		// Scroll snaps
 		setScrollSnaps(emblaApi.scrollSnapList());
 		emblaApi.on("select", () => setSelectedIndex(emblaApi.selectedScrollSnap()));
-	}, [emblaApi]);
+	}, [emblaApi, images, src]);
 
 	return (
 		<>

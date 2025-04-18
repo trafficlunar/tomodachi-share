@@ -105,7 +105,7 @@ export default function ProfileSettings() {
 					>
 						<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 px-2 py-1">
 							<p className="font-semibold">New display name:</p>
-							<p className="indent-4">'{displayName}'</p>
+							<p className="indent-4">&apos;{displayName}&apos;</p>
 						</div>
 					</SubmitDialogButton>
 				</div>
@@ -144,7 +144,7 @@ export default function ProfileSettings() {
 
 						<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 px-2 py-1">
 							<p className="font-semibold">New username:</p>
-							<p className="indent-4">'@{username}'</p>
+							<p className="indent-4">&apos;@{username}&apos;</p>
 						</div>
 					</SubmitDialogButton>
 				</div>
