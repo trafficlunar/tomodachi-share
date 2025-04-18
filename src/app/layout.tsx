@@ -24,7 +24,9 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${lexend.className} antialiased flex flex-col items-center min-h-screen`}>
-				<Script defer src="https://analytics.trafficlunar.net/script.js" data-website-id="bc530384-9b7d-471a-b2e3-f9859da50c24" />
+				{process.env.NODE_ENV == "production" && (
+					<Script defer src="https://analytics.trafficlunar.net/script.js" data-website-id="bc530384-9b7d-471a-b2e3-f9859da50c24" />
+				)}
 
 				<Providers>
 					<Header />
