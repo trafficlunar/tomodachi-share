@@ -85,7 +85,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 
 			{isOpen &&
 				createPortal(
-					<div className="fixed inset-0 flex items-center justify-center z-40">
+					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-[var(--header-height)] flex items-center justify-center z-40">
 						<div
 							onClick={close}
 							className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
