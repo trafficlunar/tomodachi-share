@@ -53,6 +53,32 @@ export default function ImageViewer({ src, alt, width, height, className, images
 		emblaApi.on("select", () => setSelectedIndex(emblaApi.selectedScrollSnap()));
 	}, [emblaApi, images, src]);
 
+	// Handle keyboard events
+	useEffect(() => {
+		if (!isOpen || !emblaApi) return;
+
+		const handleKeyDown = (event: KeyboardEvent) => {
+			switch (event.key) {
+				case "ArrowLeft":
+					emblaApi.scrollPrev();
+					break;
+				case "ArrowRight":
+					emblaApi.scrollNext();
+					break;
+				case "Escape":
+					close();
+					break;
+				default:
+					break;
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [isOpen, emblaApi]);
+
 	return (
 		<>
 			<Image src={src} alt={alt} width={width} height={height} className={`cursor-pointer ${className}`} onClick={() => setIsOpen(true)} />

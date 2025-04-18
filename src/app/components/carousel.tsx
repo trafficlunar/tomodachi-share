@@ -15,6 +15,7 @@ export default function Carousel({ images, className }: Props) {
 	const [emblaRef, emblaApi] = useEmblaCarousel();
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+	const [isFocused, setIsFocused] = useState(false);
 
 	useEffect(() => {
 		if (!emblaApi) return;
@@ -22,8 +23,31 @@ export default function Carousel({ images, className }: Props) {
 		emblaApi.on("select", () => setSelectedIndex(emblaApi.selectedScrollSnap()));
 	}, [emblaApi]);
 
+	// Handle keyboard events
+	useEffect(() => {
+		if (!isFocused || !emblaApi) return;
+
+		const handleKeyDown = (event: KeyboardEvent) => {
+			switch (event.key) {
+				case "ArrowLeft":
+					emblaApi.scrollPrev();
+					break;
+				case "ArrowRight":
+					emblaApi.scrollNext();
+					break;
+				default:
+					break;
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [isFocused, emblaApi]);
+
 	return (
-		<div className="relative w-full h-fit">
+		<div className="relative w-full h-fit" tabIndex={0} onMouseEnter={() => setIsFocused(true)} onMouseLeave={() => setIsFocused(false)}>
 			<div className={`overflow-hidden rounded-xl bg-zinc-300 border-2 border-zinc-300 ${className ?? ""}`} ref={emblaRef}>
 				<div className="flex">
 					{images.map((src, index) => (
