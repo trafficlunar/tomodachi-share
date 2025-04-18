@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
 import { useState } from "react";
-import SubmitDialogButton from "./submit-dialog-button";
-import DeleteAccount from "./delete-account";
+import dayjs from "dayjs";
 
 import { displayNameSchema, usernameSchema } from "@/lib/schemas";
-import dayjs from "dayjs";
+
+import SubmitDialogButton from "./submit-dialog-button";
+import DeleteAccount from "./delete-account";
 
 export default function ProfileSettings() {
 	const router = useRouter();
@@ -67,7 +67,7 @@ export default function ProfileSettings() {
 	};
 
 	return (
-		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl p-4 flex flex-col gap-4">
+		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-4">
 			<div>
 				<h2 className="text-2xl font-bold">Profile Settings</h2>
 				<p className="text-sm text-zinc-500">Update your account info, and username.</p>

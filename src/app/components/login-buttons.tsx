@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 
 export default function LoginButtons() {
 	return (
-		<div className="flex flex-col items-center gap-2 mt-8">
+		<div className="flex flex-col items-center gap-2">
 			<button
 				onClick={() => signIn("discord", { redirectTo: "/create-username" })}
 				className="pill button gap-2 !px-3 !bg-indigo-400 !border-indigo-500 hover:!bg-indigo-500"

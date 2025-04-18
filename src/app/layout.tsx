@@ -30,7 +30,7 @@ export default function RootLayout({
 
 				<Providers>
 					<Header />
-					<div className="px-4 py-8 max-w-7xl w-full">{children}</div>
+					<div className="px-4 py-8 max-w-7xl w-full flex-grow flex flex-col">{children}</div>
 					<Footer />
 				</Providers>
 			</body>

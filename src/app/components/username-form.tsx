@@ -37,7 +37,7 @@ export default function UsernameForm() {
 				value={username}
 				onChange={(e) => setUsername(e.target.value)}
 				required
-				className="pill input w-96 mt-8 mb-2"
+				className="pill input w-96 mb-2"
 			/>
 
 			<button type="submit" className="pill button w-min">
