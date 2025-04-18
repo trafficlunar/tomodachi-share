@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { redirect } from "next/navigation";
+import { usernameSchema } from "@/lib/schemas";
 
 export default function UsernameForm() {
 	const [username, setUsername] = useState("");
@@ -9,6 +10,9 @@ export default function UsernameForm() {
 
 	const handleSubmit = async (event: FormEvent) => {
 		event.preventDefault();
+
+		const parsed = usernameSchema.safeParse(username);
+		if (!parsed.success) setError(parsed.error.errors[0].message);
 
 		const response = await fetch("/api/auth/username", {
 			method: "PATCH",

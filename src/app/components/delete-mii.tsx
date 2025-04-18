@@ -29,7 +29,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes }: Props) {
 		}
 
 		close();
-		window.location.reload(); // I would use router.refresh() here but the API data fetching breaks
+		window.location.reload(); // I would use router.refresh() here but the Mii list doesn't update
 	};
 
 	const close = () => {

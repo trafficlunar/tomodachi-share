@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 interface Props {
 	title: string;
 	description: string;
-	onSubmit: () => void;
+	onSubmit: (close: () => void) => void;
 	error?: string;
 	children?: React.ReactNode;
 }
@@ -17,9 +17,7 @@ export default function SubmitDialogButton({ title, description, onSubmit, error
 	const [isVisible, setIsVisible] = useState(false);
 
 	const submit = () => {
-		onSubmit();
-		close();
-		window.location.reload(); // I would use router.refresh() here but the API data fetching breaks
+		onSubmit(close);
 	};
 
 	const close = () => {

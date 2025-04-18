@@ -2,29 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { usernameSchema } from "@/lib/schemas";
+import { displayNameSchema } from "@/lib/schemas";
 
 export async function PATCH(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const { username } = await request.json();
-	if (!username) return NextResponse.json({ error: "New username is required" }, { status: 400 });
+	const { displayName } = await request.json();
+	if (!displayName) return NextResponse.json({ error: "New display name is required" }, { status: 400 });
 
-	const validation = usernameSchema.safeParse(username);
+	const validation = displayNameSchema.safeParse(displayName);
 	if (!validation.success) return NextResponse.json({ error: validation.error.errors[0].message }, { status: 400 });
-
-	const existingUser = await prisma.user.findUnique({ where: { username } });
-	if (existingUser) return NextResponse.json({ error: "Username is already taken" }, { status: 400 });
 
 	try {
 		await prisma.user.update({
 			where: { email: session.user?.email ?? undefined },
-			data: { username },
+			data: { name: displayName },
 		});
 	} catch (error) {
-		console.error("Failed to update username:", error);
-		return NextResponse.json({ error: "Failed to update username" }, { status: 500 });
+		console.error("Failed to update display name:", error);
+		return NextResponse.json({ error: "Failed to update display name" }, { status: 500 });
 	}
 
 	return NextResponse.json({ success: true });

@@ -46,7 +46,7 @@ export default async function ProfileSettingsPage() {
 				</div>
 			</div>
 
-			<ProfileSettings name={session.user.name} username={session.user.username} />
+			<ProfileSettings />
 		</div>
 	);
 }

@@ -16,6 +16,7 @@
 		"@prisma/client": "^6.6.0",
 		"@trafficlunar/asmcrypto.js": "^1.0.2",
 		"bit-buffer": "^0.2.5",
+		"dayjs": "^1.11.13",
 		"downshift": "^9.0.9",
 		"embla-carousel-react": "^8.6.0",
 		"jsqr": "^1.4.0",
