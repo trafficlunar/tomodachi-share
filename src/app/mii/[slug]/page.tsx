@@ -127,6 +127,7 @@ export default async function MiiPage({ params }: Props) {
 							width={256}
 							height={170}
 							className="rounded-xl bg-zinc-300 border-2 border-zinc-300 shadow-md aspect-[3/2] h-full object-contain"
+							images={images}
 						/>
 					))}
 				</div>
