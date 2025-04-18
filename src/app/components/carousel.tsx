@@ -21,7 +21,7 @@ export default function Carousel({ images, className }: Props) {
 		if (!emblaApi) return;
 		setScrollSnaps(emblaApi.scrollSnapList());
 		emblaApi.on("select", () => setSelectedIndex(emblaApi.selectedScrollSnap()));
-	}, [emblaApi]);
+	}, [images, emblaApi]);
 
 	// Handle keyboard events
 	useEffect(() => {

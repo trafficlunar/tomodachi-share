@@ -159,7 +159,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 
 								{/* Carousel snaps */}
 								<div
-									className={`z-50 flex justify-center gap-2 absolute left-1/2 -translate-x-1/2 bottom-4 transition-opacity duration-300 ${
+									className={`z-50 flex justify-center gap-3 absolute left-1/2 -translate-x-1/2 bottom-4 transition-opacity duration-300 ${
 										isVisible ? "opacity-100" : "opacity-0"
 									}`}
 								>
@@ -167,7 +167,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 										<button
 											key={index}
 											onClick={() => emblaApi?.scrollTo(index)}
-											className={`size-3 cursor-pointer rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
+											className={`size-2.5 cursor-pointer rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
 										/>
 									))}
 								</div>

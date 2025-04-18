@@ -41,6 +41,8 @@ export default function ImageList({ files, setFiles }: Props) {
 										<Image
 											src={URL.createObjectURL(file)}
 											alt={file.name}
+											width={96}
+											height={96}
 											className="aspect-[3/2] object-contain w-24 rounded-md bg-orange-300 border-2 border-orange-400"
 										/>
 										<div className="flex flex-col justify-center w-full min-w-0">

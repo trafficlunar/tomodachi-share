@@ -52,7 +52,7 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 	});
 
 	return (
-		<div className="p-2 border-2 bg-orange-200 border-amber-500 rounded-2xl shadow-lg w-full">
+		<div className="max-w-md w-full">
 			<div
 				{...getRootProps({
 					className:

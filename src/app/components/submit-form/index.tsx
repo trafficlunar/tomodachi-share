@@ -1,7 +1,6 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import Image from "next/image";
 
 import { useCallback, useEffect, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
@@ -18,6 +17,8 @@ import TagSelector from "../tag-selector";
 import ImageList from "./image-list";
 import QrUpload from "./qr-upload";
 import QrScanner from "./qr-scanner";
+import LikeButton from "../like-button";
+import Carousel from "../carousel";
 
 export default function SubmitForm() {
 	const [files, setFiles] = useState<FileWithPath[]>([]);
@@ -106,7 +107,7 @@ export default function SubmitForm() {
 			}
 
 			try {
-				setStudioUrl(conversion.mii.studioUrl({ width: 128 }));
+				setStudioUrl(conversion.mii.studioUrl({ width: 512 }));
 
 				// Generate a new QR code for aesthetic reasons
 				const byteString = String.fromCharCode(...qrBytes);
@@ -124,53 +125,46 @@ export default function SubmitForm() {
 	}, [qrBytesRaw]);
 
 	return (
-		<form onSubmit={handleSubmit} className="grid grid-cols-2 max-md:grid-cols-1">
-			<div className="p-4 flex flex-col gap-2 max-md:order-2">
-				<div className="flex justify-center gap-2">
-					<div className="relative flex justify-center items-center size-33 aspect-square bg-orange-100 rounded-xl border-2 border-amber-500">
-						{!studioUrl && <span className="absolute text-center font-light">Mii</span>}
-						<Image
-							src={studioUrl ?? "/missing.webp"}
-							width={128}
-							height={128}
-							quality={100}
-							alt="Nintendo Studio URL"
-							className="size-full rounded-xl text-[0px]"
-						/>
-					</div>
-					<div className="relative flex justify-center items-center size-33 aspect-square bg-orange-100 rounded-xl border-2 border-amber-500">
-						{!generatedQrCodeUrl && <span className="absolute text-center font-light">QR Code</span>}
-						<Image
-							src={generatedQrCodeUrl ?? "/missing.webp"}
-							width={128}
-							height={128}
-							alt="Generated QR Code"
-							className="size-full rounded-xl text-[0px]"
-						/>
+		<form onSubmit={handleSubmit} className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
+			<div className="flex justify-center">
+				<div className="w-[18.75rem] h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
+					<Carousel
+						images={[studioUrl ?? "/missing.webp", generatedQrCodeUrl ?? "/missing.webp", ...files.map((file) => URL.createObjectURL(file))]}
+					/>
+
+					<div className="p-4 flex flex-col gap-1 h-full">
+						<h1 className="font-bold text-2xl line-clamp-1" title={name}>
+							{name || "Mii name"}
+						</h1>
+						<div id="tags" className="flex flex-wrap gap-1">
+							{tags.length == 0 && <span className="px-2 py-1 bg-orange-300 rounded-full text-xs">tag</span>}
+							{tags.map((tag) => (
+								<span key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
+									{tag}
+								</span>
+							))}
+						</div>
+
+						<div className="mt-auto">
+							<LikeButton likes={0} isLiked={false} disabled />
+						</div>
 					</div>
 				</div>
-
-				<div className="p-2 border-2 bg-orange-200 border-amber-500 rounded-2xl shadow-lg h-48">
-					<div
-						{...getRootProps({
-							className:
-								"bg-orange-200 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border border-2 border-dashed border-amber-500 select-none h-full",
-						})}
-					>
-						<input {...getInputProps()} />
-						<Icon icon="material-symbols:upload" fontSize={64} />
-						<p className="text-center">
-							Drag and drop your images here
-							<br />
-							or click to open
-						</p>
-					</div>
-				</div>
-
-				<ImageList files={files} setFiles={setFiles} />
 			</div>
 
-			<div className="p-4 flex flex-col gap-2">
+			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-2 max-w-2xl w-full">
+				<div>
+					<h2 className="text-2xl font-bold">Submit your Mii</h2>
+					<p className="text-sm text-zinc-500">Share your creation for others to see.</p>
+				</div>
+
+				{/* Separator */}
+				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
+					<hr className="flex-grow border-zinc-300" />
+					<span>Info</span>
+					<hr className="flex-grow border-zinc-300" />
+				</div>
+
 				<div className="w-full grid grid-cols-3 items-center">
 					<label htmlFor="name" className="font-semibold">
 						Name
@@ -194,9 +188,14 @@ export default function SubmitForm() {
 					<TagSelector tags={tags} setTags={setTags} />
 				</div>
 
-				<fieldset className="border-t-2 border-b-2 border-black p-3 flex flex-col items-center gap-2">
-					<legend className="px-2">QR Code</legend>
+				{/* Separator */}
+				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+					<hr className="flex-grow border-zinc-300" />
+					<span>QR Code</span>
+					<hr className="flex-grow border-zinc-300" />
+				</div>
 
+				<div className="flex flex-col items-center gap-2">
 					<QrUpload setQrBytesRaw={setQrBytesRaw} />
 
 					<span>or</span>
@@ -207,15 +206,42 @@ export default function SubmitForm() {
 					</button>
 
 					<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
-				</fieldset>
-			</div>
+				</div>
 
-			<div className="flex flex-col justify-center items-center gap-2 px-4 min-md:col-span-2 max-md:order-3">
-				<button type="submit" className="pill button w-min">
-					Submit
-				</button>
+				{/* Separator */}
+				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+					<hr className="flex-grow border-zinc-300" />
+					<span>Custom images</span>
+					<hr className="flex-grow border-zinc-300" />
+				</div>
 
-				{error && <span className="text-red-400 font-bold">Error: {error}</span>}
+				<div className="max-w-md w-full self-center">
+					<div
+						{...getRootProps({
+							className:
+								"bg-orange-200 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border border-2 border-dashed border-amber-500 select-none h-full",
+						})}
+					>
+						<input {...getInputProps()} />
+						<Icon icon="material-symbols:upload" fontSize={48} />
+						<p className="text-center text-sm">
+							Drag and drop your images here
+							<br />
+							or click to open
+						</p>
+					</div>
+				</div>
+
+				<ImageList files={files} setFiles={setFiles} />
+
+				<hr className="border-zinc-300 my-2" />
+				<div className="flex justify-between items-center">
+					{error && <span className="text-red-400 font-bold">Error: {error}</span>}
+
+					<button type="submit" className="pill button w-min ml-auto">
+						Submit
+					</button>
+				</div>
 			</div>
 		</form>
 	);
