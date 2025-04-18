@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import MiiList from "./components/mii-list";
+import MiiList from "@/components/mii-list";
 
 export default async function Page() {
 	const session = await auth();

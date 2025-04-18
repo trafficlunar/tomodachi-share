@@ -1,7 +1,6 @@
-import { auth } from "@/lib/auth";
-
-import UsernameForm from "../components/username-form";
 import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import UsernameForm from "@/components/username-form";
 
 export default async function CreateUsernamePage() {
 	const session = await auth();

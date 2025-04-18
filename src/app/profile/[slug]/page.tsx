@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-import MiiList from "@/app/components/mii-list";
+import MiiList from "@/components/mii-list";
 
 interface Props {
 	params: Promise<{ slug: string }>;

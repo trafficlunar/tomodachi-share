@@ -3,8 +3,8 @@ import Script from "next/script";
 import { Lexend } from "next/font/google";
 
 import "./globals.css";
-import Header from "./components/header";
-import Footer from "./components/footer";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 import Providers from "./provider";
 
 const lexend = Lexend({

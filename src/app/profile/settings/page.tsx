@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-import ProfileSettings from "@/app/components/profile-settings";
+import ProfileSettings from "@/components/profile-settings";
 
 export default async function ProfileSettingsPage() {
 	const session = await auth();

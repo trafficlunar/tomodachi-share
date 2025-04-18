@@ -6,10 +6,10 @@ import { Icon } from "@iconify/react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-import Carousel from "@/app/components/carousel";
-import LikeButton from "@/app/components/like-button";
-import ImageViewer from "@/app/components/image-viewer";
-import DeleteMiiButton from "@/app/components/delete-mii";
+import Carousel from "@/components/carousel";
+import LikeButton from "@/components/like-button";
+import ImageViewer from "@/components/image-viewer";
+import DeleteMiiButton from "@/components/delete-mii";
 
 interface Props {
 	params: Promise<{ slug: string }>;
