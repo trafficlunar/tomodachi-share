@@ -23,9 +23,13 @@ import Carousel from "../carousel";
 export default function SubmitForm() {
 	const [files, setFiles] = useState<FileWithPath[]>([]);
 
-	const handleDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-		setFiles((prev) => [...prev, ...acceptedFiles]);
-	}, []);
+	const handleDrop = useCallback(
+		(acceptedFiles: FileWithPath[]) => {
+			if (files.length >= 3) return;
+			setFiles((prev) => [...prev, ...acceptedFiles]);
+		},
+		[files.length]
+	);
 
 	const { getRootProps, getInputProps } = useDropzone({
 		onDrop: handleDrop,

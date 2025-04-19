@@ -7,9 +7,5 @@ export default async function SubmitPage() {
 
 	if (!session) redirect("/login");
 
-	return (
-		<div className="flex justify-center">
-			<SubmitForm />
-		</div>
-	);
+	return <SubmitForm />;
 }
