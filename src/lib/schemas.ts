@@ -32,6 +32,11 @@ export const tagsSchema = z
 	.min(1, { message: "There must be at least 1 tag" })
 	.max(8, { message: "There cannot be more than 8 tags" });
 
+export const idSchema = z.coerce
+	.number({ message: "Mii ID must be a number" })
+	.int({ message: "Mii ID must be an integer" })
+	.positive({ message: "Mii ID must be valid" });
+
 // Account Info
 export const usernameSchema = z
 	.string()

@@ -6,20 +6,16 @@ import path from "path";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { idSchema } from "@/lib/schemas";
 
 const uploadsDirectory = path.join(process.cwd(), "public", "mii");
-
-const slugSchema = z.coerce
-	.number({ message: "Mii ID must be a number" })
-	.int({ message: "Mii ID must be an integer" })
-	.positive({ message: "Mii ID must be valid" });
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 	const { id: slugId } = await params;
-	const parsed = slugSchema.safeParse(slugId);
+	const parsed = idSchema.safeParse(slugId);
 
 	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
 	const miiId = parsed.data;
