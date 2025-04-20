@@ -1,6 +1,7 @@
 // import * as tf from "@tensorflow/tfjs-node";
 // import * as nsfwjs from "nsfwjs";
 import sharp from "sharp";
+import { fileTypeFromBuffer } from "file-type";
 
 const MIN_IMAGE_DIMENSIONS = 128;
 const MAX_IMAGE_DIMENSIONS = 1024;
@@ -23,12 +24,16 @@ const MAX_IMAGE_SIZE = 1024 * 1024; // 1 MB
 
 export async function validateImage(file: File): Promise<{ valid: boolean; error?: string; status?: number }> {
 	if (!file || file.size == 0) return { valid: false, error: "Empty image file" };
-	if (!file.type.startsWith("image/")) return { valid: false, error: "Invalid file type. Only images are allowed" };
 	if (file.size > MAX_IMAGE_SIZE)
 		return { valid: false, error: `One or more of your images are too large. Maximum size is ${MAX_IMAGE_SIZE / (1024 * 1024)}MB` };
 
 	try {
 		const buffer = Buffer.from(await file.arrayBuffer());
+
+		// Check mime type
+		const fileType = await fileTypeFromBuffer(buffer);
+		if (!fileType || !fileType.mime.startsWith("image/")) return { valid: false, error: "Invalid image file type. Only actual images are allowed" };
+
 		const metadata = await sharp(buffer).metadata();
 
 		// Check image dimensions

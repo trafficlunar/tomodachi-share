@@ -19,6 +19,7 @@
 		"dayjs": "^1.11.13",
 		"downshift": "^9.0.9",
 		"embla-carousel-react": "^8.6.0",
+		"file-type": "^20.4.1",
 		"jsqr": "^1.4.0",
 		"next": "15.2.4",
 		"next-auth": "5.0.0-beta.25",
