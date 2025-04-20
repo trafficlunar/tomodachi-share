@@ -24,9 +24,9 @@ const submitSchema = z.object({
 	qrBytesRaw: z
 		.array(z.number(), { required_error: "A QR code is required" })
 		.length(372, { message: "QR code size is not a valid Tomodachi Life QR code" }),
-	image1: z.instanceof(File).optional(),
-	image2: z.instanceof(File).optional(),
-	image3: z.instanceof(File).optional(),
+	image1: z.union([z.instanceof(File), z.any()]).optional(),
+	image2: z.union([z.instanceof(File), z.any()]).optional(),
+	image3: z.union([z.instanceof(File), z.any()]).optional(),
 });
 
 export async function POST(request: Request) {
@@ -34,10 +34,20 @@ export async function POST(request: Request) {
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 	const formData = await request.formData();
+
+	let rawTags: string[];
+	let rawQrBytesRaw: string[]; // raw raw
+	try {
+		rawTags = JSON.parse(formData.get("tags") as string);
+		rawQrBytesRaw = JSON.parse(formData.get("qrBytesRaw") as string);
+	} catch {
+		return NextResponse.json({ error: "Invalid JSON in tags or QR bytes" }, { status: 400 });
+	}
+
 	const parsed = submitSchema.safeParse({
 		name: formData.get("name"),
-		tags: JSON.parse(formData.get("tags") as string),
-		qrBytesRaw: JSON.parse(formData.get("qrBytesRaw") as string),
+		tags: rawTags,
+		qrBytesRaw: rawQrBytesRaw,
 		image1: formData.get("image1"),
 		image2: formData.get("image2"),
 		image3: formData.get("image3"),
@@ -50,7 +60,7 @@ export async function POST(request: Request) {
 	const images: File[] = [];
 
 	for (const img of [image1, image2, image3]) {
-		if (!img) break;
+		if (!img) continue;
 
 		const imageValidation = await validateImage(img);
 		if (imageValidation.valid) {
