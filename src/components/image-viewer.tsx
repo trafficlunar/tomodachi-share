@@ -41,7 +41,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 	useEffect(() => {
 		if (!emblaApi) return;
 
-		// Keep order of images whilst opening on src
+		// Keep order of images whilst opening at src prop
 		const index = images.indexOf(src);
 		if (index !== -1) {
 			emblaApi.scrollTo(index);
@@ -111,8 +111,8 @@ export default function ImageViewer({ src, alt, width, height, className, images
 									) : (
 										<>
 											{images.map((image, index) => (
-												<div key={index} className="flex-[0_0_100%]">
-													<Image src={image} alt={alt} width={576} height={576} className="w-full" />
+												<div key={index} className="flex-shrink-0 w-full">
+													<Image src={image} alt={alt} width={576} height={576} className="w-full h-full object-contain" />
 												</div>
 											))}
 										</>
