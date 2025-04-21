@@ -99,7 +99,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 							}`}
 						>
 							<div className="z-50 absolute right-0 bg-amber-500 rounded-tr-xl rounded-bl-md p-1 flex justify-between items-center">
-								<button onClick={close} className="text-2xl cursor-pointer">
+								<button type="button" onClick={close} className="text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>
@@ -131,6 +131,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 									}`}
 								>
 									<button
+										type="button"
 										onClick={() => emblaApi?.scrollPrev()}
 										disabled={!emblaApi?.canScrollPrev()}
 										className={`bg-white p-1 rounded-full shadow text-4xl transition-opacity ${
@@ -147,6 +148,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 									}`}
 								>
 									<button
+										type="button"
 										onClick={() => emblaApi?.scrollNext()}
 										disabled={!emblaApi?.canScrollNext()}
 										className={`bg-white p-1 rounded-full shadow text-4xl transition-opacity ${

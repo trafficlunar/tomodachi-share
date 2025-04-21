@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 
 import fs from "fs/promises";
 import path from "path";

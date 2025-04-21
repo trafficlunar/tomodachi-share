@@ -17,7 +17,7 @@ export default async function ProfilePage({ params }: Props) {
 	const session = await auth();
 	const { slug } = await params;
 
-	const user = await prisma.user.findFirst({
+	const user = await prisma.user.findUnique({
 		where: {
 			id: Number(slug),
 		},

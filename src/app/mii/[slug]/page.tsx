@@ -19,7 +19,7 @@ export default async function MiiPage({ params }: Props) {
 	const { slug } = await params;
 	const session = await auth();
 
-	const mii = await prisma.mii.findFirst({
+	const mii = await prisma.mii.findUnique({
 		where: {
 			id: Number(slug),
 		},
@@ -55,10 +55,12 @@ export default async function MiiPage({ params }: Props) {
 	return (
 		<div>
 			<div className="relative grid grid-cols-5 gap-2 max-sm:grid-cols-1 max-lg:grid-cols-2">
+				{/* Carousel */}
 				<div className="min-w-full flex justify-center col-span-2 max-lg:col-span-1">
 					<Carousel images={images} className="shadow-lg" />
 				</div>
 
+				{/* Information */}
 				<div className="flex flex-col gap-1 p-4 col-span-2 max-lg:col-span-1">
 					<h1 className="text-4xl font-extrabold break-words">{mii.name}</h1>
 					<div id="tags" className="flex gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
@@ -89,10 +91,11 @@ export default async function MiiPage({ params }: Props) {
 					</div>
 				</div>
 
+				{/* Extra information */}
 				<div className="flex flex-col gap-2">
 					<section className="p-6 bg-orange-100 rounded-2xl shadow-lg border-2 border-orange-400 h-min">
 						<legend className="text-lg font-semibold mb-2">Mii Info</legend>
-						<ul className="text-sm *:flex *:justify-between *:items-center">
+						<ul className="text-sm *:flex *:justify-between *:items-center *:my-1">
 							<li>
 								Name:{" "}
 								<span className="text-right">
@@ -103,7 +106,7 @@ export default async function MiiPage({ params }: Props) {
 								From: <span className="text-right">{mii.islandName} Island</span>
 							</li>
 							<li>
-								Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox" />
+								Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox !cursor-auto" />
 							</li>
 						</ul>
 					</section>
@@ -117,6 +120,7 @@ export default async function MiiPage({ params }: Props) {
 				</div>
 			</div>
 
+			{/* Images */}
 			<div className="overflow-x-scroll">
 				<div className="flex gap-2 w-max py-4">
 					{images.map((src, index) => (

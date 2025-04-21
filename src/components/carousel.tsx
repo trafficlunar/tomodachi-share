@@ -61,6 +61,7 @@ export default function Carousel({ images, className }: Props) {
 			{images.length > 1 && (
 				<>
 					<button
+						type="button"
 						onClick={() => emblaApi?.scrollPrev()}
 						disabled={!emblaApi?.canScrollPrev()}
 						className={`absolute left-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl transition-opacity ${
@@ -70,6 +71,7 @@ export default function Carousel({ images, className }: Props) {
 						<Icon icon="ic:round-chevron-left" />
 					</button>
 					<button
+						type="button"
 						onClick={() => emblaApi?.scrollNext()}
 						disabled={!emblaApi?.canScrollNext()}
 						className={`absolute right-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl transition-opacity ${
@@ -83,6 +85,7 @@ export default function Carousel({ images, className }: Props) {
 						{scrollSnaps.map((_, index) => (
 							<button
 								key={index}
+								type="button"
 								onClick={() => emblaApi?.scrollTo(index)}
 								className={`size-1.5 cursor-pointer rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
 							/>
