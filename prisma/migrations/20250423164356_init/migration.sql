@@ -8,6 +8,7 @@ CREATE TABLE "users" (
     "image" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "usernameUpdatedAt" TIMESTAMP(3),
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -45,7 +46,7 @@ CREATE TABLE "miis" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "name" VARCHAR(64) NOT NULL,
-    "images" TEXT[],
+    "imageCount" INTEGER NOT NULL DEFAULT 0,
     "tags" TEXT[],
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
