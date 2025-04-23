@@ -1,16 +1,15 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { redirect } from "next/navigation";
 import { usernameSchema } from "@/lib/schemas";
+import SubmitButton from "./submit-button";
 
 export default function UsernameForm() {
 	const [username, setUsername] = useState("");
 	const [error, setError] = useState<string | undefined>(undefined);
 
-	const handleSubmit = async (event: FormEvent) => {
-		event.preventDefault();
-
+	const handleSubmit = async () => {
 		const parsed = usernameSchema.safeParse(username);
 		if (!parsed.success) setError(parsed.error.errors[0].message);
 
@@ -30,7 +29,7 @@ export default function UsernameForm() {
 	};
 
 	return (
-		<form onSubmit={handleSubmit} className="flex flex-col items-center">
+		<form className="flex flex-col items-center">
 			<input
 				type="text"
 				placeholder="Type your username..."
@@ -40,9 +39,7 @@ export default function UsernameForm() {
 				className="pill input w-96 mb-2"
 			/>
 
-			<button type="submit" className="pill button w-min">
-				Submit
-			</button>
+			<SubmitButton onClick={handleSubmit} />
 			{error && <p className="text-red-400 font-semibold mt-4">Error: {error}</p>}
 		</form>
 	);

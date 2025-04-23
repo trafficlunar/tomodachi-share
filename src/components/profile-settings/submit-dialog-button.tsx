@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
+import SubmitButton from "../submit-button";
 
 interface Props {
 	title: string;
@@ -71,9 +72,7 @@ export default function SubmitDialogButton({ title, description, onSubmit, error
 								<button onClick={close} className="pill button">
 									Cancel
 								</button>
-								<button onClick={submit} className="pill button">
-									Submit
-								</button>
+								<SubmitButton onClick={submit} />
 							</div>
 						</div>
 					</div>,

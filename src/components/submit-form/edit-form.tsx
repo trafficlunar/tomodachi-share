@@ -13,6 +13,7 @@ import TagSelector from "../tag-selector";
 import ImageList from "./image-list";
 import LikeButton from "../like-button";
 import Carousel from "../carousel";
+import SubmitButton from "../submit-button";
 
 interface Props {
 	mii: Mii;
@@ -46,9 +47,7 @@ export default function EditForm({ mii, likes }: Props) {
 	const [tags, setTags] = useState(mii.tags);
 	const hasFilesChanged = useRef(false);
 
-	const handleSubmit = async (event: React.FormEvent) => {
-		event.preventDefault();
-
+	const handleSubmit = async () => {
 		// Validate before sending request
 		const nameValidation = nameSchema.safeParse(name);
 		if (!nameValidation.success) {
@@ -110,7 +109,7 @@ export default function EditForm({ mii, likes }: Props) {
 	}, [mii.id, mii.imageCount]);
 
 	return (
-		<form onSubmit={handleSubmit} className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
+		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
 				<div className="w-[18.75rem] h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
 					<Carousel images={[`/mii/${mii.id}/mii.webp`, `/mii/${mii.id}/qr-code.webp`, ...files.map((file) => URL.createObjectURL(file))]} />
@@ -201,9 +200,7 @@ export default function EditForm({ mii, likes }: Props) {
 				<div className="flex justify-between items-center">
 					{error && <span className="text-red-400 font-bold">Error: {error}</span>}
 
-					<button type="submit" className="pill button w-min ml-auto">
-						Edit
-					</button>
+					<SubmitButton onClick={handleSubmit} text="Edit" className="ml-auto" />
 				</div>
 			</div>
 		</form>

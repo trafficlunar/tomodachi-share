@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
 
 import LikeButton from "./like-button";
+import SubmitButton from "./submit-button";
 
 interface Props {
 	miiId: number;
@@ -20,7 +21,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes }: Props) {
 
 	const [error, setError] = useState<string | undefined>(undefined);
 
-	const submit = async () => {
+	const handleSubmit = async () => {
 		const response = await fetch(`/api/mii/${miiId}/delete`, { method: "DELETE" });
 		if (!response.ok) {
 			const { error } = await response.json();
@@ -92,9 +93,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes }: Props) {
 								<button onClick={close} className="pill button">
 									Cancel
 								</button>
-								<button onClick={submit} className="pill button !bg-red-400 !border-red-500 hover:!bg-red-500">
-									Delete
-								</button>
+								<SubmitButton onClick={handleSubmit} text="Delete" className="!bg-red-400 !border-red-500 hover:!bg-red-500" />
 							</div>
 						</div>
 					</div>,

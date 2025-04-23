@@ -19,6 +19,7 @@ import QrUpload from "./qr-upload";
 import QrScanner from "./qr-scanner";
 import LikeButton from "../like-button";
 import Carousel from "../carousel";
+import SubmitButton from "../submit-button";
 
 export default function SubmitForm() {
 	const [files, setFiles] = useState<FileWithPath[]>([]);
@@ -49,9 +50,7 @@ export default function SubmitForm() {
 	const [tags, setTags] = useState<string[]>([]);
 	const [qrBytesRaw, setQrBytesRaw] = useState<number[]>([]);
 
-	const handleSubmit = async (event: React.FormEvent) => {
-		event.preventDefault();
-
+	const handleSubmit = async () => {
 		// Validate before sending request
 		const nameValidation = nameSchema.safeParse(name);
 		if (!nameValidation.success) {
@@ -129,7 +128,7 @@ export default function SubmitForm() {
 	}, [qrBytesRaw]);
 
 	return (
-		<form onSubmit={handleSubmit} className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
+		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
 				<div className="w-[18.75rem] h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
 					<Carousel
@@ -242,9 +241,7 @@ export default function SubmitForm() {
 				<div className="flex justify-between items-center">
 					{error && <span className="text-red-400 font-bold">Error: {error}</span>}
 
-					<button type="submit" className="pill button w-min ml-auto">
-						Submit
-					</button>
+					<SubmitButton onClick={handleSubmit} className="ml-auto" />
 				</div>
 			</div>
 		</form>
