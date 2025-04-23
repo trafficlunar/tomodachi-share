@@ -1,4 +1,6 @@
+import { profanity } from "@2toad/profanity";
 import { AES_CCM } from "@trafficlunar/asmcrypto.js";
+
 import { MII_DECRYPTION_KEY } from "./constants";
 import Mii from "./mii.js/mii";
 import TomodachiLifeMii from "./tomodachi-life-mii";
@@ -38,6 +40,11 @@ export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: 
 			mii.eyebrowColor = tomodachiLifeMii.studioHairColor;
 			mii.facialHairColor = tomodachiLifeMii.studioHairColor;
 		}
+
+		// Censor potential inappropriate words
+		tomodachiLifeMii.firstName = profanity.censor(tomodachiLifeMii.firstName);
+		tomodachiLifeMii.lastName = profanity.censor(tomodachiLifeMii.lastName);
+		tomodachiLifeMii.islandName = profanity.censor(tomodachiLifeMii.islandName);
 
 		return { mii, tomodachiLifeMii };
 	} catch (error) {

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { profanity } from "@2toad/profanity";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -13,6 +14,9 @@ export async function PATCH(request: NextRequest) {
 
 	const validation = displayNameSchema.safeParse(displayName);
 	if (!validation.success) return NextResponse.json({ error: validation.error.errors[0].message }, { status: 400 });
+
+	// Check for inappropriate words
+	if (profanity.exists(displayName)) return NextResponse.json({ error: "Display name contains inappropriate words" }, { status: 400 });
 
 	try {
 		await prisma.user.update({

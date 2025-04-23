@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import dayjs from "dayjs";
+import { profanity } from "@2toad/profanity";
+
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { usernameSchema } from "@/lib/schemas";
-import dayjs from "dayjs";
 
 export async function PATCH(request: NextRequest) {
 	const session = await auth();
@@ -23,6 +25,9 @@ export async function PATCH(request: NextRequest) {
 
 	const validation = usernameSchema.safeParse(username);
 	if (!validation.success) return NextResponse.json({ error: validation.error.errors[0].message }, { status: 400 });
+
+	// Check for inappropriate words
+	if (profanity.exists(username)) return NextResponse.json({ error: "Username contains inappropriate words" }, { status: 400 });
 
 	const existingUser = await prisma.user.findUnique({ where: { username } });
 	if (existingUser) return NextResponse.json({ error: "Username is already taken" }, { status: 400 });

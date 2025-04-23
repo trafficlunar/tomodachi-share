@@ -6,6 +6,8 @@ import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 
+import { profanity } from "@2toad/profanity";
+
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { idSchema, nameSchema, tagsSchema } from "@/lib/schemas";
@@ -81,8 +83,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
 	// Edit Mii in database
 	const updateData: Partial<Mii> = {};
-	if (name !== undefined) updateData.name = name;
-	if (tags !== undefined) updateData.tags = tags;
+	if (name !== undefined) updateData.name = profanity.censor(name); // Censor potential inappropriate words
+	if (tags !== undefined) updateData.tags = tags.map((t) => profanity.censor(t)); // Same here
 	if (images.length > 0) updateData.imageCount = images.length;
 
 	if (Object.keys(updateData).length == 0) return NextResponse.json({ error: "Nothing was changed" }, { status: 400 });

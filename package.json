@@ -11,6 +11,7 @@
 		"postinstall": "prisma generate"
 	},
 	"dependencies": {
+		"@2toad/profanity": "^3.1.1",
 		"@auth/prisma-adapter": "2.7.2",
 		"@bprogress/next": "^3.2.11",
 		"@hello-pangea/dnd": "^18.0.1",

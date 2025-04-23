@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+// profanity censoring bypasses the regex in some of these but I think it's funny
+
 export const querySchema = z
 	.string()
 	.trim()

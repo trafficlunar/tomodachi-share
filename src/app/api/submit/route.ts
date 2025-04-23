@@ -6,6 +6,7 @@ import path from "path";
 import sharp from "sharp";
 
 import qrcode from "qrcode-generator";
+import { profanity } from "@2toad/profanity";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -54,7 +55,11 @@ export async function POST(request: Request) {
 	});
 
 	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
-	const { name, tags, qrBytesRaw, image1, image2, image3 } = parsed.data;
+	const { name: uncensoredName, tags: uncensoredTags, qrBytesRaw, image1, image2, image3 } = parsed.data;
+
+	// Censor potential inappropriate words
+	const name = profanity.censor(uncensoredName);
+	const tags = uncensoredTags.map((t) => profanity.censor(t));
 
 	// Validate image files
 	const images: File[] = [];

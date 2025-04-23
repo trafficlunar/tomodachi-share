@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@2toad/profanity':
+        specifier: ^3.1.1
+        version: 3.1.1
       '@auth/prisma-adapter':
         specifier: 2.7.2
         version: 2.7.2(@prisma/client@6.6.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3))
@@ -107,6 +110,10 @@ importers:
         version: 5.8.3
 
 packages:
+
+  '@2toad/profanity@3.1.1':
+    resolution: {integrity: sha512-07ny4pCSa4gDrcJ4vZ/WWmiM90+8kv/clXfnDvThf9IJq0GldpjRVdzHCfMwGDs2Y/8eClmTGzKb5tEfUWy/uA==}
+    engines: {node: '>=12'}
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -2300,6 +2307,8 @@ packages:
     resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
 snapshots:
+
+  '@2toad/profanity@3.1.1': {}
 
   '@alloc/quick-lru@5.2.0': {}
 
