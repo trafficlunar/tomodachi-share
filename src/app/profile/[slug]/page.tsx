@@ -42,7 +42,7 @@ export default async function ProfilePage({ params }: Props) {
 					<h1 className="text-4xl font-extrabold w-full break-words">{user?.name}</h1>
 					<h2 className="text-lg font-semibold break-words">@{user?.username}</h2>
 
-					<h4 className="mt-auto">
+					<h4 className="mt-auto text-sm">
 						Liked <span className="font-bold">{likedMiis}</span> Miis
 					</h4>
 					<h4 className="text-sm" title={`${user?.createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC`}>
@@ -58,7 +58,7 @@ export default async function ProfilePage({ params }: Props) {
 				</div>
 			</div>
 
-			<MiiList isLoggedIn={session?.user != null} userId={user?.id} />
+			<MiiList isLoggedIn={session?.user != null} userId={user?.id} sessionUserId={Number(session?.user.id ?? -1)} />
 		</div>
 	);
 }

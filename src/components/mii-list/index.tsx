@@ -18,6 +18,7 @@ interface Props {
 	isLoggedIn: boolean;
 	// Profiles
 	userId?: number;
+	sessionUserId?: number;
 }
 
 interface ApiResponse {
@@ -41,7 +42,7 @@ interface ApiResponse {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function MiiList({ isLoggedIn, userId }: Props) {
+export default function MiiList({ isLoggedIn, userId, sessionUserId }: Props) {
 	const searchParams = useSearchParams();
 	const { data, error } = useSWR<ApiResponse>(`/api/mii/list?${searchParams.toString()}`, fetcher);
 
@@ -103,11 +104,13 @@ export default function MiiList({ isLoggedIn, userId }: Props) {
 									<div className="mt-auto grid grid-cols-2 items-center">
 										<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} isLoggedIn={isLoggedIn} abbreviate />
 
-										{!userId ? (
+										{!userId && (
 											<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis">
 												@{mii.user?.username}
 											</Link>
-										) : (
+										)}
+
+										{userId && sessionUserId == userId && (
 											<div className="flex gap-1 text-2xl justify-end text-zinc-400">
 												<Link href={`/edit/${mii.id}`}>
 													<Icon icon="mdi:pencil" />
