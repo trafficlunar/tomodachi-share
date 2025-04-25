@@ -1,3 +1,4 @@
+import { Metadata, ResolvingMetadata } from "next";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,6 +12,62 @@ import MiiList from "@/components/mii-list";
 
 interface Props {
 	params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: Props, parent: ResolvingMetadata): Promise<Metadata> {
+	const { slug } = await params;
+
+	const user = await prisma.user.findUnique({
+		where: {
+			id: Number(slug),
+		},
+		include: {
+			_count: {
+				select: {
+					miis: true,
+				},
+			},
+		},
+	});
+
+	// Bots get redirected anyways
+	if (!user) return {};
+
+	const joinDate = user.createdAt.toLocaleDateString("en-US", {
+		month: "long",
+		year: "numeric",
+	});
+
+	return {
+		metadataBase: new URL(process.env.BASE_URL!),
+		title: `${user.name} (@${user.username}) - TomodachiShare`,
+		description: `View ${user.name}'s profile on TomodachiShare. Creator of ${user._count.miis} Miis. Member since ${joinDate}.`,
+		keywords: [`tomodachi life`, `mii creator`, `nintendo`, `mii collection`, `profile`],
+		creator: user.username,
+		category: "Gaming",
+		openGraph: {
+			locale: "en_US",
+			type: "profile",
+			images: [user.image ?? "/missing.webp"],
+			siteName: "TomodachiShare",
+			username: user.username,
+			firstName: user.name,
+		},
+		twitter: {
+			card: "summary",
+			title: `${user.name} (@${user.username}) - TomodachiShare`,
+			description: `View ${user.name}'s profile on TomodachiShare. Creator of ${user._count.miis} Miis. Member since ${joinDate}.`,
+			images: [user.image ?? "/missing.webp"],
+			creator: user.username!,
+		},
+		alternates: {
+			canonical: `/profile/${user.id}`,
+		},
+		robots: {
+			index: true,
+			follow: true,
+		},
+	};
 }
 
 export default async function ProfilePage({ params }: Props) {

@@ -1,3 +1,4 @@
+import { Metadata, ResolvingMetadata } from "next";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
@@ -6,6 +7,21 @@ import EditForm from "@/components/submit-form/edit-form";
 
 interface Props {
 	params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: Props, parent: ResolvingMetadata): Promise<Metadata> {
+	const { slug } = await params;
+
+	const mii = await prisma.mii.findUnique({
+		where: {
+			id: Number(slug),
+		},
+	});
+
+	return {
+		title: `${mii?.name} - TomodachiShare`,
+		description: `Edit the name, tags, and images of '${mii?.name}'`,
+	};
 }
 
 export default async function MiiPage({ params }: Props) {

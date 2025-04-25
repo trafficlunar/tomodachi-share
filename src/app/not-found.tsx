@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { Icon } from "@iconify/react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Not Found - TomodachiShare",
+	description: "The requested page could not be found on TomodachiShare",
+};
 
 export default function NotFound() {
 	return (

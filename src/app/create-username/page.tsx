@@ -1,6 +1,12 @@
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import UsernameForm from "@/components/username-form";
+
+export const metadata: Metadata = {
+	title: "Create your Username - TomodachiShare",
+	description: "Pick a unique username to start using TomodachiShare",
+};
 
 export default async function CreateUsernamePage() {
 	const session = await auth();

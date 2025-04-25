@@ -3,9 +3,10 @@ import Script from "next/script";
 import { Lexend } from "next/font/google";
 
 import "./globals.css";
+
+import Providers from "./provider";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import Providers from "./provider";
 
 const lexend = Lexend({
 	subsets: ["latin"],
@@ -13,7 +14,7 @@ const lexend = Lexend({
 
 export const metadata: Metadata = {
 	title: "TomodachiShare",
-	description: "Share your Tomodachi Life Miis",
+	description: "Discover and share Mii residents for your Tomodachi Life island!",
 };
 
 export default function RootLayout({

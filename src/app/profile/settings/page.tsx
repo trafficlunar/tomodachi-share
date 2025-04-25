@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,6 +9,11 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 import ProfileSettings from "@/components/profile-settings";
+
+export const metadata: Metadata = {
+	title: "Profile Settings - TomodachiShare",
+	description: "Change your account info or delete it",
+};
 
 export default async function ProfileSettingsPage() {
 	const session = await auth();

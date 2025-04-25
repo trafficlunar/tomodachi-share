@@ -1,3 +1,10 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Privacy Policy - TomodachiShare",
+	description: "Learn how TomodachiShare collects, uses, and protects your data",
+};
+
 export default function PrivacyPage() {
 	return (
 		<div>

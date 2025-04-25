@@ -1,3 +1,4 @@
+import { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -15,6 +16,65 @@ interface Props {
 	params: Promise<{ slug: string }>;
 }
 
+export async function generateMetadata({ params }: Props, parent: ResolvingMetadata): Promise<Metadata> {
+	const { slug } = await params;
+
+	const mii = await prisma.mii.findUnique({
+		where: {
+			id: Number(slug),
+		},
+		include: {
+			user: {
+				select: {
+					username: true,
+				},
+			},
+			_count: {
+				select: { likedBy: true }, // Get total like count
+			},
+		},
+	});
+
+	// Bots get redirected anyways
+	if (!mii) return {};
+
+	const miiImageUrl = `/mii/${mii.id}/mii.webp`;
+	const qrCodeUrl = `/mii/${mii.id}/qrcode.webp`;
+
+	const username = `@${mii.user.username}`;
+
+	return {
+		metadataBase: new URL(process.env.BASE_URL!),
+		title: `${mii.name} - TomodachiShare`,
+		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
+		keywords: [`mii`, `tomodachi life`, `nintendo`, ...mii.tags],
+		creator: username,
+		category: "Gaming",
+		openGraph: {
+			locale: "en_US",
+			type: "article",
+			images: [miiImageUrl, qrCodeUrl],
+			siteName: "TomodachiShare",
+			publishedTime: mii.createdAt.toISOString(),
+			authors: username,
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: `${mii.name} - TomodachiShare`,
+			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
+			images: [miiImageUrl, qrCodeUrl],
+			creator: username,
+		},
+		alternates: {
+			canonical: `/mii/${mii.id}`,
+		},
+		robots: {
+			index: true,
+			follow: true,
+		},
+	};
+}
+
 export default async function MiiPage({ params }: Props) {
 	const { slug } = await params;
 	const session = await auth();
@@ -26,7 +86,6 @@ export default async function MiiPage({ params }: Props) {
 		include: {
 			user: {
 				select: {
-					id: true,
 					username: true,
 				},
 			},

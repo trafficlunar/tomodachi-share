@@ -1,6 +1,12 @@
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import LoginButtons from "@/components/login-buttons";
+
+export const metadata: Metadata = {
+	title: "Login - TomodachiShare",
+	description: "Sign in with Discord or GitHub to upload Miis, and like others' creations",
+};
 
 export default async function LoginPage() {
 	const session = await auth();
