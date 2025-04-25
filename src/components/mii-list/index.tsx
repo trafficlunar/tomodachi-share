@@ -112,7 +112,7 @@ export default function MiiList({ isLoggedIn, userId, sessionUserId }: Props) {
 
 										{userId && sessionUserId == userId && (
 											<div className="flex gap-1 text-2xl justify-end text-zinc-400">
-												<Link href={`/edit/${mii.id}`}>
+												<Link href={`/edit/${mii.id}`} title="Edit Mii">
 													<Icon icon="mdi:pencil" />
 												</Link>
 												<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likes} />

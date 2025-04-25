@@ -171,7 +171,7 @@ export default async function MiiPage({ params }: Props) {
 					</section>
 
 					<div className="flex gap-1 text-4xl justify-end text-orange-400">
-						<Link href={`/edit/${mii.id}`}>
+						<Link href={`/edit/${mii.id}`} title="Edit Mii">
 							<Icon icon="mdi:pencil" />
 						</Link>
 						<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy ?? 0} />
