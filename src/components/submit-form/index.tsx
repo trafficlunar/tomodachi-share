@@ -132,7 +132,11 @@ export default function SubmitForm() {
 			<div className="flex justify-center">
 				<div className="w-[18.75rem] h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
 					<Carousel
-						images={[studioUrl ?? "/missing.webp", generatedQrCodeUrl ?? "/missing.webp", ...files.map((file) => URL.createObjectURL(file))]}
+						images={[
+							studioUrl ?? "/tomodachi-question-face-icon-alt.svg",
+							generatedQrCodeUrl ?? "/loading.svg",
+							...files.map((file) => URL.createObjectURL(file)),
+						]}
 					/>
 
 					<div className="p-4 flex flex-col gap-1 h-full">

@@ -27,11 +27,11 @@ export default async function ProfileSettingsPage() {
 		<div>
 			<div className="flex gap-4 mb-2">
 				<Image
-					src={session.user.image ?? "/missing.webp"}
+					src={session.user.image ?? "/missing.svg"}
 					alt="profile picture"
 					width={128}
 					height={128}
-					className="aspect-square rounded-full border-2 border-amber-500 shadow"
+					className="aspect-square rounded-full bg-white border-2 border-amber-500 shadow"
 				/>
 
 				<div className="flex flex-col w-full relative">

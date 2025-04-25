@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		openGraph: {
 			locale: "en_US",
 			type: "profile",
-			images: [user.image ?? "/missing.webp"],
+			images: [user.image ?? "/missing.svg"],
 			siteName: "TomodachiShare",
 			username: user.username,
 			firstName: user.name,
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			card: "summary",
 			title: `${user.name} (@${user.username}) - TomodachiShare`,
 			description: `View ${user.name}'s profile on TomodachiShare. Creator of ${user._count.miis} Miis. Member since ${joinDate}.`,
-			images: [user.image ?? "/missing.webp"],
+			images: [user.image ?? "/missing.svg"],
 			creator: user.username!,
 		},
 		alternates: {
@@ -88,11 +88,11 @@ export default async function ProfilePage({ params }: Props) {
 		<div>
 			<div className="flex gap-4 mb-2">
 				<Image
-					src={user?.image ?? "/missing.webp"}
+					src={user?.image ?? "/missing.svg"}
 					alt="profile picture"
 					width={128}
 					height={128}
-					className="aspect-square rounded-full border-2 border-amber-500 shadow"
+					className="size-32 aspect-square rounded-full bg-white border-2 border-amber-500 shadow"
 				/>
 
 				<div className="flex flex-col w-full relative">
