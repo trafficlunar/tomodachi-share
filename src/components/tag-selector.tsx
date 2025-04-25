@@ -91,7 +91,7 @@ export default function TagSelector({ tags, setTags }: Props) {
 						onKeyDown: handleKeyDown,
 						disabled: isMaxItemsSelected,
 						placeholder: tags.length > 0 ? "" : "Type or select an item...",
-						className: "w-full flex-1 outline-none",
+						className: "w-full flex-1 outline-none placeholder:text-black/40",
 					})}
 				/>
 			</div>
