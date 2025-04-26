@@ -13,6 +13,10 @@ import ProfileSettings from "@/components/profile-settings";
 export const metadata: Metadata = {
 	title: "Profile Settings - TomodachiShare",
 	description: "Change your account info or delete it",
+	robots: {
+		index: false,
+		follow: false,
+	},
 };
 
 export default async function ProfileSettingsPage() {

@@ -63,10 +63,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		alternates: {
 			canonical: `/profile/${user.id}`,
 		},
-		robots: {
-			index: true,
-			follow: true,
-		},
 	};
 }
 

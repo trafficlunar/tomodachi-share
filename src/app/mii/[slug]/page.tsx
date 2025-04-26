@@ -68,10 +68,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		alternates: {
 			canonical: `/mii/${mii.id}`,
 		},
-		robots: {
-			index: true,
-			follow: true,
-		},
 	};
 }
 

@@ -15,6 +15,10 @@ const lexend = Lexend({
 export const metadata: Metadata = {
 	title: "TomodachiShare",
 	description: "Discover and share Mii residents for your Tomodachi Life island!",
+	robots: {
+		index: true,
+		follow: true,
+	},
 };
 
 export default function RootLayout({

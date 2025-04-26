@@ -6,6 +6,10 @@ import UsernameForm from "@/components/username-form";
 export const metadata: Metadata = {
 	title: "Create your Username - TomodachiShare",
 	description: "Pick a unique username to start using TomodachiShare",
+	robots: {
+		index: false,
+		follow: false,
+	},
 };
 
 export default async function CreateUsernamePage() {

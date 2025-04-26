@@ -6,6 +6,10 @@ import SubmitForm from "@/components/submit-form";
 export const metadata: Metadata = {
 	title: "Submit a Mii - TomodachiShare",
 	description: "Upload your Tomodachi Life Mii through its QR code and share it with others",
+	robots: {
+		index: false,
+		follow: false,
+	},
 };
 
 export default async function SubmitPage() {

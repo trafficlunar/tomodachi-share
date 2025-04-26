@@ -21,6 +21,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	return {
 		title: `${mii?.name} - TomodachiShare`,
 		description: `Edit the name, tags, and images of '${mii?.name}'`,
+		robots: {
+			index: false,
+			follow: false,
+		},
 	};
 }
 
