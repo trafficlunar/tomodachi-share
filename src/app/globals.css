@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+@theme {
+	--animate-like: like 0.5s ease;
+
+	@keyframes like {
+		0% {
+			transform: scale(1);
+		}
+		30% {
+			transform: scale(1.25);
+		}
+		60% {
+			transform: scale(0.95);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+}
+
 body {
 	@apply bg-amber-50;
 
