@@ -17,6 +17,7 @@ import TagSelector from "../tag-selector";
 import ImageList from "./image-list";
 import QrUpload from "./qr-upload";
 import QrScanner from "./qr-scanner";
+import SubmitTutorialButton from "../tutorial/submit";
 import LikeButton from "../like-button";
 import Carousel from "../carousel";
 import SubmitButton from "../submit-button";
@@ -131,13 +132,7 @@ export default function SubmitForm() {
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
 				<div className="w-[18.75rem] h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
-					<Carousel
-						images={[
-							studioUrl ?? "/tomodachi-question-face-icon-alt.svg",
-							generatedQrCodeUrl ?? "/loading.svg",
-							...files.map((file) => URL.createObjectURL(file)),
-						]}
-					/>
+					<Carousel images={[studioUrl ?? "/loading.svg", generatedQrCodeUrl ?? "/loading.svg", ...files.map((file) => URL.createObjectURL(file))]} />
 
 					<div className="p-4 flex flex-col gap-1 h-full">
 						<h1 className="font-bold text-2xl line-clamp-1" title={name}>
@@ -204,7 +199,6 @@ export default function SubmitForm() {
 
 				<div className="flex flex-col items-center gap-2">
 					<QrUpload setQrBytesRaw={setQrBytesRaw} />
-
 					<span>or</span>
 
 					<button type="button" onClick={() => setIsQrScannerOpen(true)} className="pill button gap-2">
@@ -213,10 +207,11 @@ export default function SubmitForm() {
 					</button>
 
 					<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
+					<SubmitTutorialButton />
 				</div>
 
 				{/* Separator */}
-				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-6 mb-2">
 					<hr className="flex-grow border-zinc-300" />
 					<span>Custom images</span>
 					<hr className="flex-grow border-zinc-300" />
