@@ -11,6 +11,7 @@ import Carousel from "@/components/carousel";
 import LikeButton from "@/components/like-button";
 import ImageViewer from "@/components/image-viewer";
 import DeleteMiiButton from "@/components/delete-mii";
+import ScanTutorialButton from "@/components/tutorial/scan";
 
 interface Props {
 	params: Promise<{ slug: string }>;
@@ -161,16 +162,21 @@ export default async function MiiPage({ params }: Props) {
 								From: <span className="text-right">{mii.islandName} Island</span>
 							</li>
 							<li>
-								Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox !cursor-auto" />
+								Allowed Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox !cursor-auto" />
 							</li>
 						</ul>
 					</section>
-
 					<div className="flex gap-1 text-4xl justify-end text-orange-400">
-						<Link href={`/edit/${mii.id}`} title="Edit Mii">
-							<Icon icon="mdi:pencil" />
-						</Link>
-						<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy ?? 0} />
+						{Number(session?.user.id) === mii.userId && (
+							<>
+								<Link href={`/edit/${mii.id}`} title="Edit Mii" className="aspect-square">
+									<Icon icon="mdi:pencil" />
+								</Link>
+								<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy ?? 0} />
+							</>
+						)}
+
+						<ScanTutorialButton />
 					</div>
 				</div>
 			</div>

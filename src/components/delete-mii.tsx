@@ -49,7 +49,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes }: Props) {
 
 	return (
 		<>
-			<button onClick={() => setIsOpen(true)} title="Delete Mii" className="cursor-pointer">
+			<button onClick={() => setIsOpen(true)} title="Delete Mii" className="cursor-pointer aspect-square">
 				<Icon icon="mdi:trash" />
 			</button>
 
