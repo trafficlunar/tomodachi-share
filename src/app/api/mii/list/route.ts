@@ -5,6 +5,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { querySchema } from "@/lib/schemas";
+import { RateLimit } from "@/lib/rate-limit";
 
 const searchSchema = z.object({
 	q: querySchema.optional(),
@@ -42,8 +43,12 @@ const searchSchema = z.object({
 export async function GET(request: NextRequest) {
 	const session = await auth();
 
+	const rateLimit = new RateLimit(request, 30);
+	const check = await rateLimit.handle();
+	if (check) return check;
+
 	const parsed = searchSchema.safeParse(Object.fromEntries(request.nextUrl.searchParams));
-	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
+	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
 
 	const { q: query, sort, tags, userId, page = 1, limit = 24 } = parsed.data;
 
@@ -97,7 +102,7 @@ export async function GET(request: NextRequest) {
 		prisma.mii.findMany({ where, orderBy, select, skip: (page - 1) * limit, take: limit }),
 	]);
 
-	return NextResponse.json({
+	return rateLimit.sendResponse({
 		total: totalCount,
 		filtered: filteredCount,
 		lastPage: Math.ceil(totalCount / limit),

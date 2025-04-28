@@ -6,6 +6,7 @@ import path from "path";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { idSchema } from "@/lib/schemas";
+import { RateLimit } from "@/lib/rate-limit";
 
 const uploadsDirectory = path.join(process.cwd(), "public", "mii");
 
@@ -13,10 +14,14 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+	const rateLimit = new RateLimit(request, 10);
+	const check = await rateLimit.handle();
+	if (check) return check;
+
 	const { id: slugId } = await params;
 	const parsed = idSchema.safeParse(slugId);
 
-	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
+	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
 	const miiId = parsed.data;
 
 	const miiUploadsDirectory = path.join(uploadsDirectory, miiId.toString());
@@ -27,7 +32,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 		});
 	} catch (error) {
 		console.error("Failed to delete Mii from database:", error);
-		return NextResponse.json({ error: "Failed to delete Mii" }, { status: 500 });
+		return rateLimit.sendResponse({ error: "Failed to delete Mii" }, 500);
 	}
 
 	try {
@@ -36,5 +41,5 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 		console.warn("Failed to delete Mii image files:", error);
 	}
 
-	return NextResponse.json({ success: true });
+	return rateLimit.sendResponse({ success: true });
 }

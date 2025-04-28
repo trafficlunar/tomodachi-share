@@ -1,7 +1,14 @@
+import { NextRequest } from "next/server";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+import { prisma } from "@/lib/prisma";
+import { RateLimit } from "@/lib/rate-limit";
+
+export async function GET(request: NextRequest) {
+	const rateLimit = new RateLimit(request, 16);
+	const check = await rateLimit.handle();
+	if (check) return check;
+
 	const count = await prisma.mii.count();
 	if (count === 0) redirect("/");
 

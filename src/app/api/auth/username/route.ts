@@ -6,13 +6,18 @@ import { profanity } from "@2toad/profanity";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { usernameSchema } from "@/lib/schemas";
+import { RateLimit } from "@/lib/rate-limit";
 
 export async function PATCH(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+	const rateLimit = new RateLimit(request, 1);
+	const check = await rateLimit.handle();
+	if (check) return check;
+
 	const { username } = await request.json();
-	if (!username) return NextResponse.json({ error: "New username is required" }, { status: 400 });
+	if (!username) return rateLimit.sendResponse({ error: "New username is required" }, 400);
 
 	// Check if username was updated in the last 90 days
 	const user = await prisma.user.findUnique({ where: { email: session.user?.email ?? undefined } });
@@ -20,17 +25,17 @@ export async function PATCH(request: NextRequest) {
 		const timePeriod = dayjs().subtract(90, "days");
 		const lastUpdate = dayjs(user.usernameUpdatedAt);
 
-		if (lastUpdate.isAfter(timePeriod)) return NextResponse.json({ error: "Username was changed in the last 90 days" }, { status: 400 });
+		if (lastUpdate.isAfter(timePeriod)) return rateLimit.sendResponse({ error: "Username was changed in the last 90 days" }, 400);
 	}
 
 	const validation = usernameSchema.safeParse(username);
-	if (!validation.success) return NextResponse.json({ error: validation.error.errors[0].message }, { status: 400 });
+	if (!validation.success) return rateLimit.sendResponse({ error: validation.error.errors[0].message }, 400);
 
 	// Check for inappropriate words
-	if (profanity.exists(username)) return NextResponse.json({ error: "Username contains inappropriate words" }, { status: 400 });
+	if (profanity.exists(username)) return rateLimit.sendResponse({ error: "Username contains inappropriate words" }, 400);
 
 	const existingUser = await prisma.user.findUnique({ where: { username } });
-	if (existingUser) return NextResponse.json({ error: "Username is already taken" }, { status: 400 });
+	if (existingUser) return rateLimit.sendResponse({ error: "Username is already taken" }, 400);
 
 	try {
 		await prisma.user.update({
@@ -39,8 +44,8 @@ export async function PATCH(request: NextRequest) {
 		});
 	} catch (error) {
 		console.error("Failed to update username:", error);
-		return NextResponse.json({ error: "Failed to update username" }, { status: 500 });
+		return rateLimit.sendResponse({ error: "Failed to update username" }, 500);
 	}
 
-	return NextResponse.json({ success: true });
+	return rateLimit.sendResponse({ success: true });
 }

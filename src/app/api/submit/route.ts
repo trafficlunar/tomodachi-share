@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import fs from "fs/promises";
@@ -11,6 +11,7 @@ import { profanity } from "@2toad/profanity";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
+import { RateLimit } from "@/lib/rate-limit";
 
 import { validateImage } from "@/lib/images";
 import { convertQrCode } from "@/lib/qr-codes";
@@ -30,9 +31,13 @@ const submitSchema = z.object({
 	image3: z.union([z.instanceof(File), z.any()]).optional(),
 });
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+	const rateLimit = new RateLimit(request, 1);
+	const check = await rateLimit.handle();
+	if (check) return check;
 
 	const formData = await request.formData();
 
@@ -42,7 +47,7 @@ export async function POST(request: Request) {
 		rawTags = JSON.parse(formData.get("tags") as string);
 		rawQrBytesRaw = JSON.parse(formData.get("qrBytesRaw") as string);
 	} catch {
-		return NextResponse.json({ error: "Invalid JSON in tags or QR bytes" }, { status: 400 });
+		return rateLimit.sendResponse({ error: "Invalid JSON in tags or QR bytes" }, 400);
 	}
 
 	const parsed = submitSchema.safeParse({
@@ -54,7 +59,7 @@ export async function POST(request: Request) {
 		image3: formData.get("image3"),
 	});
 
-	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
+	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
 	const { name: uncensoredName, tags: uncensoredTags, qrBytesRaw, image1, image2, image3 } = parsed.data;
 
 	// Censor potential inappropriate words
@@ -71,7 +76,7 @@ export async function POST(request: Request) {
 		if (imageValidation.valid) {
 			images.push(img);
 		} else {
-			return NextResponse.json({ error: imageValidation.error }, { status: imageValidation.status ?? 400 });
+			return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
 		}
 	}
 
@@ -82,7 +87,7 @@ export async function POST(request: Request) {
 	try {
 		conversion = convertQrCode(qrBytes);
 	} catch (error) {
-		return NextResponse.json({ error }, { status: 400 });
+		return rateLimit.sendResponse({ error }, 400);
 	}
 
 	// Create Mii in database
@@ -120,7 +125,7 @@ export async function POST(request: Request) {
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
 
 		console.error("Failed to download Mii image:", error);
-		return NextResponse.json({ error: "Failed to download Mii image" }, { status: 500 });
+		return rateLimit.sendResponse({ error: "Failed to download Mii image" }, 500);
 	}
 
 	try {
@@ -151,7 +156,7 @@ export async function POST(request: Request) {
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
 
 		console.error("Error processing Mii files:", error);
-		return NextResponse.json({ error: "Failed to process and store Mii files" }, { status: 500 });
+		return rateLimit.sendResponse({ error: "Failed to process and store Mii files" }, 500);
 	}
 
 	// Compress and upload user images
@@ -177,8 +182,8 @@ export async function POST(request: Request) {
 		});
 	} catch (error) {
 		console.error("Error uploading user images:", error);
-		return NextResponse.json({ error: "Failed to store user images" }, { status: 500 });
+		return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
 	}
 
-	return NextResponse.json({ success: true, id: miiRecord.id });
+	return rateLimit.sendResponse({ success: true, id: miiRecord.id });
 }
