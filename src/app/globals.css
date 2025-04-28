@@ -49,7 +49,7 @@ body {
 
 .checkbox::after {
 	content: "";
-	@apply hidden size-3.5 bg-cover bg-no-repeat;
+	@apply hidden size-4 bg-cover bg-no-repeat;
 	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 13l4 4L19 7' /%3E%3C/svg%3E");
 }
 
