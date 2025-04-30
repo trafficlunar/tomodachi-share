@@ -35,7 +35,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	// Get Mii ID
 	const { id: slugId } = await params;
 	const parsedId = idSchema.safeParse(slugId);
-
 	if (!parsedId.success) return rateLimit.sendResponse({ error: parsedId.error.errors[0].message }, 400);
 	const miiId = parsedId.data;
 

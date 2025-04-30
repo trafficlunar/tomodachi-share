@@ -6,15 +6,15 @@ import { prisma } from "@/lib/prisma";
 import EditForm from "@/components/submit-form/edit-form";
 
 interface Props {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	const { slug } = await params;
+	const { id } = await params;
 
 	const mii = await prisma.mii.findUnique({
 		where: {
-			id: Number(slug),
+			id: Number(id),
 		},
 	});
 
@@ -29,12 +29,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function MiiPage({ params }: Props) {
-	const { slug } = await params;
+	const { id } = await params;
 	const session = await auth();
 
 	const mii = await prisma.mii.findUnique({
 		where: {
-			id: Number(slug),
+			id: Number(id),
 		},
 		include: {
 			_count: {

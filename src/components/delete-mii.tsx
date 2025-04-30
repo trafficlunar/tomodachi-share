@@ -78,7 +78,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes }: Props) {
 							<p className="text-sm text-zinc-500">Are you sure? This will delete your Mii permanently. This action cannot be undone.</p>
 
 							<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 flex">
-								<Image src={`/mii/${miiId}/mii.webp`} alt="mii image" width={128} height={128} />
+								<Image src={`/mii/${miiId}/image?type=mii`} alt="mii image" width={128} height={128} />
 								<div className="p-4">
 									<p className="text-xl font-bold line-clamp-1" title={miiName}>
 										{miiName}

@@ -91,7 +91,7 @@ export default function EditForm({ mii, likes }: Props) {
 			try {
 				const existing = await Promise.all(
 					Array.from({ length: mii.imageCount }, async (_, index) => {
-						const path = `/mii/${mii.id}/image${index}.webp`;
+						const path = `/mii/${mii.id}/image?type=image${index}`;
 						const response = await fetch(path);
 						const blob = await response.blob();
 
@@ -112,7 +112,9 @@ export default function EditForm({ mii, likes }: Props) {
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
 				<div className="w-[18.75rem] h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
-					<Carousel images={[`/mii/${mii.id}/mii.webp`, `/mii/${mii.id}/qr-code.webp`, ...files.map((file) => URL.createObjectURL(file))]} />
+					<Carousel
+						images={[`/mii/${mii.id}/image?type=mii`, `/mii/${mii.id}/image?type=qr-code`, ...files.map((file) => URL.createObjectURL(file))]}
+					/>
 
 					<div className="p-4 flex flex-col gap-1 h-full">
 						<h1 className="font-bold text-2xl line-clamp-1" title={name}>

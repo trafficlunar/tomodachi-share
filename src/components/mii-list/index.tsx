@@ -83,9 +83,9 @@ export default function MiiList({ isLoggedIn, userId, sessionUserId }: Props) {
 							>
 								<Carousel
 									images={[
-										`/mii/${mii.id}/mii.webp`,
-										`/mii/${mii.id}/qr-code.webp`,
-										...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image${index}.webp`),
+										`/mii/${mii.id}/image?type=mii`,
+										`/mii/${mii.id}/image?type=qr-code`,
+										...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`),
 									]}
 								/>
 

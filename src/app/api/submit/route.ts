@@ -18,7 +18,7 @@ import { convertQrCode } from "@/lib/qr-codes";
 import Mii from "@/lib/mii.js/mii";
 import TomodachiLifeMii from "@/lib/tomodachi-life-mii";
 
-const uploadsDirectory = path.join(process.cwd(), "public", "mii");
+const uploadsDirectory = path.join(process.cwd(), "uploads");
 
 const submitSchema = z.object({
 	name: nameSchema,

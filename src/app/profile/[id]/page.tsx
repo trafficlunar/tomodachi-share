@@ -11,15 +11,15 @@ import { prisma } from "@/lib/prisma";
 import MiiList from "@/components/mii-list";
 
 interface Props {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	const { slug } = await params;
+	const { id } = await params;
 
 	const user = await prisma.user.findUnique({
 		where: {
-			id: Number(slug),
+			id: Number(id),
 		},
 		include: {
 			_count: {
@@ -68,17 +68,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProfilePage({ params }: Props) {
 	const session = await auth();
-	const { slug } = await params;
+	const { id } = await params;
 
 	const user = await prisma.user.findUnique({
 		where: {
-			id: Number(slug),
+			id: Number(id),
 		},
 	});
 
 	if (!user) redirect("/404");
 
-	const likedMiis = await prisma.like.count({ where: { userId: Number(slug) } });
+	const likedMiis = await prisma.like.count({ where: { userId: Number(id) } });
 
 	return (
 		<div>
@@ -102,7 +102,7 @@ export default async function ProfilePage({ params }: Props) {
 						Created: {user?.createdAt.toLocaleDateString("en-GB", { month: "long", day: "2-digit", year: "numeric" })}
 					</h4>
 
-					{session?.user.id == slug && (
+					{session?.user.id == id && (
 						<Link href="/profile/settings" className="pill button absolute right-0 bottom-0 !px-4">
 							<Icon icon="material-symbols:settings-rounded" className="text-2xl mr-2" />
 							<span>Settings</span>

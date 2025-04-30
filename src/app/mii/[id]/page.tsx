@@ -14,15 +14,15 @@ import DeleteMiiButton from "@/components/delete-mii";
 import ScanTutorialButton from "@/components/tutorial/scan";
 
 interface Props {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-	const { slug } = await params;
+	const { id } = await params;
 
 	const mii = await prisma.mii.findUnique({
 		where: {
-			id: Number(slug),
+			id: Number(id),
 		},
 		include: {
 			user: {
@@ -39,8 +39,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	// Bots get redirected anyways
 	if (!mii) return {};
 
-	const miiImageUrl = `/mii/${mii.id}/mii.webp`;
-	const qrCodeUrl = `/mii/${mii.id}/qrcode.webp`;
+	const miiImageUrl = `/mii/${mii.id}/image?type=mii`;
+	const qrCodeUrl = `/mii/${mii.id}/image?type=qr-code`;
 
 	const username = `@${mii.user.username}`;
 
@@ -73,12 +73,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function MiiPage({ params }: Props) {
-	const { slug } = await params;
+	const { id } = await params;
 	const session = await auth();
 
 	const mii = await prisma.mii.findUnique({
 		where: {
-			id: Number(slug),
+			id: Number(id),
 		},
 		include: {
 			user: {
@@ -103,9 +103,9 @@ export default async function MiiPage({ params }: Props) {
 	if (!mii) redirect("/404");
 
 	const images = [
-		`/mii/${mii.id}/mii.webp`,
-		`/mii/${mii.id}/qr-code.webp`,
-		...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image${index}.webp`),
+		`/mii/${mii.id}/image?type=mii`,
+		`/mii/${mii.id}/image?type=qr-code`,
+		...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`),
 	];
 
 	return (
