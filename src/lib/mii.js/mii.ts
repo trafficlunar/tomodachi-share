@@ -514,8 +514,6 @@ export default class Mii {
 			data: this.encodeStudio().toString("hex"),
 		};
 
-		// TODO - Assert and error out instead of setting defaults?
-
 		params.type = STUDIO_RENDER_TYPES.includes(params.type as string) ? params.type : STUDIO_RENDER_DEFAULTS.type;
 		params.expression = STUDIO_RENDER_EXPRESSIONS.includes(params.expression as string) ? params.expression : STUDIO_RENDER_DEFAULTS.expression;
 		params.width = Util.clamp(params.width, 512);

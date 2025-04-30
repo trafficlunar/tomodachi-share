@@ -36,7 +36,6 @@ export default function ScanTutorialButton() {
 
 	return (
 		<>
-			{/* todo: maybe make it an icon? */}
 			<button
 				type="button"
 				onClick={() => setIsOpen(true)}

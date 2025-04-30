@@ -79,7 +79,6 @@ export class RateLimit {
 		const identifier = (session ? session.user.id : ip) ?? "null";
 
 		this.data = await this.check(identifier);
-		console.log(this.data);
 
 		if (!this.data.success) return this.sendResponse({ success: false, error: "Rate limit exceeded. Please try again later." }, 429);
 		return;
