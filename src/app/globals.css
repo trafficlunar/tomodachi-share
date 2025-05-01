@@ -48,11 +48,27 @@ body {
 }
 
 .checkbox::after {
-	content: "";
-	@apply hidden size-4 bg-cover bg-no-repeat;
+	@apply hidden size-4 bg-cover bg-no-repeat content-[''];
 	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 13l4 4L19 7' /%3E%3C/svg%3E");
 }
 
 .checkbox:checked::after {
 	@apply block;
+}
+
+[data-tooltip] {
+	@apply relative z-10;
+}
+
+[data-tooltip]::before {
+	@apply content-[''] absolute left-1/2 -translate-x-1/2 top-full size-0 border-4 border-transparent border-b-orange-400 opacity-0 scale-75 transition-all duration-200 ease-out origin-bottom;
+}
+
+[data-tooltip]::after {
+	@apply content-[attr(data-tooltip)] absolute left-1/2 -translate-x-1/2 top-full mt-2 px-2 py-1 bg-orange-400 border border-orange-400 rounded text-sm text-white opacity-0 scale-75 transition-all duration-200 ease-out origin-top shadow-md whitespace-nowrap select-none pointer-events-none;
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:hover::after {
+	@apply opacity-100 scale-100;
 }

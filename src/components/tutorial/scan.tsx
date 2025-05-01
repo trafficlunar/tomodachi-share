@@ -40,6 +40,7 @@ export default function ScanTutorialButton() {
 				type="button"
 				onClick={() => setIsOpen(true)}
 				className="text-3xl aspect-square flex justify-center items-center cursor-pointer underline-offset-2 hover:underline"
+				data-tooltip={"Add Mii tutorial"}
 			>
 				<Icon icon="fa:question-circle" />
 			</button>
