@@ -45,7 +45,7 @@ export default function TutorialPage({ text, imageSrc, carouselIndex, finishInde
 						alt="step 1 image"
 						width={256}
 						height={256}
-						className="rounded-lg w-full h-full object-contain bg-black"
+						className="rounded-lg w-full h-full object-contain bg-black flex-1"
 					/>
 				</>
 			) : (
