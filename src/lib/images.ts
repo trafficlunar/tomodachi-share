@@ -45,13 +45,13 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 			formData.append("image", blob);
 
 			const moderationResponse = await fetch("https://api.trafficlunar.net/moderate/image", { method: "POST", body: formData });
-			const result = await moderationResponse.json();
 
 			if (!moderationResponse.ok) {
-				console.error("Moderation API error:", result);
+				console.error("Moderation API error");
 				return { valid: false, error: "Content moderation check failed", status: 500 };
 			}
 
+			const result = await moderationResponse.json();
 			if (result.error) {
 				return { valid: false, error: result.error };
 			}
