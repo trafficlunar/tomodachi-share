@@ -39,7 +39,14 @@ export default async function ProfileSettingsPage() {
 				/>
 
 				<div className="flex flex-col w-full relative">
-					<h1 className="text-4xl font-extrabold w-full break-words">{session.user.name}</h1>
+					<h1 className="text-4xl font-extrabold w-full break-words flex items-center gap-2">
+						{session.user.name}
+						{Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID) && (
+							<div data-tooltip="Admin" className="font-normal text-orange-400">
+								<Icon icon="mdi:shield-moon" />
+							</div>
+						)}
+					</h1>
 					<h2 className="text-lg font-semibold break-words">@{session.user.username}</h2>
 
 					<h4 className="mt-auto">

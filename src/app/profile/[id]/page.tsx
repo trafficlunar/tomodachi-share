@@ -92,7 +92,14 @@ export default async function ProfilePage({ params }: Props) {
 				/>
 
 				<div className="flex flex-col w-full relative">
-					<h1 className="text-4xl font-extrabold w-full break-words">{user?.name}</h1>
+					<h1 className="text-4xl font-extrabold w-full break-words flex items-center gap-2">
+						{user?.name}
+						{user.id === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID) && (
+							<div data-tooltip="Admin" className="font-normal text-orange-400">
+								<Icon icon="mdi:shield-moon" />
+							</div>
+						)}
+					</h1>
 					<h2 className="text-lg font-semibold break-words">@{user?.username}</h2>
 
 					<h4 className="mt-auto text-sm">

@@ -167,7 +167,7 @@ export default async function MiiPage({ params }: Props) {
 						</ul>
 					</section>
 					<div className="flex gap-1 text-4xl justify-end text-orange-400">
-						{Number(session?.user.id) === mii.userId && (
+						{session && (Number(session.user.id) === mii.userId || Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) && (
 							<>
 								<Link href={`/edit/${mii.id}`} title="Edit Mii" data-tooltip="Edit" className="aspect-square">
 									<Icon icon="mdi:pencil" />

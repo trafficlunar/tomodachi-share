@@ -65,7 +65,7 @@ body {
 }
 
 [data-tooltip]::after {
-	@apply content-[attr(data-tooltip)] absolute left-1/2 -translate-x-1/2 top-full mt-2 px-2 py-1 bg-orange-400 border border-orange-400 rounded text-sm text-white opacity-0 scale-75 transition-all duration-200 ease-out origin-top shadow-md whitespace-nowrap select-none pointer-events-none;
+	@apply content-[attr(data-tooltip)] absolute left-1/2 -translate-x-1/2 top-full mt-2 px-2 py-1 bg-orange-400 border border-orange-400 rounded-md text-sm text-white opacity-0 scale-75 transition-all duration-200 ease-out origin-top shadow-md whitespace-nowrap select-none pointer-events-none;
 }
 
 [data-tooltip]:hover::before,
