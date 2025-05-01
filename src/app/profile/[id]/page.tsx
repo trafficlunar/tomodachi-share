@@ -108,9 +108,17 @@ export default async function ProfilePage({ params }: Props) {
 					<h4 className="text-sm" title={`${user?.createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC`}>
 						Created: {user?.createdAt.toLocaleDateString("en-GB", { month: "long", day: "2-digit", year: "numeric" })}
 					</h4>
+				</div>
 
+				<div className="flex flex-col items-end justify-end gap-1">
+					{Number(session?.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID) && (
+						<Link href="/admin" className="pill button !px-4 !py-1.5 text-sm w-min !justify-start">
+							<Icon icon="mdi:shield-moon" className="text-lg mr-2" />
+							<span>Admin</span>
+						</Link>
+					)}
 					{session?.user.id == id && (
-						<Link href="/profile/settings" className="pill button absolute right-0 bottom-0 !px-4">
+						<Link href="/profile/settings" className="pill button !px-4 w-full h-min !justify-start">
 							<Icon icon="material-symbols:settings-rounded" className="text-2xl mr-2" />
 							<span>Settings</span>
 						</Link>
