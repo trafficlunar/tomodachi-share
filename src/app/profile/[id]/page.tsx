@@ -1,13 +1,10 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-
-import { Icon } from "@iconify/react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+import ProfileInformation from "@/components/profile-information";
 import MiiList from "@/components/mii-list";
 
 interface Props {
@@ -78,54 +75,9 @@ export default async function ProfilePage({ params }: Props) {
 
 	if (!user) redirect("/404");
 
-	const likedMiis = await prisma.like.count({ where: { userId: Number(id) } });
-
 	return (
 		<div>
-			<div className="flex gap-4 mb-2">
-				<Image
-					src={user?.image ?? "/missing.svg"}
-					alt="profile picture"
-					width={128}
-					height={128}
-					className="size-32 aspect-square rounded-full bg-white border-2 border-amber-500 shadow"
-				/>
-
-				<div className="flex flex-col w-full relative">
-					<h1 className="text-4xl font-extrabold w-full break-words flex items-center gap-2">
-						{user?.name}
-						{user.id === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID) && (
-							<div data-tooltip="Admin" className="font-normal text-orange-400">
-								<Icon icon="mdi:shield-moon" />
-							</div>
-						)}
-					</h1>
-					<h2 className="text-lg font-semibold break-words">@{user?.username}</h2>
-
-					<h4 className="mt-auto text-sm">
-						Liked <span className="font-bold">{likedMiis}</span> Miis
-					</h4>
-					<h4 className="text-sm" title={`${user?.createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC`}>
-						Created: {user?.createdAt.toLocaleDateString("en-GB", { month: "long", day: "2-digit", year: "numeric" })}
-					</h4>
-				</div>
-
-				<div className="flex flex-col items-end justify-end gap-1">
-					{Number(session?.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID) && (
-						<Link href="/admin" className="pill button !px-4 !py-1.5 text-sm w-min !justify-start">
-							<Icon icon="mdi:shield-moon" className="text-lg mr-2" />
-							<span>Admin</span>
-						</Link>
-					)}
-					{session?.user.id == id && (
-						<Link href="/profile/settings" className="pill button !px-4 w-full h-min !justify-start">
-							<Icon icon="material-symbols:settings-rounded" className="text-2xl mr-2" />
-							<span>Settings</span>
-						</Link>
-					)}
-				</div>
-			</div>
-
+			<ProfileInformation user={user} createdAt={user.createdAt} />
 			<MiiList isLoggedIn={session?.user != null} userId={user?.id} sessionUserId={Number(session?.user.id ?? -1)} />
 		</div>
 	);
