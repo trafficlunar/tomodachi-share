@@ -23,6 +23,17 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
 	const miiId = parsed.data;
 
+	// Check ownership of Mii
+	const mii = await prisma.mii.findUnique({
+		where: {
+			id: miiId,
+		},
+	});
+
+	if (!mii) return rateLimit.sendResponse({ error: "Mii not found" }, 404);
+	if (!(Number(session.user.id) === mii.userId || Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)))
+		return rateLimit.sendResponse({ error: "You don't have ownership of that Mii" }, 403);
+
 	const miiUploadsDirectory = path.join(uploadsDirectory, miiId.toString());
 
 	try {
