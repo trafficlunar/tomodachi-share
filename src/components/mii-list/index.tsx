@@ -44,7 +44,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function MiiList({ isLoggedIn, userId, sessionUserId }: Props) {
 	const searchParams = useSearchParams();
-	const { data, error } = useSWR<ApiResponse>(`/api/mii/list?${searchParams.toString()}${userId && `&userId=${userId}`}`, fetcher);
+	const { data, error } = useSWR<ApiResponse>(`/api/mii/list?${searchParams.toString()}${userId ? `&userId=${userId}` : ""}`, fetcher);
 
 	return (
 		<div className="w-full">
