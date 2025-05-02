@@ -121,10 +121,10 @@ export default function ProfileSettings() {
 				</div>
 
 				<div className="flex justify-end gap-1">
-					<div className="relative">
+					<div className="relative w-full max-w-64">
 						<input
 							type="text"
-							className="pill input w-full max-w-64 indent-4"
+							className="pill input w-full indent-4"
 							placeholder="Type here..."
 							value={username}
 							onChange={(e) => setUsername(e.target.value)}
