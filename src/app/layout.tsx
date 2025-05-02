@@ -7,6 +7,7 @@ import "./globals.css";
 import Providers from "./provider";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import AdminBanner from "@/components/admin/banner";
 
 const lexend = Lexend({
 	subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
 
 				<Providers>
 					<Header />
+					<AdminBanner />
 					<div className="px-4 py-8 max-w-7xl w-full flex-grow flex flex-col">{children}</div>
 					<Footer />
 				</Providers>

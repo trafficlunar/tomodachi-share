@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { ReportReason, ReportStatus, ReportType } from "@prisma/client";
+import { ReportReason, ReportType } from "@prisma/client";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -13,10 +13,6 @@ const reportSchema = z.object({
 		message: "Reason must be either 'inappropriate', 'spam', 'copyright', or 'other'",
 	}),
 	notes: z.string().trim().max(256).optional(),
-});
-
-const getReportSchema = z.object({
-	status: z.enum(["open", "resolved", "dismissed"], { message: "Status must be either 'open', 'resolved', or 'dismissed'" }).default("open"),
 });
 
 export async function POST(request: NextRequest) {
@@ -69,25 +65,4 @@ export async function POST(request: NextRequest) {
 	}
 
 	return rateLimit.sendResponse({ success: true });
-}
-
-export async function GET(request: NextRequest) {
-	const session = await auth();
-	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-	// Check if user is an admin
-	if (Number(session.user.id) != Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID))
-		return NextResponse.json({ error: "You're not an admin" }, { status: 403 });
-
-	const parsed = getReportSchema.safeParse(Object.fromEntries(request.nextUrl.searchParams));
-	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
-	const { status } = parsed.data;
-
-	const reports = await prisma.report.findMany({
-		where: {
-			status: (status.toUpperCase() as ReportStatus) ?? "OPEN",
-		},
-	});
-
-	return NextResponse.json({ success: true, reports });
 }
