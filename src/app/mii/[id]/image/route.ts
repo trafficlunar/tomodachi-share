@@ -35,6 +35,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 		const buffer = await fs.readFile(filePath);
 		return new NextResponse(buffer);
 	} catch {
-		return rateLimit.sendResponse({ success: false, error: "Image not found" }, 404);
+		return rateLimit.sendResponse({ error: "Image not found" }, 404);
 	}
 }

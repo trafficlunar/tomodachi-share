@@ -1,9 +1,5 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-
-import { Icon } from "@iconify/react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";

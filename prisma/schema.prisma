@@ -24,6 +24,7 @@ model User {
   sessions Session[]
   miis     Mii[]
   likes    Like[]
+  Report   Report[]
 
   @@map("users")
 }
@@ -91,4 +92,39 @@ model Like {
 
   @@id([userId, miiId])
   @@map("likes")
+}
+
+model Report {
+  id         Int          @id @default(autoincrement())
+  reportType ReportType
+  status     ReportStatus @default(OPEN)
+  targetId   Int
+
+  reason      ReportReason
+  reasonNotes String?
+
+  authorId  Int?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [authorId], references: [id])
+
+  @@map("reports")
+}
+
+enum ReportType {
+  MII
+  USER
+}
+
+enum ReportReason {
+  INAPPROPRIATE
+  SPAM
+  COPYRIGHT
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
 }

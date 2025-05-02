@@ -54,6 +54,12 @@ export default async function ProfileInformation({ user: userData, createdAt, in
 
 			{/* Buttons */}
 			<div className="flex flex-col items-end justify-end gap-1 max-md:flex-row">
+				{Number(session?.user.id) != id && (
+					<Link href={`/report/user/${id}`} className="pill button !px-4">
+						<Icon icon="material-symbols:flag-rounded" className="text-2xl mr-2" />
+						<span>Report</span>
+					</Link>
+				)}
 				{Number(session?.user.id) == id && Number(session?.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID) && (
 					<Link href="/admin" className="pill button !px-4">
 						<Icon icon="mdi:shield-moon" className="text-2xl mr-2" />

@@ -83,7 +83,7 @@ export default function PrivacyPage() {
 
 					<section>
 						<p className="mb-2">As a user, you have the right to:</p>
-						<ul className="list-disc list-inside">
+						<ul className="list-disc list-inside indent-4">
 							<li>Access the personal data we hold about you.</li>
 							<li>Request corrections to any inaccurate or incomplete information.</li>
 							<li>Request the deletion of your personal data.</li>

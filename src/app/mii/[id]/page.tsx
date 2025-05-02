@@ -176,6 +176,9 @@ export default async function MiiPage({ params }: Props) {
 							</>
 						)}
 
+						<Link href={`/report/mii/${mii.id}`} title="Report Mii" data-tooltip="Report" className="aspect-square">
+							<Icon icon="material-symbols:flag-rounded" />
+						</Link>
 						<ScanTutorialButton />
 					</div>
 				</div>

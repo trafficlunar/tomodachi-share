@@ -80,7 +80,7 @@ export class RateLimit {
 
 		this.data = await this.check(identifier);
 
-		if (!this.data.success) return this.sendResponse({ success: false, error: "Rate limit exceeded. Please try again later." }, 429);
+		if (!this.data.success) return this.sendResponse({ error: "Rate limit exceeded. Please try again later." }, 429);
 		return;
 	}
 }

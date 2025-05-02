@@ -10,7 +10,7 @@ export default function PrivacyPage() {
 		<div>
 			<h1 className="text-2xl font-bold">Terms of Service</h1>
 			<h2 className="font-light">
-				<strong className="font-medium">Effective Date:</strong> April 23, 2025
+				<strong className="font-medium">Effective Date:</strong> May 02, 2025
 			</h2>
 
 			<hr className="border-black/20 mt-1 mb-4" />
@@ -33,7 +33,7 @@ export default function PrivacyPage() {
 
 					<section>
 						<p className="mb-2">As a user of this site, you must abide by these guidelines:</p>
-						<ul className="list-disc list-inside">
+						<ul className="list-disc list-inside indent-4">
 							<li>Nothing that would interfere with or gain unauthorized access to the website or its systems.</li>
 							<li>Nothing that is against the law in the United Kingdom.</li>
 							<li>No NSFW, violent, gory, or inappropriate Miis or images.</li>
@@ -44,6 +44,9 @@ export default function PrivacyPage() {
 							<li>Avoid using inappropriate language. Profanity may be automatically censored.</li>
 							<li>No use of automated scripts, bots, or scrapers to access or interact with the site.</li>
 						</ul>
+						<p className="mt-2">
+							If you find anybody or a Mii breaking these rules, please report it by going to their page and clicking the &quot;Report&quot; button.
+						</p>
 					</section>
 				</li>
 				<li>
@@ -96,10 +99,10 @@ export default function PrivacyPage() {
 							<a href="mailto:hello@trafficlunar.net" className="text-blue-700">
 								hello@trafficlunar.net
 							</a>
-							.
+							or by reporting the Mii on its page.
 						</p>
 						<p className="mb-2">Please include:</p>
-						<ul className="list-disc list-inside">
+						<ul className="list-disc list-inside indent-4">
 							<li>Your name and contact information</li>
 							<li>A description of the copyrighted work</li>
 							<li>A link to the allegedly infringing material</li>
