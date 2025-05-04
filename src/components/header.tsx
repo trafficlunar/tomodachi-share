@@ -24,7 +24,7 @@ export default async function Header() {
 
 			<ul className="flex justify-end gap-3 items-center h-11 *:h-full max-lg:col-span-2 max-md:justify-center">
 				<li title="Random Mii">
-					<Link href={"/random"} className="pill button !p-0 h-full aspect-square">
+					<Link href={"/random"} className="pill button !p-0 h-full aspect-square" data-tooltip="Go to a Random Mii">
 						<Icon icon="mdi:dice-3" fontSize={28} />
 					</Link>
 				</li>

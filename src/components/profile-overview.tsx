@@ -7,7 +7,7 @@ export default async function ProfileOverview() {
 
 	return (
 		<li title="Your profile">
-			<Link href={`/profile/${session?.user.id}`} className="pill button !gap-2 !p-0 h-full max-w-64">
+			<Link href={`/profile/${session?.user.id}`} className="pill button !gap-2 !p-0 h-full max-w-64" data-tooltip="Your Profile">
 				<Image
 					src={session?.user?.image ?? "/missing.svg"}
 					alt="profile picture"
