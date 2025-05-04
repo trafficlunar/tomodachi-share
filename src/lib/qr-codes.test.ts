@@ -30,6 +30,8 @@ const zeroes372 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 const length32 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
+const badCrc = "ULENrXILeXZooDaJvwHMcFaBjGH7k5pj+DDPDV0irq66c01Fh82TIrZerZX2xiB+TbHBzYIaDHdryA9IbR1uH/slSalGCScmjDiL9zpOXlvh8z38NGkmjtL1fVVrshCcJHKeQApdbZU4S6h+wZd0LA==";
+
 function base64ToUint8Array(base64: string): Uint8Array {
 	const binary = Buffer.from(base64, "base64");
 	return new Uint8Array(binary.buffer, binary.byteOffset, binary.byteLength);
@@ -53,11 +55,20 @@ describe("convertQrCode", () => {
 
 	it("should throw an error on zeroed out data", () => {
 		const bytes = base64ToUint8Array(zeroes372);
+		// Will decrypt wrongly, leading to the expected stream
+		// of zeroes in the decrypted data not being intact.
 		expect(() => convertQrCode(bytes)).toThrow("QR code is not a valid Mii QR code");
 	});
 
 	it("should throw an error on wrong length", () => {
 		const bytes = base64ToUint8Array(length32);
+		// Thrown at the beginning of the function.
+		expect(() => convertQrCode(bytes)).toThrow("Mii QR code has wrong size (got 32, expected 112 or longer)");
+	});
+
+	it("should throw an error on data with bad CRC-16", () => {
+		const bytes = base64ToUint8Array(badCrc);
+		// Verified by new Mii() constructor from mii-js.
 		expect(() => convertQrCode(bytes)).toThrow("Mii data is not valid");
 	});
 	/*

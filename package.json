@@ -17,7 +17,7 @@
 		"@bprogress/next": "^3.2.12",
 		"@hello-pangea/dnd": "^18.0.1",
 		"@prisma/client": "^6.7.0",
-		"@trafficlunar/asmcrypto.js": "^1.0.2",
+		"@types/sjcl": "^1.0.34",
 		"bit-buffer": "^0.2.5",
 		"canvas-confetti": "^1.9.3",
 		"dayjs": "^1.11.13",
@@ -34,6 +34,7 @@
 		"react-dropzone": "^14.3.8",
 		"react-webcam": "^7.2.0",
 		"sharp": "^0.34.1",
+		"sjcl-with-all": "1.0.8",
 		"swr": "^2.3.3",
 		"zod": "^3.24.3"
 	},
