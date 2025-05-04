@@ -16,6 +16,7 @@ export default async function SubmitPage() {
 	const session = await auth();
 
 	if (!session) redirect("/login");
+	if (!session.user.username) redirect("/create-username");
 
 	return <SubmitForm />;
 }
