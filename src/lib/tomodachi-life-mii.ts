@@ -1,4 +1,4 @@
-import { TOMODACHI_LIFE_DECRYPTION_KEY } from "@/lib/constants";
+import { TOMODACHI_LIFE_DECRYPTION_KEY } from "../lib/constants";
 import { AES_CTR } from "@trafficlunar/asmcrypto.js";
 
 // Converts hair dye to studio color
