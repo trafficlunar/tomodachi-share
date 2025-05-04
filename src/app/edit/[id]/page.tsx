@@ -44,7 +44,8 @@ export default async function MiiPage({ params }: Props) {
 	});
 
 	// Check ownership
-	if (!mii || Number(session?.user.id) !== mii.userId) redirect("/404");
+	if (!mii || (Number(session?.user.id) !== mii.userId && Number(session?.user.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)))
+		redirect("/404");
 
 	return <EditForm mii={mii} likes={mii._count.likedBy} />;
 }
