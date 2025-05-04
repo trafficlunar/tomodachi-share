@@ -14,6 +14,12 @@ export default function Pagination({ lastPage }: Props) {
 	const searchParams = useSearchParams();
 	const page = Number(searchParams.get("page") ?? 1);
 
+	const createPageUrl = (pageNumber: number) => {
+		const params = new URLSearchParams(searchParams);
+		params.set("page", pageNumber.toString());
+		return `/?${params.toString()}`;
+	};
+
 	const numbers = useMemo(() => {
 		const result = [];
 
@@ -30,7 +36,7 @@ export default function Pagination({ lastPage }: Props) {
 		<div className="flex justify-center items-center w-full mt-8">
 			{/* Go to first page */}
 			<Link
-				href={page === 1 ? "#" : "/?page=1"}
+				href={page === 1 ? "#" : createPageUrl(1)}
 				aria-disabled={page === 1}
 				tabIndex={page === 1 ? -1 : undefined}
 				className={`pill button !bg-orange-100 !p-0.5 aspect-square text-2xl ${
@@ -42,7 +48,7 @@ export default function Pagination({ lastPage }: Props) {
 
 			{/* Previous page */}
 			<Link
-				href={page === 1 ? "#" : `/?page=${page - 1}`}
+				href={page === 1 ? "#" : createPageUrl(page - 1)}
 				aria-disabled={page === 1}
 				tabIndex={page === 1 ? -1 : undefined}
 				className={`pill !bg-orange-100 !p-0.5 aspect-square text-2xl ${page === 1 ? "pointer-events-none opacity-50" : "hover:!bg-orange-400"}`}
@@ -55,7 +61,7 @@ export default function Pagination({ lastPage }: Props) {
 				{numbers.map((number) => (
 					<Link
 						key={number}
-						href={`/?page=${number}`}
+						href={createPageUrl(number)}
 						aria-current={number === page ? "page" : undefined}
 						className={`pill !p-0 w-8 h-8 text-center !rounded-md ${number == page ? "!bg-orange-400" : "!bg-orange-100 hover:!bg-orange-400"}`}
 					>
@@ -66,7 +72,7 @@ export default function Pagination({ lastPage }: Props) {
 
 			{/* Next page */}
 			<Link
-				href={page === lastPage ? "#" : `/?page=${page + 1}`}
+				href={page === lastPage ? "#" : createPageUrl(page + 1)}
 				aria-disabled={page === lastPage}
 				tabIndex={page === lastPage ? -1 : undefined}
 				className={`pill button !bg-orange-100 !p-0.5 aspect-square text-2xl ${
@@ -78,7 +84,7 @@ export default function Pagination({ lastPage }: Props) {
 
 			{/* Go to last page */}
 			<Link
-				href={page === lastPage ? "#" : `/?page=${lastPage}`}
+				href={page === lastPage ? "#" : createPageUrl(lastPage)}
 				aria-disabled={page === lastPage}
 				tabIndex={page === lastPage ? -1 : undefined}
 				className={`pill button !bg-orange-100 !p-0.5 aspect-square text-2xl ${
