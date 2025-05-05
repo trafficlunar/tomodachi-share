@@ -11,7 +11,7 @@ import qrcode from "qrcode-generator";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 import { convertQrCode } from "@/lib/qr-codes";
 import Mii from "@/lib/mii.js/mii";
-import TomodachiLifeMii from "@/lib/tomodachi-life-mii";
+import { TomodachiLifeMii } from "@/lib/tomodachi-life-mii";
 
 import TagSelector from "../tag-selector";
 import ImageList from "./image-list";

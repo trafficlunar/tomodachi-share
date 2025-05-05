@@ -4,7 +4,7 @@ import sjcl from "sjcl-with-all";
 
 import { MII_DECRYPTION_KEY, MII_QR_ENCRYPTED_LENGTH } from "./constants";
 import Mii from "./mii.js/mii";
-import TomodachiLifeMii from "./tomodachi-life-mii";
+import { TomodachiLifeMii, HairDyeMode } from "./tomodachi-life-mii";
 
 // AES-CCM encrypted Mii QR codes have some errata (https://www.3dbrew.org/wiki/AES_Registers#CCM_mode_pitfall)
 // causing them to not be easily decryptable by asmcrypto
@@ -89,10 +89,15 @@ export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: 
 		const tomodachiLifeMii = TomodachiLifeMii.fromBytes(bytes);
 
 		// Apply hair dye fields.
-		if (tomodachiLifeMii.hairDyeEnabled) {
-			mii.hairColor = tomodachiLifeMii.studioHairColor;
-			mii.eyebrowColor = tomodachiLifeMii.studioHairColor;
-			mii.facialHairColor = tomodachiLifeMii.studioHairColor;
+		switch (tomodachiLifeMii.hairDyeMode) {
+			case HairDyeMode.HairEyebrowBeard:
+				mii.eyebrowColor = tomodachiLifeMii.studioHairColor;
+				mii.facialHairColor = tomodachiLifeMii.studioHairColor;
+				// Fall-through and also apply to hair.
+			case HairDyeMode.Hair:
+				mii.hairColor = tomodachiLifeMii.studioHairColor;
+				break;
+			// Default: do not apply hair dye.
 		}
 
 		// Censor potential inappropriate words.
