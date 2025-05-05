@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const rateLimit = new RateLimit(request, 1);
+	const rateLimit = new RateLimit(request, 2);
 	const check = await rateLimit.handle();
 	if (check) return check;
 
