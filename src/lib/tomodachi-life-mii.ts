@@ -11,15 +11,23 @@ const hairDyeConverter = [
 	55, 51, 50, 12, 16, 12, 67, 61, 51, 64, 69, 66, 65, 86, 85, 93, 92, 19, 20, 20, 15, 32, 35, 26, 38, 41, 43, 18, 95, 97, 97, 99,
 ];
 
+// All possible values for 2-bit hair dye mode.
+export enum HairDyeMode {
+	None = 0,
+	Hair = 1,
+	HairEyebrowBeard = 2,
+	Invalid = 3,
+}
+
 // Reference: https://github.com/ariankordi/nwf-mii-cemu-toy/blob/ffl-renderer-proto-integrate/assets/kaitai-structs/tomodachi_life_qr_code.ksy
 // (Credits to ariankordi for the byte locations)
-export default class TomodachiLifeMii {
+export class TomodachiLifeMii {
 	firstName: string;
 	lastName: string;
 	islandName: string;
 
 	hairDye: number;
-	hairDyeEnabled: boolean;
+	hairDyeMode: HairDyeMode;
 
 	// There are more properties but I don't plan to add them *yet*
 
@@ -38,10 +46,10 @@ export default class TomodachiLifeMii {
 		// Skip 3 unknown bytes
 		offset += 3;
 
-		// Read bit fields
+		// Read little-endian bit fields
 		const bitField = view.getUint8(offset++);
-		this.hairDyeEnabled = (bitField & 0x80) !== 0;
-		this.hairDye = (bitField & 0x3e) >> 1;
+		this.hairDyeMode = (bitField >> 6) & 0b00000011; // Bits 7-6
+		this.hairDye = (bitField >> 1) & 0b00011111; // Bits 5-1
 
 		// Skip 12 unknown bytes
 		offset += 12;

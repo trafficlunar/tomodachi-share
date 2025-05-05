@@ -1,7 +1,7 @@
 import { convertQrCode } from "./qr-codes";
 import { describe, it, expect } from "vitest";
 import Mii from "./mii.js/mii";
-import TomodachiLifeMii from "./tomodachi-life-mii";
+import { TomodachiLifeMii, HairDyeMode } from "./tomodachi-life-mii";
 
 // List of encrypted QR code data to test against.
 const validQrCodes = [
@@ -26,11 +26,24 @@ const validQrCodes = [
 	},
 ];
 
+// 372 bytes of zeroes.
 const zeroes372 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
+// 32 bytes of zeroes (too short to be a Mii QR code).
 const length32 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
+// Mii QR code encrypted correctly but has an invalid CRC-16 checksum.
 const badCrc = "ULENrXILeXZooDaJvwHMcFaBjGH7k5pj+DDPDV0irq66c01Fh82TIrZerZX2xiB+TbHBzYIaDHdryA9IbR1uH/slSalGCScmjDiL9zpOXlvh8z38NGkmjtL1fVVrshCcJHKeQApdbZU4S6h+wZd0LA==";
+
+// Hair dye should be applied to hair only.
+const hairDyeHairOnly = "lHDnfRgqe2+drU303Slkj7+o4JldrKcIdOl5zgLM0LpwQKQY+i3cpt5IIg7LBNAr7TCzHOvi698oUV0QkcyNj71MgtAAaw4MvOdT4dsv0PLof6E7IcjgnCA1ZAJ2Bs5PQTnM/yuVBUIXdq6WYh+nmG3HtxV7zKbEpSy4bqVep8uuvUlfZcB+BQgucPXQLmDnS8ECKwOlANcKTI+ZjIZggVaEsyY88pjRWyXnwe1z4Favw16bIzecesehGlqXzZh9U5Vm5dZP8wmKc3G6TGylYmbnloRd99UYRNULvTQCUer8WljGuV30ftXlJOwfsnwoAiVOGoG3KvbsBpPtPLywR5DavRgQIPd0/b+XUzHQDhkyftMXeqVEalsuEmU/b/1/j4yVL+2lWgD1i2xyET65uJawAnd8jbKbG8lxPMgzIKGVqJB4QmJOl9/dTf21r9GgRFRaFEz+66bVfiYhzXKmJUQv2qx/t/V3r96QzYd08nrWSHK0";
+const hairDyeHairOnlyExpectedCommonColor = 99; // Must apply to hair but not eyebrow and beard.
+// Hair dye should be applied to hair, eyebrow, and beard.
+const hairDyeHairEyebrowBeard = validQrCodes[1].base64; // Miku has hair dye.
+const hairDyeHairEyebrowBeardExpectedCommonColor = 67; // Must apply to hair, eyebrow, and beard.
+
+// Should not have hair dye enabled.
+const hairDyeMode0 = validQrCodes[0].base64; // Frieren doesn't have hair dye
 
 function base64ToUint8Array(base64: string): Uint8Array {
 	const binary = Buffer.from(base64, "base64");
@@ -71,12 +84,43 @@ describe("convertQrCode", () => {
 		// Verified by new Mii() constructor from mii-js.
 		expect(() => convertQrCode(bytes)).toThrow("Mii data is not valid");
 	});
-	/*
-  it('should censor bad words in names', () => {
-    const qrWithSwears = // TODO TODO
-    const { tomodachiLifeMii } = convertQrCode(qrWithSwears);
 
-    expect(tomodachiLifeMii.firstName).not.toMatch(/INSERT_SWEARS_HERE/i);
-  });
+	it("should apply hair dye to hair, eyebrow, and beard", () => {
+		const bytes = base64ToUint8Array(hairDyeHairEyebrowBeard);
+		const { mii, tomodachiLifeMii } = convertQrCode(bytes);
+
+		expect(tomodachiLifeMii.hairDyeMode).toBe(HairDyeMode.HairEyebrowBeard);
+		expect(tomodachiLifeMii.studioHairColor).toBe(hairDyeHairEyebrowBeardExpectedCommonColor);
+		expect(mii.hairColor).toBe(hairDyeHairEyebrowBeardExpectedCommonColor);
+		expect(mii.eyebrowColor).toBe(hairDyeHairEyebrowBeardExpectedCommonColor);
+		expect(mii.facialHairColor).toBe(hairDyeHairEyebrowBeardExpectedCommonColor);
+	});
+
+	it("should apply hair dye to hair only", () => {
+		const bytes = base64ToUint8Array(hairDyeHairOnly);
+		const { mii, tomodachiLifeMii } = convertQrCode(bytes);
+
+		expect(tomodachiLifeMii.hairDyeMode).toBe(HairDyeMode.Hair);
+		expect(tomodachiLifeMii.studioHairColor).toBe(hairDyeHairOnlyExpectedCommonColor);
+		expect(mii.hairColor).toBe(hairDyeHairOnlyExpectedCommonColor);
+		expect(mii.eyebrowColor === hairDyeHairOnlyExpectedCommonColor).toBe(false);
+		expect(mii.facialHairColor === hairDyeHairOnlyExpectedCommonColor).toBe(false);
+	});
+
+	it("should not apply hair dye if mode is 0", () => {
+		const bytes = base64ToUint8Array(hairDyeMode0);
+		const { mii, tomodachiLifeMii } = convertQrCode(bytes);
+
+		expect(tomodachiLifeMii.hairDyeMode).toBe(HairDyeMode.None);
+		expect(mii.hairColor === tomodachiLifeMii.studioHairColor).toBe(false);
+		expect(mii.hairColor === mii.facialHairColor).toBe(false);
+	});
+
+	/*
+	it('should censor bad words in names', () => {
+		const qrWithSwears = // TODO TODO
+		const { tomodachiLifeMii } = convertQrCode(qrWithSwears);
+		expect(tomodachiLifeMii.firstName).not.toMatch(/INSERT_SWEARS_HERE/i);
+	});
   */
 });
