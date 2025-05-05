@@ -130,7 +130,7 @@ export default function MiiList({ isLoggedIn, userId, sessionUserId }: Props) {
 				<p className="text-xl text-red-400 font-semibold text-center mt-10">Error: {error}</p>
 			) : (
 				// Show skeleton when data is loading
-				<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-sm:grid-cols-2 max-[25rem]:grid-cols-1">
+				<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[30rem]:grid-cols-1">
 					{Array.from({ length: 24 }).map((_, i) => (
 						<Skeleton key={i} />
 					))}
