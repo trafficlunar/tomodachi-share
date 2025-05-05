@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { RateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
-	const rateLimit = new RateLimit(request, 16);
+	const rateLimit = new RateLimit(request, 20);
 	const check = await rateLimit.handle();
 	if (check) return check;
 
