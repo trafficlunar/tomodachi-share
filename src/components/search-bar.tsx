@@ -34,8 +34,12 @@ export default function SearchBar() {
 				onKeyDown={handleKeyDown}
 				className="bg-orange-200 border-2 border-orange-400 py-2 px-3 rounded-l-xl outline-0 w-full placeholder:text-black/40"
 			/>
-			<button onClick={handleSearch} className="bg-orange-400 p-2 w-12 rounded-r-xl flex justify-center items-center cursor-pointer text-2xl">
-				<Icon icon="ic:baseline-search" className="transition-transform hover:scale-110 active:95" />
+			<button
+				onClick={handleSearch}
+				data-tooltip="Search"
+				className="bg-orange-400 p-2 w-12 rounded-r-xl flex justify-center items-center cursor-pointer text-2xl"
+			>
+				<Icon icon="ic:baseline-search" />
 			</button>
 		</div>
 	);
