@@ -72,6 +72,7 @@ model Mii {
 
   firstName      String
   lastName       String
+  gender         MiiGender?
   islandName     String
   allowedCopying Boolean
 
@@ -109,6 +110,11 @@ model Report {
   user User? @relation(fields: [authorId], references: [id])
 
   @@map("reports")
+}
+
+enum MiiGender {
+  MALE
+  FEMALE
 }
 
 enum ReportType {

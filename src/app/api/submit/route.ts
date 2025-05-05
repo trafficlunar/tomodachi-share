@@ -7,6 +7,7 @@ import sharp from "sharp";
 
 import qrcode from "qrcode-generator";
 import { profanity } from "@2toad/profanity";
+import { MiiGender } from "@prisma/client";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -99,6 +100,7 @@ export async function POST(request: NextRequest) {
 
 			firstName: conversion.tomodachiLifeMii.firstName,
 			lastName: conversion.tomodachiLifeMii.lastName,
+			gender: conversion.mii.gender == 0 ? MiiGender.MALE : MiiGender.FEMALE,
 			islandName: conversion.tomodachiLifeMii.islandName,
 			allowedCopying: conversion.mii.allowCopying,
 		},
