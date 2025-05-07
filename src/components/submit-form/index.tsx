@@ -49,6 +49,7 @@ export default function SubmitForm() {
 
 	const [name, setName] = useState("");
 	const [tags, setTags] = useState<string[]>([]);
+	const [description, setDescription] = useState("");
 	const [qrBytesRaw, setQrBytesRaw] = useState<number[]>([]);
 
 	const handleSubmit = async () => {
@@ -68,6 +69,7 @@ export default function SubmitForm() {
 		const formData = new FormData();
 		formData.append("name", name);
 		formData.append("tags", JSON.stringify(tags));
+		formData.append("description", description);
 		formData.append("qrBytesRaw", JSON.stringify(qrBytesRaw));
 		files.forEach((file, index) => {
 			// image1, image2, etc.
@@ -188,6 +190,20 @@ export default function SubmitForm() {
 						Tags
 					</label>
 					<TagSelector tags={tags} setTags={setTags} />
+				</div>
+
+				<div className="w-full grid grid-cols-3 items-start">
+					<label htmlFor="reason-note" className="font-semibold py-2">
+						Description
+					</label>
+					<textarea
+						rows={3}
+						maxLength={256}
+						placeholder="(optional) Type a description..."
+						className="pill input !rounded-xl resize-none col-span-2"
+						value={description}
+						onChange={(e) => setDescription(e.target.value)}
+					/>
 				</div>
 
 				{/* Separator */}

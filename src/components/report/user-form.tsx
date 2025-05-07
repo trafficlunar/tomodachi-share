@@ -69,6 +69,7 @@ export default function ReportUserForm({ user }: Props) {
 				</label>
 				<textarea
 					rows={3}
+					maxLength={256}
 					placeholder="Type notes here for the report..."
 					className="pill input !rounded-xl resize-none col-span-2"
 					value={notes}

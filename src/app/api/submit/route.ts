@@ -24,6 +24,7 @@ const uploadsDirectory = path.join(process.cwd(), "uploads");
 const submitSchema = z.object({
 	name: nameSchema,
 	tags: tagsSchema,
+	description: z.string().trim().max(256).optional(),
 	qrBytesRaw: z
 		.array(z.number(), { required_error: "A QR code is required" })
 		.length(372, { message: "QR code size is not a valid Tomodachi Life QR code" }),
@@ -54,6 +55,7 @@ export async function POST(request: NextRequest) {
 	const parsed = submitSchema.safeParse({
 		name: formData.get("name"),
 		tags: rawTags,
+		description: formData.get("description"),
 		qrBytesRaw: rawQrBytesRaw,
 		image1: formData.get("image1"),
 		image2: formData.get("image2"),
@@ -61,11 +63,12 @@ export async function POST(request: NextRequest) {
 	});
 
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
-	const { name: uncensoredName, tags: uncensoredTags, qrBytesRaw, image1, image2, image3 } = parsed.data;
+	const { name: uncensoredName, tags: uncensoredTags, description: uncensoredDescription, qrBytesRaw, image1, image2, image3 } = parsed.data;
 
 	// Censor potential inappropriate words
 	const name = profanity.censor(uncensoredName);
 	const tags = uncensoredTags.map((t) => profanity.censor(t));
+	const description = uncensoredDescription && profanity.censor(uncensoredDescription);
 
 	// Validate image files
 	const images: File[] = [];
@@ -97,6 +100,7 @@ export async function POST(request: NextRequest) {
 			userId: Number(session.user.id),
 			name,
 			tags,
+			description,
 
 			firstName: conversion.tomodachiLifeMii.firstName,
 			lastName: conversion.tomodachiLifeMii.lastName,
