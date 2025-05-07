@@ -13,9 +13,10 @@ interface Props {
 	miiId: number;
 	miiName: string;
 	likes: number;
+	inMiiPage?: boolean;
 }
 
-export default function DeleteMiiButton({ miiId, miiName, likes }: Props) {
+export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Props) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -49,9 +50,16 @@ export default function DeleteMiiButton({ miiId, miiName, likes }: Props) {
 
 	return (
 		<>
-			<button onClick={() => setIsOpen(true)} title="Delete Mii" data-tooltip="Delete" className="cursor-pointer aspect-square">
-				<Icon icon="mdi:trash" />
-			</button>
+			{inMiiPage ? (
+				<button onClick={() => setIsOpen(true)} className="cursor-pointer">
+					<Icon icon="mdi:trash" />
+					<span className="text-xs">Delete</span>
+				</button>
+			) : (
+				<button onClick={() => setIsOpen(true)} title="Delete Mii" data-tooltip="Delete" className="cursor-pointer aspect-square">
+					<Icon icon="mdi:trash" />
+				</button>
+			)}
 
 			{isOpen &&
 				createPortal(

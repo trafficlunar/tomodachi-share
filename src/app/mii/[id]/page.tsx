@@ -7,7 +7,6 @@ import { Icon } from "@iconify/react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-import Carousel from "@/components/carousel";
 import LikeButton from "@/components/like-button";
 import ImageViewer from "@/components/image-viewer";
 import DeleteMiiButton from "@/components/delete-mii";
@@ -102,102 +101,153 @@ export default async function MiiPage({ params }: Props) {
 
 	if (!mii) redirect("/404");
 
-	const images = [
-		`/mii/${mii.id}/image?type=mii`,
-		`/mii/${mii.id}/image?type=qr-code`,
-		...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`),
-	];
+	const images = [...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`)];
 
 	return (
-		<div>
-			<div className="relative grid grid-cols-5 gap-2 max-sm:grid-cols-1 max-lg:grid-cols-2">
-				{/* Carousel */}
-				<div className="min-w-full flex justify-center col-span-2 max-lg:col-span-1">
-					<Carousel images={images} className="shadow-lg" />
-				</div>
+		<div className="flex flex-col items-center">
+			<div className="max-w-5xl w-full flex flex-col gap-4">
+				<div className="relative grid grid-cols-3 gap-4 max-md:grid-cols-1">
+					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
+						{/* Mii Image */}
+						<div className="bg-gradient-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center">
+							<ImageViewer
+								src={`/mii/${mii.id}/image?type=mii`}
+								alt="mii headshot"
+								width={200}
+								height={200}
+								className="drop-shadow-lg hover:scale-105 transition-transform"
+							/>
+						</div>
+						{/* QR Code */}
+						<div className="bg-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center p-2">
+							<ImageViewer
+								src={`/mii/${mii.id}/image?type=qr-code`}
+								alt="mii qr code"
+								width={128}
+								height={128}
+								className="border-2 border-amber-300 rounded-lg hover:scale-105 transition-transform"
+							/>
+						</div>
+						<hr className="w-full border-t-2 border-t-amber-400" />
 
-				{/* Information */}
-				<div className="flex flex-col gap-1 p-4 col-span-2 max-lg:col-span-1">
-					<h1 className="text-4xl font-extrabold break-words">{mii.name}</h1>
-					<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
-						{mii.tags.map((tag) => (
-							<Link href={{ pathname: "/", query: { tags: tag } }} key={tag}>
-								{tag}
-							</Link>
-						))}
-					</div>
-
-					<div className="mt-2">
-						<Link href={`/profile/${mii.userId}`} className="text-lg">
-							By: <span className="font-bold">@{mii.user.username}</span>
-						</Link>
-						<h4 title={`${mii.createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC`}>
-							Created: {mii.createdAt.toLocaleDateString("en-GB", { month: "long", day: "2-digit", year: "numeric" })}
-						</h4>
-					</div>
-
-					<div className="mt-auto">
-						<LikeButton
-							likes={mii._count.likedBy ?? 0}
-							miiId={mii.id}
-							isLiked={(mii.likedBy ?? []).length > 0}
-							isLoggedIn={session?.user != null}
-							big
-						/>
-					</div>
-				</div>
-
-				{/* Extra information */}
-				<div className="flex flex-col gap-2">
-					<section className="p-6 bg-orange-100 rounded-2xl shadow-lg border-2 border-orange-400 h-min">
-						<legend className="text-lg font-semibold mb-2">Mii Info</legend>
-						<ul className="text-sm *:flex *:justify-between *:items-center *:my-1">
+						{/* Mii Info */}
+						<ul className="text-sm w-full p-2 *:flex *:justify-between *:items-center *:my-1">
 							<li>
 								Name:{" "}
-								<span className="text-right">
+								<span className="text-right font-medium">
 									{mii.firstName} {mii.lastName}
 								</span>
 							</li>
 							<li>
-								From: <span className="text-right">{mii.islandName} Island</span>
+								From: <span className="text-right font-medium">{mii.islandName} Island</span>
 							</li>
 							<li>
 								Allowed Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox !cursor-auto" />
 							</li>
 						</ul>
-					</section>
-					<div className="flex gap-1 text-4xl justify-end text-orange-400">
-						{session && (Number(session.user.id) === mii.userId || Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) && (
-							<>
-								<Link href={`/edit/${mii.id}`} title="Edit Mii" data-tooltip="Edit" className="aspect-square">
-									<Icon icon="mdi:pencil" />
-								</Link>
-								<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy ?? 0} />
-							</>
-						)}
 
-						<Link href={`/report/mii/${mii.id}`} title="Report Mii" data-tooltip="Report" className="aspect-square">
-							<Icon icon="material-symbols:flag-rounded" />
-						</Link>
-						<ScanTutorialButton />
+						{/* Mii Gender */}
+						<div className="grid grid-cols-2 gap-2">
+							<div
+								className={`rounded-xl flex justify-center items-center size-16 text-5xl border ${
+									mii.gender === "MALE" ? "bg-cyan-200/75 border-cyan-400/75" : "bg-zinc-200 border-zinc-400/50"
+								}`}
+							>
+								<Icon icon="foundation:male" className="text-blue-400" />
+							</div>
+
+							<div
+								className={`rounded-xl flex justify-center items-center size-16 text-5xl border ${
+									mii.gender === "FEMALE" ? "bg-cyan-200/75 border-cyan-400/75" : "bg-zinc-200 border-zinc-400/50"
+								}`}
+							>
+								<Icon icon="foundation:female" className="text-pink-400" />
+							</div>
+						</div>
+					</div>
+
+					<div className="col-span-2 flex flex-col gap-4 max-md:col-span-1">
+						{/* Information */}
+						<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-1">
+							<div className="flex justify-between items-start">
+								{/* Submission name */}
+								<h1 className="text-4xl font-extrabold break-words text-amber-700">{mii.name}</h1>
+								{/* Like button */}
+								<LikeButton
+									likes={mii._count.likedBy ?? 0}
+									miiId={mii.id}
+									isLiked={(mii.likedBy ?? []).length > 0}
+									isLoggedIn={session?.user != null}
+									big
+								/>
+							</div>
+							{/* Tags */}
+							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
+								{mii.tags.map((tag) => (
+									<Link href={{ pathname: "/", query: { tags: tag } }} key={tag}>
+										{tag}
+									</Link>
+								))}
+							</div>
+
+							{/* Author and Created date */}
+							<div className="mt-2">
+								<Link href={`/profile/${mii.userId}`} className="text-lg">
+									By: <span className="font-bold">@{mii.user.username}</span>
+								</Link>
+								<h4 className="text-sm">
+									Created: {mii.createdAt.toLocaleDateString("en-GB", { month: "long", day: "2-digit", year: "numeric" })} at{" "}
+									{mii.createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC
+								</h4>
+							</div>
+						</div>
+
+						{/* Buttons */}
+						<div className="flex w-fit bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 text-3xl text-orange-400 max-md:place-self-center *:h-12 *:w-14 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:[&_svg]:scale-[1.2]">
+							{session && (Number(session.user.id) === mii.userId || Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) && (
+								<>
+									<Link href={`/edit/${mii.id}`}>
+										<Icon icon="mdi:pencil" />
+										<span className="text-xs">Edit</span>
+									</Link>
+									<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy ?? 0} inMiiPage />
+								</>
+							)}
+
+							<Link href={`/report/mii/${mii.id}`}>
+								<Icon icon="material-symbols:flag-rounded" />
+								<span className="text-xs">Report</span>
+							</Link>
+							<ScanTutorialButton />
+						</div>
 					</div>
 				</div>
-			</div>
 
-			{/* Images */}
-			<div className="overflow-x-scroll">
-				<div className="flex gap-2 w-max py-4">
-					{images.map((src, index) => (
-						<ImageViewer
-							key={index}
-							src={src}
-							alt="mii screenshot"
-							width={256}
-							height={170}
-							className="rounded-xl bg-zinc-300 border-2 border-zinc-300 shadow-md aspect-[3/2] h-full object-contain"
-							images={images}
-						/>
-					))}
+				{/* Images */}
+				<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 flex flex-col">
+					<h2 className="text-xl font-semibold text-amber-700 mb-3 flex items-center gap-2">
+						<Icon icon="material-symbols:photo-library" />
+						Gallery
+					</h2>
+
+					{images.length > 0 ? (
+						<div className="grid grid-cols-4 gap-2 w-full">
+							{images.map((src, index) => (
+								<div key={index} className="rounded-xl bg-amber-100 border-2 border-amber-300 shadow-md overflow-hidden">
+									<ImageViewer
+										src={src}
+										alt="mii screenshot"
+										width={256}
+										height={170}
+										className="rounded-xl aspect-[3/2] w-full object-contain drop-shadow-md hover:scale-105 transition-transform"
+										images={images}
+									/>
+								</div>
+							))}
+						</div>
+					) : (
+						<p className="indent-8 text-black/50">There is nothing here...</p>
+					)}
 				</div>
 			</div>
 		</div>
