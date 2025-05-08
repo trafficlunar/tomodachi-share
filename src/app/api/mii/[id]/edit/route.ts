@@ -19,6 +19,7 @@ const uploadsDirectory = path.join(process.cwd(), "public", "mii");
 const editSchema = z.object({
 	name: nameSchema.optional(),
 	tags: tagsSchema.optional(),
+	description: z.string().trim().max(256).optional(),
 	image1: z.union([z.instanceof(File), z.any()]).optional(),
 	image2: z.union([z.instanceof(File), z.any()]).optional(),
 	image3: z.union([z.instanceof(File), z.any()]).optional(),
@@ -62,13 +63,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	const parsed = editSchema.safeParse({
 		name: formData.get("name") ?? undefined,
 		tags: rawTags,
+		description: formData.get("description") ?? undefined,
 		image1: formData.get("image1"),
 		image2: formData.get("image2"),
 		image3: formData.get("image3"),
 	});
 
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
-	const { name, tags, image1, image2, image3 } = parsed.data;
+	const { name, tags, description, image1, image2, image3 } = parsed.data;
 
 	// Validate image files
 	const images: File[] = [];
@@ -88,6 +90,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	const updateData: Partial<Mii> = {};
 	if (name !== undefined) updateData.name = profanity.censor(name); // Censor potential inappropriate words
 	if (tags !== undefined) updateData.tags = tags.map((t) => profanity.censor(t)); // Same here
+	if (description !== undefined) updateData.description = profanity.censor(description);
 	if (images.length > 0) updateData.imageCount = images.length;
 
 	if (Object.keys(updateData).length == 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);

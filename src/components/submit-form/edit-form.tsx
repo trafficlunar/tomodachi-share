@@ -45,6 +45,7 @@ export default function EditForm({ mii, likes }: Props) {
 
 	const [name, setName] = useState(mii.name);
 	const [tags, setTags] = useState(mii.tags);
+	const [description, setDescription] = useState(mii.description);
 	const hasFilesChanged = useRef(false);
 
 	const handleSubmit = async () => {
@@ -64,6 +65,8 @@ export default function EditForm({ mii, likes }: Props) {
 		const formData = new FormData();
 		if (name != mii.name) formData.append("name", name);
 		if (tags != mii.tags) formData.append("tags", JSON.stringify(tags));
+		if (description != mii.description) formData.append("description", description);
+
 		if (hasFilesChanged.current) {
 			files.forEach((file, index) => {
 				// image1, image2, etc.
@@ -170,6 +173,20 @@ export default function EditForm({ mii, likes }: Props) {
 						Tags
 					</label>
 					<TagSelector tags={tags} setTags={setTags} />
+				</div>
+
+				<div className="w-full grid grid-cols-3 items-start">
+					<label htmlFor="reason-note" className="font-semibold py-2">
+						Description
+					</label>
+					<textarea
+						rows={3}
+						maxLength={256}
+						placeholder="(optional) Type a description..."
+						className="pill input !rounded-xl resize-none col-span-2"
+						value={description}
+						onChange={(e) => setDescription(e.target.value)}
+					/>
 				</div>
 
 				{/* Separator */}
