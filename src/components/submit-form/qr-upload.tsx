@@ -47,7 +47,7 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 	const { getRootProps, getInputProps } = useDropzone({
 		onDrop,
 		accept: {
-			"image/*": [".png", ".jpg", ".jpeg", ".bmp", ".webp"],
+			"image/*": [".png", ".jpg", ".jpeg", ".bmp", ".webp", ".heic"],
 		},
 	});
 
