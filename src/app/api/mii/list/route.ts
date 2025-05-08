@@ -82,12 +82,12 @@ export async function GET(request: NextRequest) {
 		tags: true,
 		createdAt: true,
 		// Mii liked check
-		likedBy: {
-			where: session && session.user?.id ? { userId: Number(session.user.id) } : {},
-			select: {
-				userId: true,
+		...(session?.user?.id && {
+			likedBy: {
+				where: { userId: Number(session.user.id) },
+				select: { userId: true },
 			},
-		},
+		}),
 		// Like count
 		_count: {
 			select: { likedBy: true },
@@ -109,7 +109,7 @@ export async function GET(request: NextRequest) {
 		miis: list.map(({ _count, likedBy, ...rest }) => ({
 			...rest,
 			likes: _count.likedBy,
-			isLiked: likedBy.length > 0,
+			isLiked: session?.user?.id ? likedBy.length > 0 : false,
 		})),
 	});
 }
