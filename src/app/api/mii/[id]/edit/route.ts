@@ -47,7 +47,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	});
 
 	if (!mii) return rateLimit.sendResponse({ error: "Mii not found" }, 404);
-	if (Number(session.user.id) !== mii.userId) return rateLimit.sendResponse({ error: "You don't have ownership of that Mii" }, 403);
+	if (!(Number(session.user.id) === mii.userId || Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)))
+		return rateLimit.sendResponse({ error: "You don't have ownership of that Mii" }, 403);
 
 	// Parse form data
 	const formData = await request.formData();

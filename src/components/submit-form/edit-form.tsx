@@ -65,7 +65,7 @@ export default function EditForm({ mii, likes }: Props) {
 		const formData = new FormData();
 		if (name != mii.name) formData.append("name", name);
 		if (tags != mii.tags) formData.append("tags", JSON.stringify(tags));
-		if (description != mii.description) formData.append("description", description);
+		if (description && description != mii.description) formData.append("description", description);
 
 		if (hasFilesChanged.current) {
 			files.forEach((file, index) => {
@@ -184,7 +184,7 @@ export default function EditForm({ mii, likes }: Props) {
 						maxLength={256}
 						placeholder="(optional) Type a description..."
 						className="pill input !rounded-xl resize-none col-span-2"
-						value={description}
+						value={description ?? ""}
 						onChange={(e) => setDescription(e.target.value)}
 					/>
 				</div>
