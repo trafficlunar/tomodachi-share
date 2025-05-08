@@ -25,7 +25,7 @@ export default async function ProfileInformation({ user: userData, createdAt, in
 			<div className="flex w-full gap-4 overflow-x-scroll">
 				{/* Profile picture */}
 				<Image
-					src={user?.image ?? "/missing.svg"}
+					src={user?.image ?? "/guest.webp"}
 					alt="profile picture"
 					width={128}
 					height={128}
@@ -38,6 +38,11 @@ export default async function ProfileInformation({ user: userData, createdAt, in
 						{id === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID) && (
 							<div data-tooltip="Admin" className="font-normal text-orange-400">
 								<Icon icon="mdi:shield-moon" />
+							</div>
+						)}
+						{process.env.NEXT_PUBLIC_CONTRIBUTORS_USER_IDS?.split(",").includes(id.toString()) && (
+							<div data-tooltip="Contributor" className="font-normal text-orange-400">
+								<Icon icon="mingcute:group-fill" />
 							</div>
 						)}
 					</h1>
