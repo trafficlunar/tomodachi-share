@@ -64,7 +64,8 @@ export async function GET(request: NextRequest) {
 	};
 
 	// Sorting by likes or newest
-	const orderBy: Prisma.MiiOrderByWithRelationInput = sort === "likes" ? { likedBy: { _count: "desc" } } : { createdAt: "desc" };
+	const orderBy: Prisma.MiiOrderByWithRelationInput[] =
+		sort === "likes" ? [{ likedBy: { _count: "desc" } }, { name: "asc" }] : [{ createdAt: "desc" }, { name: "asc" }];
 
 	const select: Prisma.MiiSelect = {
 		id: true,
