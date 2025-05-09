@@ -25,6 +25,8 @@
 - 🌎 Browse and add Miis from other players
 - 🏝️ Build your perfect island by finding the perfect residents
 
+### <a href="/DEVELOPMENT.MD">Development Instructions</a>
+
 ---
 
 <p align="center">
