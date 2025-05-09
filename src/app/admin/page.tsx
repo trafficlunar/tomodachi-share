@@ -72,7 +72,7 @@ export default async function AdminPage() {
 							<th>Target</th>
 							<th>Reason</th>
 							<th>Notes</th>
-							<th>Author</th>
+							<th>Reporter</th>
 							<th>Actions</th>
 						</tr>
 					</thead>

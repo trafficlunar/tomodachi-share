@@ -105,6 +105,7 @@ model Report {
   reason      ReportReason
   reasonNotes String?
 
+  // note: this refers to the person who made the report
   authorId  Int?
   createdAt DateTime @default(now())
 
