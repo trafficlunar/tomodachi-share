@@ -70,7 +70,7 @@ export default function ProfilePictureSettings() {
 								alt="new profile picture"
 								width={128}
 								height={128}
-								className="rounded-full aspect-square border-2 border-amber-500"
+								className="rounded-full aspect-square border-2 border-amber-500 object-cover"
 							/>
 						) : (
 							<>
@@ -114,7 +114,7 @@ export default function ProfilePictureSettings() {
 								alt="new profile picture"
 								width={128}
 								height={128}
-								className="rounded-full aspect-square border-2 border-amber-500 ml-auto"
+								className="rounded-full aspect-square border-2 border-amber-500 ml-auto object-cover"
 							/>
 						</div>
 					</SubmitDialogButton>
