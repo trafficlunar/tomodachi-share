@@ -37,7 +37,7 @@ export default function SubmitDialogButton({ title, description, onSubmit, error
 
 	return (
 		<>
-			<button onClick={() => setIsOpen(true)} className="pill button aspect-square !p-1 text-2xl">
+			<button onClick={() => setIsOpen(true)} className="pill button size-11 !p-1 text-2xl">
 				<Icon icon="material-symbols:check-rounded" />
 			</button>
 

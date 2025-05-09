@@ -81,7 +81,7 @@ export default function ProfileSettings() {
 			</div>
 
 			{/* Change Name */}
-			<div className="grid grid-cols-2">
+			<div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
 				<div>
 					<label htmlFor="deletion" className="font-semibold">
 						Change Display Name
@@ -89,7 +89,7 @@ export default function ProfileSettings() {
 					<p className="text-sm text-zinc-500">This is a display name shown on your profile — feel free to change it anytime</p>
 				</div>
 
-				<div className="flex justify-end gap-1">
+				<div className="flex justify-end gap-1 h-min">
 					<input
 						type="text"
 						className="pill input w-full max-w-64"
@@ -99,7 +99,7 @@ export default function ProfileSettings() {
 					/>
 					<SubmitDialogButton
 						title="Confirm Display Name Change"
-						description="Update your display name? This will only be visible on your profile. You can change it again later."
+						description="Are you sure? This will only be visible on your profile. You can change it again later."
 						error={displayNameChangeError}
 						onSubmit={handleSubmitDisplayNameChange}
 					>
@@ -112,7 +112,7 @@ export default function ProfileSettings() {
 			</div>
 
 			{/* Change Username */}
-			<div className="grid grid-cols-2">
+			<div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
 				<div>
 					<label htmlFor="deletion" className="font-semibold">
 						Change Username
@@ -158,7 +158,7 @@ export default function ProfileSettings() {
 			</div>
 
 			{/* Delete Account */}
-			<div className="grid grid-cols-2">
+			<div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
 				<div>
 					<label htmlFor="deletion" className="font-semibold">
 						Delete Account
