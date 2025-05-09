@@ -10,6 +10,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 import BannerForm from "@/components/admin/banner-form";
+import ControlCenter from "@/components/admin/control-center";
 
 export const metadata: Metadata = {
 	title: "Admin - TomodachiShare",
@@ -55,6 +56,15 @@ export default async function AdminPage() {
 			</div>
 
 			<BannerForm />
+
+			{/* Separator */}
+			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
+				<hr className="flex-grow border-zinc-300" />
+				<span>Control Center</span>
+				<hr className="flex-grow border-zinc-300" />
+			</div>
+
+			<ControlCenter />
 
 			{/* Separator */}
 			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">

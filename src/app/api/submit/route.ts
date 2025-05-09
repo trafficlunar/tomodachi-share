@@ -41,6 +41,11 @@ export async function POST(request: NextRequest) {
 	const check = await rateLimit.handle();
 	if (check) return check;
 
+	const response = await fetch(`${process.env.BASE_URL}/api/admin/can-submit`);
+	const { value } = await response.json();
+	if (!value) return rateLimit.sendResponse({ error: "Submissions are disabled" }, 409);
+
+	// Parse data
 	const formData = await request.formData();
 
 	let rawTags: string[];
