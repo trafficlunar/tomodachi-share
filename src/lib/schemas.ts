@@ -35,9 +35,9 @@ export const tagsSchema = z
 	.max(8, { message: "There cannot be more than 8 tags" });
 
 export const idSchema = z.coerce
-	.number({ message: "Mii ID must be a number" })
-	.int({ message: "Mii ID must be an integer" })
-	.positive({ message: "Mii ID must be valid" });
+	.number({ message: "ID must be a number" })
+	.int({ message: "ID must be an integer" })
+	.positive({ message: "ID must be valid" });
 
 // Account Info
 export const usernameSchema = z

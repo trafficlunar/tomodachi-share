@@ -12,7 +12,7 @@ export async function PATCH(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const rateLimit = new RateLimit(request, 1);
+	const rateLimit = new RateLimit(request, 3);
 	const check = await rateLimit.handle();
 	if (check) return check;
 

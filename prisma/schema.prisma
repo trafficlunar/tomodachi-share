@@ -19,6 +19,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   usernameUpdatedAt DateTime?
+  imageUpdatedAt    DateTime?
 
   accounts Account[]
   sessions Session[]

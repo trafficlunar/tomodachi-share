@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 
 import { displayNameSchema, usernameSchema } from "@/lib/schemas";
 
+import ProfilePictureSettings from "./profile-picture";
 import SubmitDialogButton from "./submit-dialog-button";
 import DeleteAccount from "./delete-account";
 
@@ -80,12 +81,13 @@ export default function ProfileSettings() {
 				<hr className="flex-grow border-zinc-300" />
 			</div>
 
+			{/* Profile Picture */}
+			<ProfilePictureSettings />
+
 			{/* Change Name */}
 			<div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
 				<div>
-					<label htmlFor="deletion" className="font-semibold">
-						Change Display Name
-					</label>
+					<label className="font-semibold">Change Display Name</label>
 					<p className="text-sm text-zinc-500">This is a display name shown on your profile — feel free to change it anytime</p>
 				</div>
 
@@ -103,7 +105,7 @@ export default function ProfileSettings() {
 						error={displayNameChangeError}
 						onSubmit={handleSubmitDisplayNameChange}
 					>
-						<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 px-2 py-1">
+						<div className="bg-orange-100 rounded-xl border-2 border-amber-500 mt-4 px-2 py-1">
 							<p className="font-semibold">New display name:</p>
 							<p className="indent-4">&apos;{displayName}&apos;</p>
 						</div>
@@ -114,9 +116,7 @@ export default function ProfileSettings() {
 			{/* Change Username */}
 			<div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
 				<div>
-					<label htmlFor="deletion" className="font-semibold">
-						Change Username
-					</label>
+					<label className="font-semibold">Change Username</label>
 					<p className="text-sm text-zinc-500">Your unique tag on the site. Can only be changed once every 90 days</p>
 				</div>
 
@@ -142,7 +142,7 @@ export default function ProfileSettings() {
 							{usernameDate.toDate().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.
 						</p>
 
-						<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 px-2 py-1">
+						<div className="bg-orange-100 rounded-xl border-2 border-amber-500 mt-4 px-2 py-1">
 							<p className="font-semibold">New username:</p>
 							<p className="indent-4">&apos;@{username}&apos;</p>
 						</div>
@@ -160,9 +160,7 @@ export default function ProfileSettings() {
 			{/* Delete Account */}
 			<div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
 				<div>
-					<label htmlFor="deletion" className="font-semibold">
-						Delete Account
-					</label>
+					<label className="font-semibold">Delete Account</label>
 					<p className="text-sm text-zinc-500">This will permanently remove your account and all uploaded Miis. This action cannot be undone</p>
 				</div>
 

@@ -14,7 +14,7 @@ import { idSchema, nameSchema, tagsSchema } from "@/lib/schemas";
 import { validateImage } from "@/lib/images";
 import { RateLimit } from "@/lib/rate-limit";
 
-const uploadsDirectory = path.join(process.cwd(), "public", "mii");
+const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
 const editSchema = z.object({
 	name: nameSchema.optional(),
