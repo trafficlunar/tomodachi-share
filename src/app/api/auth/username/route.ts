@@ -20,7 +20,7 @@ export async function PATCH(request: NextRequest) {
 	if (!username) return rateLimit.sendResponse({ error: "New username is required" }, 400);
 
 	// Check if username was updated in the last 90 days
-	const user = await prisma.user.findUnique({ where: { email: session.user?.email ?? undefined } });
+	const user = await prisma.user.findUnique({ where: { id: Number(session.user.id) } });
 	if (user && user.usernameUpdatedAt) {
 		const timePeriod = dayjs().subtract(90, "days");
 		const lastUpdate = dayjs(user.usernameUpdatedAt);
@@ -39,7 +39,7 @@ export async function PATCH(request: NextRequest) {
 
 	try {
 		await prisma.user.update({
-			where: { email: session.user?.email ?? undefined },
+			where: { id: Number(session.user.id) },
 			data: { username, usernameUpdatedAt: new Date() },
 		});
 	} catch (error) {

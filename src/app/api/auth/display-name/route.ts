@@ -25,7 +25,7 @@ export async function PATCH(request: NextRequest) {
 
 	try {
 		await prisma.user.update({
-			where: { email: session.user?.email ?? undefined },
+			where: { id: Number(session.user.id) },
 			data: { name: displayName },
 		});
 	} catch (error) {
