@@ -63,8 +63,8 @@ export default async function AdminPage() {
 				<hr className="flex-grow border-zinc-300" />
 			</div>
 
-			<div className="bg-orange-100 rounded-xl border-2 border-orange-400 w-full">
-				<table className="w-full text-sm table-fixed rounded-xl overflow-hidden">
+			<div className="bg-orange-100 rounded-xl border-2 border-orange-400 w-full overflow-x-scroll">
+				<table className="w-full text-sm table-fixed rounded-xl overflow-hidden min-w-5xl">
 					<thead className="bg-orange-200 rounded">
 						<tr className=" border-b-2 border-orange-300 *:px-4 *:py-2 *:font-semibold *:text-left">
 							<th>Type</th>
