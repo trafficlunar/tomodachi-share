@@ -25,13 +25,13 @@ export async function PATCH(request: NextRequest) {
 	const check = await rateLimit.handle();
 	if (check) return check;
 
-	// Check if profile picture was updated in the last 30 days
+	// Check if profile picture was updated in the last 7 days
 	const user = await prisma.user.findUnique({ where: { id: Number(session.user.id) } });
 	if (user && user.imageUpdatedAt) {
-		const timePeriod = dayjs().subtract(30, "days");
+		const timePeriod = dayjs().subtract(7, "days");
 		const lastUpdate = dayjs(user.imageUpdatedAt);
 
-		if (lastUpdate.isAfter(timePeriod)) return rateLimit.sendResponse({ error: "Profile picture was changed in the last 30 days" }, 400);
+		if (lastUpdate.isAfter(timePeriod)) return rateLimit.sendResponse({ error: "Profile picture was changed in the last 7 days" }, 400);
 	}
 
 	// Parse data
@@ -62,7 +62,7 @@ export async function PATCH(request: NextRequest) {
 
 	try {
 		const buffer = Buffer.from(await image.arrayBuffer());
-		const webpBuffer = await sharp(buffer).resize({ width: 128, height: 128 }).webp({ quality: 85 }).toBuffer();
+		const webpBuffer = await sharp(buffer, { animated: true }).resize({ width: 128, height: 128 }).webp({ quality: 85 }).toBuffer();
 		const fileLocation = path.join(uploadsDirectory, `${session.user.id}.webp`);
 
 		await fs.writeFile(fileLocation, webpBuffer);

@@ -15,7 +15,7 @@ export default function ProfilePictureSettings() {
 	const [error, setError] = useState<string | undefined>(undefined);
 	const [newPicture, setNewPicture] = useState<FileWithPath | undefined>();
 
-	const changeDate = dayjs().add(30, "days");
+	const changeDate = dayjs().add(7, "days");
 
 	const handleSubmit = async (close: () => void) => {
 		const formData = new FormData();
@@ -53,7 +53,7 @@ export default function ProfilePictureSettings() {
 		<div className="grid grid-cols-2">
 			<div>
 				<label className="font-semibold">Profile Picture</label>
-				<p className="text-sm text-zinc-500">Manage your profile picture. Can only be changed once every 30 days.</p>
+				<p className="text-sm text-zinc-500">Manage your profile picture. Can only be changed once every 7 days.</p>
 			</div>
 
 			<div className="flex flex-col">
@@ -98,7 +98,7 @@ export default function ProfilePictureSettings() {
 					)}
 					<SubmitDialogButton
 						title="Confirm Profile Picture Change"
-						description="Are you sure? Your profile picture can only be changed every 30 days."
+						description="Are you sure? Your profile picture can only be changed every 7 days."
 						error={error}
 						onSubmit={handleSubmit}
 					>
