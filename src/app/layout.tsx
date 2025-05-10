@@ -14,8 +14,25 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
+	metadataBase: new URL(process.env.BASE_URL!),
 	title: "TomodachiShare",
 	description: "Discover and share Mii residents for your Tomodachi Life island!",
+	keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection"],
+	category: "Gaming",
+	openGraph: {
+		locale: "en_US",
+		siteName: "TomodachiShare",
+		title: "TomodachiShare",
+		description: "Discover and share Mii residents for your Tomodachi Life island!",
+		images: "/preview.png",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "TomodachiShare - Discover and Share Your Mii Residents",
+		description: "Discover and share Mii residents for your Tomodachi Life island!",
+		images: "/preview.png",
+		creator: "@trafficlunr",
+	},
 	robots: {
 		index: true,
 		follow: true,
