@@ -1,31 +1,30 @@
+import Link from "next/link";
 import Image from "next/image";
-import { User } from "@prisma/client";
 import { Icon } from "@iconify/react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
 
 interface Props {
-	user?: User;
-	createdAt: Date;
+	userId?: number;
 	inSettings?: boolean;
 }
 
-export default async function ProfileInformation({ user: userData, createdAt, inSettings }: Props) {
+export default async function ProfileInformation({ userId, inSettings }: Props) {
 	const session = await auth();
 
-	const id = userData && userData.id ? userData.id : Number(session?.user.id);
-	const user = userData ? userData : session?.user;
-
+	const id = userId ? userId : Number(session?.user.id);
+	const user = await prisma.user.findUnique({ where: { id } });
 	const likedMiis = await prisma.like.count({ where: { userId: id } });
+
+	if (!user) return null;
 
 	return (
 		<div className="flex gap-4 mb-2 max-md:flex-col">
 			<div className="flex w-full gap-4 overflow-x-scroll">
 				{/* Profile picture */}
 				<Image
-					src={user?.image ?? "/guest.webp"}
+					src={user.image ?? "/guest.webp"}
 					alt="profile picture"
 					width={128}
 					height={128}
@@ -34,7 +33,7 @@ export default async function ProfileInformation({ user: userData, createdAt, in
 				{/* User information */}
 				<div className="flex flex-col w-full relative">
 					<h1 className="text-4xl font-extrabold w-full break-words flex items-center gap-2">
-						{user?.name}
+						{user.name}
 						{id === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID) && (
 							<div data-tooltip="Admin" className="font-normal text-orange-400">
 								<Icon icon="mdi:shield-moon" />
@@ -51,8 +50,8 @@ export default async function ProfileInformation({ user: userData, createdAt, in
 					<h4 className="mt-auto text-sm">
 						Liked <span className="font-bold">{likedMiis}</span> Miis
 					</h4>
-					<h4 className="text-sm" title={`${createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC`}>
-						Created: {createdAt.toLocaleDateString("en-GB", { month: "long", day: "2-digit", year: "numeric" })}
+					<h4 className="text-sm" title={`${user.createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC`}>
+						Created: {user.createdAt.toLocaleDateString("en-GB", { month: "long", day: "2-digit", year: "numeric" })}
 					</h4>
 				</div>
 			</div>

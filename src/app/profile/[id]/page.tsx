@@ -77,8 +77,8 @@ export default async function ProfilePage({ params }: Props) {
 
 	return (
 		<div>
-			<ProfileInformation user={user} createdAt={user.createdAt} />
-			<MiiList isLoggedIn={session?.user != null} userId={user?.id} sessionUserId={Number(session?.user.id ?? -1)} />
+			<ProfileInformation userId={user.id} />
+			<MiiList isLoggedIn={session?.user != null} userId={user.id} sessionUserId={Number(session?.user.id ?? -1)} />
 		</div>
 	);
 }
