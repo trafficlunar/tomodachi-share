@@ -1,12 +1,13 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import useSWR from "swr";
 
+import { Prisma } from "@prisma/client";
 import { Icon } from "@iconify/react";
+import { z } from "zod";
 
-import Skeleton from "./skeleton";
+import { querySchema } from "@/lib/schemas";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+
 import FilterSelect from "./filter-select";
 import SortSelect from "./sort-select";
 import Carousel from "../carousel";
@@ -15,54 +16,114 @@ import DeleteMiiButton from "../delete-mii";
 import Pagination from "./pagination";
 
 interface Props {
-	isLoggedIn: boolean;
-	// Profiles
-	userId?: number;
-	sessionUserId?: number;
+	searchParams: { [key: string]: string | string[] | undefined };
+	userId?: number; // Profiles
 }
 
-interface ApiResponse {
-	total: number;
-	filtered: number;
-	lastPage: number;
-	miis: {
-		id: number;
-		user?: {
-			id: number;
-			username: string;
-		};
-		name: string;
-		imageCount: number;
-		tags: string[];
-		createdAt: string;
-		likes: number;
-		isLiked: boolean;
-	}[];
-}
+const searchSchema = z.object({
+	q: querySchema.optional(),
+	sort: z.enum(["newest", "likes"], { message: "Sort must be either 'newest' or 'likes'" }).default("newest"),
+	tags: z
+		.string()
+		.optional()
+		.transform((value) =>
+			value
+				?.split(",")
+				.map((tag) => tag.trim())
+				.filter((tag) => tag.length > 0)
+		),
+	// todo: incorporate tagsSchema
+	// Pages
+	limit: z.coerce
+		.number({ message: "Limit must be a number" })
+		.int({ message: "Limit must be an integer" })
+		.min(1, { message: "Limit must be at least 1" })
+		.max(100, { message: "Limit cannot be more than 100" })
+		.optional(),
+	page: z.coerce
+		.number({ message: "Page must be a number" })
+		.int({ message: "Page must be an integer" })
+		.min(1, { message: "Page must be at least 1" })
+		.optional(),
+});
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+export default async function MiiList({ searchParams, userId }: Props) {
+	const session = await auth();
 
-export default function MiiList({ isLoggedIn, userId, sessionUserId }: Props) {
-	const searchParams = useSearchParams();
-	const { data, error } = useSWR<ApiResponse>(`/api/mii/list?${searchParams.toString()}${userId ? `&userId=${userId}` : ""}`, fetcher);
+	const parsed = searchSchema.safeParse(searchParams);
+	if (!parsed.success) return <h1>{parsed.error.errors[0].message}</h1>;
+
+	const { q: query, sort, tags, page = 1, limit = 24 } = parsed.data;
+
+	const where: Prisma.MiiWhereInput = {
+		// Searching
+		...(query && {
+			OR: [{ name: { contains: query, mode: "insensitive" } }, { tags: { has: query } }],
+		}),
+		// Tag filtering
+		...(tags && tags.length > 0 && { tags: { hasEvery: tags } }),
+		// Profiles
+		...(userId && { userId }),
+	};
+
+	// Sorting by likes or newest
+	const orderBy: Prisma.MiiOrderByWithRelationInput[] =
+		sort === "likes" ? [{ likedBy: { _count: "desc" } }, { name: "asc" }] : [{ createdAt: "desc" }, { name: "asc" }];
+
+	const select: Prisma.MiiSelect = {
+		id: true,
+		// Don't show when userId is specified
+		...(!userId && {
+			user: {
+				select: {
+					id: true,
+					username: true,
+				},
+			},
+		}),
+		name: true,
+		imageCount: true,
+		tags: true,
+		createdAt: true,
+		// Mii liked check
+		...(session?.user?.id && {
+			likedBy: {
+				where: { userId: Number(session.user.id) },
+				select: { userId: true },
+			},
+		}),
+		// Like count
+		_count: {
+			select: { likedBy: true },
+		},
+	};
+
+	const skip = (page - 1) * limit;
+
+	const [totalCount, filteredCount, list] = await Promise.all([
+		prisma.mii.count({ where: { ...where, userId } }),
+		prisma.mii.count({ where, skip, take: limit }),
+		prisma.mii.findMany({ where, orderBy, select, skip: (page - 1) * limit, take: limit }),
+	]);
+
+	const lastPage = Math.ceil(totalCount / limit);
+	const miis = list.map(({ _count, likedBy, ...rest }) => ({
+		...rest,
+		likes: _count.likedBy,
+		isLiked: session?.user?.id ? likedBy.length > 0 : false,
+	}));
 
 	return (
 		<div className="w-full">
 			<div className="flex justify-between items-end mb-2 max-[32rem]:flex-col max-[32rem]:items-center">
 				<p className="text-lg">
-					{data ? (
-						data.total == data.filtered ? (
-							<>
-								<span className="font-extrabold">{data.total}</span> Miis
-							</>
-						) : (
-							<>
-								<span className="font-extrabold">{data.filtered}</span> of <span className="font-extrabold">{data.total}</span> Miis
-							</>
-						)
+					{totalCount == filteredCount ? (
+						<>
+							<span className="font-extrabold">{totalCount}</span> Miis
+						</>
 					) : (
 						<>
-							<span className="font-extrabold">0</span> Miis
+							<span className="font-extrabold">{filteredCount}</span> of <span className="font-extrabold">{totalCount}</span> Miis
 						</>
 					)}
 				</p>
@@ -73,71 +134,56 @@ export default function MiiList({ isLoggedIn, userId, sessionUserId }: Props) {
 				</div>
 			</div>
 
-			{data ? (
-				data.miis.length > 0 ? (
-					<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[30rem]:grid-cols-1">
-						{data.miis.map((mii) => (
-							<div
-								key={mii.id}
-								className="flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3 transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600"
-							>
-								<Carousel
-									images={[
-										`/mii/${mii.id}/image?type=mii`,
-										`/mii/${mii.id}/image?type=qr-code`,
-										...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`),
-									]}
-								/>
+			<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[30rem]:grid-cols-1">
+				{miis.map((mii) => (
+					<div
+						key={mii.id}
+						className="flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3 transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600"
+					>
+						<Carousel
+							images={[
+								`/mii/${mii.id}/image?type=mii`,
+								`/mii/${mii.id}/image?type=qr-code`,
+								...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`),
+							]}
+						/>
 
-								<div className="p-4 flex flex-col gap-1 h-full">
-									<Link href={`/mii/${mii.id}`} className="font-bold text-2xl line-clamp-1" title={mii.name}>
-										{mii.name}
+						<div className="p-4 flex flex-col gap-1 h-full">
+							<Link href={`/mii/${mii.id}`} className="font-bold text-2xl line-clamp-1" title={mii.name}>
+								{mii.name}
+							</Link>
+							<div id="tags" className="flex flex-wrap gap-1">
+								{mii.tags.map((tag) => (
+									<Link href={{ query: { tags: tag } }} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
+										{tag}
 									</Link>
-									<div id="tags" className="flex flex-wrap gap-1">
-										{mii.tags.map((tag) => (
-											<Link href={{ query: { tags: tag } }} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
-												{tag}
-											</Link>
-										))}
-									</div>
-
-									<div className="mt-auto grid grid-cols-2 items-center">
-										<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} isLoggedIn={isLoggedIn} abbreviate />
-
-										{!userId && (
-											<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis">
-												@{mii.user?.username}
-											</Link>
-										)}
-
-										{userId && sessionUserId == userId && (
-											<div className="flex gap-1 text-2xl justify-end text-zinc-400">
-												<Link href={`/edit/${mii.id}`} title="Edit Mii" data-tooltip="Edit">
-													<Icon icon="mdi:pencil" />
-												</Link>
-												<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likes} />
-											</div>
-										)}
-									</div>
-								</div>
+								))}
 							</div>
-						))}
-					</div>
-				) : (
-					<p className="text-xl font-semibold text-center mt-10">No results found.</p>
-				)
-			) : error ? (
-				<p className="text-xl text-red-400 font-semibold text-center mt-10">Error: {error}</p>
-			) : (
-				// Show skeleton when data is loading
-				<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[30rem]:grid-cols-1">
-					{Array.from({ length: 24 }).map((_, i) => (
-						<Skeleton key={i} />
-					))}
-				</div>
-			)}
 
-			{data && <Pagination lastPage={data.lastPage} />}
+							<div className="mt-auto grid grid-cols-2 items-center">
+								<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} isLoggedIn={session?.user != null} abbreviate />
+
+								{!userId && (
+									<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis">
+										@{mii.user?.username}
+									</Link>
+								)}
+
+								{userId && Number(session?.user.id) == userId && (
+									<div className="flex gap-1 text-2xl justify-end text-zinc-400">
+										<Link href={`/edit/${mii.id}`} title="Edit Mii" data-tooltip="Edit">
+											<Icon icon="mdi:pencil" />
+										</Link>
+										<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likes} />
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+				))}
+			</div>
+
+			<Pagination lastPage={lastPage} />
 		</div>
 	);
 }

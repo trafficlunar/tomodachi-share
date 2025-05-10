@@ -1,13 +1,15 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 import ProfileInformation from "@/components/profile-information";
 import MiiList from "@/components/mii-list";
+import Skeleton from "@/components/mii-list/skeleton";
 
 interface Props {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 	params: Promise<{ id: string }>;
 }
 
@@ -63,8 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	};
 }
 
-export default async function ProfilePage({ params }: Props) {
-	const session = await auth();
+export default async function ProfilePage({ searchParams, params }: Props) {
 	const { id } = await params;
 
 	const user = await prisma.user.findUnique({
@@ -78,7 +79,9 @@ export default async function ProfilePage({ params }: Props) {
 	return (
 		<div>
 			<ProfileInformation userId={user.id} />
-			<MiiList isLoggedIn={session?.user != null} userId={user.id} sessionUserId={Number(session?.user.id ?? -1)} />
+			<Suspense fallback={<Skeleton />}>
+				<MiiList searchParams={await searchParams} userId={user.id} />
+			</Suspense>
 		</div>
 	);
 }
