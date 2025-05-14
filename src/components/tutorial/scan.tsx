@@ -38,7 +38,7 @@ export default function ScanTutorialButton() {
 		<>
 			<button type="button" onClick={() => setIsOpen(true)} className="text-3xl cursor-pointer">
 				<Icon icon="fa:question-circle" />
-				<span className="text-xs">Tutorial</span>
+				<span>Tutorial</span>
 			</button>
 
 			{isOpen &&

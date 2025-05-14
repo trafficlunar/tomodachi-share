@@ -78,9 +78,11 @@ export default async function ProfilePage({ searchParams, params }: Props) {
 	return (
 		<div>
 			<ProfileInformation userId={user.id} />
-			<Suspense fallback={<Skeleton />}>
-				<MiiList searchParams={await searchParams} userId={user.id} />
-			</Suspense>
+			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-4">
+				<Suspense fallback={<Skeleton />}>
+					<MiiList searchParams={await searchParams} userId={user.id} />
+				</Suspense>
+			</div>
 		</div>
 	);
 }

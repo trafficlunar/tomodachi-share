@@ -18,6 +18,7 @@ import Pagination from "./pagination";
 interface Props {
 	searchParams: { [key: string]: string | string[] | undefined };
 	userId?: number; // Profiles
+	inLikesPage?: boolean; // Self-explanatory
 }
 
 const searchSchema = z.object({
@@ -47,7 +48,7 @@ const searchSchema = z.object({
 		.optional(),
 });
 
-export default async function MiiList({ searchParams, userId }: Props) {
+export default async function MiiList({ searchParams, userId, inLikesPage }: Props) {
 	const session = await auth();
 
 	const parsed = searchSchema.safeParse(searchParams);
@@ -55,7 +56,19 @@ export default async function MiiList({ searchParams, userId }: Props) {
 
 	const { q: query, sort, tags, page = 1, limit = 24 } = parsed.data;
 
+	let miiIdsLiked: number[] | undefined = undefined;
+
+	if (inLikesPage && session?.user.id) {
+		const likedMiis = await prisma.like.findMany({
+			where: { userId: Number(session.user.id) },
+			select: { miiId: true },
+		});
+		miiIdsLiked = likedMiis.map((like) => like.miiId);
+	}
+
 	const where: Prisma.MiiWhereInput = {
+		// Only show liked miis on likes page
+		...(inLikesPage && miiIdsLiked && { id: { in: miiIdsLiked } }),
 		// Searching
 		...(query && {
 			OR: [{ name: { contains: query, mode: "insensitive" } }, { tags: { has: query } }],

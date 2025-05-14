@@ -75,7 +75,7 @@ export default function ProfileSettings() {
 			</div>
 
 			{/* Separator */}
-			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
+			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-1">
 				<hr className="flex-grow border-zinc-300" />
 				<span>Account Info</span>
 				<hr className="flex-grow border-zinc-300" />

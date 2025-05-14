@@ -53,7 +53,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 			{inMiiPage ? (
 				<button onClick={() => setIsOpen(true)} className="cursor-pointer">
 					<Icon icon="mdi:trash" />
-					<span className="text-xs">Delete</span>
+					<span>Delete</span>
 				</button>
 			) : (
 				<button onClick={() => setIsOpen(true)} title="Delete Mii" data-tooltip="Delete" className="cursor-pointer aspect-square">

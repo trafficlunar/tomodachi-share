@@ -22,7 +22,7 @@ export default async function ProfileSettingsPage() {
 
 	return (
 		<div>
-			<ProfileInformation inSettings />
+			<ProfileInformation page="settings" />
 			<ProfileSettings />
 		</div>
 	);
