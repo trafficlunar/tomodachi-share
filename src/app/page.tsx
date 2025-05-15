@@ -18,8 +18,12 @@ export default async function Page({ searchParams }: Props) {
 	}
 
 	return (
-		<Suspense fallback={<Skeleton />}>
-			<MiiList searchParams={await searchParams} />
-		</Suspense>
+		<>
+			<h1 className="sr-only">TomodachiShare - index page</h1>
+
+			<Suspense fallback={<Skeleton />}>
+				<MiiList searchParams={await searchParams} />
+			</Suspense>
+		</>
 	);
 }

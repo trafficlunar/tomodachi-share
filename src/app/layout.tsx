@@ -15,7 +15,7 @@ const lexend = Lexend({
 
 export const metadata: Metadata = {
 	metadataBase: new URL(process.env.BASE_URL!),
-	title: "TomodachiShare",
+	title: "TomodachiShare — home for Tomodachi Life Miis!",
 	description: "Discover and share Mii residents for your Tomodachi Life island!",
 	keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection"],
 	category: "Gaming",
@@ -54,7 +54,7 @@ export default function RootLayout({
 				<Providers>
 					<Header />
 					<AdminBanner />
-					<div className="px-4 py-8 max-w-7xl w-full flex-grow flex flex-col">{children}</div>
+					<main className="px-4 py-8 max-w-7xl w-full flex-grow flex flex-col">{children}</main>
 					<Footer />
 				</Providers>
 			</body>

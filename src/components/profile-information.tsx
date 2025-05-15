@@ -39,9 +39,7 @@ export default async function ProfileInformation({ userId, page }: Props) {
 				{/* User information */}
 				<div className="flex flex-col w-full relative py-3">
 					<div className="flex items-center gap-2">
-						<Link href={`/profile/${user.id}`} className="text-3xl font-extrabold break-words">
-							{user.name}
-						</Link>
+						<h1 className="text-3xl font-extrabold break-words">{user.name}</h1>
 						{isAdmin && (
 							<div data-tooltip="Admin" className="text-orange-400">
 								<Icon icon="mdi:shield-moon" className="text-2xl" />
@@ -68,7 +66,7 @@ export default async function ProfileInformation({ userId, page }: Props) {
 			</div>
 
 			{/* Buttons */}
-			<div className="flex gap-1 w-fit text-3xl text-orange-400 max-md:place-self-center *:size-17 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-90 *:hover:scale-[1.08] *:[&_span]:text-sm">
+			<div className="flex gap-1 w-fit text-3xl text-orange-400 max-md:place-self-center *:size-17 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-sm">
 				{!isOwnProfile && (
 					<Link href={`/report/user/${id}`}>
 						<Icon icon="material-symbols:flag-rounded" />
