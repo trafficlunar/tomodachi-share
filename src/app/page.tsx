@@ -34,6 +34,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default async function Page({ searchParams }: Props) {
 	const session = await auth();
+	const { tags } = await searchParams;
 
 	if (session?.user && !session.user.username) {
 		redirect("/create-username");
@@ -41,7 +42,7 @@ export default async function Page({ searchParams }: Props) {
 
 	return (
 		<>
-			<h1 className="sr-only">TomodachiShare - index page</h1>
+			<h1 className="sr-only">{tags ? `Miis tagged with '${tags}' - TomodachiShare` : "TomodachiShare - index mii list"}</h1>
 
 			<Suspense fallback={<Skeleton />}>
 				<MiiList searchParams={await searchParams} />
