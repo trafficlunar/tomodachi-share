@@ -1,18 +1,23 @@
 "use client";
 
 import { redirect, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TagSelector from "../tag-selector";
 
 export default function FilterSelect() {
 	const searchParams = useSearchParams();
+
 	const rawTags = searchParams.get("tags");
-	const preexistingTags = rawTags
-		? rawTags
-				.split(",")
-				.map((tag) => tag.trim())
-				.filter((tag) => tag.length > 0)
-		: [];
+	const preexistingTags = useMemo(
+		() =>
+			rawTags
+				? rawTags
+						.split(",")
+						.map((tag) => tag.trim())
+						.filter((tag) => tag.length > 0)
+				: [],
+		[rawTags]
+	);
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [tags, setTags] = useState<string[]>(preexistingTags);
@@ -20,6 +25,10 @@ export default function FilterSelect() {
 	const handleSubmit = () => {
 		redirect(`/?tags=${encodeURIComponent(tags.join(","))}`);
 	};
+
+	useEffect(() => {
+		setTags(preexistingTags);
+	}, [preexistingTags]);
 
 	return (
 		<div className="relative">
