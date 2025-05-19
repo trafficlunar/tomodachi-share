@@ -16,7 +16,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 	if (!tags) return {};
 
-	const description = `Discover Miis tagged ${tags} for your Tomodachi Life island!`;
+	const description = `Discover Miis tagged '${tags}' for your Tomodachi Life island!`;
 
 	return {
 		metadataBase: new URL(process.env.BASE_URL!),
