@@ -4,9 +4,9 @@ import { Icon } from "@iconify/react";
 import { useSelect } from "downshift";
 import { redirect, useSearchParams } from "next/navigation";
 
-type Sort = "likes" | "newest";
+type Sort = "newest" | "likes" | "oldest";
 
-const items = ["likes", "newest"];
+const items = ["newest", "likes", "oldest"];
 
 export default function SortSelect() {
 	const searchParams = useSearchParams();

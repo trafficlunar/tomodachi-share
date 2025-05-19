@@ -23,7 +23,7 @@ interface Props {
 
 const searchSchema = z.object({
 	q: querySchema.optional(),
-	sort: z.enum(["newest", "likes"], { message: "Sort must be either 'newest' or 'likes'" }).default("newest"),
+	sort: z.enum(["newest", "likes", "oldest"], { message: "Sort must be either 'newest', 'likes', or 'oldest'" }).default("newest"),
 	tags: z
 		.string()
 		.optional()
@@ -79,9 +79,17 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		...(userId && { userId }),
 	};
 
-	// Sorting by likes or newest
-	const orderBy: Prisma.MiiOrderByWithRelationInput[] =
-		sort === "likes" ? [{ likedBy: { _count: "desc" } }, { name: "asc" }] : [{ createdAt: "desc" }, { name: "asc" }];
+	// Sorting by likes, newest, or oldest
+	let orderBy: Prisma.MiiOrderByWithRelationInput[];
+
+	if (sort === "likes") {
+		orderBy = [{ likedBy: { _count: "desc" } }, { name: "asc" }];
+	} else if (sort === "oldest") {
+		orderBy = [{ createdAt: "asc" }, { name: "asc" }];
+	} else {
+		// default to newest
+		orderBy = [{ createdAt: "desc" }, { name: "asc" }];
+	}
 
 	const select: Prisma.MiiSelect = {
 		id: true,
