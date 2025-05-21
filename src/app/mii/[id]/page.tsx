@@ -38,13 +38,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	// Bots get redirected anyways
 	if (!mii) return {};
 
-	const miiImageUrl = `/mii/${mii.id}/image?type=mii`;
-	const qrCodeUrl = `/mii/${mii.id}/image?type=qr-code`;
+	const metadataImageUrl = `/mii/${mii.id}/image?type=metadata`;
 
 	const username = `@${mii.user.username}`;
 
 	return {
-		metadataBase: new URL(process.env.BASE_URL!),
+		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `${mii.name} - TomodachiShare`,
 		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
 		keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection", ...mii.tags],
@@ -53,7 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			type: "article",
 			title: `${mii.name} - TomodachiShare`,
 			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
-			images: [miiImageUrl, qrCodeUrl],
+			images: [metadataImageUrl],
 			publishedTime: mii.createdAt.toISOString(),
 			authors: username,
 		},
@@ -61,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			card: "summary_large_image",
 			title: `${mii.name} - TomodachiShare`,
 			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
-			images: [miiImageUrl, qrCodeUrl],
+			images: [metadataImageUrl],
 			creator: username,
 		},
 		alternates: {

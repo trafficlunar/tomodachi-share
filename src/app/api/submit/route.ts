@@ -14,7 +14,7 @@ import { prisma } from "@/lib/prisma";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 import { RateLimit } from "@/lib/rate-limit";
 
-import { validateImage } from "@/lib/images";
+import { generateMetadataImage, validateImage } from "@/lib/images";
 import { convertQrCode } from "@/lib/qr-codes";
 import Mii from "@/lib/mii.js/mii";
 import { TomodachiLifeMii } from "@/lib/tomodachi-life-mii";
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 	const check = await rateLimit.handle();
 	if (check) return check;
 
-	const response = await fetch(`${process.env.BASE_URL}/api/admin/can-submit`);
+	const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
 	const { value } = await response.json();
 	if (!value) return rateLimit.sendResponse({ error: "Submissions are disabled" }, 409);
 
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
 	}
 
 	try {
-		// Compress and upload
+		// Compress and store
 		const studioWebpBuffer = await sharp(studioBuffer).webp({ quality: 85 }).toBuffer();
 		const studioFileLocation = path.join(miiUploadsDirectory, "mii.webp");
 
@@ -152,16 +152,17 @@ export async function POST(request: NextRequest) {
 		generatedCode.addData(byteString, "Byte");
 		generatedCode.make();
 
-		// Upload QR code
+		// Store QR code
 		const codeDataUrl = generatedCode.createDataURL();
 		const codeBase64 = codeDataUrl.replace(/^data:image\/gif;base64,/, "");
 		const codeBuffer = Buffer.from(codeBase64, "base64");
 
-		// Compress and upload
+		// Compress and store
 		const codeWebpBuffer = await sharp(codeBuffer).webp({ quality: 85 }).toBuffer();
 		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
 
 		await fs.writeFile(codeFileLocation, codeWebpBuffer);
+		await generateMetadataImage(miiRecord, session.user.username!);
 	} catch (error) {
 		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
@@ -170,7 +171,7 @@ export async function POST(request: NextRequest) {
 		return rateLimit.sendResponse({ error: "Failed to process and store Mii files" }, 500);
 	}
 
-	// Compress and upload user images
+	// Compress and store user images
 	try {
 		await Promise.all(
 			images.map(async (image, index) => {
@@ -192,7 +193,7 @@ export async function POST(request: NextRequest) {
 			},
 		});
 	} catch (error) {
-		console.error("Error uploading user images:", error);
+		console.error("Error storing user images:", error);
 		return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
 	}
 

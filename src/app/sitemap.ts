@@ -4,9 +4,9 @@ import type { MetadataRoute } from "next";
 type SitemapRoute = MetadataRoute.Sitemap[0];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-	const baseUrl = process.env.BASE_URL;
+	const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 	if (!baseUrl) {
-		console.error("BASE_URL environment variable missing");
+		console.error("NEXT_PUBLIC_BASE_URL environment variable missing");
 		return [];
 	}
 

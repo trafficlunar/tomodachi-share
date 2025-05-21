@@ -2,7 +2,7 @@
 	"name": "tomodachi-share",
 	"version": "0.1.0",
 	"private": true,
-	"packageManager": "pnpm@10.10.0",
+	"packageManager": "pnpm@10.11.0",
 	"scripts": {
 		"dev": "next dev --turbopack",
 		"build": "next build",
@@ -33,6 +33,7 @@
 		"react-dom": "^19.1.0",
 		"react-dropzone": "^14.3.8",
 		"react-webcam": "^7.2.0",
+		"satori": "^0.13.1",
 		"sharp": "^0.34.1",
 		"sjcl-with-all": "1.0.8",
 		"swr": "^2.3.3",

@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	});
 
 	return {
-		metadataBase: new URL(process.env.BASE_URL!),
+		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `${user.name} (@${user.username}) - TomodachiShare`,
 		description: `View ${user.name}'s profile on TomodachiShare. Creator of ${user._count.miis} Miis. Member since ${joinDate}.`,
 		keywords: ["mii", "tomodachi life", "nintendo", "mii creator", "mii collection", "profile"],

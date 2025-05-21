@@ -23,7 +23,7 @@ export default async function SubmitPage() {
 	if (!session.user.username) redirect("/create-username");
 
 	// Check if submissions are disabled
-	const response = await fetch(`${process.env.BASE_URL}/api/admin/can-submit`);
+	const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
 	const { value } = await response.json();
 
 	if (!value)

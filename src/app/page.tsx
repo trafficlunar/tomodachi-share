@@ -19,7 +19,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 	const description = `Discover Miis tagged '${tags}' for your Tomodachi Life island!`;
 
 	return {
-		metadataBase: new URL(process.env.BASE_URL!),
+		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `Miis tagged with '${tags}' - TomodachiShare`,
 		description,
 		keywords: [...tags, "mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection"],

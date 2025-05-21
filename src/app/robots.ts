@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
 			allow: "/",
 			disallow: ["/*?page", "/create-username", "/edit/*", "/profile/settings", "/random", "/submit", "/report/mii/*", "/report/user/*", "/admin"],
 		},
-		sitemap: `${process.env.BASE_URL}/sitemap.xml`,
+		sitemap: `${process.env.NEXT_PUBLIC_BASE_URL}/sitemap.xml`,
 	};
 }
