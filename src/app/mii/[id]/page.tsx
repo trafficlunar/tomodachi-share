@@ -124,7 +124,7 @@ export default async function MiiPage({ params }: Props) {
 								alt="mii qr code"
 								width={128}
 								height={128}
-								className="border-2 border-amber-300 rounded-lg hover:scale-105 transition-transform"
+								className="border-2 border-amber-300 rounded-lg hover:brightness-90 transition-all"
 							/>
 						</div>
 						<hr className="w-full border-t-2 border-t-amber-400" />
