@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import LikeButton from "@/components/like-button";
 import ImageViewer from "@/components/image-viewer";
 import DeleteMiiButton from "@/components/delete-mii";
+import ShareMiiButton from "@/components/share-mii-button";
 import ScanTutorialButton from "@/components/tutorial/scan";
 
 interface Props {
@@ -215,6 +216,7 @@ export default async function MiiPage({ params }: Props) {
 								</>
 							)}
 
+							<ShareMiiButton miiId={mii.id} />
 							<Link href={`/report/mii/${mii.id}`}>
 								<Icon icon="material-symbols:flag-rounded" />
 								<span>Report</span>
