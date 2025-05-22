@@ -105,10 +105,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
 		return new NextResponse(buffer, {
 			headers: {
+				"Content-Type": "image/png",
 				"Content-Disposition": `inline; filename="${filename}"`,
 			},
 		});
 	}
 
-	return new NextResponse(buffer);
+	return new NextResponse(buffer, {
+		headers: {
+			"Content-Type": "image/webp",
+		},
+	});
 }
