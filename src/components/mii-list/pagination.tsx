@@ -1,9 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Icon } from "@iconify/react";
 
 interface Props {
@@ -11,14 +11,18 @@ interface Props {
 }
 
 export default function Pagination({ lastPage }: Props) {
+	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const page = Number(searchParams.get("page") ?? 1);
 
-	const createPageUrl = (pageNumber: number) => {
-		const params = new URLSearchParams(searchParams);
-		params.set("page", pageNumber.toString());
-		return `/?${params.toString()}`;
-	};
+	const createPageUrl = useCallback(
+		(pageNumber: number) => {
+			const params = new URLSearchParams(searchParams);
+			params.set("page", pageNumber.toString());
+			return `${pathname}?${params.toString()}`;
+		},
+		[searchParams, pathname]
+	);
 
 	const numbers = useMemo(() => {
 		const result = [];
