@@ -21,11 +21,12 @@ model User {
   usernameUpdatedAt DateTime?
   imageUpdatedAt    DateTime?
 
-  accounts Account[]
-  sessions Session[]
-  miis     Mii[]
-  likes    Like[]
-  Report   Report[]
+  accounts        Account[]
+  sessions        Session[]
+  miis            Mii[]
+  likes           Like[]
+  reportsAuthored Report[]  @relation("ReportAuthor")
+  reports         Report[]  @relation("ReportTargetCreator")
 
   @@map("users")
 }
@@ -106,11 +107,13 @@ model Report {
   reason      ReportReason
   reasonNotes String?
 
-  // note: this refers to the person who made the report
-  authorId  Int?
   createdAt DateTime @default(now())
 
-  user User? @relation(fields: [authorId], references: [id])
+  // note: this refers to the person who made the report
+  authorId  Int?
+  author    User? @relation("ReportAuthor", fields: [authorId], references: [id])
+  creatorId Int?
+  creator   User? @relation("ReportTargetCreator", fields: [creatorId], references: [id])
 
   @@map("reports")
 }
