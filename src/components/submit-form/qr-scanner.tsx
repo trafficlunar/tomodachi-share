@@ -104,6 +104,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		if (!isOpen) return;
 		requestPermission();
 
+		if (!navigator.mediaDevices.enumerateDevices) return;
 		navigator.mediaDevices.enumerateDevices().then((devices) => {
 			const videoDevices = devices.filter((d) => d.kind === "videoinput");
 			setDevices(videoDevices);
@@ -136,7 +137,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 			>
 				<div className="flex justify-between items-center mb-2">
 					<h2 className="text-xl font-bold">Scan QR Code</h2>
-					<button onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+					<button type="button" onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 						<Icon icon="material-symbols:close-rounded" />
 					</button>
 				</div>
