@@ -69,10 +69,9 @@ export default function ScanTutorialButton() {
 										<TutorialPage text="1. Enter the town hall" imageSrc="/tutorial/step1.png" />
 										<TutorialPage text="2. Go into 'QR Code'" imageSrc="/tutorial/adding-mii/step2.png" />
 										<TutorialPage text="3. Press 'Scan QR Code'" imageSrc="/tutorial/adding-mii/step3.png" />
-										<TutorialPage text="4. Press next on the image carousel" imageSrc="/tutorial/adding-mii/step4.gif" />
-										<TutorialPage text="5. Click the QR code image" imageSrc="/tutorial/adding-mii/step5.gif" />
-										<TutorialPage text="6. Scan with your 3DS" imageSrc="/tutorial/adding-mii/step6.png" />
-										<TutorialPage carouselIndex={selectedIndex} finishIndex={6} />
+										<TutorialPage text="4. Click on the QR code below the Mii's image" imageSrc="/tutorial/adding-mii/step4.png" />
+										<TutorialPage text="5. Scan with your 3DS" imageSrc="/tutorial/adding-mii/step5.png" />
+										<TutorialPage carouselIndex={selectedIndex} finishIndex={5} />
 									</div>
 								</div>
 
