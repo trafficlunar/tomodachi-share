@@ -42,9 +42,9 @@ export default function TutorialPage({ text, imageSrc, carouselIndex, finishInde
 
 					<Image
 						src={imageSrc ?? "/missing.svg"}
-						alt="step 1 image"
-						width={256}
-						height={256}
+						alt="step image"
+						width={396}
+						height={320}
 						className="rounded-lg w-full h-full object-contain bg-black flex-1"
 					/>
 				</>
