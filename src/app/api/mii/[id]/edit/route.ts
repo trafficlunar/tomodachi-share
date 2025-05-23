@@ -11,7 +11,7 @@ import { profanity } from "@2toad/profanity";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { idSchema, nameSchema, tagsSchema } from "@/lib/schemas";
-import { validateImage } from "@/lib/images";
+import { generateMetadataImage, validateImage } from "@/lib/images";
 import { RateLimit } from "@/lib/rate-limit";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
@@ -29,6 +29,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+	// todo: rate limit by mii
 	const rateLimit = new RateLimit(request, 3);
 	const check = await rateLimit.handle();
 	if (check) return check;
@@ -43,6 +44,13 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	const mii = await prisma.mii.findUnique({
 		where: {
 			id: miiId,
+		},
+		include: {
+			user: {
+				select: {
+					username: true,
+				},
+			},
 		},
 	});
 
@@ -127,6 +135,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 			console.error("Error uploading user images:", error);
 			return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
 		}
+	} else if (description === undefined) {
+		// If images or description were not changed, regenerate the metadata image
+		await generateMetadataImage(mii, mii.user.username!);
 	}
 
 	return rateLimit.sendResponse({ success: true });
