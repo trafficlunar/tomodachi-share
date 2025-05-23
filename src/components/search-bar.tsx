@@ -16,6 +16,7 @@ export default function SearchBar() {
 		// Clone current search params and add query param
 		const params = new URLSearchParams(searchParams.toString());
 		params.set("q", query);
+		params.set("page", "1");
 
 		redirect(`/?${params.toString()}`);
 	};
