@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
@@ -11,3 +12,13 @@ declare module "next-auth" {
 		username?: string;
 	}
 }
+
+type MiiWithUsername = Prisma.MiiGetPayload<{
+	include: {
+		user: {
+			select: {
+				username: true;
+			};
+		};
+	};
+}>;

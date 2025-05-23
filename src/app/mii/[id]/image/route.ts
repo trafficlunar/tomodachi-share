@@ -4,22 +4,11 @@ import fs from "fs/promises";
 import path from "path";
 import { z } from "zod";
 
-import { Prisma } from "@prisma/client";
-
 import { idSchema } from "@/lib/schemas";
 import { RateLimit } from "@/lib/rate-limit";
 import { generateMetadataImage } from "@/lib/images";
 import { prisma } from "@/lib/prisma";
-
-type MiiWithUser = Prisma.MiiGetPayload<{
-	include: {
-		user: {
-			select: {
-				username: true;
-			};
-		};
-	};
-}>;
+import { MiiWithUsername } from "@/types";
 
 const searchParamsSchema = z.object({
 	type: z
@@ -48,7 +37,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
 	let buffer: Buffer | undefined;
 	// Only find Mii if image type is 'metadata'
-	let mii: MiiWithUser | null = null;
+	let mii: MiiWithUsername | null = null;
 
 	if (imageType === "metadata") {
 		mii = await prisma.mii.findUnique({

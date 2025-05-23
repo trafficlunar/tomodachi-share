@@ -5,6 +5,7 @@ import { ReportReason, ReportType } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { RateLimit } from "@/lib/rate-limit";
+import { MiiWithUsername } from "@/types";
 
 const reportSchema = z.object({
 	id: z.coerce.number({ message: "ID must be a number" }).int({ message: "ID must be an integer" }).positive({ message: "ID must be valid" }),
@@ -29,12 +30,25 @@ export async function POST(request: NextRequest) {
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
 	const { id, type, reason, notes } = parsed.data;
 
+	let mii: MiiWithUsername | null = null;
+
 	// Check if the Mii or User exists
 	if (type === "mii") {
-		const mii = await prisma.mii.findUnique({ where: { id } });
+		mii = await prisma.mii.findUnique({
+			where: { id },
+			include: {
+				user: {
+					select: {
+						username: true,
+					},
+				},
+			},
+		});
 		if (!mii) return rateLimit.sendResponse({ error: "Mii not found" }, 404);
 	} else {
-		const user = await prisma.user.findUnique({ where: { id } });
+		const user = await prisma.user.findUnique({
+			where: { id },
+		});
 		if (!user) return rateLimit.sendResponse({ error: "User not found" }, 404);
 	}
 
@@ -57,11 +71,28 @@ export async function POST(request: NextRequest) {
 				reason: reason.toUpperCase() as ReportReason,
 				reasonNotes: notes,
 				authorId: Number(session.user.id),
+				creatorId: mii ? mii.userId : undefined,
 			},
 		});
 	} catch (error) {
 		console.error("Report creation failed", error);
 		return rateLimit.sendResponse({ error: "Failed to create report" }, 500);
+	}
+
+	// Send notification to ntfy
+	if (process.env.NTFY_URL) {
+		// This is only shown if report type is MII
+		const miiCreatorMessage = mii ? `by @${mii.user.username} (ID: ${mii.userId})` : "";
+
+		await fetch(process.env.NTFY_URL, {
+			method: "POST",
+			body: `Report by @${session.user.username} (ID: ${session.user.id}) on ${type.toUpperCase()} (ID: ${id}) ${miiCreatorMessage}`,
+			headers: {
+				Title: "Report recieved - TomodachiShare",
+				Priority: "urgent",
+				Tags: "triangular_flag_on_post",
+			},
+		});
 	}
 
 	return rateLimit.sendResponse({ success: true });
