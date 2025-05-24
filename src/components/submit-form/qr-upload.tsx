@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { FileWithPath, useDropzone } from "react-dropzone";
-import { Icon } from "@iconify/react";
+import { FileWithPath } from "react-dropzone";
 import jsQR from "jsqr";
+import Dropzone from "../dropzone";
 
 interface Props {
 	setQrBytesRaw: React.Dispatch<React.SetStateAction<number[]>>;
@@ -12,7 +12,7 @@ interface Props {
 export default function QrUpload({ setQrBytesRaw }: Props) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-	const onDrop = useCallback(
+	const handleDrop = useCallback(
 		(acceptedFiles: FileWithPath[]) => {
 			acceptedFiles.forEach((file) => {
 				// Scan QR code
@@ -44,30 +44,17 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 		[setQrBytesRaw]
 	);
 
-	const { getRootProps, getInputProps } = useDropzone({
-		onDrop,
-		accept: {
-			"image/*": [".png", ".jpg", ".jpeg", ".bmp", ".webp", ".heic"],
-		},
-	});
-
 	return (
 		<div className="max-w-md w-full">
-			<div
-				{...getRootProps({
-					className:
-						"bg-orange-200 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border border-2 border-dashed border-amber-500 select-none h-full",
-				})}
-			>
-				<input {...getInputProps({ multiple: false })} />
-				<Icon icon="material-symbols:upload" fontSize={48} />
+			<Dropzone onDrop={handleDrop} options={{ maxFiles: 1 }}>
 				<p className="text-center text-sm">
 					Drag and drop your QR code image here
 					<br />
 					or click to open
 				</p>
-			</div>
+			</Dropzone>
 
+			{/* Canvas is used to scan the QR code */}
 			<canvas ref={canvasRef} className="hidden" />
 		</div>
 	);

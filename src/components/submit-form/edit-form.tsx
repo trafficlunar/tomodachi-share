@@ -3,8 +3,7 @@
 import { redirect } from "next/navigation";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FileWithPath, useDropzone } from "react-dropzone";
-import { Icon } from "@iconify/react";
+import { FileWithPath } from "react-dropzone";
 import { Mii } from "@prisma/client";
 
 import { nameSchema, tagsSchema } from "@/lib/schemas";
@@ -14,6 +13,7 @@ import ImageList from "./image-list";
 import LikeButton from "../like-button";
 import Carousel from "../carousel";
 import SubmitButton from "../submit-button";
+import Dropzone from "../dropzone";
 
 interface Props {
 	mii: Mii;
@@ -32,14 +32,6 @@ export default function EditForm({ mii, likes }: Props) {
 		},
 		[files.length]
 	);
-
-	const { getRootProps, getInputProps } = useDropzone({
-		onDrop: handleDrop,
-		maxFiles: 3,
-		accept: {
-			"image/*": [".png", ".jpg", ".jpeg", ".bmp", ".webp"],
-		},
-	});
 
 	const [error, setError] = useState<string | undefined>(undefined);
 
@@ -197,20 +189,13 @@ export default function EditForm({ mii, likes }: Props) {
 				</div>
 
 				<div className="max-w-md w-full self-center">
-					<div
-						{...getRootProps({
-							className:
-								"bg-orange-200 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border border-2 border-dashed border-amber-500 select-none h-full",
-						})}
-					>
-						<input {...getInputProps()} />
-						<Icon icon="material-symbols:upload" fontSize={48} />
+					<Dropzone onDrop={handleDrop}>
 						<p className="text-center text-sm">
 							Drag and drop your images here
 							<br />
 							or click to open
 						</p>
-					</div>
+					</Dropzone>
 				</div>
 
 				<ImageList files={files} setFiles={setFiles} />
