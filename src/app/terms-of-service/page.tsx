@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
 	return (
-		<div>
+		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl p-6">
 			<h1 className="text-2xl font-bold">Terms of Service</h1>
 			<h2 className="font-light">
 				<strong className="font-medium">Effective Date:</strong> May 02, 2025
