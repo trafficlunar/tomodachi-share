@@ -14,16 +14,14 @@ export default function BannerForm() {
 	};
 
 	return (
-		<div className="bg-orange-100 rounded-xl border-2 border-orange-400 p-2 flex flex-col gap-2">
+		<div className="bg-orange-100 rounded-xl border-2 border-orange-400 p-2 flex gap-2">
 			<input type="text" className="pill input w-full" placeholder="Enter banner text" value={message} onChange={(e) => setMessage(e.target.value)} />
-			<div className="flex gap-2 self-end">
-				<button type="button" className="pill button" onClick={onClickClear}>
-					Clear
-				</button>
-				<button type="submit" className="pill button" onClick={onClickSet}>
-					Set
-				</button>
-			</div>
+			<button type="button" className="pill button" onClick={onClickClear}>
+				Clear
+			</button>
+			<button type="submit" className="pill button" onClick={onClickSet}>
+				Set
+			</button>
 		</div>
 	);
 }

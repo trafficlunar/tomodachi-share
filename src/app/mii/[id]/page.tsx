@@ -195,8 +195,17 @@ export default async function MiiPage({ params }: Props) {
 									By: <span className="font-bold">@{mii.user.username}</span>
 								</Link>
 								<h4 className="text-sm">
-									Created: {mii.createdAt.toLocaleDateString("en-GB", { month: "long", day: "2-digit", year: "numeric" })} at{" "}
-									{mii.createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC
+									Created:{" "}
+									{mii.createdAt.toLocaleString("en-GB", {
+										day: "2-digit",
+										month: "long",
+										year: "numeric",
+										hour: "2-digit",
+										minute: "2-digit",
+										second: "2-digit",
+										timeZone: "UTC",
+									})}{" "}
+									UTC
 								</h4>
 							</div>
 

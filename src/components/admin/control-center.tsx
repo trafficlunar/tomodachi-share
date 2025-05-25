@@ -22,8 +22,7 @@ export default function ControlCenter() {
 
 	return (
 		<div className="bg-orange-100 rounded-xl border-2 border-orange-400 p-2 flex flex-col gap-2">
-			<div className="flex items-center gap-4">
-				<label htmlFor="submit">Submissions</label>
+			<div className="flex items-center gap-2">
 				<input
 					name="submit"
 					type="checkbox"
@@ -32,6 +31,7 @@ export default function ControlCenter() {
 					checked={canSubmit}
 					onChange={(e) => setCanSubmit(e.target.checked)}
 				/>
+				<label htmlFor="submit">Enable Submissions</label>
 			</div>
 
 			<div className="flex gap-2 self-end">
