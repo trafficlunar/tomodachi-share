@@ -26,7 +26,7 @@ export default async function Reports() {
 		<div className="bg-orange-100 rounded-xl border-2 border-orange-400">
 			<div className="grid grid-cols-2 gap-2 p-2 max-lg:grid-cols-1">
 				{reports.map((report) => (
-					<div key={report.id} className="p-4 bg-orange-50 border border-orange-200 rounded-md">
+					<div key={report.id} className="p-4 bg-white border border-orange-300 shadow-sm rounded-md">
 						<div className="w-full overflow-x-scroll">
 							<div className="flex gap-1 w-max">
 								<span

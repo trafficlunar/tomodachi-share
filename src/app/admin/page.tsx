@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 
 import BannerForm from "@/components/admin/banner-form";
 import ControlCenter from "@/components/admin/control-center";
+import UserManagement from "@/components/admin/user-management";
 import Reports from "@/components/admin/reports";
 
 export const metadata: Metadata = {
@@ -45,6 +46,15 @@ export default async function AdminPage() {
 			</div>
 
 			<ControlCenter />
+
+			{/* Separator */}
+			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
+				<hr className="flex-grow border-zinc-300" />
+				<span>User Management</span>
+				<hr className="flex-grow border-zinc-300" />
+			</div>
+
+			<UserManagement />
 
 			{/* Separator */}
 			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">

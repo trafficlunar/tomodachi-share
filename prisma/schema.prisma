@@ -21,12 +21,14 @@ model User {
   usernameUpdatedAt DateTime?
   imageUpdatedAt    DateTime?
 
-  accounts        Account[]
-  sessions        Session[]
-  miis            Mii[]
-  likes           Like[]
-  reportsAuthored Report[]  @relation("ReportAuthor")
-  reports         Report[]  @relation("ReportTargetCreator")
+  accounts Account[]
+  sessions Session[]
+  miis     Mii[]
+  likes    Like[]
+
+  reportsAuthored Report[]     @relation("ReportAuthor")
+  reports         Report[]     @relation("ReportTargetCreator")
+  punishments     Punishment[]
 
   @@map("users")
 }
@@ -84,6 +86,9 @@ model Mii {
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   likedBy Like[]
 
+  punishmentId Int?
+  punishments  MiiPunishment[]
+
   @@map("miis")
 }
 
@@ -118,6 +123,35 @@ model Report {
   @@map("reports")
 }
 
+model MiiPunishment {
+  punishmentId Int
+  miiId        Int
+  reason       String
+
+  punishment Punishment @relation(fields: [punishmentId], references: [id], onDelete: Cascade)
+  mii        Mii        @relation(fields: [miiId], references: [id], onDelete: Cascade)
+
+  @@id([punishmentId, miiId])
+  @@map("mii_punishments")
+}
+
+model Punishment {
+  id     Int            @id @default(autoincrement())
+  userId Int
+  type   PunishmentType
+
+  notes         String
+  reasons       String[]
+  violatingMiis MiiPunishment[]
+
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("punishments")
+}
+
 enum MiiGender {
   MALE
   FEMALE
@@ -139,4 +173,10 @@ enum ReportStatus {
   OPEN
   RESOLVED
   DISMISSED
+}
+
+enum PunishmentType {
+  WARNING
+  TEMP_EXILE
+  PERM_EXILE
 }
