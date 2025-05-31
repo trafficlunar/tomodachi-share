@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+
 import SubmitForm from "@/components/submit-form";
 
 export const metadata: Metadata = {
@@ -21,6 +23,13 @@ export default async function SubmitPage() {
 
 	if (!session) redirect("/login");
 	if (!session.user.username) redirect("/create-username");
+	const activePunishment = await prisma.punishment.findFirst({
+		where: {
+			userId: Number(session?.user.id),
+			returned: false,
+		},
+	});
+	if (activePunishment) redirect("/off-the-island");
 
 	// Check if submissions are disabled
 	const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);

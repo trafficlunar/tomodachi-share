@@ -67,3 +67,24 @@ export async function POST(request: NextRequest) {
 
 	return NextResponse.json({ success: true });
 }
+
+export async function DELETE(request: NextRequest) {
+	const session = await auth();
+	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+	if (Number(session.user.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+	const searchParams = request.nextUrl.searchParams;
+	const parsedPunishmentId = idSchema.safeParse(searchParams.get("id"));
+
+	if (!parsedPunishmentId.success) return NextResponse.json({ error: parsedPunishmentId.error.errors[0].message }, { status: 400 });
+	const punishmentId = parsedPunishmentId.data;
+
+	await prisma.punishment.delete({
+		where: {
+			id: punishmentId,
+		},
+	});
+
+	return NextResponse.json({ success: true });
+}

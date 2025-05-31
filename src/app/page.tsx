@@ -1,11 +1,12 @@
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 import MiiList from "@/components/mii-list";
 import Skeleton from "@/components/mii-list/skeleton";
-import { Metadata } from "next";
 
 interface Props {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -39,6 +40,13 @@ export default async function Page({ searchParams }: Props) {
 	if (session?.user && !session.user.username) {
 		redirect("/create-username");
 	}
+	const activePunishment = await prisma.punishment.findFirst({
+		where: {
+			userId: Number(session?.user.id),
+			returned: false,
+		},
+	});
+	if (activePunishment) redirect("/off-the-island");
 
 	return (
 		<>

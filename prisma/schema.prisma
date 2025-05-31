@@ -136,9 +136,10 @@ model MiiPunishment {
 }
 
 model Punishment {
-  id     Int            @id @default(autoincrement())
-  userId Int
-  type   PunishmentType
+  id       Int            @id @default(autoincrement())
+  userId   Int
+  type     PunishmentType
+  returned Boolean        @default(false)
 
   notes         String
   reasons       String[]

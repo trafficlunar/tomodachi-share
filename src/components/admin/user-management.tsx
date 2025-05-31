@@ -6,9 +6,10 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { Icon } from "@iconify/react";
-import { PunishmentType } from "@prisma/client";
+import { Prisma, PunishmentType } from "@prisma/client";
 
 import SubmitButton from "../submit-button";
+import PunishmentDeletionDialog from "./punishment-deletion-dialog";
 
 interface ApiResponse {
 	success: boolean;
@@ -16,21 +17,11 @@ interface ApiResponse {
 	username: string;
 	image: string;
 	createdAt: string;
-	punishments: {
-		id: number;
-		userId: number;
-		type: string;
-
-		notes: string;
-		reasons: string[];
-		violatingMiis: {
-			miiId: number;
-			reason: string;
-		}[];
-
-		expiresAt: string | null;
-		createdAt: string;
-	}[];
+	punishments: Prisma.PunishmentGetPayload<{
+		include: {
+			violatingMiis: true;
+		};
+	}>[];
 }
 
 interface MiiList {
@@ -172,19 +163,30 @@ export default function Punishments() {
 												>
 													{punishment.type}
 												</span>
-												<span className="text-sm text-zinc-600">
-													{new Date(punishment.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
-												</span>
+
+												<div className="flex items-center gap-2">
+													<span className="text-sm text-zinc-600">
+														{new Date(punishment.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+													</span>
+													<PunishmentDeletionDialog punishmentId={punishment.id} />
+												</div>
 											</div>
 											<p className="text-sm text-zinc-600">
 												<strong>Notes:</strong> {punishment.notes}
 											</p>
-											<p className="text-sm text-zinc-600">
-												<strong>Expires:</strong>{" "}
-												{punishment.expiresAt
-													? new Date(punishment.expiresAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-													: "Never"}
-											</p>
+											{punishment.type !== "WARNING" && (
+												<p className="text-sm text-zinc-600">
+													<strong>Expires:</strong>{" "}
+													{punishment.expiresAt
+														? new Date(punishment.expiresAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+														: "Never"}
+												</p>
+											)}
+											{punishment.type !== "PERM_EXILE" && (
+												<p className="text-sm text-zinc-600">
+													<strong>Returned:</strong> {JSON.stringify(punishment.returned)}
+												</p>
+											)}
 											<p className="text-sm text-zinc-600">
 												<strong>Reasons:</strong>
 											</p>

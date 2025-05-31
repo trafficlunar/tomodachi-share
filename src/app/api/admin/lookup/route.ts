@@ -22,9 +22,14 @@ export async function GET(request: NextRequest) {
 		},
 		include: {
 			punishments: {
+				orderBy: {
+					createdAt: "desc",
+				},
 				select: {
 					id: true,
 					type: true,
+					returned: true,
+
 					notes: true,
 					reasons: true,
 					violatingMiis: {
@@ -33,6 +38,7 @@ export async function GET(request: NextRequest) {
 							reason: true,
 						},
 					},
+
 					expiresAt: true,
 					createdAt: true,
 				},

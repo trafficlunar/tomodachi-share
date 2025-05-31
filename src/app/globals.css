@@ -39,6 +39,10 @@ body {
 	@apply hover:bg-orange-400 transition cursor-pointer;
 }
 
+.button:disabled {
+	@apply text-zinc-600 !bg-zinc-100 !border-zinc-300 cursor-auto;
+}
+
 .input {
 	@apply !bg-orange-200 outline-0 focus:ring-[3px] ring-orange-400/50 transition placeholder:text-black/40;
 }
