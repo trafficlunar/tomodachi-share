@@ -110,7 +110,7 @@ export default function Punishments() {
 			</div>
 
 			{user && (
-				<div className="grid grid-cols-2 gap-2 mt-2">
+				<div className="grid grid-cols-2 gap-2 mt-2 max-lg:grid-cols-1">
 					<div className="p-4 bg-orange-50 border border-orange-300 rounded-md shadow-sm">
 						<div className="flex gap-1">
 							<Image src={user.image} width={96} height={96} alt="Profile picture" className="rounded-full border-2 border-orange-400" />
