@@ -1,22 +1,59 @@
 import Link from "next/link";
+import { Icon } from "@iconify/react";
 
 export default function Footer() {
 	return (
-		<footer className="mt-auto text-xs flex flex-col justify-center gap-y-0.5 gap-2 text-black/50 p-8 *:text-center">
-			<div className="flex justify-center gap-2">
-				<span>tomodachishare is not affiliated with nintendo</span>
-			</div>
+		<footer className="mt-auto">
+			<div className="max-w-4xl mx-auto px-4 py-4">
+				{/* Main disclaimer */}
+				<div className="text-center mb-2">
+					<p className="text-sm text-zinc-600 font-medium">TomodachiShare is not affiliated with Nintendo</p>
+				</div>
 
-			<div className="flex justify-center gap-2">
-				<Link href="/terms-of-service">terms of service</Link>
-				<span>&bull;</span>
-				<Link href="/privacy">privacy</Link>
-				<span>&bull;</span>
-				<a href="https://github.com/trafficlunar/tomodachi-share">source code</a>
-				<span>&bull;</span>
-				<a href="https://trafficlunar.net">
-					made by <span className="text-orange-400">trafficlunar</span>
-				</a>
+				{/* Links section */}
+				<div className="flex flex-wrap justify-center items-center gap-x-4 text-sm max-sm:gap-x-12">
+					<Link href="/terms-of-service" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline">
+						Terms of Service
+					</Link>
+
+					<span className="text-zinc-400 hidden sm:inline" aria-hidden="true">
+						•
+					</span>
+
+					<Link href="/privacy" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline">
+						Privacy Policy
+					</Link>
+
+					<span className="text-zinc-400 hidden sm:inline" aria-hidden="true">
+						•
+					</span>
+
+					<a
+						href="https://github.com/trafficlunar/tomodachi-share"
+						target="_blank"
+						className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline inline-flex items-center gap-1"
+					>
+						<Icon icon="mdi:github" className="text-lg" />
+						Source Code
+					</a>
+
+					<span className="text-zinc-400 hidden sm:inline" aria-hidden="true">
+						•
+					</span>
+
+					<a
+						href="https://trafficlunar.net"
+						target="_blank"
+						className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline group"
+					>
+						Made by <span className="text-orange-400 group-hover:text-orange-500 font-medium transition-colors duration-200">trafficlunar</span>
+					</a>
+				</div>
+
+				{/* Copyright */}
+				<div className="text-center mt-4 mb-4">
+					<p className="text-xs text-zinc-400">© {new Date().getFullYear()} TomodachiShare. All rights reserved.</p>
+				</div>
 			</div>
 		</footer>
 	);
