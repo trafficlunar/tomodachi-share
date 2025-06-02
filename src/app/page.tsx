@@ -40,13 +40,15 @@ export default async function Page({ searchParams }: Props) {
 	if (session?.user && !session.user.username) {
 		redirect("/create-username");
 	}
-	const activePunishment = await prisma.punishment.findFirst({
-		where: {
-			userId: Number(session?.user.id),
-			returned: false,
-		},
-	});
-	if (activePunishment) redirect("/off-the-island");
+	if (session?.user) {
+		const activePunishment = await prisma.punishment.findFirst({
+			where: {
+				userId: Number(session?.user.id),
+				returned: false,
+			},
+		});
+		if (activePunishment) redirect("/off-the-island");
+	}
 
 	return (
 		<>
