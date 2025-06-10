@@ -2,14 +2,14 @@
   <img src="public/logo.svg" alt="TomodachiShare Logo" width="128" />
 </p>
 
-<h1 align="center"><a href="https://tomodachi-share.trafficlunar.net">TomodachiShare</a></h1>
+<h1 align="center"><a href="https://tomodachishare.com">TomodachiShare</a></h1>
 
 <p align="center">
   <b>Discover and share Mii residents for your Tomodachi Life island!</b>
 </p>
 
 <p align="center">
-  <a href="https://tomodachi-share.trafficlunar.net"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/refs/heads/v3/assets/cozy/documentation/website_vector.svg" alt="Visit the website" /></a>
+  <a href="https://tomodachishare.com"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/refs/heads/v3/assets/cozy/documentation/website_vector.svg" alt="Visit the website" /></a>
   <a href="https://trafficlunar.net"><img src="https://raw.githubusercontent.com/trafficlunar/trafficlunar/refs/heads/main/trafficlunar-cozy-minimal_vector.svg" alt="Visit my personal website" /></a>
 </p>
 
