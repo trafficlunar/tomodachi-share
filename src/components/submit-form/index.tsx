@@ -217,6 +217,8 @@ export default function SubmitForm() {
 
 					<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
 					<SubmitTutorialButton />
+
+					<span className="text-xs text-zinc-400">For emulators, aes_keys.txt is required.</span>
 				</div>
 
 				{/* Separator */}
