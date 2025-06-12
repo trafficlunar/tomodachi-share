@@ -103,6 +103,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 	return new NextResponse(buffer, {
 		headers: {
 			"Content-Type": "image/webp",
+			"X-Robots-Tag": "noindex, nofollow",
 		},
 	});
 }
