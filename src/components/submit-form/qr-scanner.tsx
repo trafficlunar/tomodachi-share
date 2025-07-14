@@ -28,7 +28,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 
 	const cameraItems = devices.map((device) => ({
 		value: device.deviceId,
-		label: device.label || `Camera ${device.deviceId.slice(-5)}`,
+		label: device.label || `Camera ${devices.indexOf(device) + 1}`,
 	}));
 
 	const {
@@ -73,6 +73,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		// Cancel animation frame to stop scanning
 		if (requestRef.current) {
 			cancelAnimationFrame(requestRef.current);
+			requestRef.current = null;
 		}
 
 		setQrBytesRaw(code.binaryData!);
@@ -115,8 +116,15 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 	}, [isOpen, selectedDeviceId]);
 
 	useEffect(() => {
-		if (!isOpen && !permissionGranted) return;
+		if (!isOpen || !permissionGranted) return;
+
 		requestRef.current = requestAnimationFrame(scanQRCode);
+
+		return () => {
+			if (requestRef.current) {
+				cancelAnimationFrame(requestRef.current);
+			}
+		};
 	}, [isOpen, permissionGranted, scanQRCode]);
 
 	if (!isOpen) return null;
@@ -191,11 +199,17 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 					) : (
 						<>
 							<Webcam
+								key={selectedDeviceId}
 								ref={webcamRef}
 								audio={false}
 								videoConstraints={{
 									deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
 									facingMode: { ideal: "environment" },
+								}}
+								onUserMedia={async () => {
+									const newDevices = await navigator.mediaDevices.enumerateDevices();
+									const videoDevices = newDevices.filter((d) => d.kind === "videoinput");
+									setDevices(videoDevices);
 								}}
 								className="size-full object-cover rounded-2xl border-2 border-amber-500"
 							/>
