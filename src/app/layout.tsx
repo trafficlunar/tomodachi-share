@@ -25,6 +25,8 @@ export const metadata: Metadata = {
 		title: "TomodachiShare",
 		description: "Discover and share Mii residents for your Tomodachi Life island!",
 		images: "/preview.png",
+		type: "website",
+		url: process.env.NEXT_PUBLIC_BASE_URL,
 	},
 	twitter: {
 		card: "summary_large_image",
@@ -46,6 +48,19 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
+			<head>
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify({
+							"@context": "https://schema.org",
+							"@type": "WebSite",
+							name: "TomodachiShare",
+							url: process.env.NEXT_PUBLIC_BASE_URL,
+						}),
+					}}
+				/>
+			</head>
 			<body className={`${lexend.className} antialiased flex flex-col items-center min-h-screen`}>
 				{process.env.NODE_ENV == "production" && (
 					<Script defer src="https://analytics.trafficlunar.net/script.js" data-website-id="bc530384-9b7d-471a-b2e3-f9859da50c24" />
