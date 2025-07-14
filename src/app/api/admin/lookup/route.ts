@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 	const searchParams = request.nextUrl.searchParams;
 	const parsed = idSchema.safeParse(searchParams.get("id"));
 
-	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
+	if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
 	const userId = parsed.data;
 
 	const user = await prisma.user.findUnique({

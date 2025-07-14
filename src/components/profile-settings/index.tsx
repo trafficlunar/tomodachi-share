@@ -24,7 +24,7 @@ export default function ProfileSettings() {
 	const handleSubmitDisplayNameChange = async (close: () => void) => {
 		const parsed = displayNameSchema.safeParse(displayName);
 		if (!parsed.success) {
-			setDisplayNameChangeError(parsed.error.errors[0].message);
+			setDisplayNameChangeError(parsed.error.issues[0].message);
 			return;
 		}
 
@@ -47,7 +47,7 @@ export default function ProfileSettings() {
 	const handleSubmitUsernameChange = async (close: () => void) => {
 		const parsed = usernameSchema.safeParse(username);
 		if (!parsed.success) {
-			setUsernameChangeError(parsed.error.errors[0].message);
+			setUsernameChangeError(parsed.error.issues[0].message);
 			return;
 		}
 

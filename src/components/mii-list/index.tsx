@@ -36,15 +36,15 @@ const searchSchema = z.object({
 	// todo: incorporate tagsSchema
 	// Pages
 	limit: z.coerce
-		.number({ message: "Limit must be a number" })
-		.int({ message: "Limit must be an integer" })
-		.min(1, { message: "Limit must be at least 1" })
-		.max(100, { message: "Limit cannot be more than 100" })
+		.number({ error: "Limit must be a number" })
+		.int({ error: "Limit must be an integer" })
+		.min(1, { error: "Limit must be at least 1" })
+		.max(100, { error: "Limit cannot be more than 100" })
 		.optional(),
 	page: z.coerce
-		.number({ message: "Page must be a number" })
-		.int({ message: "Page must be an integer" })
-		.min(1, { message: "Page must be at least 1" })
+		.number({ error: "Page must be a number" })
+		.int({ error: "Page must be an integer" })
+		.min(1, { error: "Page must be at least 1" })
 		.optional(),
 });
 
@@ -52,7 +52,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	const session = await auth();
 
 	const parsed = searchSchema.safeParse(searchParams);
-	if (!parsed.success) return <h1>{parsed.error.errors[0].message}</h1>;
+	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
 	const { q: query, sort, tags, page = 1, limit = 24 } = parsed.data;
 

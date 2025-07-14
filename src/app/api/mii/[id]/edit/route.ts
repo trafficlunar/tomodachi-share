@@ -37,7 +37,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	// Get Mii ID
 	const { id: slugId } = await params;
 	const parsedId = idSchema.safeParse(slugId);
-	if (!parsedId.success) return rateLimit.sendResponse({ error: parsedId.error.errors[0].message }, 400);
+	if (!parsedId.success) return rateLimit.sendResponse({ error: parsedId.error.issues[0].message }, 400);
 	const miiId = parsedId.data;
 
 	// Check ownership of Mii
@@ -78,7 +78,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		image3: formData.get("image3"),
 	});
 
-	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
+	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
 	const { name, tags, description, image1, image2, image3 } = parsed.data;
 
 	// Validate image files

@@ -11,7 +11,7 @@ export default function UsernameForm() {
 
 	const handleSubmit = async () => {
 		const parsed = usernameSchema.safeParse(username);
-		if (!parsed.success) setError(parsed.error.errors[0].message);
+		if (!parsed.success) setError(parsed.error.issues[0].message);
 
 		const response = await fetch("/api/auth/username", {
 			method: "PATCH",

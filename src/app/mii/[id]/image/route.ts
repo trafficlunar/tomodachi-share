@@ -25,11 +25,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
 	const { id: slugId } = await params;
 	const parsed = idSchema.safeParse(slugId);
-	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
+	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
 	const miiId = parsed.data;
 
 	const searchParamsParsed = searchParamsSchema.safeParse(Object.fromEntries(request.nextUrl.searchParams));
-	if (!searchParamsParsed.success) return rateLimit.sendResponse({ error: searchParamsParsed.error.errors[0].message }, 400);
+	if (!searchParamsParsed.success) return rateLimit.sendResponse({ error: searchParamsParsed.error.issues[0].message }, 400);
 	const { type: imageType } = searchParamsParsed.data;
 
 	const fileExtension = imageType === "metadata" ? ".png" : ".webp";

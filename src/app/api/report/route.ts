@@ -8,8 +8,8 @@ import { RateLimit } from "@/lib/rate-limit";
 import { MiiWithUsername } from "@/types";
 
 const reportSchema = z.object({
-	id: z.coerce.number({ message: "ID must be a number" }).int({ message: "ID must be an integer" }).positive({ message: "ID must be valid" }),
-	type: z.enum(["mii", "user"], { message: "Type must be either 'mii' or 'user'" }),
+	id: z.coerce.number({ error: "ID must be a number" }).int({ error: "ID must be an integer" }).positive({ error: "ID must be valid" }),
+	type: z.enum(["mii", "user"], { error: "Type must be either 'mii' or 'user'" }),
 	reason: z.enum(["inappropriate", "spam", "copyright", "other"], {
 		message: "Reason must be either 'inappropriate', 'spam', 'copyright', or 'other'",
 	}),
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 	const body = await request.json();
 	const parsed = reportSchema.safeParse(body);
 
-	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
+	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
 	const { id, type, reason, notes } = parsed.data;
 
 	let mii: MiiWithUsername | null = null;

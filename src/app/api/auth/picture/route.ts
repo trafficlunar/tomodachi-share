@@ -40,7 +40,7 @@ export async function PATCH(request: NextRequest) {
 		image: formData.get("image"),
 	});
 
-	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
+	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
 	const { image } = parsed.data;
 
 	// If there is no image, set the profile picture to the guest image

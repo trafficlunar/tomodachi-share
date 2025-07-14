@@ -18,7 +18,7 @@ export async function PATCH(request: NextRequest) {
 	if (!displayName) return rateLimit.sendResponse({ error: "New display name is required" }, 400);
 
 	const validation = displayNameSchema.safeParse(displayName);
-	if (!validation.success) return rateLimit.sendResponse({ error: validation.error.errors[0].message }, 400);
+	if (!validation.success) return rateLimit.sendResponse({ error: validation.error.issues[0].message }, 400);
 
 	// Check for inappropriate words
 	if (profanity.exists(displayName)) return rateLimit.sendResponse({ error: "Display name contains inappropriate words" }, 400);

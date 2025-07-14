@@ -44,12 +44,12 @@ export default function EditForm({ mii, likes }: Props) {
 		// Validate before sending request
 		const nameValidation = nameSchema.safeParse(name);
 		if (!nameValidation.success) {
-			setError(nameValidation.error.errors[0].message);
+			setError(nameValidation.error.issues[0].message);
 			return;
 		}
 		const tagsValidation = tagsSchema.safeParse(tags);
 		if (!tagsValidation.success) {
-			setError(tagsValidation.error.errors[0].message);
+			setError(tagsValidation.error.issues[0].message);
 			return;
 		}
 

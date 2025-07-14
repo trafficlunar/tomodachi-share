@@ -11,18 +11,15 @@ import { PunishmentType } from "@prisma/client";
 const punishSchema = z.object({
 	type: z.enum([PunishmentType.WARNING, PunishmentType.TEMP_EXILE, PunishmentType.PERM_EXILE]),
 	duration: z
-		.number({ message: "Duration (days) must be a number" })
-		.int({ message: "Duration (days) must be an integer" })
-		.positive({ message: "Duration (days) must be valid" }),
+		.number({ error: "Duration (days) must be a number" })
+		.int({ error: "Duration (days) must be an integer" })
+		.positive({ error: "Duration (days) must be valid" }),
 	notes: z.string(),
 	reasons: z.array(z.string()).optional(),
 	miiReasons: z
 		.array(
 			z.object({
-				id: z
-					.number({ message: "Mii ID must be a number" })
-					.int({ message: "Mii ID must be an integer" })
-					.positive({ message: "Mii ID must be valid" }),
+				id: z.number({ error: "Mii ID must be a number" }).int({ error: "Mii ID must be an integer" }).positive({ error: "Mii ID must be valid" }),
 				reason: z.string(),
 			})
 		)
@@ -38,13 +35,13 @@ export async function POST(request: NextRequest) {
 	const searchParams = request.nextUrl.searchParams;
 	const parsedUserId = idSchema.safeParse(searchParams.get("id"));
 
-	if (!parsedUserId.success) return NextResponse.json({ error: parsedUserId.error.errors[0].message }, { status: 400 });
+	if (!parsedUserId.success) return NextResponse.json({ error: parsedUserId.error.issues[0].message }, { status: 400 });
 	const userId = parsedUserId.data;
 
 	const body = await request.json();
 	const parsed = punishSchema.safeParse(body);
 
-	if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
+	if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
 	const { type, duration, notes, reasons, miiReasons } = parsed.data;
 
 	const expiresAt = type === "TEMP_EXILE" ? dayjs().add(duration, "days").toDate() : null;
@@ -77,7 +74,7 @@ export async function DELETE(request: NextRequest) {
 	const searchParams = request.nextUrl.searchParams;
 	const parsedPunishmentId = idSchema.safeParse(searchParams.get("id"));
 
-	if (!parsedPunishmentId.success) return NextResponse.json({ error: parsedPunishmentId.error.errors[0].message }, { status: 400 });
+	if (!parsedPunishmentId.success) return NextResponse.json({ error: parsedPunishmentId.error.issues[0].message }, { status: 400 });
 	const punishmentId = parsedPunishmentId.data;
 
 	await prisma.punishment.delete({

@@ -25,9 +25,7 @@ const submitSchema = z.object({
 	name: nameSchema,
 	tags: tagsSchema,
 	description: z.string().trim().max(256).optional(),
-	qrBytesRaw: z
-		.array(z.number(), { required_error: "A QR code is required" })
-		.length(372, { message: "QR code size is not a valid Tomodachi Life QR code" }),
+	qrBytesRaw: z.array(z.number(), { error: "A QR code is required" }).length(372, { error: "QR code size is not a valid Tomodachi Life QR code" }),
 	image1: z.union([z.instanceof(File), z.any()]).optional(),
 	image2: z.union([z.instanceof(File), z.any()]).optional(),
 	image3: z.union([z.instanceof(File), z.any()]).optional(),
@@ -67,7 +65,7 @@ export async function POST(request: NextRequest) {
 		image3: formData.get("image3"),
 	});
 
-	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
+	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
 	const { name: uncensoredName, tags: uncensoredTags, description: uncensoredDescription, qrBytesRaw, image1, image2, image3 } = parsed.data;
 
 	// Censor potential inappropriate words

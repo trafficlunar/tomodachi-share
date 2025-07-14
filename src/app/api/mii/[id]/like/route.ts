@@ -15,7 +15,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
 	const { id: slugId } = await params;
 	const parsed = idSchema.safeParse(slugId);
-	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.errors[0].message }, 400);
+	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
 	const miiId = parsed.data;
 
 	const result = await prisma.$transaction(async (tx) => {
