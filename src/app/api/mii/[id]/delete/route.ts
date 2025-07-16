@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { idSchema } from "@/lib/schemas";
 import { RateLimit } from "@/lib/rate-limit";
 
-const uploadsDirectory = path.join(process.cwd(), "public", "mii");
+const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const session = await auth();
