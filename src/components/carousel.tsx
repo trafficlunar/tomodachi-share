@@ -81,7 +81,7 @@ export default function Carousel({ images, className }: Props) {
 						<Icon icon="ic:round-chevron-right" />
 					</button>
 
-					<div className="flex justify-center gap-2 absolute left-1/2 -translate-x-1/2 bottom-2">
+					<div className="flex justify-center p-2 gap-2 absolute right-0">
 						{scrollSnaps.map((_, index) => (
 							<button
 								key={index}
