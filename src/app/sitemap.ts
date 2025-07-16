@@ -32,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 					lastModified: mii.createdAt,
 					changeFrequency: "weekly",
 					priority: 0.7,
+					images: [`${baseUrl}/mii/${mii.id}/image?type=metadata`],
 				} as SitemapRoute)
 		),
 		...users.map(

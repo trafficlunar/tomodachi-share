@@ -96,6 +96,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 			headers: {
 				"Content-Type": "image/png",
 				"Content-Disposition": `inline; filename="${filename}"`,
+				"Cache-Control": "public, max-age=31536000",
 			},
 		});
 	}
@@ -103,7 +104,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 	return new NextResponse(buffer, {
 		headers: {
 			"Content-Type": "image/webp",
-			"X-Robots-Tag": "noindex, nofollow",
+			"X-Robots-Tag": "noindex, noimageindex, nofollow",
+			"Cache-Control": "no-store",
 		},
 	});
 }
