@@ -18,7 +18,10 @@ export default function SortSelect() {
 		selectedItem: currentSort,
 		onSelectedItemChange: ({ selectedItem }) => {
 			if (!selectedItem) return;
-			redirect(`?sort=${selectedItem}`);
+
+			const params = new URLSearchParams(searchParams);
+			params.set("sort", selectedItem);
+			redirect(`?${params.toString()}`);
 		},
 	});
 
