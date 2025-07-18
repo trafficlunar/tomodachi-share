@@ -61,7 +61,7 @@ export default function SubmitTutorialButton() {
 						>
 							<div className="flex justify-between items-center mb-2 p-6 pb-0">
 								<h2 className="text-xl font-bold">Tutorial</h2>
-								<button onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>
@@ -105,6 +105,7 @@ export default function SubmitTutorialButton() {
 										onClick={() => emblaApi?.scrollPrev()}
 										disabled={isStartingPage}
 										className={`pill button !p-1 aspect-square text-2xl ${isStartingPage && "!cursor-auto"}`}
+										aria-label="Scroll Carousel Left"
 									>
 										<Icon icon="tabler:chevron-left" />
 									</button>
@@ -115,6 +116,7 @@ export default function SubmitTutorialButton() {
 										onClick={() => emblaApi?.scrollNext()}
 										disabled={isStartingPage}
 										className={`pill button !p-1 aspect-square text-2xl ${isStartingPage && "!cursor-auto"}`}
+										aria-label="Scroll Carousel Right"
 									>
 										<Icon icon="tabler:chevron-right" />
 									</button>

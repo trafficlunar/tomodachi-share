@@ -28,7 +28,7 @@ export default function SortSelect() {
 	return (
 		<div className="relative w-full">
 			{/* Toggle button to open the dropdown */}
-			<button type="button" {...getToggleButtonProps()} className="pill input w-full gap-1 !justify-between text-nowrap">
+			<button type="button" {...getToggleButtonProps()} aria-label="Sort dropdown" className="pill input w-full gap-1 !justify-between text-nowrap">
 				<span>Sort by </span>
 				{selectedItem || "Select a way to sort"}
 				<Icon icon="tabler:chevron-down" className="ml-2 size-5" />

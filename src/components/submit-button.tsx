@@ -24,7 +24,7 @@ export default function SubmitButton({ onClick, text = "Submit", className }: Pr
 	};
 
 	return (
-		<button type="submit" onClick={handleClick} className={`pill button w-min ${className}`}>
+		<button type="submit" aria-label={text} onClick={handleClick} className={`pill button w-min ${className}`}>
 			{text}
 			{isLoading && <Icon icon="svg-spinners:180-ring-with-bg" className="ml-2" />}
 		</button>

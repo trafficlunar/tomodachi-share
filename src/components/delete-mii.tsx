@@ -51,12 +51,18 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 	return (
 		<>
 			{inMiiPage ? (
-				<button onClick={() => setIsOpen(true)} className="cursor-pointer">
+				<button onClick={() => setIsOpen(true)} aria-label="Delete Mii" className="cursor-pointer">
 					<Icon icon="mdi:trash" />
 					<span>Delete</span>
 				</button>
 			) : (
-				<button onClick={() => setIsOpen(true)} title="Delete Mii" data-tooltip="Delete" className="cursor-pointer aspect-square">
+				<button
+					onClick={() => setIsOpen(true)}
+					aria-label="Delete Mii"
+					title="Delete Mii"
+					data-tooltip="Delete"
+					className="cursor-pointer aspect-square"
+				>
 					<Icon icon="mdi:trash" />
 				</button>
 			)}
@@ -78,7 +84,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 						>
 							<div className="flex justify-between items-center mb-2">
 								<h2 className="text-xl font-bold">Delete Mii</h2>
-								<button onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>

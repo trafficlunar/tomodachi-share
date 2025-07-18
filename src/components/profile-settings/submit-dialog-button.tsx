@@ -37,7 +37,7 @@ export default function SubmitDialogButton({ title, description, onSubmit, error
 
 	return (
 		<>
-			<button onClick={() => setIsOpen(true)} className="pill button size-11 !p-1 text-2xl">
+			<button onClick={() => setIsOpen(true)} aria-label="Open Submit Dialog" className="pill button size-11 !p-1 text-2xl">
 				<Icon icon="material-symbols:check-rounded" />
 			</button>
 
@@ -58,7 +58,7 @@ export default function SubmitDialogButton({ title, description, onSubmit, error
 						>
 							<div className="flex justify-between items-center mb-2">
 								<h2 className="text-xl font-bold">{title}</h2>
-								<button onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>

@@ -48,7 +48,6 @@ export default function ImageViewer({ src, alt, width, height, className, images
 			setSelectedIndex(index);
 		}
 
-		// Scroll snaps
 		setScrollSnaps(emblaApi.scrollSnapList());
 		emblaApi.on("select", () => setSelectedIndex(emblaApi.selectedScrollSnap()));
 	}, [emblaApi, images, src]);
@@ -58,19 +57,9 @@ export default function ImageViewer({ src, alt, width, height, className, images
 		if (!isOpen || !emblaApi) return;
 
 		const handleKeyDown = (event: KeyboardEvent) => {
-			switch (event.key) {
-				case "ArrowLeft":
-					emblaApi.scrollPrev();
-					break;
-				case "ArrowRight":
-					emblaApi.scrollNext();
-					break;
-				case "Escape":
-					close();
-					break;
-				default:
-					break;
-			}
+			if (event.key === "ArrowLeft") emblaApi.scrollPrev();
+			else if (event.key === "ArrowRight") emblaApi.scrollNext();
+			else if (event.key === "Escape") close();
 		};
 
 		window.addEventListener("keydown", handleKeyDown);
@@ -78,6 +67,8 @@ export default function ImageViewer({ src, alt, width, height, className, images
 			window.removeEventListener("keydown", handleKeyDown);
 		};
 	}, [isOpen, emblaApi]);
+
+	const imagesMap = images.length === 0 ? [src] : images;
 
 	return (
 		<>
@@ -94,29 +85,23 @@ export default function ImageViewer({ src, alt, width, height, className, images
 						/>
 
 						<div
-							className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl mx-4 shadow-lg w-full max-w-xl relative transition-discrete duration-300 ${
+							className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl mx-4 shadow-lg aspect-square w-full max-w-xl relative transition-discrete duration-300 ${
 								isVisible ? "scale-100 opacity-100" : "scale-75 opacity-0"
 							}`}
 						>
 							<div className="z-50 absolute right-0 bg-amber-500 rounded-tr-xl rounded-bl-md p-1 flex justify-between items-center">
-								<button type="button" onClick={close} className="text-2xl cursor-pointer">
+								<button type="button" aria-label="Close" onClick={close} className="text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>
 
-							<div className="overflow-hidden rounded-2xl" ref={emblaRef}>
-								<div className="flex">
-									{images.length == 0 ? (
-										<Image src={src} alt={alt} width={576} height={576} className="w-full" />
-									) : (
-										<>
-											{images.map((image, index) => (
-												<div key={index} className="flex-shrink-0 w-full">
-													<Image src={image} alt={alt} width={576} height={576} className="w-full h-full object-contain" />
-												</div>
-											))}
-										</>
-									)}
+							<div className="overflow-hidden rounded-2xl h-full" ref={emblaRef}>
+								<div className="flex h-full items-center">
+									{imagesMap.map((image, index) => (
+										<div key={index} className="flex-shrink-0 w-full">
+											<Image src={image} alt={alt} width={576} height={576} className="object-contain" />
+										</div>
+									))}
 								</div>
 							</div>
 						</div>
@@ -132,6 +117,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 								>
 									<button
 										type="button"
+										aria-label="Scroll Carousel Left"
 										onClick={() => emblaApi?.scrollPrev()}
 										disabled={!emblaApi?.canScrollPrev()}
 										className={`bg-white p-1 rounded-full shadow text-4xl transition-opacity ${
@@ -149,6 +135,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 								>
 									<button
 										type="button"
+										aria-label="Scroll Carousel Right"
 										onClick={() => emblaApi?.scrollNext()}
 										disabled={!emblaApi?.canScrollNext()}
 										className={`bg-white p-1 rounded-full shadow text-4xl transition-opacity ${
@@ -168,6 +155,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 									{scrollSnaps.map((_, index) => (
 										<button
 											key={index}
+											aria-label={`Go to ${index} in Carousel`}
 											onClick={() => emblaApi?.scrollTo(index)}
 											className={`size-2.5 cursor-pointer rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
 										/>

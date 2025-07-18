@@ -60,7 +60,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 
 	return (
 		<>
-			<button onClick={() => setIsOpen(true)} className="cursor-pointer">
+			<button onClick={() => setIsOpen(true)} aria-label="Share" className="cursor-pointer">
 				<Icon icon="material-symbols:share" />
 				<span>Share</span>
 			</button>
@@ -82,7 +82,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 						>
 							<div className="flex justify-between items-center mb-2">
 								<h2 className="text-xl font-bold">Share Mii</h2>
-								<button onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>
@@ -140,6 +140,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 									<a
 										href={`/mii/${miiId}/image?type=metadata`}
 										className="pill button !p-0 aspect-square cursor-pointer text-xl"
+										aria-label="Save Image"
 										data-tooltip="Save Image"
 										download={"hello.png"}
 									>
@@ -149,6 +150,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 									{/* Copy button */}
 									<button
 										className="pill button !p-0 aspect-square cursor-pointer"
+										aria-label="Copy Image"
 										data-tooltip={hasCopiedImage ? "Copied!" : "Copy Image"}
 										onClick={handleCopyImage}
 									>

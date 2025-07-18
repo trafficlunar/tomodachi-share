@@ -51,7 +51,11 @@ export default function LikeButton({ likes, isLiked, miiId, isLoggedIn, disabled
 	}, []);
 
 	return (
-		<button onClick={onClick} className={`flex items-center gap-2 text-red-400 ${disabled ? "" : "cursor-pointer"} ${big ? "text-3xl" : "text-xl"}`}>
+		<button
+			onClick={onClick}
+			aria-label="Like"
+			className={`flex items-center gap-2 text-red-400 ${disabled ? "" : "cursor-pointer"} ${big ? "text-3xl" : "text-xl"}`}
+		>
 			<div className="relative">
 				<Icon icon={isLikedState ? "icon-park-solid:like" : "icon-park-outline:like"} className={`${isAnimating ? "animate-like " : ""}`} />
 				<div

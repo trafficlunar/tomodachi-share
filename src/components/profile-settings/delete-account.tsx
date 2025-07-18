@@ -64,7 +64,7 @@ export default function DeleteAccount() {
 						>
 							<div className="flex justify-between items-center mb-2">
 								<h2 className="text-xl font-bold">Delete Account</h2>
-								<button onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>

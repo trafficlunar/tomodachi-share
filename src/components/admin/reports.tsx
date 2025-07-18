@@ -108,10 +108,11 @@ export default async function Reports() {
 
 								<button
 									type="submit"
+									aria-label="Open"
 									className="cursor-pointer text-orange-400 flex items-center gap-1 p-1.5 rounded-lg transition-colors hover:bg-orange-400/15"
 								>
 									<Icon icon="mdi:alert-circle" className="text-xl" />
-									<span className="text-sm">Open</span>{" "}
+									<span className="text-sm">Open</span>
 								</button>
 							</form>
 							<form action={updateStatus}>
@@ -120,6 +121,7 @@ export default async function Reports() {
 
 								<button
 									type="submit"
+									aria-label="Resolve"
 									className="cursor-pointer text-green-500 flex items-center gap-1 p-1.5 rounded-lg transition-colors hover:bg-green-500/15"
 								>
 									<Icon icon="mdi:check-circle" className="text-xl" />
@@ -132,6 +134,7 @@ export default async function Reports() {
 
 								<button
 									type="submit"
+									aria-label="Dismiss"
 									className="cursor-pointer text-zinc-400 flex items-center gap-1 p-1.5 rounded-lg transition-colors hover:bg-zinc-400/15"
 								>
 									<Icon icon="mdi:close-circle" className="text-xl" />

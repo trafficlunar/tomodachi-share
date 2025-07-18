@@ -145,7 +145,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 			>
 				<div className="flex justify-between items-center mb-2">
 					<h2 className="text-xl font-bold">Scan QR Code</h2>
-					<button type="button" onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+					<button type="button" aria-label="Close" onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 						<Icon icon="material-symbols:close-rounded" />
 					</button>
 				</div>
@@ -157,6 +157,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 							{/* Toggle button to open the dropdown */}
 							<button
 								type="button"
+								aria-label="Select camera dropdown"
 								{...getToggleButtonProps({}, { suppressRefError: true })}
 								className="pill input w-full !px-2 !py-0.5 !justify-between text-sm"
 							>

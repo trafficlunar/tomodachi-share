@@ -74,6 +74,7 @@ export default function TagSelector({ tags, setTags }: Props) {
 						{tag}
 						<button
 							type="button"
+							aria-label="Delete Tag"
 							className="text-black cursor-pointer"
 							onClick={(e) => {
 								e.stopPropagation();
@@ -99,12 +100,12 @@ export default function TagSelector({ tags, setTags }: Props) {
 			{/* Control buttons */}
 			<div className="flex items-center gap-1">
 				{hasSelectedItems && (
-					<button type="button" className="text-black cursor-pointer" onClick={() => setTags([])}>
+					<button type="button" aria-label="Remove All Tags" className="text-black cursor-pointer" onClick={() => setTags([])}>
 						<Icon icon="mdi:close" />
 					</button>
 				)}
 
-				<button type="button" {...getToggleButtonProps()} className="text-black cursor-pointer text-xl">
+				<button type="button" aria-label="Toggle Tag Dropdown" {...getToggleButtonProps()} className="text-black cursor-pointer text-xl">
 					<Icon icon="mdi:chevron-down" />
 				</button>
 			</div>

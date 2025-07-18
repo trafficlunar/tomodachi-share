@@ -62,6 +62,7 @@ export default function Carousel({ images, className }: Props) {
 				<>
 					<button
 						type="button"
+						aria-label="Scroll Carousel Left"
 						onClick={() => emblaApi?.scrollPrev()}
 						disabled={!emblaApi?.canScrollPrev()}
 						className={`absolute left-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl transition-opacity ${
@@ -72,6 +73,7 @@ export default function Carousel({ images, className }: Props) {
 					</button>
 					<button
 						type="button"
+						aria-label="Scroll Carousel Right"
 						onClick={() => emblaApi?.scrollNext()}
 						disabled={!emblaApi?.canScrollNext()}
 						className={`absolute right-2 top-1/2 -translate-y-1/2 bg-white p-1 rounded-full shadow text-xl transition-opacity ${
@@ -86,6 +88,7 @@ export default function Carousel({ images, className }: Props) {
 							<button
 								key={index}
 								type="button"
+								aria-label={`Go to ${index} in Carousel`}
 								onClick={() => emblaApi?.scrollTo(index)}
 								className={`size-1.5 cursor-pointer rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
 							/>

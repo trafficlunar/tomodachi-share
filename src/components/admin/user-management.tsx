@@ -274,7 +274,7 @@ export default function Punishments() {
 									value={newMii.reason}
 									onChange={(e) => setNewMii({ ...newMii, reason: e.target.value })}
 								/>
-								<button type="button" onClick={addMiiToList} className="pill button aspect-square !p-2.5">
+								<button type="button" aria-label="Add Mii" onClick={addMiiToList} className="pill button aspect-square !p-2.5">
 									<Icon icon="ic:baseline-plus" className="size-4" />
 								</button>
 							</div>
@@ -295,6 +295,7 @@ export default function Punishments() {
 											</div>
 											<button
 												type="button"
+												aria-label="Remove Mii"
 												onClick={() => removeMiiFromList(index)}
 												className="cursor-pointer text-red-500 hover:text-red-700 transition-colors"
 											>

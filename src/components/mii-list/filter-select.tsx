@@ -32,7 +32,7 @@ export default function FilterSelect() {
 
 	return (
 		<div className="relative">
-			<button onClick={() => setIsOpen((prev) => !prev)} className="pill button gap-1 text-nowrap">
+			<button onClick={() => setIsOpen((prev) => !prev)} aria-label="Filter dropdown" className="pill button gap-1 text-nowrap">
 				Filter{" "}
 				{tags.length > 0 ? (
 					<span>

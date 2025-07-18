@@ -36,7 +36,7 @@ export default function ScanTutorialButton() {
 
 	return (
 		<>
-			<button type="button" onClick={() => setIsOpen(true)} className="text-3xl cursor-pointer">
+			<button aria-label="Tutorial" type="button" onClick={() => setIsOpen(true)} className="text-3xl cursor-pointer">
 				<Icon icon="fa:question-circle" />
 				<span>Tutorial</span>
 			</button>
@@ -58,7 +58,7 @@ export default function ScanTutorialButton() {
 						>
 							<div className="flex justify-between items-center mb-2 p-6 pb-0">
 								<h2 className="text-xl font-bold">Tutorial</h2>
-								<button onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>
@@ -76,13 +76,21 @@ export default function ScanTutorialButton() {
 								</div>
 
 								<div className="flex justify-between items-center mt-2 px-6 pb-6">
-									<button onClick={() => emblaApi?.scrollPrev()} className="pill button !p-1 aspect-square text-2xl">
+									<button
+										onClick={() => emblaApi?.scrollPrev()}
+										aria-label="Scroll Carousel Left"
+										className="pill button !p-1 aspect-square text-2xl"
+									>
 										<Icon icon="tabler:chevron-left" />
 									</button>
 
 									<span className="text-sm">Adding Mii to Island</span>
 
-									<button onClick={() => emblaApi?.scrollNext()} className="pill button !p-1 aspect-square text-2xl">
+									<button
+										onClick={() => emblaApi?.scrollNext()}
+										aria-label="Scroll Carousel Right"
+										className="pill button !p-1 aspect-square text-2xl"
+									>
 										<Icon icon="tabler:chevron-right" />
 									</button>
 								</div>

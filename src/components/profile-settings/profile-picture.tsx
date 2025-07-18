@@ -72,6 +72,7 @@ export default function ProfilePictureSettings() {
 					{newPicture && (
 						<button
 							data-tooltip="Delete Picture"
+							aria-label="Delete Picture"
 							onClick={() => setNewPicture(undefined)}
 							className="pill button aspect-square !p-1 text-2xl !bg-red-400 !border-red-500"
 						>

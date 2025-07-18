@@ -25,6 +25,7 @@ export default function StartingPage({ emblaApi }: Props) {
 			<div className="grid grid-cols-2 gap-4 h-full">
 				<button
 					onClick={() => goToTutorial(1)}
+					aria-label="Allow Copying Tutorial"
 					className="flex flex-col justify-center items-center bg-zinc-50 rounded-xl p-4 shadow-md border-2 border-zinc-300 cursor-pointer text-center text-sm transition hover:scale-[1.03] hover:bg-cyan-100 hover:border-cyan-600"
 				>
 					<Image
@@ -40,6 +41,7 @@ export default function StartingPage({ emblaApi }: Props) {
 
 				<button
 					onClick={() => goToTutorial(10)}
+					aria-label="Create QR Code Tutorial"
 					className="flex flex-col justify-center items-center bg-zinc-50 rounded-xl p-4 shadow-md border-2 border-zinc-300 cursor-pointer text-center text-sm transition hover:scale-[1.03] hover:bg-cyan-100 hover:border-cyan-600"
 				>
 					<Image

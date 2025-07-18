@@ -8,6 +8,7 @@ export default function LoginButtons() {
 		<div className="flex flex-col items-center gap-2">
 			<button
 				onClick={() => signIn("discord", { redirectTo: "/create-username" })}
+				aria-label="Login with Discord"
 				className="pill button gap-2 !px-3 !bg-indigo-400 !border-indigo-500 hover:!bg-indigo-500"
 			>
 				<Icon icon="ic:baseline-discord" fontSize={32} />
@@ -15,6 +16,7 @@ export default function LoginButtons() {
 			</button>
 			<button
 				onClick={() => signIn("github", { redirectTo: "/create-username" })}
+				aria-label="Login with GitHub"
 				className="pill button gap-2 !px-3 !bg-zinc-700 !border-zinc-800  hover:!bg-zinc-800 text-white"
 			>
 				<Icon icon="mdi:github" fontSize={32} />

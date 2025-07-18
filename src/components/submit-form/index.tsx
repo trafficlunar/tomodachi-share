@@ -210,7 +210,7 @@ export default function SubmitForm() {
 					<QrUpload setQrBytesRaw={setQrBytesRaw} />
 					<span>or</span>
 
-					<button type="button" onClick={() => setIsQrScannerOpen(true)} className="pill button gap-2">
+					<button type="button" aria-label="Use your camera" onClick={() => setIsQrScannerOpen(true)} className="pill button gap-2">
 						<Icon icon="mdi:camera" fontSize={20} />
 						Use your camera
 					</button>

@@ -37,6 +37,7 @@ export default function SearchBar() {
 			/>
 			<button
 				onClick={handleSearch}
+				aria-label="Search"
 				data-tooltip="Search"
 				className="bg-orange-400 p-2 w-12 rounded-r-xl flex justify-center items-center cursor-pointer text-2xl"
 			>

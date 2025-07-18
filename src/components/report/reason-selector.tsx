@@ -36,7 +36,12 @@ export default function ReasonSelector({ reason, setReason }: Props) {
 	return (
 		<div className="relative w-full col-span-2">
 			{/* Toggle button to open the dropdown */}
-			<button type="button" {...getToggleButtonProps()} className="pill input w-full gap-1 !justify-between text-nowrap">
+			<button
+				type="button"
+				{...getToggleButtonProps()}
+				aria-label="Report reason dropdown"
+				className="pill input w-full gap-1 !justify-between text-nowrap"
+			>
 				{selectedItem?.label || <span className="text-black/40">Select a reason for the report...</span>}
 				<Icon icon="tabler:chevron-down" className="ml-2 size-5" />
 			</button>

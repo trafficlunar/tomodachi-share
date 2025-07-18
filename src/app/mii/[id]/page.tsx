@@ -217,7 +217,7 @@ export default async function MiiPage({ params }: Props) {
 						<div className="flex gap-3 w-fit bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 text-3xl text-orange-400 max-md:place-self-center *:size-12 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-xs">
 							{session && (Number(session.user.id) === mii.userId || Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) && (
 								<>
-									<Link href={`/edit/${mii.id}`}>
+									<Link aria-label="Edit Mii" href={`/edit/${mii.id}`}>
 										<Icon icon="mdi:pencil" />
 										<span>Edit</span>
 									</Link>
@@ -226,7 +226,7 @@ export default async function MiiPage({ params }: Props) {
 							)}
 
 							<ShareMiiButton miiId={mii.id} />
-							<Link href={`/report/mii/${mii.id}`}>
+							<Link aria-label="Report Mii" href={`/report/mii/${mii.id}`}>
 								<Icon icon="material-symbols:flag-rounded" />
 								<span>Report</span>
 							</Link>

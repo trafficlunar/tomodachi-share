@@ -44,7 +44,7 @@ export default function ReturnToIsland({ hasExpired }: Props) {
 			<hr className="border-zinc-300 mt-3 mb-4" />
 
 			{error && <span className="text-red-400 font-bold mb-2.5">Error: {error}</span>}
-			<button disabled={!isChecked} onClick={handleClick} className="pill button gap-2 w-fit self-center">
+			<button disabled={!isChecked} aria-label="Travel Back Home" onClick={handleClick} className="pill button gap-2 w-fit self-center">
 				<Icon icon="ic:round-home" fontSize={24} />
 				Travel Back
 			</button>

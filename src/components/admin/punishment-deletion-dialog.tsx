@@ -49,7 +49,7 @@ export default function PunishmentDeletionDialog({ punishmentId }: Props) {
 
 	return (
 		<>
-			<button onClick={() => setIsOpen(true)} className="text-red-500 cursor-pointer hover:text-red-600 text-lg">
+			<button onClick={() => setIsOpen(true)} aria-label="Delete Punishment" className="text-red-500 cursor-pointer hover:text-red-600 text-lg">
 				<Icon icon="material-symbols:close-rounded" />
 			</button>
 
@@ -70,7 +70,7 @@ export default function PunishmentDeletionDialog({ punishmentId }: Props) {
 						>
 							<div className="flex justify-between items-center mb-2">
 								<h2 className="text-xl font-bold">Punishment Deletion</h2>
-								<button onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>

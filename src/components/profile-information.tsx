@@ -68,31 +68,31 @@ export default async function ProfileInformation({ userId, page }: Props) {
 			{/* Buttons */}
 			<div className="flex gap-1 w-fit text-3xl text-orange-400 max-md:place-self-center *:size-17 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-sm">
 				{!isOwnProfile && (
-					<Link href={`/report/user/${id}`}>
+					<Link aria-label="Report User" href={`/report/user/${id}`}>
 						<Icon icon="material-symbols:flag-rounded" />
 						<span>Report</span>
 					</Link>
 				)}
 				{isOwnProfile && isAdmin && (
-					<Link href="/admin">
+					<Link aria-label="Go to Admin" href="/admin">
 						<Icon icon="mdi:shield-moon" />
 						<span>Admin</span>
 					</Link>
 				)}
 				{isOwnProfile && page !== "likes" && (
-					<Link href="/profile/likes">
+					<Link aria-label="Go to My Likes" href="/profile/likes">
 						<Icon icon="icon-park-solid:like" />
 						<span>My Likes</span>
 					</Link>
 				)}
 				{isOwnProfile && page !== "settings" && (
-					<Link href="/profile/settings">
+					<Link aria-label="Go to Settings" href="/profile/settings">
 						<Icon icon="material-symbols:settings-rounded" />
 						<span>Settings</span>
 					</Link>
 				)}
 				{page && (
-					<Link href={`/profile/${id}`}>
+					<Link aria-label="Go Back to Profile" href={`/profile/${id}`}>
 						<Icon icon="tabler:chevron-left" />
 						<span>Back</span>
 					</Link>

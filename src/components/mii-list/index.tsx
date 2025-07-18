@@ -192,7 +192,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 								{userId && Number(session?.user.id) == userId && (
 									<div className="flex gap-1 text-2xl justify-end text-zinc-400">
-										<Link href={`/edit/${mii.id}`} title="Edit Mii" data-tooltip="Edit">
+										<Link href={`/edit/${mii.id}`} title="Edit Mii" aria-label="Edit Mii" data-tooltip="Edit">
 											<Icon icon="mdi:pencil" />
 										</Link>
 										<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likes} />
