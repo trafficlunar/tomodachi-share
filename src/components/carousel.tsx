@@ -28,16 +28,8 @@ export default function Carousel({ images, className }: Props) {
 		if (!isFocused || !emblaApi) return;
 
 		const handleKeyDown = (event: KeyboardEvent) => {
-			switch (event.key) {
-				case "ArrowLeft":
-					emblaApi.scrollPrev();
-					break;
-				case "ArrowRight":
-					emblaApi.scrollNext();
-					break;
-				default:
-					break;
-			}
+			if (event.key === "ArrowLeft") emblaApi.scrollPrev();
+			else if (event.key === "ArrowRight") emblaApi.scrollNext();
 		};
 
 		window.addEventListener("keydown", handleKeyDown);
@@ -48,7 +40,7 @@ export default function Carousel({ images, className }: Props) {
 
 	return (
 		<div className="relative w-full h-fit" tabIndex={0} onMouseEnter={() => setIsFocused(true)} onMouseLeave={() => setIsFocused(false)}>
-			<div className={`overflow-hidden rounded-xl bg-zinc-300 border-2 border-zinc-300 ${className ?? ""}`} ref={emblaRef}>
+			<div className={`overflow-hidden rounded-xl bg-zinc-300 ${className ?? ""}`} ref={emblaRef}>
 				<div className="flex">
 					{images.map((src, index) => (
 						<div key={index} className="flex-shrink-0 w-full">

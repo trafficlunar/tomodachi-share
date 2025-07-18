@@ -159,7 +159,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 				{miis.map((mii) => (
 					<div
 						key={mii.id}
-						className="flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3 transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600"
+						className="flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600"
 					>
 						<Carousel
 							images={[
