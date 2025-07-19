@@ -1,4 +1,4 @@
-import FilterSelect from "./filter-select";
+import FilterSelect from "./tag-filter";
 import SortSelect from "./sort-select";
 import Pagination from "./pagination";
 

@@ -1,15 +1,18 @@
 "use client";
 
-import { Icon } from "@iconify/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 import { useSelect } from "downshift";
-import { redirect, useSearchParams } from "next/navigation";
+import { Icon } from "@iconify/react";
 
 type Sort = "newest" | "likes" | "oldest";
 
 const items = ["newest", "likes", "oldest"];
 
 export default function SortSelect() {
+	const router = useRouter();
 	const searchParams = useSearchParams();
+	const [, startTransition] = useTransition();
 
 	const currentSort = (searchParams.get("sort") as Sort) || "newest";
 
@@ -21,12 +24,15 @@ export default function SortSelect() {
 
 			const params = new URLSearchParams(searchParams);
 			params.set("sort", selectedItem);
-			redirect(`?${params.toString()}`);
+
+			startTransition(() => {
+				router.push(`?${params.toString()}`);
+			});
 		},
 	});
 
 	return (
-		<div className="relative w-full">
+		<div className="relative w-fit">
 			{/* Toggle button to open the dropdown */}
 			<button type="button" {...getToggleButtonProps()} aria-label="Sort dropdown" className="pill input w-full gap-1 !justify-between text-nowrap">
 				<span>Sort by </span>

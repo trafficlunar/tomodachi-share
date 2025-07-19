@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Prisma } from "@prisma/client";
+import { MiiGender, Prisma } from "@prisma/client";
 import { Icon } from "@iconify/react";
 import { z } from "zod";
 
@@ -8,7 +8,8 @@ import { querySchema } from "@/lib/schemas";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-import FilterSelect from "./filter-select";
+import GenderSelect from "./gender-select";
+import TagFilter from "./tag-filter";
 import SortSelect from "./sort-select";
 import Carousel from "../carousel";
 import LikeButton from "../like-button";
@@ -33,6 +34,7 @@ const searchSchema = z.object({
 				.map((tag) => tag.trim())
 				.filter((tag) => tag.length > 0)
 		),
+	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', or 'FEMALE'" }).optional(),
 	// todo: incorporate tagsSchema
 	// Pages
 	limit: z.coerce
@@ -54,8 +56,9 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { q: query, sort, tags, page = 1, limit = 24 } = parsed.data;
+	const { q: query, sort, tags, gender, page = 1, limit = 24 } = parsed.data;
 
+	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
 
 	if (inLikesPage && session?.user.id) {
@@ -75,6 +78,8 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		}),
 		// Tag filtering
 		...(tags && tags.length > 0 && { tags: { hasEvery: tags } }),
+		// Gender
+		...(gender && { gender: { equals: gender } }),
 		// Profiles
 		...(userId && { userId }),
 	};
@@ -136,8 +141,8 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 	return (
 		<div className="w-full">
-			<div className="flex justify-between items-end mb-2 max-[32rem]:flex-col max-[32rem]:items-center">
-				<p className="text-lg">
+			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-end mb-2 max-[32rem]:flex-col max-[32rem]:items-center">
+				<p className="text-xl">
 					{totalCount == filteredCount ? (
 						<>
 							<span className="font-extrabold">{totalCount}</span> Miis
@@ -149,8 +154,9 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 					)}
 				</p>
 
-				<div className="flex gap-2">
-					<FilterSelect />
+				<div className="flex items-center gap-2">
+					<GenderSelect />
+					<TagFilter />
 					<SortSelect />
 				</div>
 			</div>
