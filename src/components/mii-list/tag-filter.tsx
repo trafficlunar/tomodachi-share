@@ -23,6 +23,11 @@ export default function TagFilter() {
 
 	const [tags, setTags] = useState<string[]>(preexistingTags);
 
+	// Sync state if the URL tags change (e.g. via navigation)
+	useEffect(() => {
+		setTags(preexistingTags);
+	}, [preexistingTags]);
+
 	// Redirect automatically on tags change
 	useEffect(() => {
 		const urlTags = preexistingTags.join(",");
@@ -40,7 +45,8 @@ export default function TagFilter() {
 		startTransition(() => {
 			router.push(`?${params.toString()}`);
 		});
-	}, [tags, preexistingTags, searchParams, router]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [tags]);
 
 	return (
 		<div className="w-72">
