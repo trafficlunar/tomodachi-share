@@ -141,20 +141,24 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 	return (
 		<div className="w-full">
-			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-end mb-2 max-[32rem]:flex-col max-[32rem]:items-center">
-				<p className="text-xl">
+			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-center gap-2 mb-2 max-[56rem]:flex-col">
+				<div className="flex items-center gap-2">
 					{totalCount == filteredCount ? (
 						<>
-							<span className="font-extrabold">{totalCount}</span> Miis
+							<span className="text-2xl font-bold text-amber-900">{totalCount}</span>
+							<span className="text-lg text-amber-700">{totalCount === 1 ? "Mii" : "Miis"}</span>
 						</>
 					) : (
 						<>
-							<span className="font-extrabold">{filteredCount}</span> of <span className="font-extrabold">{totalCount}</span> Miis
+							<span className="text-2xl font-bold text-amber-900">{filteredCount}</span>
+							<span className="text-sm text-amber-700">of</span>
+							<span className="text-lg font-semibold text-amber-800">{totalCount}</span>
+							<span className="text-lg text-amber-700">Miis</span>
 						</>
 					)}
-				</p>
+				</div>
 
-				<div className="flex items-center gap-2">
+				<div className="flex items-center justify-end gap-2 w-full min-[56rem]:max-w-2/3 max-[56rem]:justify-center max-sm:flex-col">
 					<GenderSelect />
 					<TagFilter />
 					<SortSelect />
