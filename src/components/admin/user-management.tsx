@@ -64,7 +64,6 @@ export default function Punishments() {
 	};
 
 	const handleSubmit = async () => {
-		// todo: delete punishments
 		const response = await fetch(`/api/admin/punish?id=${userId}`, {
 			method: "POST",
 			body: JSON.stringify({

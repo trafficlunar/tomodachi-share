@@ -200,8 +200,8 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 	try {
 		// I tried using .webp here but the quality looked awful
 		// but it actually might be well-liked due to the hatred of .webp
-		// const fileLocation = path.join(miiUploadsDirectory, "metadata.png");
-		// await fs.writeFile(fileLocation, buffer);
+		const fileLocation = path.join(miiUploadsDirectory, "metadata.png");
+		await fs.writeFile(fileLocation, buffer);
 	} catch (error) {
 		console.error("Error storing 'metadata' image type", error);
 		return { error: `Failed to store metadata image for ${mii.id}`, status: 500 };
