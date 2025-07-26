@@ -74,7 +74,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		...(inLikesPage && miiIdsLiked && { id: { in: miiIdsLiked } }),
 		// Searching
 		...(query && {
-			OR: [{ name: { contains: query, mode: "insensitive" } }, { tags: { has: query } }],
+			OR: [{ name: { contains: query, mode: "insensitive" } }, { tags: { has: query } }, { description: { contains: query, mode: "insensitive" } }],
 		}),
 		// Tag filtering
 		...(tags && tags.length > 0 && { tags: { hasEvery: tags } }),
