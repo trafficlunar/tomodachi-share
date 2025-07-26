@@ -14,7 +14,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const rateLimit = new RateLimit(request, 10);
+	const rateLimit = new RateLimit(request, 30, "/api/mii/delete");
 	const check = await rateLimit.handle();
 	if (check) return check;
 

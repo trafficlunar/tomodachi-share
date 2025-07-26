@@ -9,7 +9,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	const rateLimit = new RateLimit(request, 100);
+	const rateLimit = new RateLimit(request, 100, "/api/mii/like");
 	const check = await rateLimit.handle();
 	if (check) return check;
 

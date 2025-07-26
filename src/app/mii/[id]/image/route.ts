@@ -19,7 +19,7 @@ const searchParamsSchema = z.object({
 });
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-	const rateLimit = new RateLimit(request, 200);
+	const rateLimit = new RateLimit(request, 200, "/mii/image");
 	const check = await rateLimit.handle();
 	if (check) return check;
 

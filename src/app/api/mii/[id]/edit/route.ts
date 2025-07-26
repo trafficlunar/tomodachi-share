@@ -29,8 +29,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	// todo: rate limit by mii
-	const rateLimit = new RateLimit(request, 3);
+	const rateLimit = new RateLimit(request, 1); // no grouped pathname; edit each mii 1 time a minute
 	const check = await rateLimit.handle();
 	if (check) return check;
 

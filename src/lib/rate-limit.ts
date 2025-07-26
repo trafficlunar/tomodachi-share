@@ -16,11 +16,13 @@ interface RateLimitData {
 export class RateLimit {
 	private request: NextRequest;
 	private maxRequests: number;
+	private pathname: string; // instead of using the request's pathname, use this custom one to group all routes together
 	private data: RateLimitData;
 
-	constructor(request: NextRequest, maxRequests: number) {
+	constructor(request: NextRequest, maxRequests: number, pathname?: string) {
 		this.request = request;
 		this.maxRequests = maxRequests;
+		this.pathname = pathname ? pathname : this.request.nextUrl.pathname;
 		this.data = {
 			success: true,
 			limit: maxRequests,
@@ -31,8 +33,7 @@ export class RateLimit {
 
 	// Check and update rate limit
 	async check(identifier: string): Promise<RateLimitData> {
-		const pathname = this.request.nextUrl.pathname;
-		const key = `ratelimit:${pathname}:${identifier}`;
+		const key = `ratelimit:${this.pathname}:${identifier}`;
 
 		const now = Date.now();
 		const seconds = Math.floor(now / 1000);
@@ -46,8 +47,12 @@ export class RateLimit {
 			tx.expireat(key, expireAt);
 
 			// Execute transaction and get the count
-			const [count] = (await tx.exec().then((results) => results?.map((res) => res[1]))) as [number];
+			const results = await tx.exec();
+			if (!results) {
+				throw new Error("Redis transaction failed");
+			}
 
+			const count = results[0][1] as number;
 			const success = count <= this.maxRequests;
 			const remaining = Math.max(0, this.maxRequests - count);
 
@@ -55,7 +60,7 @@ export class RateLimit {
 		} catch (error) {
 			console.error("Rate limit check failed", error);
 			return {
-				success: true,
+				success: false,
 				limit: this.maxRequests,
 				remaining: this.maxRequests,
 				expires: expireAt,
@@ -84,7 +89,7 @@ export class RateLimit {
 	async handle(): Promise<NextResponse<object | unknown> | undefined> {
 		const session = await auth();
 		const ip = this.request.headers.get("CF-Connecting-IP") || this.request.headers.get("X-Forwarded-For")?.split(",")[0];
-		const identifier = (session ? session.user.id : ip) ?? "null";
+		const identifier = (session ? session.user.id : ip) ?? "anonymous";
 
 		this.data = await this.check(identifier);
 

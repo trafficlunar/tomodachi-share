@@ -7,7 +7,7 @@ import { idSchema } from "@/lib/schemas";
 import { RateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-	const rateLimit = new RateLimit(request, 16);
+	const rateLimit = new RateLimit(request, 16, "/profile/picture");
 	const check = await rateLimit.handle();
 	if (check) return check;
 
