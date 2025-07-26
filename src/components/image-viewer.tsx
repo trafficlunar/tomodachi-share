@@ -72,7 +72,8 @@ export default function ImageViewer({ src, alt, width, height, className, images
 
 	return (
 		<>
-			<Image src={src} alt={alt} width={width} height={height} className={`cursor-pointer ${className}`} onClick={() => setIsOpen(true)} />
+			{/* not inserting pixelated image-rendering here because i thought it looked a bit weird */}
+			<Image src={src} alt={alt} width={width} height={height} onClick={() => setIsOpen(true)} className={`cursor-pointer ${className}`} />
 
 			{isOpen &&
 				createPortal(
@@ -99,7 +100,14 @@ export default function ImageViewer({ src, alt, width, height, className, images
 								<div className="flex h-full items-center">
 									{imagesMap.map((image, index) => (
 										<div key={index} className="flex-shrink-0 w-full">
-											<Image src={image} alt={alt} width={576} height={576} className="object-contain" />
+											<Image
+												src={image}
+												alt={alt}
+												width={576}
+												height={576}
+												className="object-contain"
+												style={{ imageRendering: image.includes("qr-code") ? "pixelated" : "auto" }}
+											/>
 										</div>
 									))}
 								</div>
