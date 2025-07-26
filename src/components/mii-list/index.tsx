@@ -4,6 +4,8 @@ import { MiiGender, Prisma } from "@prisma/client";
 import { Icon } from "@iconify/react";
 import { z } from "zod";
 
+import seedrandom from "seedrandom";
+
 import { querySchema } from "@/lib/schemas";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -24,7 +26,7 @@ interface Props {
 
 const searchSchema = z.object({
 	q: querySchema.optional(),
-	sort: z.enum(["newest", "likes", "oldest"], { message: "Sort must be either 'newest', 'likes', or 'oldest'" }).default("newest"),
+	sort: z.enum(["likes", "newest", "oldest", "random"], { error: "Sort must be either 'likes', 'newest', 'oldest', or 'random'" }).default("newest"),
 	tags: z
 		.string()
 		.optional()
@@ -48,6 +50,8 @@ const searchSchema = z.object({
 		.int({ error: "Page must be an integer" })
 		.min(1, { error: "Page must be at least 1" })
 		.optional(),
+	// Random sort
+	seed: z.coerce.number({ error: "Seed must be a number" }).int({ error: "Seed must be an integer" }).optional(),
 });
 
 export default async function MiiList({ searchParams, userId, inLikesPage }: Props) {
@@ -56,7 +60,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { q: query, sort, tags, gender, page = 1, limit = 24 } = parsed.data;
+	const { q: query, sort, tags, gender, page = 1, limit = 24, seed } = parsed.data;
 
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
@@ -83,18 +87,6 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		// Profiles
 		...(userId && { userId }),
 	};
-
-	// Sorting by likes, newest, or oldest
-	let orderBy: Prisma.MiiOrderByWithRelationInput[];
-
-	if (sort === "likes") {
-		orderBy = [{ likedBy: { _count: "desc" } }, { name: "asc" }];
-	} else if (sort === "oldest") {
-		orderBy = [{ createdAt: "asc" }, { name: "asc" }];
-	} else {
-		// default to newest
-		orderBy = [{ createdAt: "desc" }, { name: "asc" }];
-	}
 
 	const select: Prisma.MiiSelect = {
 		id: true,
@@ -126,11 +118,61 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 	const skip = (page - 1) * limit;
 
-	const [totalCount, filteredCount, list] = await Promise.all([
-		prisma.mii.count({ where: { ...where, userId } }),
-		prisma.mii.count({ where, skip, take: limit }),
-		prisma.mii.findMany({ where, orderBy, select, skip: (page - 1) * limit, take: limit }),
-	]);
+	let totalCount: number;
+	let filteredCount: number;
+	let list: Prisma.MiiGetPayload<{ select: typeof select }>[];
+
+	if (sort === "random") {
+		// Use seed for consistent random results
+		const randomSeed = seed || Math.floor(Math.random() * 1_000_000_000);
+
+		// Get all IDs that match the where conditions
+		const matchingIds = await prisma.mii.findMany({
+			where,
+			select: { id: true },
+		});
+
+		totalCount = matchingIds.length;
+		filteredCount = Math.min(matchingIds.length, limit);
+
+		if (matchingIds.length === 0) return;
+
+		const rng = seedrandom(randomSeed.toString());
+
+		// Randomize all IDs using the Durstenfeld algorithm
+		for (let i = matchingIds.length - 1; i > 0; i--) {
+			const j = Math.floor(rng() * (i + 1));
+			[matchingIds[i], matchingIds[j]] = [matchingIds[j], matchingIds[i]];
+		}
+
+		// Convert to number[] array
+		const selectedIds = matchingIds.slice(0, limit).map((i) => i.id);
+
+		list = await prisma.mii.findMany({
+			where: {
+				id: { in: selectedIds },
+			},
+			select,
+		});
+	} else {
+		// Sorting by likes, newest, or oldest
+		let orderBy: Prisma.MiiOrderByWithRelationInput[];
+
+		if (sort === "likes") {
+			orderBy = [{ likedBy: { _count: "desc" } }, { name: "asc" }];
+		} else if (sort === "oldest") {
+			orderBy = [{ createdAt: "asc" }, { name: "asc" }];
+		} else {
+			// default to newest
+			orderBy = [{ createdAt: "desc" }, { name: "asc" }];
+		}
+
+		[totalCount, filteredCount, list] = await Promise.all([
+			prisma.mii.count({ where: { ...where, userId } }),
+			prisma.mii.count({ where, skip, take: limit }),
+			prisma.mii.findMany({ where, orderBy, select, skip: (page - 1) * limit, take: limit }),
+		]);
+	}
 
 	const lastPage = Math.ceil(totalCount / limit);
 	const miis = list.map(({ _count, likedBy, ...rest }) => ({

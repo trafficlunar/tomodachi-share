@@ -5,9 +5,9 @@ import { useTransition } from "react";
 import { useSelect } from "downshift";
 import { Icon } from "@iconify/react";
 
-type Sort = "newest" | "likes" | "oldest";
+type Sort = "likes" | "newest" | "oldest" | "random";
 
-const items = ["newest", "likes", "oldest"];
+const items = ["likes", "newest", "oldest", "random"];
 
 export default function SortSelect() {
 	const router = useRouter();
@@ -24,6 +24,10 @@ export default function SortSelect() {
 
 			const params = new URLSearchParams(searchParams);
 			params.set("sort", selectedItem);
+
+			if (selectedItem == "random") {
+				params.set("seed", Math.floor(Math.random() * 1_000_000_000).toString());
+			}
 
 			startTransition(() => {
 				router.push(`?${params.toString()}`);
