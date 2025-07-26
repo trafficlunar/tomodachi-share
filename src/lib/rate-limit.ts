@@ -64,16 +64,24 @@ export class RateLimit {
 	}
 
 	// Attach rate limit headers to a response
-	sendResponse(message: object, status: number = 200): NextResponse<object> {
-		const response = NextResponse.json(message, { status });
+	sendResponse(body: object | Buffer, status: number = 200, headers?: HeadersInit): NextResponse<object | unknown> {
+		let response: NextResponse;
+
+		if (Buffer.isBuffer(body)) {
+			response = new NextResponse(body, { status, headers });
+		} else {
+			response = NextResponse.json(body, { status, headers });
+		}
+
 		response.headers.set("X-RateLimit-Limit", this.data.limit.toString());
 		response.headers.set("X-RateLimit-Remaining", this.data.remaining.toString());
 		response.headers.set("X-RateLimit-Expires", this.data.expires.toString());
+
 		return response;
 	}
 
 	// Handle both functions above and identifier in one
-	async handle(): Promise<NextResponse<object> | undefined> {
+	async handle(): Promise<NextResponse<object | unknown> | undefined> {
 		const session = await auth();
 		const ip = this.request.headers.get("CF-Connecting-IP") || this.request.headers.get("X-Forwarded-For")?.split(",")[0];
 		const identifier = (session ? session.user.id : ip) ?? "null";

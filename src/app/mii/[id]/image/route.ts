@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 import fs from "fs/promises";
 import path from "path";
@@ -78,6 +78,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 		}
 	}
 
+	if (!buffer) return rateLimit.sendResponse({ error: "Image not found" }, 404);
+
 	// Set the file name for the metadata image in the response for SEO
 	if (mii && imageType === "metadata") {
 		const slugify = (str: string) =>
@@ -92,20 +94,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
 		const filename = `${name}-mii-${tags}-by-${username}.png`;
 
-		return new NextResponse(buffer, {
-			headers: {
-				"Content-Type": "image/png",
-				"Content-Disposition": `inline; filename="${filename}"`,
-				"Cache-Control": "public, max-age=31536000",
-			},
+		return rateLimit.sendResponse(buffer, 200, {
+			"Content-Type": "image/png",
+			"Content-Disposition": `inline; filename="${filename}"`,
+			"Cache-Control": "public, max-age=31536000",
 		});
 	}
 
-	return new NextResponse(buffer, {
-		headers: {
-			"Content-Type": "image/webp",
-			"X-Robots-Tag": "noindex, noimageindex, nofollow",
-			"Cache-Control": "no-store",
-		},
+	return rateLimit.sendResponse(buffer, 200, {
+		"Content-Type": "image/webp",
+		"X-Robots-Tag": "noindex, noimageindex, nofollow",
+		"Cache-Control": "no-store",
 	});
 }
