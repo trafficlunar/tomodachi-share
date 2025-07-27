@@ -205,7 +205,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 								audio={false}
 								videoConstraints={{
 									deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
-									facingMode: { ideal: "environment" },
+									...(selectedDeviceId ? {} : { facingMode: { ideal: "environment" } }),
 								}}
 								onUserMedia={async () => {
 									const newDevices = await navigator.mediaDevices.enumerateDevices();
