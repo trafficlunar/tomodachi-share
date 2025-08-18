@@ -73,7 +73,7 @@ export class RateLimit {
 		let response: NextResponse;
 
 		if (Buffer.isBuffer(body)) {
-			response = new NextResponse(body, { status, headers });
+			response = new NextResponse(new Uint8Array(body), { status, headers }); // convert to Uint8Array due to weird types issue
 		} else {
 			response = NextResponse.json(body, { status, headers });
 		}

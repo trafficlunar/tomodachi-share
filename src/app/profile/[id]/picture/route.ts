@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
 	try {
 		const buffer = await fs.readFile(filePath);
-		return new NextResponse(buffer);
+		return new NextResponse(new Uint8Array(buffer)); // convert to Uint8Array due to weird types issue
 	} catch {
 		return rateLimit.sendResponse({ error: "Image not found" }, 404);
 	}
