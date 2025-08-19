@@ -90,9 +90,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
 		const name = slugify(mii.name);
 		const tags = mii.tags.map(slugify).join("-");
-		const username = slugify(mii.user.username!);
 
-		const filename = `${name}-mii-${tags}-by-${username}.png`;
+		const filename = `${name}-mii-${tags}.png`;
 
 		return rateLimit.sendResponse(buffer, 200, {
 			"Content-Type": "image/png",

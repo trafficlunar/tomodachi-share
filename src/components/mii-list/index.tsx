@@ -103,6 +103,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		imageCount: true,
 		tags: true,
 		createdAt: true,
+		gender: true,
 		// Mii liked check
 		...(session?.user?.id && {
 			likedBy: {
@@ -252,6 +253,17 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 								)}
 							</div>
 						</div>
+
+						{/* Offscreen metadata image for search engines; hidden from users */}
+						{/* eslint-disable-next-line @next/next/no-img-element */}
+						<img
+							src={`/mii/${mii.id}/image?type=metadata`}
+							alt={`${mii.name}, a ${mii.gender ? mii.gender.toLowerCase() : ""} Mii ${mii.tags.length ? ` with tags: ${mii.tags.join(", ")}` : ""}`}
+							loading="lazy"
+							width={1}
+							height={1}
+							className="absolute left-[999999]"
+						/>
 					</div>
 				))}
 			</div>
