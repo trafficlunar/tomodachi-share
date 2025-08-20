@@ -2,12 +2,12 @@
 
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 
 import { Icon } from "@iconify/react";
 import { Prisma, PunishmentType } from "@prisma/client";
 
+import ProfilePicture from "../profile-picture";
 import SubmitButton from "../submit-button";
 import PunishmentDeletionDialog from "./punishment-deletion-dialog";
 
@@ -112,7 +112,7 @@ export default function Punishments() {
 				<div className="grid grid-cols-2 gap-2 mt-2 max-lg:grid-cols-1">
 					<div className="p-4 bg-orange-50 border border-orange-300 rounded-md shadow-sm">
 						<div className="flex gap-1">
-							<Image src={user.image} width={96} height={96} alt="Profile picture" className="rounded-full border-2 border-orange-400" />
+							<ProfilePicture src={user.image} width={96} height={96} className="rounded-full border-2 border-orange-400" />
 							<div className="p-2 flex flex-col">
 								<p className="text-xl font-bold">{user.name}</p>
 								<p className="text-black/60 text-sm font-medium">@{user.username}</p>

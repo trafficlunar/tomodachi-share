@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			type: "profile",
 			title: `${user.name} (@${user.username}) - TomodachiShare`,
 			description: `View ${user.name}'s profile on TomodachiShare. Creator of ${user._count.miis} Miis. Member since ${joinDate}.`,
-			images: [user.image ?? "/guest.svg"],
+			images: [user.image ?? "/guest.webp"],
 			username: user.username,
 			firstName: user.name,
 		},
@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			card: "summary",
 			title: `${user.name} (@${user.username}) - TomodachiShare`,
 			description: `View ${user.name}'s profile on TomodachiShare. Creator of ${user._count.miis} Miis. Member since ${joinDate}.`,
-			images: [user.image ?? "/guest.svg"],
+			images: [user.image ?? "/guest.webp"],
 			creator: user.username!,
 		},
 		alternates: {

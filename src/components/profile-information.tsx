@@ -1,9 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Icon } from "@iconify/react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+
+import ProfilePicture from "./profile-picture";
 
 interface Props {
 	userId?: number;
@@ -28,13 +29,7 @@ export default async function ProfileInformation({ userId, page }: Props) {
 			<div className="flex w-full gap-4 overflow-x-scroll">
 				{/* Profile picture */}
 				<Link href={`/profile/${user.id}`} className="size-28 aspect-square">
-					<Image
-						src={user.image ?? "/guest.webp"}
-						alt="profile picture"
-						width={128}
-						height={128}
-						className="rounded-full bg-white border-2 border-orange-400 shadow max-md:self-center"
-					/>
+					<ProfilePicture src={user.image ?? "/guest.webp"} className="rounded-full bg-white border-2 border-orange-400 shadow max-md:self-center" />
 				</Link>
 				{/* User information */}
 				<div className="flex flex-col w-full relative py-3">
