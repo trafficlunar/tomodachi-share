@@ -17,7 +17,6 @@ import Carousel from "../carousel";
 import LikeButton from "../like-button";
 import DeleteMiiButton from "../delete-mii";
 import Pagination from "./pagination";
-import Image from "next/image";
 
 interface Props {
 	searchParams: { [key: string]: string | string[] | undefined };
@@ -254,17 +253,6 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 								)}
 							</div>
 						</div>
-
-						{/* Offscreen metadata image for search engines; hidden from users */}
-						<Image
-							src={`/mii/${mii.id}/image?type=metadata`}
-							alt={`${mii.name}, a ${mii.gender ? mii.gender.toLowerCase() : ""} Mii ${mii.tags.length ? ` with tags: ${mii.tags.join(", ")}` : ""}`}
-							loading="lazy"
-							unoptimized
-							width={1}
-							height={1}
-							className="absolute left-[-999999]"
-						/>
 					</div>
 				))}
 			</div>
