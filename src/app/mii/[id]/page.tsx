@@ -244,15 +244,26 @@ export default async function MiiPage({ params }: Props) {
 					</h2>
 
 					{images.length > 0 ? (
-						<div className="grid grid-cols-4 gap-2 w-full">
+						<div className="grid grid-cols-3 gap-2 w-full max-md:grid-cols-2 max-[24rem]:grid-cols-1">
 							{images.map((src, index) => (
-								<div key={index} className="rounded-xl bg-amber-100 border-2 border-amber-300 shadow-md overflow-hidden">
+								<div
+									key={index}
+									className="relative aspect-[3/2] rounded-xl bg-black/65 border-2 border-amber-400 shadow-md overflow-hidden transition hover:shadow-lg shadow-black/30"
+								>
+									<Image
+										src={src}
+										alt="mii screenshot background blur"
+										width={256}
+										height={170}
+										className="absolute size-full blur-sm contrast-150 brightness-[0.65] object-cover"
+									/>
+
 									<ImageViewer
 										src={src}
 										alt="mii screenshot"
 										width={256}
 										height={170}
-										className="rounded-xl aspect-[3/2] w-full object-contain drop-shadow-md hover:scale-105 transition-transform"
+										className="aspect-[3/2] w-full object-contain hover:scale-105 duration-300 transition-transform relative z-10"
 										images={images}
 									/>
 								</div>
