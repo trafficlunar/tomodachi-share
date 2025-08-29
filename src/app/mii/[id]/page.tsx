@@ -149,16 +149,16 @@ export default async function MiiPage({ params }: Props) {
 						{/* Mii Gender */}
 						<div className="grid grid-cols-2 gap-2">
 							<div
-								className={`rounded-xl flex justify-center items-center size-16 text-5xl border ${
-									mii.gender === "MALE" ? "bg-cyan-200/75 border-cyan-400/75" : "bg-zinc-200 border-zinc-400/50"
+								className={`rounded-xl flex justify-center items-center size-16 text-5xl border-2 shadow-sm ${
+									mii.gender === "MALE" ? "bg-blue-100 border-blue-400" : "bg-white border-gray-300"
 								}`}
 							>
 								<Icon icon="foundation:male" className="text-blue-400" />
 							</div>
 
 							<div
-								className={`rounded-xl flex justify-center items-center size-16 text-5xl border ${
-									mii.gender === "FEMALE" ? "bg-cyan-200/75 border-cyan-400/75" : "bg-zinc-200 border-zinc-400/50"
+								className={`rounded-xl flex justify-center items-center size-16 text-5xl border-2 shadow-sm ${
+									mii.gender === "FEMALE" ? "bg-pink-100 border-pink-400" : "bg-white border-gray-300"
 								}`}
 							>
 								<Icon icon="foundation:female" className="text-pink-400" />
