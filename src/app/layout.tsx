@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Lexend } from "next/font/google";
 
+import { WebSite, WithContext } from "schema-dts";
+
 import "./globals.css";
 
 import Providers from "./provider";
@@ -46,18 +48,38 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const jsonLd: WithContext<WebSite> = {
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		name: "TomodachiShare",
+		url: "https://tomodachishare.com",
+		description: "Discover and share Mii residents for your Tomodachi Life island!",
+		inLanguage: "en",
+		publisher: {
+			"@type": "Organization",
+			name: "TomodachiShare",
+			url: "https://tomodachishare.com",
+			logo: {
+				"@type": "ImageObject",
+				url: "https://tomodachishare.com/logo.png",
+			},
+			sameAs: ["https://trafficlunar.net", "https://twitter.com/trafficlunr", "https://bsky.app/profile/trafficlunar.net"],
+		},
+		potentialAction: {
+			"@type": "SearchAction",
+			target: "https://tomodachishare.com/?q={search_term_string}",
+			// @ts-expect-error whatever
+			"query-input": "required name=search_term_string",
+		},
+	};
+
 	return (
 		<html lang="en">
 			<head>
 				<script
 					type="application/ld+json"
 					dangerouslySetInnerHTML={{
-						__html: JSON.stringify({
-							"@context": "https://schema.org",
-							"@type": "WebSite",
-							name: "TomodachiShare",
-							url: process.env.NEXT_PUBLIC_BASE_URL,
-						}),
+						__html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
 					}}
 				/>
 			</head>
