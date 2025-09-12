@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
 			{
 				pathname: "/mii/*/image",
 			},
+			{
+				pathname: "/profile/*/picture",
+			},
 		],
 		remotePatterns: [
 			{
