@@ -20,7 +20,7 @@
 }
 
 body {
-	@apply bg-amber-50;
+	@apply bg-amber-50 text-slate-800;
 
 	--color1: var(--color-amber-50);
 	--color2: var(--color-amber-100);
