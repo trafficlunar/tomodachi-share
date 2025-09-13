@@ -80,3 +80,14 @@ body {
 [data-tooltip]:hover::after {
 	@apply opacity-100 scale-100;
 }
+
+/* Scrollbar */
+/* Firefox */
+* {
+	scrollbar-color: #ff8903 transparent;
+}
+
+/* Chrome, and Safari */
+*::-webkit-scrollbar-track {
+	background: #ff8903;
+}
