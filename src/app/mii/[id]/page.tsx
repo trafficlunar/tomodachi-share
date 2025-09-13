@@ -109,13 +109,13 @@ export default async function MiiPage({ params }: Props) {
 				<div className="relative grid grid-cols-3 gap-4 max-md:grid-cols-1">
 					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
 						{/* Mii Image */}
-						<div className="bg-gradient-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center">
+						<div className="bg-gradient-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center h-50">
 							<ImageViewer
 								src={`/mii/${mii.id}/image?type=mii`}
 								alt="mii headshot"
 								width={200}
 								height={200}
-								className="drop-shadow-lg hover:scale-105 transition-transform"
+								className="drop-shadow-lg hover:scale-105 transition-transform duration-300 object-contain size-full"
 							/>
 						</div>
 						{/* QR Code */}
@@ -131,23 +131,25 @@ export default async function MiiPage({ params }: Props) {
 						<hr className="w-full border-t-2 border-t-amber-400" />
 
 						{/* Mii Info */}
-						<ul className="text-sm w-full p-2 *:flex *:justify-between *:items-center *:my-1">
-							<li>
-								Name:{" "}
-								<span className="text-right font-medium">
-									{mii.firstName} {mii.lastName}
-								</span>
-							</li>
-							<li>
-								From: <span className="text-right font-medium">{mii.islandName} Island</span>
-							</li>
-							<li>
-								Allowed Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox !cursor-auto" />
-							</li>
-						</ul>
+						{mii.platform === "THREE_DS" && (
+							<ul className="text-sm w-full p-2 *:flex *:justify-between *:items-center *:my-1">
+								<li>
+									Name:{" "}
+									<span className="text-right font-medium">
+										{mii.firstName} {mii.lastName}
+									</span>
+								</li>
+								<li>
+									From: <span className="text-right font-medium">{mii.islandName} Island</span>
+								</li>
+								<li>
+									Allowed Copying: <input type="checkbox" checked={mii.allowedCopying ?? false} disabled className="checkbox !cursor-auto" />
+								</li>
+							</ul>
+						)}
 
 						{/* Mii Gender */}
-						<div className="grid grid-cols-2 gap-2">
+						<div className={`grid grid-cols-2 gap-2 ${mii.platform !== "THREE_DS" && "mt-4"}`}>
 							<div
 								className={`rounded-xl flex justify-center items-center size-16 text-5xl border-2 shadow-sm ${
 									mii.gender === "MALE" ? "bg-blue-100 border-blue-400" : "bg-white border-gray-300"
