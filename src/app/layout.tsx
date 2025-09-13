@@ -78,6 +78,7 @@ export default function RootLayout({
 			<head>
 				<script
 					type="application/ld+json"
+					suppressHydrationWarning
 					dangerouslySetInnerHTML={{
 						__html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
 					}}
