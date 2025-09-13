@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
 			{
 				pathname: "/tutorial/**",
 			},
+			{
+				pathname: "/guest.webp",
+			},
 		],
 		remotePatterns: [
 			{
