@@ -8,7 +8,7 @@ import { Icon } from "@iconify/react";
 import TutorialPage from "./page";
 import StartingPage from "./starting-page";
 
-export default function SubmitTutorialButton() {
+export default function ThreeDsSubmitTutorialButton() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
