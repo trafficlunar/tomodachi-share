@@ -187,7 +187,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 	return (
 		<div className="w-full">
-			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-center gap-2 mb-2 max-[56rem]:flex-col">
+			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-center gap-2 mb-2 max-md:flex-col">
 				<div className="flex items-center gap-2">
 					{totalCount == filteredCount ? (
 						<>
@@ -204,7 +204,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 					)}
 				</div>
 
-				<div className="relative flex items-center justify-end gap-2 w-full min-[56rem]:max-w-2/3 max-[56rem]:justify-center max-sm:flex-col">
+				<div className="relative flex items-center justify-end gap-2 w-full min-md:max-w-2/3 max-md:justify-center">
 					<FilterMenu />
 					<SortSelect />
 				</div>
