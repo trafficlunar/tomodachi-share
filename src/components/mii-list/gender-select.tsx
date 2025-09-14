@@ -29,24 +29,28 @@ export default function GenderSelect() {
 	};
 
 	return (
-		<div className="grid grid-cols-2 gap-0.5">
+		<div className="grid grid-cols-2 gap-0.5 w-fit">
 			<button
 				onClick={() => handleClick("MALE")}
 				aria-label="Filter for Male Miis"
-				className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all ${
+				data-tooltip-span
+				className={`cursor-pointer rounded-xl flex justify-center items-center size-13 text-5xl border-2 transition-all ${
 					selected === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 				}`}
 			>
+				<div className="tooltip !bg-blue-400 !border-blue-400 before:!border-b-blue-400">Male</div>
 				<Icon icon="foundation:male" className="text-blue-400" />
 			</button>
 
 			<button
 				onClick={() => handleClick("FEMALE")}
 				aria-label="Filter for Female Miis"
-				className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all ${
+				data-tooltip-span
+				className={`cursor-pointer rounded-xl flex justify-center items-center size-13 text-5xl border-2 transition-all ${
 					selected === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 				}`}
 			>
+				<div className="tooltip !bg-pink-400 !border-pink-400 before:!border-b-pink-400">Female</div>
 				<Icon icon="foundation:female" className="text-pink-400" />
 			</button>
 		</div>

@@ -64,6 +64,7 @@ body {
 	@apply block;
 }
 
+/* Tooltips */
 [data-tooltip] {
 	@apply relative z-10;
 }
@@ -81,7 +82,24 @@ body {
 	@apply opacity-100 scale-100;
 }
 
-/* Scrollbar */
+/* Fallback Tooltips */
+[data-tooltip-span] {
+	@apply relative;
+}
+
+[data-tooltip-span] > .tooltip {
+	@apply absolute left-1/2 top-full mt-2 px-2 py-1 bg-orange-400 border border-orange-400 rounded-md text-sm text-white whitespace-nowrap select-none pointer-events-none shadow-md opacity-0 scale-75 transition-all duration-200 ease-out origin-top -translate-x-1/2 z-[999999];
+}
+
+[data-tooltip-span] > .tooltip::before {
+	@apply content-[''] absolute left-1/2 -translate-x-1/2 -top-2 border-4 border-transparent border-b-orange-400;
+}
+
+[data-tooltip-span]:hover > .tooltip {
+	@apply opacity-100 scale-100;
+}
+
+/* Scrollbars */
 /* Firefox */
 * {
 	scrollbar-color: #ff8903 transparent;

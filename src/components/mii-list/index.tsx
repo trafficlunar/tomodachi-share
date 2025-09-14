@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { MiiGender, Prisma } from "@prisma/client";
+import { MiiGender, MiiPlatform, Prisma } from "@prisma/client";
 import { Icon } from "@iconify/react";
 import { z } from "zod";
 
@@ -10,8 +10,7 @@ import { querySchema } from "@/lib/schemas";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-import GenderSelect from "./gender-select";
-import TagFilter from "./tag-filter";
+import FilterMenu from "./filter-menu";
 import SortSelect from "./sort-select";
 import Carousel from "../carousel";
 import LikeButton from "../like-button";
@@ -36,6 +35,7 @@ const searchSchema = z.object({
 				.map((tag) => tag.trim())
 				.filter((tag) => tag.length > 0)
 		),
+	platform: z.enum(MiiPlatform, { error: "Platform must be either 'THREE_DS', or 'SWITCH'" }).optional(),
 	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', or 'FEMALE'" }).optional(),
 	// todo: incorporate tagsSchema
 	// Pages
@@ -60,7 +60,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { q: query, sort, tags, gender, page = 1, limit = 24, seed } = parsed.data;
+	const { q: query, sort, tags, platform, gender, page = 1, limit = 24, seed } = parsed.data;
 
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
@@ -82,6 +82,8 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		}),
 		// Tag filtering
 		...(tags && tags.length > 0 && { tags: { hasEvery: tags } }),
+		// Platform
+		...(platform && { platform: { equals: platform } }),
 		// Gender
 		...(gender && { gender: { equals: gender } }),
 		// Profiles
@@ -99,6 +101,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 				},
 			},
 		}),
+		platform: true,
 		name: true,
 		imageCount: true,
 		tags: true,
@@ -201,9 +204,8 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 					)}
 				</div>
 
-				<div className="flex items-center justify-end gap-2 w-full min-[56rem]:max-w-2/3 max-[56rem]:justify-center max-sm:flex-col">
-					<GenderSelect />
-					<TagFilter />
+				<div className="relative flex items-center justify-end gap-2 w-full min-[56rem]:max-w-2/3 max-[56rem]:justify-center max-sm:flex-col">
+					<FilterMenu />
 					<SortSelect />
 				</div>
 			</div>

@@ -149,8 +149,59 @@ export default async function MiiPage({ params }: Props) {
 							</ul>
 						)}
 
+						{/* Mii Platform */}
+						<div className={`flex items-center gap-4 text-zinc-500 text-sm font-medium mb-2 w-full ${mii.platform !== "THREE_DS" && "mt-2"}`}>
+							<hr className="flex-grow border-zinc-300" />
+							<span>Platform</span>
+							<hr className="flex-grow border-zinc-300" />
+						</div>
+
+						<div data-tooltip-span title={mii.platform} className="grid grid-cols-2 gap-2 mb-2">
+							<div
+								className={`tooltip !mt-1 ${
+									mii.platform === "THREE_DS"
+										? "!bg-sky-400 !border-sky-400 before:!border-b-sky-400"
+										: "!bg-red-400 !border-red-400 before:!border-b-red-400"
+								}`}
+							>
+								{mii.platform === "THREE_DS" ? "3DS" : "Switch"}
+							</div>
+
+							<div
+								className={`rounded-xl flex justify-center items-center size-16 text-4xl border-2 shadow-sm ${
+									mii.platform === "THREE_DS" ? "bg-sky-100 border-sky-400" : "bg-white border-gray-300"
+								}`}
+							>
+								<Icon icon="cib:nintendo-3ds" className="text-sky-500" />
+							</div>
+
+							<div
+								className={`rounded-xl flex justify-center items-center size-16 text-4xl border-2 shadow-sm ${
+									mii.platform === "SWITCH" ? "bg-red-100 border-red-400" : "bg-white border-gray-300"
+								}`}
+							>
+								<Icon icon="cib:nintendo-switch" className="text-red-400" />
+							</div>
+						</div>
+
 						{/* Mii Gender */}
-						<div className={`grid grid-cols-2 gap-2 ${mii.platform !== "THREE_DS" && "mt-4"}`}>
+						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-2 w-full">
+							<hr className="flex-grow border-zinc-300" />
+							<span>Gender</span>
+							<hr className="flex-grow border-zinc-300" />
+						</div>
+
+						<div data-tooltip-span title={mii.gender ?? "NULL"} className="grid grid-cols-2 gap-2">
+							<div
+								className={`tooltip !mt-1 ${
+									mii.gender === "MALE"
+										? "!bg-blue-400 !border-blue-400 before:!border-b-blue-400"
+										: "!bg-pink-400 !border-pink-400 before:!border-b-pink-400"
+								}`}
+							>
+								{mii.gender === "MALE" ? "Male" : "Female"}
+							</div>
+
 							<div
 								className={`rounded-xl flex justify-center items-center size-16 text-5xl border-2 shadow-sm ${
 									mii.gender === "MALE" ? "bg-blue-100 border-blue-400" : "bg-white border-gray-300"
