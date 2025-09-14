@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
 			{
 				pathname: "/profile/*/picture",
 			},
+			{
+				pathname: "/tutorial/**",
+			},
+			{
+				pathname: "/guest.webp",
+			},
 		],
 		remotePatterns: [
 			{
