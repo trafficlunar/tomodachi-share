@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 
 import TutorialPage from "./page";
 
-export default function ScanTutorialButton() {
+export default function ThreeDsScanTutorialButton() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -66,11 +66,11 @@ export default function ScanTutorialButton() {
 							<div className="flex flex-col min-h-0 h-full">
 								<div className="overflow-hidden h-full" ref={emblaRef}>
 									<div className="flex h-full">
-										<TutorialPage text="1. Enter the town hall" imageSrc="/tutorial/step1.png" />
-										<TutorialPage text="2. Go into 'QR Code'" imageSrc="/tutorial/adding-mii/step2.png" />
-										<TutorialPage text="3. Press 'Scan QR Code'" imageSrc="/tutorial/adding-mii/step3.png" />
-										<TutorialPage text="4. Click on the QR code below the Mii's image" imageSrc="/tutorial/adding-mii/step4.png" />
-										<TutorialPage text="5. Scan with your 3DS" imageSrc="/tutorial/adding-mii/step5.png" />
+										<TutorialPage text="1. Enter the town hall" imageSrc="/tutorial/3ds/step1.png" />
+										<TutorialPage text="2. Go into 'QR Code'" imageSrc="/tutorial/3ds/adding-mii/step2.png" />
+										<TutorialPage text="3. Press 'Scan QR Code'" imageSrc="/tutorial/3ds/adding-mii/step3.png" />
+										<TutorialPage text="4. Click on the QR code below the Mii's image" imageSrc="/tutorial/3ds/adding-mii/step4.png" />
+										<TutorialPage text="5. Scan with your 3DS" imageSrc="/tutorial/3ds/adding-mii/step5.png" />
 										<TutorialPage carouselIndex={selectedIndex} finishIndex={5} />
 									</div>
 								</div>

@@ -1,5 +1,5 @@
-// This file's extension is .tsx because I am using JSX for satori to generate images
-// These are disabled because satori is not Next.JS and is turned into an image anyways
+// This file's extension is .tsx because JSX is used for satori to generate images
+// Warnings below are disabled since satori is not Next.JS and is turned into an image anyways
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 
@@ -14,9 +14,9 @@ import satori, { Font } from "satori";
 
 import { Mii } from "@prisma/client";
 
-const MIN_IMAGE_DIMENSIONS = 128;
-const MAX_IMAGE_DIMENSIONS = 1024;
-const MAX_IMAGE_SIZE = 1024 * 1024; // 1 MB
+const MIN_IMAGE_DIMENSIONS = [320, 240];
+const MAX_IMAGE_DIMENSIONS = [1920, 1080];
+const MAX_IMAGE_SIZE = 4 * 1024 * 1024; // 4 MB
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
 //#region Image validation
@@ -43,12 +43,12 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 		if (
 			!metadata.width ||
 			!metadata.height ||
-			metadata.width < MIN_IMAGE_DIMENSIONS ||
-			metadata.width > MAX_IMAGE_DIMENSIONS ||
-			metadata.height < MIN_IMAGE_DIMENSIONS ||
-			metadata.height > MAX_IMAGE_DIMENSIONS
+			metadata.width < MIN_IMAGE_DIMENSIONS[0] ||
+			metadata.width > MAX_IMAGE_DIMENSIONS[0] ||
+			metadata.height < MIN_IMAGE_DIMENSIONS[1] ||
+			metadata.height > MAX_IMAGE_DIMENSIONS[1]
 		) {
-			return { valid: false, error: "Image dimensions are invalid. Width and height must be between 128px and 1024px" };
+			return { valid: false, error: "Image dimensions are invalid. Resolution must be between 320x240 and 1920x1080" };
 		}
 
 		// Check for inappropriate content
@@ -121,7 +121,7 @@ const loadFonts = async (): Promise<Font[]> => {
 	);
 };
 
-export async function generateMetadataImage(mii: Mii, author: string): Promise<{ buffer?: Buffer; error?: string; status?: number }> {
+export async function generateMetadataImage(mii: Mii, author: string): Promise<Buffer> {
 	const miiUploadsDirectory = path.join(uploadsDirectory, mii.id.toString());
 
 	// Load assets concurrently
@@ -146,8 +146,14 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 		<div tw="w-full h-full bg-amber-50 border-2 border-amber-500 rounded-2xl p-4 flex flex-col">
 			<div tw="flex w-full">
 				{/* Mii image */}
-				<div tw="w-80 rounded-xl flex justify-center mr-2" style={{ backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a);" }}>
-					<img src={miiImage} width={248} height={248} style={{ filter: "drop-shadow(0 10px 8px #00000024) drop-shadow(0 4px 3px #00000024)" }} />
+				<div tw="w-80 h-62 rounded-xl flex justify-center mr-2 px-2" style={{ backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a);" }}>
+					<img
+						src={miiImage}
+						width={248}
+						height={248}
+						tw="w-full h-full"
+						style={{ objectFit: "contain", filter: "drop-shadow(0 10px 8px #00000024) drop-shadow(0 4px 3px #00000024)" }}
+					/>
 				</div>
 
 				{/* QR code */}
@@ -197,16 +203,11 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 	const buffer = await sharp(Buffer.from(svg)).png().toBuffer();
 
 	// Store the file
-	try {
-		// I tried using .webp here but the quality looked awful
-		// but it actually might be well-liked due to the hatred of .webp
-		const fileLocation = path.join(miiUploadsDirectory, "metadata.png");
-		await fs.writeFile(fileLocation, buffer);
-	} catch (error) {
-		console.error("Error storing 'metadata' image type", error);
-		return { error: `Failed to store metadata image for ${mii.id}`, status: 500 };
-	}
+	// I tried using .webp here but the quality looked awful
+	// but it actually might be well-liked due to the hatred of .webp
+	const fileLocation = path.join(miiUploadsDirectory, "metadata.png");
+	await fs.writeFile(fileLocation, buffer);
 
-	return { buffer };
+	return buffer;
 }
 //#endregion

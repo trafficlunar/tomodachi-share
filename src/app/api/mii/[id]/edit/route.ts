@@ -136,7 +136,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		}
 	} else if (description === undefined) {
 		// If images or description were not changed, regenerate the metadata image
-		await generateMetadataImage(mii, mii.user.username!);
+		try {
+			await generateMetadataImage(mii, mii.user.username!);
+		} catch (error) {
+			console.error(error);
+			return rateLimit.sendResponse({ error: `Failed to generate 'metadata' type image for mii ${miiId}` }, 500);
+		}
 	}
 
 	return rateLimit.sendResponse({ success: true });
