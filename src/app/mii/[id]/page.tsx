@@ -12,7 +12,8 @@ import LikeButton from "@/components/like-button";
 import ImageViewer from "@/components/image-viewer";
 import DeleteMiiButton from "@/components/delete-mii";
 import ShareMiiButton from "@/components/share-mii-button";
-import ScanTutorialButton from "@/components/tutorial/scan";
+import ThreeDsScanTutorialButton from "@/components/tutorial/3ds-scan";
+import SwitchScanTutorialButton from "@/components/tutorial/switch-scan";
 
 interface Props {
 	params: Promise<{ id: string }>;
@@ -233,7 +234,7 @@ export default async function MiiPage({ params }: Props) {
 								<Icon icon="material-symbols:flag-rounded" />
 								<span>Report</span>
 							</Link>
-							<ScanTutorialButton />
+							{mii.platform === "THREE_DS" ? <ThreeDsScanTutorialButton /> : <SwitchScanTutorialButton />}
 						</div>
 					</div>
 				</div>

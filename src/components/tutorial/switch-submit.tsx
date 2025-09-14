@@ -69,32 +69,35 @@ export default function SwitchSubmitTutorialButton() {
 							<div className="flex flex-col min-h-0 h-full">
 								<div className="overflow-hidden h-full" ref={emblaRef}>
 									<div className="flex h-full">
-										<StartingPage emblaApi={emblaApi} />
+										<StartingPage isSwitch emblaApi={emblaApi} />
 
 										{/* Allow Copying */}
-										<TutorialPage text="1. Enter the town hall" imageSrc="/tutorial/step1.png" />
-										<TutorialPage text="2. Go into 'Mii List'" imageSrc="/tutorial/allow-copying/step2.png" />
-										<TutorialPage text="3. Select and edit the Mii you wish to submit" imageSrc="/tutorial/allow-copying/step3.png" />
-										<TutorialPage text="4. Click 'Other Settings' in the information screen" imageSrc="/tutorial/allow-copying/step4.png" />
-										<TutorialPage text="5. Click on 'Don't Allow' under the 'Copying' text" imageSrc="/tutorial/allow-copying/step5.png" />
-										<TutorialPage text="6. Press 'Allow'" imageSrc="/tutorial/allow-copying/step6.png" />
-										<TutorialPage text="7. Confirm the edits to the Mii" imageSrc="/tutorial/allow-copying/step7.png" />
+										<TutorialPage text="1. Enter the town hall" imageSrc="/tutorial/switch/step1.png" />
+										<TutorialPage text="2. Go into 'Mii List'" imageSrc="/tutorial/switch/allow-copying/step2.png" />
+										<TutorialPage text="3. Select and edit the Mii you wish to submit" imageSrc="/tutorial/switch/allow-copying/step3.png" />
+										<TutorialPage text="4. Click 'Other Settings' in the information screen" imageSrc="/tutorial/switch/allow-copying/step4.png" />
+										<TutorialPage text="5. Click on 'Don't Allow' under the 'Copying' text" imageSrc="/tutorial/switch/allow-copying/step5.png" />
+										<TutorialPage text="6. Press 'Allow'" imageSrc="/tutorial/switch/allow-copying/step6.png" />
+										<TutorialPage text="7. Confirm the edits to the Mii" imageSrc="/tutorial/switch/allow-copying/step7.png" />
 										<TutorialPage carouselIndex={selectedIndex} finishIndex={8} />
 
 										<StartingPage emblaApi={emblaApi} />
 
 										{/* Create QR Code */}
-										<TutorialPage text="1. Enter the town hall" imageSrc="/tutorial/step1.png" />
-										<TutorialPage text="2. Go into 'QR Code'" imageSrc="/tutorial/create-qr-code/step2.png" />
-										<TutorialPage text="3. Press 'Create QR Code'" imageSrc="/tutorial/create-qr-code/step3.png" />
-										<TutorialPage text="4. Select and press 'OK' on the Mii you wish to submit" imageSrc="/tutorial/create-qr-code/step4.png" />
+										<TutorialPage text="1. Enter the town hall" imageSrc="/tutorial/switch/step1.png" />
+										<TutorialPage text="2. Go into 'QR Code'" imageSrc="/tutorial/switch/create-qr-code/step2.png" />
+										<TutorialPage text="3. Press 'Create QR Code'" imageSrc="/tutorial/switch/create-qr-code/step3.png" />
+										<TutorialPage
+											text="4. Select and press 'OK' on the Mii you wish to submit"
+											imageSrc="/tutorial/switch/create-qr-code/step4.png"
+										/>
 										<TutorialPage
 											text="5. Pick any option; it doesn't matter since the QR code regenerates upon submission."
-											imageSrc="/tutorial/create-qr-code/step5.png"
+											imageSrc="/tutorial/switch/create-qr-code/step5.png"
 										/>
 										<TutorialPage
 											text="6. Exit the tutorial; Upload the QR code (scan with camera or upload file through SD card)."
-											imageSrc="/tutorial/create-qr-code/step6.png"
+											imageSrc="/tutorial/switch/create-qr-code/step6.png"
 										/>
 										<TutorialPage carouselIndex={selectedIndex} finishIndex={16} />
 									</div>

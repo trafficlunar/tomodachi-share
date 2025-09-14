@@ -69,7 +69,7 @@ export default function ThreeDsSubmitTutorialButton() {
 							<div className="flex flex-col min-h-0 h-full">
 								<div className="overflow-hidden h-full" ref={emblaRef}>
 									<div className="flex h-full">
-										<StartingPage emblaApi={emblaApi} />
+										<StartingPage isSwitch emblaApi={emblaApi} />
 
 										{/* Allow Copying */}
 										<TutorialPage text="1. Enter the town hall" imageSrc="/tutorial/step1.png" />

@@ -3,9 +3,10 @@ import { UseEmblaCarouselType } from "embla-carousel-react";
 
 interface Props {
 	emblaApi: UseEmblaCarouselType[1] | undefined;
+	isSwitch?: boolean;
 }
 
-export default function StartingPage({ emblaApi }: Props) {
+export default function StartingPage({ emblaApi, isSwitch }: Props) {
 	const goToTutorial = (index: number) => {
 		if (!emblaApi) return;
 
@@ -29,7 +30,7 @@ export default function StartingPage({ emblaApi }: Props) {
 					className="flex flex-col justify-center items-center bg-zinc-50 rounded-xl p-4 shadow-md border-2 border-zinc-300 cursor-pointer text-center text-sm transition hover:scale-[1.03] hover:bg-cyan-100 hover:border-cyan-600"
 				>
 					<Image
-						src={"/tutorial/allow-copying/thumbnail.png"}
+						src={`/tutorial/${isSwitch ? "switch" : "3ds"}/allow-copying/thumbnail.png`}
 						alt="Allow Copying thumbnail"
 						width={128}
 						height={128}
@@ -45,7 +46,7 @@ export default function StartingPage({ emblaApi }: Props) {
 					className="flex flex-col justify-center items-center bg-zinc-50 rounded-xl p-4 shadow-md border-2 border-zinc-300 cursor-pointer text-center text-sm transition hover:scale-[1.03] hover:bg-cyan-100 hover:border-cyan-600"
 				>
 					<Image
-						src={"/tutorial/create-qr-code/thumbnail.png"}
+						src={`/tutorial/${isSwitch ? "switch" : "3ds"}/create-qr-code/thumbnail.png`}
 						alt="Creating QR code thumbnail"
 						width={128}
 						height={128}
