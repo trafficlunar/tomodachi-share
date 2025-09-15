@@ -48,13 +48,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	return {
 		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `${mii.name} - TomodachiShare`,
-		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
+		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare with ${mii._count.likedBy} likes.`,
 		keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection", ...mii.tags],
 		creator: username,
 		openGraph: {
 			type: "article",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare with ${mii._count.likedBy} likes.`,
 			images: [metadataImageUrl],
 			publishedTime: mii.createdAt.toISOString(),
 			authors: username,
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		twitter: {
 			card: "summary_large_image",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare with ${mii._count.likedBy} likes.`,
 			images: [metadataImageUrl],
 			creator: username,
 		},
