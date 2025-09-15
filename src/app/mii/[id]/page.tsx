@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			type: "article",
 			title: `${mii.name} - TomodachiShare`,
 			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
-			images: [metadataImageUrl],
+			images: [{ url: metadataImageUrl, alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character` }],
 			publishedTime: mii.createdAt.toISOString(),
 			authors: username,
 		},
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			card: "summary_large_image",
 			title: `${mii.name} - TomodachiShare`,
 			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
-			images: [metadataImageUrl],
+			images: [{ url: metadataImageUrl, alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character` }],
 			creator: username,
 		},
 		alternates: {
