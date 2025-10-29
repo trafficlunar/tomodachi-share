@@ -82,6 +82,7 @@ export default async function MiiPage({ params }: Props) {
 		include: {
 			user: {
 				select: {
+					name: true,
 					username: true,
 				},
 			},
@@ -193,7 +194,7 @@ export default async function MiiPage({ params }: Props) {
 							{/* Author and Created date */}
 							<div className="mt-2">
 								<Link href={`/profile/${mii.userId}`} className="text-lg">
-									By: <span className="font-bold">@{mii.user.username}</span>
+									By <span className="font-bold">{mii.user.name}</span>
 								</Link>
 								<h4 className="text-sm">
 									Created:{" "}
