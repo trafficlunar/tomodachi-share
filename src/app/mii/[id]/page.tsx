@@ -211,7 +211,11 @@ export default async function MiiPage({ params }: Props) {
 							</div>
 
 							{/* Description */}
-							{mii.description && <p className="text-sm mt-2 ml-2 bg-white/50 p-3 rounded-lg border border-orange-200">{mii.description}</p>}
+							{mii.description && (
+								<p className="text-sm mt-2 ml-2 bg-white/50 p-3 rounded-lg border border-orange-200 whitespace-break-spaces max-h-54 overflow-y-auto">
+									{mii.description}
+								</p>
+							)}
 						</div>
 
 						{/* Buttons */}
