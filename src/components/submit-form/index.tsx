@@ -31,6 +31,7 @@ export default function SubmitForm() {
 	const [name, setName] = useState("");
 	const [tags, setTags] = useState<string[]>([]);
 	const [description, setDescription] = useState("");
+	const [accessKey, setAccessKey] = useState("");
 	const [gender, setGender] = useState<MiiGender>("MALE");
 	const [qrBytesRaw, setQrBytesRaw] = useState<number[]>([]);
 
@@ -67,16 +68,18 @@ export default function SubmitForm() {
 		formData.append("name", name);
 		formData.append("tags", JSON.stringify(tags));
 		formData.append("description", description);
-		formData.append("qrBytesRaw", JSON.stringify(qrBytesRaw));
 		files.forEach((file, index) => {
 			// image1, image2, etc.
 			formData.append(`image${index + 1}`, file);
 		});
 
-		if (platform === "SWITCH") {
+		if (platform === "THREE_DS") {
+			formData.append("qrBytesRaw", JSON.stringify(qrBytesRaw));
+		} else if (platform === "SWITCH") {
 			const response = await fetch(miiPortraitUri!);
 			const blob = await response.blob();
 
+			formData.append("accessKey", accessKey);
 			formData.append("gender", gender);
 			formData.append("miiPortraitImage", blob);
 		}
@@ -96,6 +99,7 @@ export default function SubmitForm() {
 	};
 
 	useEffect(() => {
+		if (platform !== "THREE_DS") return;
 		if (qrBytesRaw.length == 0) return;
 		const qrBytes = new Uint8Array(qrBytesRaw);
 
@@ -108,16 +112,14 @@ export default function SubmitForm() {
 				return;
 			}
 
-			// Convert QR code to JS (3DS)
-			if (platform === "THREE_DS") {
-				let conversion: { mii: Mii; tomodachiLifeMii: TomodachiLifeMii };
-				try {
-					conversion = convertQrCode(qrBytes);
-					setMiiPortraitUri(conversion.mii.studioUrl({ width: 512 }));
-				} catch (error) {
-					setError(error instanceof Error ? error.message : String(error));
-					return;
-				}
+			// Convert QR code to JS
+			let conversion: { mii: Mii; tomodachiLifeMii: TomodachiLifeMii };
+			try {
+				conversion = convertQrCode(qrBytes);
+				setMiiPortraitUri(conversion.mii.studioUrl({ width: 512 }));
+			} catch (error) {
+				setError(error instanceof Error ? error.message : String(error));
+				return;
 			}
 
 			// Generate a new QR code for aesthetic reasons
@@ -256,41 +258,56 @@ export default function SubmitForm() {
 					/>
 				</div>
 
-				{/* Gender (switch only) */}
-				{platform === "SWITCH" && (
-					<div className="w-full grid grid-cols-3 items-start">
-						<label htmlFor="gender" className="font-semibold py-2">
-							Gender
-						</label>
-						<div className="col-span-2 flex gap-1">
-							<button
-								type="button"
-								onClick={() => setGender("MALE")}
-								aria-label="Filter for Male Miis"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all ${
-									gender === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
-							>
-								<Icon icon="foundation:male" className="text-blue-400" />
-							</button>
-
-							<button
-								type="button"
-								onClick={() => setGender("FEMALE")}
-								aria-label="Filter for Female Miis"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all ${
-									gender === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
-							>
-								<Icon icon="foundation:female" className="text-pink-400" />
-							</button>
-						</div>
-					</div>
-				)}
-
 				{platform === "SWITCH" && (
 					<>
-						{/* Separator */}
+						{/* Access Key */}
+						<div className="w-full grid grid-cols-3 items-center">
+							<label htmlFor="accessKey" className="font-semibold">
+								Access Key <SwitchSubmitTutorialButton />
+							</label>
+							<input
+								name="accessKey"
+								type="text"
+								className="pill input w-full col-span-2"
+								minLength={7}
+								maxLength={7}
+								placeholder="Type your mii's access key here..."
+								value={accessKey}
+								onChange={(e) => setAccessKey(e.target.value)}
+							/>
+						</div>
+
+						{/* Gender */}
+						<div className="w-full grid grid-cols-3 items-start">
+							<label htmlFor="gender" className="font-semibold py-2">
+								Gender
+							</label>
+							<div className="col-span-2 flex gap-1">
+								<button
+									type="button"
+									onClick={() => setGender("MALE")}
+									aria-label="Filter for Male Miis"
+									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all ${
+										gender === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+									}`}
+								>
+									<Icon icon="foundation:male" className="text-blue-400" />
+								</button>
+
+								<button
+									type="button"
+									onClick={() => setGender("FEMALE")}
+									aria-label="Filter for Female Miis"
+									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all ${
+										gender === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+									}`}
+								>
+									<Icon icon="foundation:female" className="text-pink-400" />
+								</button>
+							</div>
+						</div>
+
+						{/* Mii Portrait */}
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
 							<hr className="flex-grow border-zinc-300" />
 							<span>Mii Portrait</span>
@@ -304,27 +321,24 @@ export default function SubmitForm() {
 				)}
 
 				{/* QR code selector */}
-				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
-					<hr className="flex-grow border-zinc-300" />
-					<span>QR Code</span>
-					<hr className="flex-grow border-zinc-300" />
-				</div>
+				{platform === "THREE_DS" && (
+					<>
+						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+							<hr className="flex-grow border-zinc-300" />
+							<span>QR Code</span>
+							<hr className="flex-grow border-zinc-300" />
+						</div>
 
-				<div className="flex flex-col items-center gap-2">
-					<QrUpload setQrBytesRaw={setQrBytesRaw} />
-					<span>or</span>
-					<QrScanner setQrBytesRaw={setQrBytesRaw} />
+						<div className="flex flex-col items-center gap-2">
+							<QrUpload setQrBytesRaw={setQrBytesRaw} />
+							<span>or</span>
+							<QrScanner setQrBytesRaw={setQrBytesRaw} />
 
-					{platform === "THREE_DS" ? (
-						<>
 							<ThreeDsSubmitTutorialButton />
-
 							<span className="text-xs text-zinc-400">For emulators, aes_keys.txt is required.</span>
-						</>
-					) : (
-						<SwitchSubmitTutorialButton />
-					)}
-				</div>
+						</div>
+					</>
+				)}
 
 				{/* Custom images selector */}
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-6 mb-2">

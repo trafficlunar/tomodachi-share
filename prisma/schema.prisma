@@ -76,6 +76,7 @@ model Mii {
   tags        String[]
   description String?     @db.VarChar(256)
   platform    MiiPlatform @default(THREE_DS)
+  accessKey   String?     @db.VarChar(7)
 
   firstName      String?
   lastName       String?

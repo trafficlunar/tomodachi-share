@@ -40,8 +40,8 @@ export default function ThreeDsSubmitTutorialButton() {
 
 	return (
 		<>
-			<button type="button" onClick={() => setIsOpen(true)} className="text-sm text-orange-400 cursor-pointer underline-offset-2 hover:underline">
-				How to?
+			<button type="button" onClick={() => setIsOpen(true)} className="text-orange-400 cursor-pointer underline-offset-2 hover:underline">
+				(?)
 			</button>
 
 			{isOpen &&

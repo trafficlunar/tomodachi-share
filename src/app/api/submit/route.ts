@@ -29,11 +29,18 @@ const submitSchema = z
 		description: z.string().trim().max(256).optional(),
 
 		// Switch
+		accessKey: z
+			.string()
+			.length(7, { error: "Access key must be 7 characters in length" })
+			.regex(/^[a-zA-Z0-9]+$/, "Access key must be alphanumeric"),
 		gender: z.enum(MiiGender).default("MALE"),
 		miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
 
 		// QR code
-		qrBytesRaw: z.array(z.number(), { error: "A QR code is required" }).length(372, { error: "QR code size is not a valid Tomodachi Life QR code" }),
+		qrBytesRaw: z
+			.array(z.number(), { error: "A QR code is required" })
+			.length(372, { error: "QR code size is not a valid Tomodachi Life QR code" })
+			.optional(),
 
 		// Custom images
 		image1: z.union([z.instanceof(File), z.any()]).optional(),
@@ -42,15 +49,15 @@ const submitSchema = z
 	})
 	.refine(
 		(data) => {
-			// If platform is Switch, gender and miiPortraitImage must be present
+			// If platform is Switch, accessKey, gender, and miiPortraitImage must be present
 			if (data.platform === "SWITCH") {
-				return data.gender !== undefined && data.miiPortraitImage !== undefined;
+				return data.accessKey !== undefined && data.gender !== undefined && data.miiPortraitImage !== undefined;
 			}
 			return true;
 		},
 		{
-			message: "Gender and Mii portrait image are required for Switch platform",
-			path: ["gender", "miiPortraitImage"],
+			message: "Access key, gender, and Mii portrait image is required for Switch",
+			path: ["accessKey", "gender", "miiPortraitImage"],
 		}
 	);
 
@@ -70,7 +77,7 @@ export async function POST(request: NextRequest) {
 	const formData = await request.formData();
 
 	let rawTags: string[];
-	let rawQrBytesRaw: string[]; // raw raw
+	let rawQrBytesRaw: string[] | undefined = undefined; // good variable name - raw raw; is undefined for zod to ignore it if platform is Switch
 	try {
 		rawTags = JSON.parse(formData.get("tags") as string);
 		rawQrBytesRaw = JSON.parse(formData.get("qrBytesRaw") as string);
@@ -85,10 +92,11 @@ export async function POST(request: NextRequest) {
 		tags: rawTags,
 		description: formData.get("description"),
 
-		gender: formData.get("gender") ?? undefined, // ZOD MOMENT
+		accessKey: formData.get("accessKey"),
+		gender: formData.get("gender"),
 		miiPortraitImage: formData.get("miiPortraitImage"),
 
-		qrBytesRaw: rawQrBytesRaw,
+		qrBytesRaw: rawQrBytesRaw ?? undefined,
 
 		image1: formData.get("image1"),
 		image2: formData.get("image2"),
@@ -123,7 +131,7 @@ export async function POST(request: NextRequest) {
 		if (!imageValidation.valid) return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
 	}
 
-	const qrBytes = new Uint8Array(data.qrBytesRaw);
+	const qrBytes = new Uint8Array(data.qrBytesRaw ?? []);
 
 	// Convert QR code to JS (3DS)
 	let conversion: { mii: Mii; tomodachiLifeMii: TomodachiLifeMii } | undefined;
@@ -144,6 +152,9 @@ export async function POST(request: NextRequest) {
 			tags,
 			description,
 			gender: data.gender ?? "MALE",
+
+			// Access key only for Switch
+			accessKey: data.platform === "SWITCH" ? data.accessKey : null,
 
 			// Automatically detect certain information if on 3DS
 			...(data.platform === "THREE_DS" &&
@@ -191,29 +202,31 @@ export async function POST(request: NextRequest) {
 		return rateLimit.sendResponse({ error: "Failed to download/store Mii portrait" }, 500);
 	}
 
-	try {
-		// Generate a new QR code for aesthetic reasons
-		const byteString = String.fromCharCode(...qrBytes);
-		const generatedCode = qrcode(0, "L");
-		generatedCode.addData(byteString, "Byte");
-		generatedCode.make();
+	if (data.platform === "THREE_DS") {
+		try {
+			// Generate a new QR code for aesthetic reasons
+			const byteString = String.fromCharCode(...qrBytes);
+			const generatedCode = qrcode(0, "L");
+			generatedCode.addData(byteString, "Byte");
+			generatedCode.make();
 
-		// Store QR code
-		const codeDataUrl = generatedCode.createDataURL();
-		const codeBase64 = codeDataUrl.replace(/^data:image\/gif;base64,/, "");
-		const codeBuffer = Buffer.from(codeBase64, "base64");
+			// Store QR code
+			const codeDataUrl = generatedCode.createDataURL();
+			const codeBase64 = codeDataUrl.replace(/^data:image\/gif;base64,/, "");
+			const codeBuffer = Buffer.from(codeBase64, "base64");
 
-		// Compress and store
-		const codeWebpBuffer = await sharp(codeBuffer).webp({ quality: 85 }).toBuffer();
-		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
+			// Compress and store
+			const codeWebpBuffer = await sharp(codeBuffer).webp({ quality: 85 }).toBuffer();
+			const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
 
-		await fs.writeFile(codeFileLocation, codeWebpBuffer);
-	} catch (error) {
-		// Clean up if something went wrong
-		await prisma.mii.delete({ where: { id: miiRecord.id } });
+			await fs.writeFile(codeFileLocation, codeWebpBuffer);
+		} catch (error) {
+			// Clean up if something went wrong
+			await prisma.mii.delete({ where: { id: miiRecord.id } });
 
-		console.error("Error generating QR code:", error);
-		return rateLimit.sendResponse({ error: "Failed to generate QR code" }, 500);
+			console.error("Error generating QR code:", error);
+			return rateLimit.sendResponse({ error: "Failed to generate QR code" }, 500);
+		}
 	}
 
 	try {

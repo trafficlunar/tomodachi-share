@@ -219,7 +219,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 						<Carousel
 							images={[
 								`/mii/${mii.id}/image?type=mii`,
-								`/mii/${mii.id}/image?type=qr-code`,
+								...(mii.platform === "THREE_DS" ? [`/mii/${mii.id}/image?type=qr-code`] : []),
 								...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`),
 							]}
 						/>
