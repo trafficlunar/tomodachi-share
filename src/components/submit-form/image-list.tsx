@@ -43,13 +43,13 @@ export default function ImageList({ files, setFiles }: Props) {
 											alt={file.name}
 											width={96}
 											height={96}
-											className="aspect-[3/2] object-contain w-24 rounded-md bg-orange-300 border-2 border-orange-400"
+											className="aspect-3/2 object-contain w-24 rounded-md bg-orange-300 border-2 border-orange-400"
 										/>
 										<div className="flex flex-col justify-center w-full min-w-0">
 											<span className="font-semibold overflow-hidden text-ellipsis">{file.name}</span>
 											<button
 												onClick={() => handleDelete(index)}
-												className="pill button text-xs w-min !px-3 !py-1 !bg-red-300 !border-red-400 hover:!bg-red-400"
+												className="pill button text-xs w-min px-3! py-1! bg-red-300! border-red-400! hover:bg-red-400!"
 											>
 												Delete
 											</button>

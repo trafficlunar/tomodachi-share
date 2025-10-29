@@ -63,8 +63,8 @@ export default function TagSelector({ tags, setTags }: Props) {
 
 	return (
 		<div
-			className={`col-span-2 !justify-between pill input relative focus-within:ring-[3px] ring-orange-400/50 transition ${
-				tags.length > 0 ? "!py-1.5" : ""
+			className={`col-span-2 justify-between! pill input relative focus-within:ring-[3px] ring-orange-400/50 transition ${
+				tags.length > 0 ? "py-1.5!" : ""
 			}`}
 		>
 			{/* Tags */}

@@ -26,7 +26,7 @@ export default function ControlCenter() {
 				<input
 					name="submit"
 					type="checkbox"
-					className="checkbox !size-6"
+					className="checkbox size-6!"
 					placeholder="Enter banner text"
 					checked={canSubmit}
 					onChange={(e) => setCanSubmit(e.target.checked)}

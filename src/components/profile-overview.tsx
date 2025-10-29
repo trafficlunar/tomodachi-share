@@ -10,7 +10,7 @@ export default async function ProfileOverview() {
 			<Link
 				href={`/profile/${session?.user.id}`}
 				aria-label="Go to profile"
-				className="pill button !gap-2 !p-0 h-full max-w-64"
+				className="pill button gap-2! p-0! h-full max-w-64"
 				data-tooltip="Your Profile"
 			>
 				<Image

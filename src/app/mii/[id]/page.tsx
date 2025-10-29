@@ -109,7 +109,7 @@ export default async function MiiPage({ params }: Props) {
 				<div className="relative grid grid-cols-3 gap-4 max-md:grid-cols-1">
 					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
 						{/* Mii Image */}
-						<div className="bg-gradient-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center">
+						<div className="bg-linear-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center">
 							<ImageViewer
 								src={`/mii/${mii.id}/image?type=mii`}
 								alt="mii headshot"
@@ -142,7 +142,7 @@ export default async function MiiPage({ params }: Props) {
 								From: <span className="text-right font-medium">{mii.islandName} Island</span>
 							</li>
 							<li>
-								Allowed Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox !cursor-auto" />
+								Allowed Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox cursor-auto!" />
 							</li>
 						</ul>
 
@@ -171,7 +171,7 @@ export default async function MiiPage({ params }: Props) {
 						<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-1">
 							<div className="flex justify-between items-start">
 								{/* Submission name */}
-								<h1 className="text-4xl font-extrabold break-words text-amber-700">{mii.name}</h1>
+								<h1 className="text-4xl font-extrabold wrap-break-word text-amber-700">{mii.name}</h1>
 								{/* Like button */}
 								<LikeButton
 									likes={mii._count.likedBy ?? 0}
@@ -248,7 +248,7 @@ export default async function MiiPage({ params }: Props) {
 							{images.map((src, index) => (
 								<div
 									key={index}
-									className="relative aspect-[3/2] rounded-xl bg-black/65 border-2 border-amber-400 shadow-md overflow-hidden transition hover:shadow-lg shadow-black/30"
+									className="relative aspect-3/2 rounded-xl bg-black/65 border-2 border-amber-400 shadow-md overflow-hidden transition hover:shadow-lg shadow-black/30"
 								>
 									<Image
 										src={src}
@@ -263,7 +263,7 @@ export default async function MiiPage({ params }: Props) {
 										alt="mii screenshot"
 										width={256}
 										height={170}
-										className="aspect-[3/2] w-full object-contain hover:scale-105 duration-300 transition-transform relative z-10"
+										className="aspect-3/2 w-full object-contain hover:scale-105 duration-300 transition-transform relative z-10"
 										images={images}
 									/>
 								</div>

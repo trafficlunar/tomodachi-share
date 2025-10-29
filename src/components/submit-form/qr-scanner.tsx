@@ -130,7 +130,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-[var(--header-height)] flex items-center justify-center z-40">
+		<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
 			<div
 				onClick={close}
 				className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
@@ -159,7 +159,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 								type="button"
 								aria-label="Select camera dropdown"
 								{...getToggleButtonProps({}, { suppressRefError: true })}
-								className="pill input w-full !px-2 !py-0.5 !justify-between text-sm"
+								className="pill input w-full px-2! py-0.5! justify-between! text-sm"
 							>
 								{selectedItem?.label || "Select a camera"}
 
@@ -193,7 +193,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 						<div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border-2 border-amber-500 text-center p-8">
 							<p className="text-red-400 font-bold text-lg mb-2">Camera access denied</p>
 							<p className="text-gray-600">Please allow camera access in your browser settings to scan QR codes</p>
-							<button type="button" onClick={requestPermission} className="pill button text-xs mt-2 !py-0.5 !px-2">
+							<button type="button" onClick={requestPermission} className="pill button text-xs mt-2 py-0.5! px-2!">
 								Request Permission
 							</button>
 						</div>

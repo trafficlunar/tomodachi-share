@@ -34,7 +34,7 @@ export default async function ProfileInformation({ userId, page }: Props) {
 				{/* User information */}
 				<div className="flex flex-col w-full relative py-3">
 					<div className="flex items-center gap-2">
-						<h1 className="text-3xl font-extrabold break-words">{user.name}</h1>
+						<h1 className="text-3xl font-extrabold wrap-break-word">{user.name}</h1>
 						{isAdmin && (
 							<div data-tooltip="Admin" className="text-orange-400">
 								<Icon icon="mdi:shield-moon" className="text-2xl" />
@@ -46,7 +46,7 @@ export default async function ProfileInformation({ userId, page }: Props) {
 							</div>
 						)}
 					</div>
-					<h2 className="text-black/60 text-sm font-semibold break-words">@{user?.username}</h2>
+					<h2 className="text-black/60 text-sm font-semibold wrap-break-word">@{user?.username}</h2>
 
 					<div className="mt-auto text-sm flex gap-8">
 						<h4 title={`${user.createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC`}>

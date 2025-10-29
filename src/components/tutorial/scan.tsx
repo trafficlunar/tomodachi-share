@@ -43,7 +43,7 @@ export default function ScanTutorialButton() {
 
 			{isOpen &&
 				createPortal(
-					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-[var(--header-height)] flex items-center justify-center z-40">
+					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
 						<div
 							onClick={close}
 							className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
@@ -52,7 +52,7 @@ export default function ScanTutorialButton() {
 						/>
 
 						<div
-							className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg w-full max-w-md h-[30rem] transition-discrete duration-300 flex flex-col ${
+							className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg w-full max-w-md h-120 transition-discrete duration-300 flex flex-col ${
 								isVisible ? "scale-100 opacity-100" : "scale-75 opacity-0"
 							}`}
 						>
@@ -79,7 +79,7 @@ export default function ScanTutorialButton() {
 									<button
 										onClick={() => emblaApi?.scrollPrev()}
 										aria-label="Scroll Carousel Left"
-										className="pill button !p-1 aspect-square text-2xl"
+										className="pill button p-1! aspect-square text-2xl"
 									>
 										<Icon icon="tabler:chevron-left" />
 									</button>
@@ -89,7 +89,7 @@ export default function ScanTutorialButton() {
 									<button
 										onClick={() => emblaApi?.scrollNext()}
 										aria-label="Scroll Carousel Right"
-										className="pill button !p-1 aspect-square text-2xl"
+										className="pill button p-1! aspect-square text-2xl"
 									>
 										<Icon icon="tabler:chevron-right" />
 									</button>

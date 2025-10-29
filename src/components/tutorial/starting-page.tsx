@@ -14,12 +14,12 @@ export default function StartingPage({ emblaApi }: Props) {
 	};
 
 	return (
-		<div className="flex-shrink-0 flex flex-col w-full px-6 py-6">
+		<div className="shrink-0 flex flex-col w-full px-6 py-6">
 			{/* Separator */}
 			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-2">
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 				<span>Pick a tutorial</span>
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 			</div>
 
 			<div className="grid grid-cols-2 gap-4 h-full">

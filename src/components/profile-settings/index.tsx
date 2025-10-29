@@ -76,9 +76,9 @@ export default function ProfileSettings() {
 
 			{/* Separator */}
 			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-1">
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 				<span>Account Info</span>
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 			</div>
 
 			{/* Profile Picture */}
@@ -152,9 +152,9 @@ export default function ProfileSettings() {
 
 			{/* Separator */}
 			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 				<span>Danger Zone</span>
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 			</div>
 
 			{/* Delete Account */}

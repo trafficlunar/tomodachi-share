@@ -51,7 +51,7 @@ export default async function ExiledPage() {
 	const duration = activePunishment.type === "TEMP_EXILE" && Math.ceil(expiresAt.diff(createdAt, "days", true));
 
 	return (
-		<div className="flex-grow flex items-center justify-center">
+		<div className="grow flex items-center justify-center">
 			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-8 max-w-xl w-full flex flex-col">
 				<h2 className="text-4xl font-black mb-2">
 					{activePunishment.type === "PERM_EXILE"
@@ -78,9 +78,9 @@ export default async function ExiledPage() {
 				</p>
 
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-4">
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 					<span>Violating Items</span>
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 				</div>
 
 				<div className="flex flex-col gap-2 p-4">

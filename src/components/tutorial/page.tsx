@@ -35,7 +35,7 @@ export default function TutorialPage({ text, imageSrc, carouselIndex, finishInde
 	}, [carouselIndex, finishIndex]);
 
 	return (
-		<div className="flex-shrink-0 flex flex-col w-full px-6">
+		<div className="shrink-0 flex flex-col w-full px-6">
 			{!finishIndex ? (
 				<>
 					<p className="text-sm text-zinc-500 mb-2 text-center">{text}</p>

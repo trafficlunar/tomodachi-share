@@ -4,6 +4,7 @@ import { MiiGender, Prisma } from "@prisma/client";
 import { Icon } from "@iconify/react";
 import { z } from "zod";
 
+import crypto from "crypto";
 import seedrandom from "seedrandom";
 
 import { querySchema } from "@/lib/schemas";
@@ -125,7 +126,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 	if (sort === "random") {
 		// Use seed for consistent random results
-		const randomSeed = seed || Math.floor(Math.random() * 1_000_000_000);
+		const randomSeed = seed || crypto.randomInt(0, 1_000_000_000);
 
 		// Get all IDs that match the where conditions
 		const matchingIds = await prisma.mii.findMany({

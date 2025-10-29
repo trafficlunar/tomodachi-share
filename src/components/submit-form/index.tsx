@@ -126,7 +126,7 @@ export default function SubmitForm() {
 	return (
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
-				<div className="w-[18.75rem] h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
+				<div className="w-75 h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
 					<Carousel images={[studioUrl ?? "/loading.svg", generatedQrCodeUrl ?? "/loading.svg", ...files.map((file) => URL.createObjectURL(file))]} />
 
 					<div className="p-4 flex flex-col gap-1 h-full">
@@ -157,9 +157,9 @@ export default function SubmitForm() {
 
 				{/* Separator */}
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 					<span>Info</span>
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 				</div>
 
 				<div className="w-full grid grid-cols-3 items-center">
@@ -193,7 +193,7 @@ export default function SubmitForm() {
 						rows={3}
 						maxLength={256}
 						placeholder="(optional) Type a description..."
-						className="pill input !rounded-xl resize-none col-span-2"
+						className="pill input rounded-xl! resize-none col-span-2"
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
 					/>
@@ -201,9 +201,9 @@ export default function SubmitForm() {
 
 				{/* Separator */}
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 					<span>QR Code</span>
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 				</div>
 
 				<div className="flex flex-col items-center gap-2">
@@ -223,9 +223,9 @@ export default function SubmitForm() {
 
 				{/* Separator */}
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-6 mb-2">
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 					<span>Custom images</span>
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 				</div>
 
 				<div className="max-w-md w-full self-center">

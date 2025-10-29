@@ -67,7 +67,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 
 			{isOpen &&
 				createPortal(
-					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-[var(--header-height)] flex items-center justify-center z-40">
+					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
 						<div
 							onClick={close}
 							className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
@@ -92,7 +92,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 
 								{/* Copy button */}
 								<button
-									className="!absolute top-2.5 right-2.5 cursor-pointer"
+									className="absolute! top-2.5 right-2.5 cursor-pointer"
 									data-tooltip={hasCopiedUrl ? "Copied!" : "Copy URL"}
 									onClick={handleCopyUrl}
 								>
@@ -118,9 +118,9 @@ export default function ShareMiiButton({ miiId }: Props) {
 
 							{/* Separator */}
 							<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-4">
-								<hr className="flex-grow border-zinc-300" />
+								<hr className="grow border-zinc-300" />
 								<span>or</span>
-								<hr className="flex-grow border-zinc-300" />
+								<hr className="grow border-zinc-300" />
 							</div>
 
 							<div className="flex justify-center items-center p-4 w-full bg-orange-100 border border-orange-400 rounded-lg">
@@ -139,7 +139,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 									{/* Save button */}
 									<a
 										href={`/mii/${miiId}/image?type=metadata`}
-										className="pill button !p-0 aspect-square cursor-pointer text-xl"
+										className="pill button p-0! aspect-square cursor-pointer text-xl"
 										aria-label="Save Image"
 										data-tooltip="Save Image"
 										download={"hello.png"}
@@ -149,7 +149,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 
 									{/* Copy button */}
 									<button
-										className="pill button !p-0 aspect-square cursor-pointer"
+										className="pill button p-0! aspect-square cursor-pointer"
 										aria-label="Copy Image"
 										data-tooltip={hasCopiedImage ? "Copied!" : "Copy Image"}
 										onClick={handleCopyImage}
