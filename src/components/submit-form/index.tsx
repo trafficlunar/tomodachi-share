@@ -190,10 +190,10 @@ export default function SubmitForm() {
 						Description
 					</label>
 					<textarea
-						rows={3}
+						rows={5}
 						maxLength={256}
 						placeholder="(optional) Type a description..."
-						className="pill input rounded-xl! resize-none col-span-2"
+						className="pill input rounded-xl! resize-none col-span-2 text-sm"
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
 					/>
