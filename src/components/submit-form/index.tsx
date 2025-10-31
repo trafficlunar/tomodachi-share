@@ -182,7 +182,7 @@ export default function SubmitForm() {
 					<label htmlFor="tags" className="font-semibold">
 						Tags
 					</label>
-					<TagSelector tags={tags} setTags={setTags} />
+					<TagSelector tags={tags} setTags={setTags} showTagLimit />
 				</div>
 
 				<div className="w-full grid grid-cols-3 items-start">

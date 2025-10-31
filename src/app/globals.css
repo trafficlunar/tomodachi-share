@@ -32,7 +32,7 @@ body {
 }
 
 .pill {
-	@apply flex justify-center items-center px-5 py-2 bg-orange-300 border-2 border-orange-400 rounded-4xl shadow-md;
+	@apply flex justify-center items-center px-5 py-2 bg-orange-300 border-2 border-orange-400 rounded-3xl shadow-md;
 }
 
 .button {

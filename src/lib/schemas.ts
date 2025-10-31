@@ -26,7 +26,7 @@ export const tagsSchema = z
 		z
 			.string()
 			.min(2, { error: "Tags must be at least 2 characters long" })
-			.max(64, { error: "Tags cannot be more than 20 characters long" })
+			.max(20, { error: "Tags cannot be more than 20 characters long" })
 			.regex(/^[a-z0-9-_]+$/, {
 				error: "Tags can only contain lowercase letters, numbers, dashes, and underscores.",
 			})
