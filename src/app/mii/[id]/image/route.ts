@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { Prisma } from "@prisma/client";
 
 import fs from "fs/promises";
 import path from "path";
@@ -8,7 +9,6 @@ import { idSchema } from "@/lib/schemas";
 import { RateLimit } from "@/lib/rate-limit";
 import { generateMetadataImage } from "@/lib/images";
 import { prisma } from "@/lib/prisma";
-import { MiiWithUsername } from "@/types";
 
 const searchParamsSchema = z.object({
 	type: z
@@ -37,7 +37,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
 	let buffer: Buffer | undefined;
 	// Only find Mii if image type is 'metadata'
-	let mii: MiiWithUsername | null = null;
+	let mii: Prisma.MiiGetPayload<{
+		include: {
+			user: {
+				select: {
+					name: true;
+				};
+			};
+		};
+	}> | null = null;
 
 	if (imageType === "metadata") {
 		mii = await prisma.mii.findUnique({
@@ -47,7 +55,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 			include: {
 				user: {
 					select: {
-						username: true,
+						name: true,
 					},
 				},
 			},
@@ -66,7 +74,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 		if (imageType === "metadata" && mii) {
 			// Metadata images were added after 1274 Miis were submitted, so we generate it on-the-fly
 			console.log(`Metadata image not found for mii ID ${miiId}, generating metadata image...`);
-			const { buffer: metadataBuffer, error, status } = await generateMetadataImage(mii, mii.user.username!);
+			const { buffer: metadataBuffer, error, status } = await generateMetadataImage(mii, mii.user.name!);
 
 			if (error) {
 				return rateLimit.sendResponse({ error }, status);

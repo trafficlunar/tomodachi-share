@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
 		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
 
 		await fs.writeFile(codeFileLocation, codeWebpBuffer);
-		await generateMetadataImage(miiRecord, session.user.username!);
+		await generateMetadataImage(miiRecord, session.user.name!);
 	} catch (error) {
 		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });

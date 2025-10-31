@@ -12,13 +12,3 @@ declare module "next-auth" {
 		username?: string;
 	}
 }
-
-type MiiWithUsername = Prisma.MiiGetPayload<{
-	include: {
-		user: {
-			select: {
-				username: true;
-			};
-		};
-	};
-}>;

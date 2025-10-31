@@ -162,22 +162,29 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 					{mii.name}
 				</span>
 				{/* Tags */}
-				<div id="tags" tw="flex flex-wrap mt-1 w-full">
-					{mii.tags.map((tag) => (
-						<span key={tag} tw="mr-1 px-2 py-1 bg-orange-300 rounded-full text-sm">
-							{tag}
-						</span>
-					))}
+				<div id="tags" tw="relative flex mt-1 w-full overflow-hidden">
+					<div tw="flex">
+						{mii.tags.map((tag) => (
+							<span key={tag} tw="mr-1 px-2 py-1 bg-orange-300 rounded-full text-sm shrink-0">
+								{tag}
+							</span>
+						))}
+					</div>
+
+					<div tw="absolute inset-0" style={{ position: "absolute", backgroundImage: "linear-gradient(to right, #fffbeb00 70%, #fffbeb);" }}></div>
 				</div>
 
 				{/* Author */}
-				<div tw="flex text-sm mt-2">
-					By: <span tw="ml-1.5 font-semibold">@{author}</span>
+				<div tw="flex mt-2 text-sm w-1/2">
+					By{" "}
+					<span tw="ml-1.5 font-semibold overflow-hidden" style={{ textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+						{author}
+					</span>
 				</div>
 
 				{/* Watermark */}
 				<div tw="absolute bottom-0 right-0 flex items-center">
-					<img src={`${process.env.NEXT_PUBLIC_BASE_URL}/logo.svg`} height={34} />
+					<img src={`${process.env.NEXT_PUBLIC_BASE_URL}/logo.svg`} height={32} />
 					{/* I tried using text-orange-400 but it wasn't correct..? */}
 					<span tw="ml-2 font-black text-xl" style={{ color: "#FF8904" }}>
 						TomodachiShare
