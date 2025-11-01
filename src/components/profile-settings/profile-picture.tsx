@@ -74,7 +74,7 @@ export default function ProfilePictureSettings() {
 							data-tooltip="Delete Picture"
 							aria-label="Delete Picture"
 							onClick={() => setNewPicture(undefined)}
-							className="pill button aspect-square !p-1 text-2xl !bg-red-400 !border-red-500"
+							className="pill button aspect-square p-1! text-2xl bg-red-400! border-red-500!"
 						>
 							<Icon icon="mdi:trash-outline" />
 						</button>
