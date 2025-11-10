@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 import ProfileSettings from "@/components/profile-settings";
 import ProfileInformation from "@/components/profile-information";
@@ -20,10 +21,12 @@ export default async function ProfileSettingsPage() {
 
 	if (!session) redirect("/login");
 
+	const user = await prisma.user.findUnique({ where: { id: Number(session.user.id!) }, select: { description: true } });
+
 	return (
 		<div>
 			<ProfileInformation page="settings" />
-			<ProfileSettings />
+			<ProfileSettings currentDescription={user?.description} />
 		</div>
 	);
 }

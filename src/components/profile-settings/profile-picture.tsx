@@ -43,13 +43,13 @@ export default function ProfilePictureSettings() {
 	}, []);
 
 	return (
-		<div className="grid grid-cols-2">
-			<div>
+		<div className="grid grid-cols-5 gap-4 max-lg:grid-cols-1">
+			<div className="col-span-3">
 				<label className="font-semibold">Profile Picture</label>
 				<p className="text-sm text-zinc-500">Manage your profile picture. Can only be changed once every 7 days.</p>
 			</div>
 
-			<div className="flex flex-col">
+			<div className="flex flex-col col-span-2">
 				<div className="flex justify-end">
 					<Dropzone onDrop={handleDrop} options={{ maxFiles: 1 }}>
 						<p className="text-center text-xs">
