@@ -228,7 +228,7 @@ export default function SubmitForm() {
 					<hr className="grow border-zinc-300" />
 				</div>
 
-				<div className="max-w-md w-full self-center">
+				<div className="max-w-md w-full self-center flex flex-col items-center">
 					<Dropzone onDrop={handleDrop}>
 						<p className="text-center text-sm">
 							Drag and drop your images here
@@ -236,6 +236,8 @@ export default function SubmitForm() {
 							or click to open
 						</p>
 					</Dropzone>
+
+					<span className="text-xs text-zinc-400 mt-2">Animated images currently not supported.</span>
 				</div>
 
 				<ImageList files={files} setFiles={setFiles} />
