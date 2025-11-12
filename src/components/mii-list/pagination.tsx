@@ -79,12 +79,12 @@ export default function Pagination({ lastPage }: Props) {
 
 			{/* Next page */}
 			<Link
-				href={page === lastPage ? "#" : createPageUrl(page + 1)}
+				href={page >= lastPage ? "#" : createPageUrl(page + 1)}
 				aria-label="Go to Next Page"
-				aria-disabled={page === lastPage}
-				tabIndex={page === lastPage ? -1 : undefined}
+				aria-disabled={page >= lastPage}
+				tabIndex={page >= lastPage ? -1 : undefined}
 				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${
-					page === lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"
+					page >= lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"
 				}`}
 			>
 				<Icon icon="stash:chevron-right" />
@@ -92,12 +92,12 @@ export default function Pagination({ lastPage }: Props) {
 
 			{/* Go to last page */}
 			<Link
-				href={page === lastPage ? "#" : createPageUrl(lastPage)}
+				href={page >= lastPage ? "#" : createPageUrl(lastPage)}
 				aria-label="Go to Last Page"
-				aria-disabled={page === lastPage}
-				tabIndex={page === lastPage ? -1 : undefined}
+				aria-disabled={page >= lastPage}
+				tabIndex={page >= lastPage ? -1 : undefined}
 				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${
-					page === lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"
+					page >= lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"
 				}`}
 			>
 				<Icon icon="stash:chevron-double-right" />
