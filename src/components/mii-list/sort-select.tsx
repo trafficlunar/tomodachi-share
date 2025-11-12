@@ -23,6 +23,7 @@ export default function SortSelect() {
 			if (!selectedItem) return;
 
 			const params = new URLSearchParams(searchParams);
+			params.set("page", "1");
 			params.set("sort", selectedItem);
 
 			if (selectedItem == "random") {

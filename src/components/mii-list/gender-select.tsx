@@ -17,6 +17,8 @@ export default function GenderSelect() {
 		setSelected(filter);
 
 		const params = new URLSearchParams(searchParams);
+		params.set("page", "1");
+
 		if (filter) {
 			params.set("gender", filter);
 		} else {
