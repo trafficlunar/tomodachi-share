@@ -3,8 +3,6 @@
 Welcome to the TomodachiShare API Reference!
 Some routes may require authentication (see [Protected](#protected-endpoints) section - _TODO_).
 
-Schema properties marked with a **\*** are required.
-
 ## Public Endpoints
 
 ### **Search Miis**
@@ -28,7 +26,7 @@ Searches Miis by name, tags, and description.
 #### **Examples**
 
 ```
-https://tomodachishare.com/api/search?q={query}
+https://tomodachishare.com/api/search?q=frieren
 ```
 
 ```
@@ -41,6 +39,12 @@ Returns an array of Mii IDs:
 
 ```json
 [1, 204, 295, 1024]
+```
+
+When no Miis are found:
+
+```json
+{ "error": "No Miis found!" }
 ```
 
 ---

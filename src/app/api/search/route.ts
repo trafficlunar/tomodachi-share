@@ -29,19 +29,6 @@ export async function GET(request: NextRequest) {
 		...(gender && { gender: { equals: gender } }),
 	};
 
-	const select: Prisma.MiiSelect = {
-		id: true,
-		name: true,
-		imageCount: true,
-		tags: true,
-		createdAt: true,
-		gender: true,
-		// Like count
-		_count: {
-			select: { likedBy: true },
-		},
-	};
-
 	const skip = (page - 1) * limit;
 
 	if (sort === "random") {
@@ -54,7 +41,7 @@ export async function GET(request: NextRequest) {
 			select: { id: true },
 		});
 
-		if (matchingIds.length === 0) return;
+		if (matchingIds.length === 0) return rateLimit.sendResponse({ error: "No Miis found!" }, 404);
 
 		const rng = seedrandom(randomSeed.toString());
 
