@@ -39,9 +39,9 @@ export default function Description({ text, className }: Props) {
 							<Link
 								key={index}
 								href={`/mii/${id}`}
-								className="inline-flex items-center align-top gap-1.5 pr-2 bg-amber-100 border border-amber-400 rounded-lg mx-1 text-amber-800 text-sm -mt-2"
+								className="inline-flex items-center align-bottom gap-1.5 pr-2 bg-amber-100 border border-amber-400 rounded-lg mx-1 text-amber-800 text-xs"
 							>
-								<Image src={`/mii/${id}/image?type=mii`} alt="mii" width={32} height={32} className="bg-white rounded-lg border-r border-amber-400" />
+								<Image src={`/mii/${id}/image?type=mii`} alt="mii" width={24} height={24} className="bg-white rounded-lg border-r border-amber-400" />
 								{linkedMii.name}
 							</Link>
 						);
@@ -61,12 +61,12 @@ export default function Description({ text, className }: Props) {
 							<Link
 								key={index}
 								href={`/profile/${id}`}
-								className="inline-flex items-center align-top gap-1.5 pr-2 bg-orange-100 border border-orange-400 rounded-lg mx-1 text-orange-800 text-sm -mt-2"
+								className="inline-flex items-center align-bottom gap-1.5 pr-2 bg-orange-100 border border-orange-400 rounded-lg mx-1 text-orange-800 text-xs"
 							>
 								<ProfilePicture
 									src={linkedProfile.image || "/guest.webp"}
-									width={32}
-									height={32}
+									width={24}
+									height={24}
 									className="bg-white rounded-lg border-r border-orange-400"
 								/>
 								{linkedProfile.name}

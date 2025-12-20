@@ -139,7 +139,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 									{/* Save button */}
 									<a
 										href={`/mii/${miiId}/image?type=metadata`}
-										className="pill button p-0! aspect-square cursor-pointer text-xl"
+										className="pill button p-0! aspect-square size-11 cursor-pointer text-xl"
 										aria-label="Save Image"
 										data-tooltip="Save Image"
 										download={"hello.png"}
@@ -149,7 +149,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 
 									{/* Copy button */}
 									<button
-										className="pill button p-0! aspect-square cursor-pointer"
+										className="pill button p-0! aspect-square size-11 cursor-pointer"
 										aria-label="Copy Image"
 										data-tooltip={hasCopiedImage ? "Copied!" : "Copy Image"}
 										onClick={handleCopyImage}
