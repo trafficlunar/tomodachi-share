@@ -48,11 +48,16 @@ export default function AdminBanner() {
 	return (
 		<>
 			{data && data.message && shouldShow && (
-				<div className="relative w-full h-10 bg-orange-300 border-y-2 border-y-orange-400 mt-1 pl-2 shadow-md flex justify-center items-center gap-2 text-orange-900 text-nowrap overflow-x-auto font-semibold max-sm:justify-start">
-					<Icon icon="humbleicons:exclamation" className="text-2xl min-w-6" />
-					<span>{data.message}</span>
+				<div className="relative w-full h-10 bg-orange-300 border-y-2 border-y-orange-400 mt-1 pl-2 shadow-md flex justify-center text-orange-900 text-nowrap overflow-x-auto font-semibold max-sm:justify-between">
+					<div className="flex gap-2 h-full items-center w-fit">
+						<Icon icon="humbleicons:exclamation" className="text-2xl min-w-6" />
+						<span>{data.message}</span>
+					</div>
 
-					<button onClick={handleClose} className="absolute right-2 cursor-pointer p-1.5">
+					<button
+						onClick={handleClose}
+						className="min-sm:absolute right-2 cursor-pointer p-1.5"
+					>
 						<Icon icon="humbleicons:times" className="text-2xl min-w-6" />
 					</button>
 				</div>
