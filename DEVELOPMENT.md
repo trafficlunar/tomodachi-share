@@ -2,8 +2,6 @@
 
 Welcome to the TomodachiShare development guide! This project uses [pnpm](https://pnpm.io/) for package management, [Next.js](https://nextjs.org/) with the app router for the front-end and back-end, [Prisma](https://prisma.io) for the database, [TailwindCSS](https://tailwindcss.com/) for styling, and [TypeScript](https://www.typescriptlang.org/) for type safety.
 
-Note: this project is intended to be used on Linux - in production and development.
-
 ## Getting started
 
 To get the project up and running locally, follow these steps:
@@ -14,7 +12,7 @@ $ cd tomodachi-share
 $ pnpm install
 ```
 
-Prisma types are generated automatically post-install, which is quite convenient. However, sometimes you might need to:
+Prisma types are generated automatically, however, sometimes you might need to:
 
 ```bash
 # Generate Prisma client types
@@ -23,6 +21,12 @@ $ pnpm prisma generate
 # Or, if you've added new database properties
 $ pnpm prisma migrate dev
 $ pnpm prisma generate
+```
+
+I recommend opting out of Next.js' telemetry program but it is not a requirement.
+
+```bash
+$ pnpm exec next telemetry disable
 ```
 
 ## Environment variables
@@ -53,7 +57,13 @@ services:
       - 6379:6379
 ```
 
-After, make a copy of the `.env.example` file and rename it to `.env`. The database variables should be pre-configured, but you'll need to fill in the rest.
+After starting the docker applications, apply TomodachiShare's database schema migrations.
+
+```bash
+$ pnpm prisma migrate dev
+```
+
+After, make a copy of the `.env.example` file and rename it to `.env`. The database variables should be pre-configured, but you'll need to fill in the rest of the variables.
 
 For the `AUTH_SECRET`, run the following in the command line:
 
@@ -61,7 +71,10 @@ For the `AUTH_SECRET`, run the following in the command line:
 $ pnpx auth secret
 ```
 
-Now, let's get the Discord and GitHub authentication set up.
+> [!NOTE]
+> This command may put the secret in a file named `.env.local`, if that happens copy it and paste it into `.env`
+
+Now, let's get the Discord and GitHub authentication set up. If you don't plan on editing any code associated with authentication, you likely only need to setup one of these services.
 
 For Discord, create an application in the developer portal, go to 'OAuth2', copy in the Client ID and Secret into the respective variables and also add this as a redirect URL: `http://localhost:3000/api/auth/callback/discord`.
 
