@@ -106,6 +106,7 @@ https://tomodachishare.com/mii/1/data
 {
 	"id": 1,
 	"name": "Frieren",
+	"platform": "THREE_DS",
 	"imageCount": 3,
 	"tags": ["anime", "frieren"],
 	"description": "Frieren from 'Frieren: Beyond Journey's End'\r\nThe first Mii on the site!",

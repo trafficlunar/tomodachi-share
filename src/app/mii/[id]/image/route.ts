@@ -74,13 +74,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 		if (imageType === "metadata" && mii) {
 			// Metadata images were added after 1274 Miis were submitted, so we generate it on-the-fly
 			console.log(`Metadata image not found for mii ID ${miiId}, generating metadata image...`);
+			const { buffer: metadataBuffer, error, status } = await generateMetadataImage(mii, mii.user.name!);
 
-			try {
-				buffer = await generateMetadataImage(mii, mii.user.name!);
-			} catch (error) {
-				console.error(error);
-				return rateLimit.sendResponse({ error: `Failed to generate 'metadata' type image for mii ${miiId}` }, 500);
+			if (error) {
+				return rateLimit.sendResponse({ error }, status);
 			}
+
+			buffer = metadataBuffer;
 		} else {
 			return rateLimit.sendResponse({ error: "Image not found" }, 404);
 		}

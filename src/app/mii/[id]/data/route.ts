@@ -5,7 +5,7 @@ import { RateLimit } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-	const rateLimit = new RateLimit(request, 200, "/mii/data");
+	const rateLimit = new RateLimit(request, 3, "/mii/data");
 	const check = await rateLimit.handle();
 	if (check) return check;
 
@@ -24,6 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 					likedBy: true,
 				},
 			},
+			platform: true,
 			imageCount: true,
 			tags: true,
 			description: true,

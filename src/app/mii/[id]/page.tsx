@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		include: {
 			user: {
 				select: {
+					name: true,
 					username: true,
 				},
 			},
@@ -44,18 +45,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 	const metadataImageUrl = `/mii/${mii.id}/image?type=metadata`;
 
-	const username = `@${mii.user.username}`;
-
 	return {
 		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `${mii.name} - TomodachiShare`,
-		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare with ${mii._count.likedBy} likes.`,
+		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 		keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection", ...mii.tags],
-		creator: username,
+		creator: mii.user.username,
 		openGraph: {
 			type: "article",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 			images: [
 				{
 					url: metadataImageUrl,
@@ -63,19 +62,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 				},
 			],
 			publishedTime: mii.createdAt.toISOString(),
-			authors: username,
+			authors: mii.user.username,
 		},
 		twitter: {
 			card: "summary_large_image",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 			images: [
 				{
 					url: metadataImageUrl,
 					alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character`,
 				},
 			],
-			creator: username,
+			creator: mii.user.username!,
 		},
 		alternates: {
 			canonical: `/mii/${mii.id}`,

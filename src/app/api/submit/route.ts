@@ -120,12 +120,8 @@ export async function POST(request: NextRequest) {
 		}
 	}
 
-	console.log(data.miiPortraitImage);
-
 	// Check Mii portrait image as well (Switch)
 	if (data.platform === "SWITCH") {
-		if (data.miiPortraitImage.length === 0) return rateLimit.sendResponse({ error: "No mii portrait found!" }, 400);
-
 		const imageValidation = await validateImage(data.miiPortraitImage);
 		if (!imageValidation.valid) return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
 	}

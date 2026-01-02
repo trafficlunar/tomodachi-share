@@ -22,11 +22,7 @@ const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"
 //#region Image validation
 export async function validateImage(file: File): Promise<{ valid: boolean; error?: string; status?: number }> {
 	if (!file || file.size == 0) return { valid: false, error: "Empty image file" };
-	if (file.size > MAX_IMAGE_SIZE)
-		return {
-			valid: false,
-			error: `Image too large. Maximum size is ${MAX_IMAGE_SIZE / (1024 * 1024)}MB`,
-		};
+	if (file.size > MAX_IMAGE_SIZE) return { valid: false, error: `Image too large. Maximum size is ${MAX_IMAGE_SIZE / (1024 * 1024)}MB` };
 
 	try {
 		const buffer = Buffer.from(await file.arrayBuffer());
@@ -34,10 +30,7 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 		// Check mime type
 		const fileType = await fileTypeFromBuffer(buffer);
 		if (!fileType || !ALLOWED_MIME_TYPES.includes(fileType.mime))
-			return {
-				valid: false,
-				error: "Invalid image file type. Only .jpeg, .png, .gif, and .webp are allowed",
-			};
+			return { valid: false, error: "Invalid image file type. Only .jpeg, .png, .gif, and .webp are allowed" };
 
 		let metadata: sharp.Metadata;
 		try {
@@ -55,10 +48,7 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 			metadata.height < MIN_IMAGE_DIMENSIONS[1] ||
 			metadata.height > MAX_IMAGE_DIMENSIONS[1]
 		) {
-			return {
-				valid: false,
-				error: "Image dimensions are invalid. Resolution must be between 128x128 and 1920x1080",
-			};
+			return { valid: false, error: "Image dimensions are invalid. Resolution must be between 128x128 and 1920x1080" };
 		}
 
 		// Check for inappropriate content
@@ -72,11 +62,7 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 
 			if (!moderationResponse.ok) {
 				console.error("Moderation API error");
-				return {
-					valid: false,
-					error: "Content moderation check failed",
-					status: 500,
-				};
+				return { valid: false, error: "Content moderation check failed", status: 500 };
 			}
 
 			const result = await moderationResponse.json();
@@ -91,11 +77,7 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 		return { valid: true };
 	} catch (error) {
 		console.error("Error validating image:", error);
-		return {
-			valid: false,
-			error: "Failed to process image file.",
-			status: 500,
-		};
+		return { valid: false, error: "Failed to process image file.", status: 500 };
 	}
 }
 //#endregion
@@ -139,7 +121,7 @@ const loadFonts = async (): Promise<Font[]> => {
 	);
 };
 
-export async function generateMetadataImage(mii: Mii, author: string): Promise<Buffer> {
+export async function generateMetadataImage(mii: Mii, author: string): Promise<{ buffer?: Buffer; error?: string; status?: number }> {
 	const miiUploadsDirectory = path.join(uploadsDirectory, mii.id.toString());
 
 	// Load assets concurrently
@@ -203,13 +185,7 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<B
 						))}
 					</div>
 
-					<div
-						tw="absolute inset-0"
-						style={{
-							position: "absolute",
-							backgroundImage: "linear-gradient(to right, #fffbeb00 70%, #fffbeb);",
-						}}
-					></div>
+					<div tw="absolute inset-0" style={{ position: "absolute", backgroundImage: "linear-gradient(to right, #fffbeb00 70%, #fffbeb);" }}></div>
 				</div>
 
 				{/* Author */}
@@ -242,11 +218,16 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<B
 	const buffer = await sharp(Buffer.from(svg)).png().toBuffer();
 
 	// Store the file
-	// I tried using .webp here but the quality looked awful
-	// but it actually might be well-liked due to the hatred of .webp
-	const fileLocation = path.join(miiUploadsDirectory, "metadata.png");
-	await fs.writeFile(fileLocation, buffer);
+	try {
+		// I tried using .webp here but the quality looked awful
+		// but it actually might be well-liked due to the hatred of .webp
+		const fileLocation = path.join(miiUploadsDirectory, "metadata.png");
+		await fs.writeFile(fileLocation, buffer);
+	} catch (error) {
+		console.error("Error storing 'metadata' image type", error);
+		return { error: `Failed to store metadata image for ${mii.id}`, status: 500 };
+	}
 
-	return buffer;
+	return { buffer };
 }
 //#endregion
