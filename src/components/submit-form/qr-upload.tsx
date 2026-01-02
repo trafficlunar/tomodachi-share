@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { FileWithPath } from "react-dropzone";
 import jsQR from "jsqr";
 import Dropzone from "../dropzone";
@@ -10,6 +10,7 @@ interface Props {
 }
 
 export default function QrUpload({ setQrBytesRaw }: Props) {
+	const [hasImage, setHasImage] = useState(false);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	const handleDrop = useCallback(
@@ -36,6 +37,7 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 					if (!code) return;
 
 					setQrBytesRaw(code.binaryData!);
+					setHasImage(true);
 				};
 				image.src = event.target!.result as string;
 			};
@@ -48,9 +50,15 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 		<div className="max-w-md w-full">
 			<Dropzone onDrop={handleDrop} options={{ maxFiles: 1 }}>
 				<p className="text-center text-sm">
-					Drag and drop your QR code image here
-					<br />
-					or click to open
+					{!hasImage ? (
+						<>
+							Drag and drop your QR code image here
+							<br />
+							or click to open
+						</>
+					) : (
+						"Uploaded!"
+					)}
 				</p>
 			</Dropzone>
 

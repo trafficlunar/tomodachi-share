@@ -43,8 +43,8 @@ export default function Carousel({ images, className }: Props) {
 			<div className={`overflow-hidden rounded-xl bg-zinc-300 ${className ?? ""}`} ref={emblaRef}>
 				<div className="flex">
 					{images.map((src, index) => (
-						<div key={index} className="flex-shrink-0 w-full">
-							<ImageViewer src={src} alt="mii image" width={480} height={320} className="w-full h-auto aspect-[3/2] object-contain" images={images} />
+						<div key={index} className="shrink-0 w-full">
+							<ImageViewer src={src} alt="mii image" width={480} height={320} className="w-full h-auto aspect-3/2 object-contain" images={images} />
 						</div>
 					))}
 				</div>

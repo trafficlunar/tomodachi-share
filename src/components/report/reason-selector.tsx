@@ -40,7 +40,7 @@ export default function ReasonSelector({ reason, setReason }: Props) {
 				type="button"
 				{...getToggleButtonProps()}
 				aria-label="Report reason dropdown"
-				className="pill input w-full gap-1 !justify-between text-nowrap"
+				className="pill input w-full gap-1 justify-between! text-nowrap"
 			>
 				{selectedItem?.label || <span className="text-black/40">Select a reason for the report...</span>}
 				<Icon icon="tabler:chevron-down" className="ml-2 size-5" />

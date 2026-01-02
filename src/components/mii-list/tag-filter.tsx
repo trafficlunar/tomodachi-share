@@ -36,6 +36,8 @@ export default function TagFilter() {
 		if (urlTags === stateTags) return;
 
 		const params = new URLSearchParams(searchParams);
+		params.set("page", "1");
+
 		if (tags.length > 0) {
 			params.set("tags", stateTags);
 		} else {

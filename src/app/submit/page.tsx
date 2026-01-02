@@ -37,7 +37,7 @@ export default async function SubmitPage() {
 
 	if (!value)
 		return (
-			<div className="flex-grow flex items-center justify-center">
+			<div className="grow flex items-center justify-center">
 				<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-8 max-w-xs w-full text-center flex flex-col">
 					<h2 className="text-5xl font-black">Sorry</h2>
 					<p className="mt-1">Submissions are disabled</p>

@@ -44,13 +44,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		where: {
 			id: miiId,
 		},
-		include: {
-			user: {
-				select: {
-					username: true,
-				},
-			},
-		},
 	});
 
 	if (!mii) return rateLimit.sendResponse({ error: "Mii not found" }, 404);
@@ -102,11 +95,18 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (images.length > 0) updateData.imageCount = images.length;
 
 	if (Object.keys(updateData).length == 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);
-	await prisma.mii.update({
+	const updatedMii = await prisma.mii.update({
 		where: {
 			id: miiId,
 		},
 		data: updateData,
+		include: {
+			user: {
+				select: {
+					name: true,
+				},
+			},
+		},
 	});
 
 	// Only touch files if new images were uploaded
@@ -137,7 +137,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	} else if (description === undefined) {
 		// If images or description were not changed, regenerate the metadata image
 		try {
-			await generateMetadataImage(mii, mii.user.username!);
+			await generateMetadataImage(updatedMii, updatedMii.user.name!);
 		} catch (error) {
 			console.error(error);
 			return rateLimit.sendResponse({ error: `Failed to generate 'metadata' type image for mii ${miiId}` }, 500);

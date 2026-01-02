@@ -10,13 +10,17 @@ export default function GenderSelect() {
 	const searchParams = useSearchParams();
 	const [, startTransition] = useTransition();
 
-	const [selected, setSelected] = useState<MiiGender | null>((searchParams.get("gender") as MiiGender) ?? null);
+	const [selected, setSelected] = useState<MiiGender | null>(
+		(searchParams.get("gender") as MiiGender) ?? null
+	);
 
 	const handleClick = (gender: MiiGender) => {
 		const filter = selected === gender ? null : gender;
 		setSelected(filter);
 
 		const params = new URLSearchParams(searchParams);
+		params.set("page", "1");
+
 		if (filter) {
 			params.set("gender", filter);
 		} else {
@@ -35,10 +39,14 @@ export default function GenderSelect() {
 				aria-label="Filter for Male Miis"
 				data-tooltip-span
 				className={`cursor-pointer rounded-xl flex justify-center items-center size-13 text-5xl border-2 transition-all ${
-					selected === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+					selected === "MALE"
+						? "bg-blue-100 border-blue-400 shadow-md"
+						: "bg-white border-gray-300 hover:border-gray-400"
 				}`}
 			>
-				<div className="tooltip !bg-blue-400 !border-blue-400 before:!border-b-blue-400">Male</div>
+				<div className="tooltip bg-blue-400! border-blue-400! before:border-b-blue-400!">
+					Male
+				</div>
 				<Icon icon="foundation:male" className="text-blue-400" />
 			</button>
 
@@ -47,10 +55,14 @@ export default function GenderSelect() {
 				aria-label="Filter for Female Miis"
 				data-tooltip-span
 				className={`cursor-pointer rounded-xl flex justify-center items-center size-13 text-5xl border-2 transition-all ${
-					selected === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+					selected === "FEMALE"
+						? "bg-pink-100 border-pink-400 shadow-md"
+						: "bg-white border-gray-300 hover:border-gray-400"
 				}`}
 			>
-				<div className="tooltip !bg-pink-400 !border-pink-400 before:!border-b-pink-400">Female</div>
+				<div className="tooltip bg-pink-400! border-pink-400! before:border-b-pink-400!">
+					Female
+				</div>
 				<Icon icon="foundation:female" className="text-pink-400" />
 			</button>
 		</div>

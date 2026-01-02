@@ -2,11 +2,11 @@ import Link from "next/link";
 
 import { MiiGender, MiiPlatform, Prisma } from "@prisma/client";
 import { Icon } from "@iconify/react";
-import { z } from "zod";
 
+import crypto from "crypto";
 import seedrandom from "seedrandom";
 
-import { querySchema } from "@/lib/schemas";
+import { searchSchema } from "@/lib/schemas";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -23,44 +23,26 @@ interface Props {
 	inLikesPage?: boolean; // Self-explanatory
 }
 
-const searchSchema = z.object({
-	q: querySchema.optional(),
-	sort: z.enum(["likes", "newest", "oldest", "random"], { error: "Sort must be either 'likes', 'newest', 'oldest', or 'random'" }).default("newest"),
-	tags: z
-		.string()
-		.optional()
-		.transform((value) =>
-			value
-				?.split(",")
-				.map((tag) => tag.trim())
-				.filter((tag) => tag.length > 0)
-		),
-	platform: z.enum(MiiPlatform, { error: "Platform must be either 'THREE_DS', or 'SWITCH'" }).optional(),
-	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', or 'FEMALE'" }).optional(),
-	// todo: incorporate tagsSchema
-	// Pages
-	limit: z.coerce
-		.number({ error: "Limit must be a number" })
-		.int({ error: "Limit must be an integer" })
-		.min(1, { error: "Limit must be at least 1" })
-		.max(100, { error: "Limit cannot be more than 100" })
-		.optional(),
-	page: z.coerce
-		.number({ error: "Page must be a number" })
-		.int({ error: "Page must be an integer" })
-		.min(1, { error: "Page must be at least 1" })
-		.optional(),
-	// Random sort
-	seed: z.coerce.number({ error: "Seed must be a number" }).int({ error: "Seed must be an integer" }).optional(),
-});
-
-export default async function MiiList({ searchParams, userId, inLikesPage }: Props) {
+export default async function MiiList({
+	searchParams,
+	userId,
+	inLikesPage,
+}: Props) {
 	const session = await auth();
 
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { q: query, sort, tags, platform, gender, page = 1, limit = 24, seed } = parsed.data;
+	const {
+		q: query,
+		sort,
+		tags,
+		platform,
+		gender,
+		page = 1,
+		limit = 24,
+		seed,
+	} = parsed.data;
 
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
@@ -78,7 +60,11 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		...(inLikesPage && miiIdsLiked && { id: { in: miiIdsLiked } }),
 		// Searching
 		...(query && {
-			OR: [{ name: { contains: query, mode: "insensitive" } }, { tags: { has: query } }, { description: { contains: query, mode: "insensitive" } }],
+			OR: [
+				{ name: { contains: query, mode: "insensitive" } },
+				{ tags: { has: query } },
+				{ description: { contains: query, mode: "insensitive" } },
+			],
 		}),
 		// Tag filtering
 		...(tags && tags.length > 0 && { tags: { hasEvery: tags } }),
@@ -128,7 +114,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 	if (sort === "random") {
 		// Use seed for consistent random results
-		const randomSeed = seed || Math.floor(Math.random() * 1_000_000_000);
+		const randomSeed = seed || crypto.randomInt(0, 1_000_000_000);
 
 		// Get all IDs that match the where conditions
 		const matchingIds = await prisma.mii.findMany({
@@ -174,7 +160,13 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		[totalCount, filteredCount, list] = await Promise.all([
 			prisma.mii.count({ where: { ...where, userId } }),
 			prisma.mii.count({ where, skip, take: limit }),
-			prisma.mii.findMany({ where, orderBy, select, skip: (page - 1) * limit, take: limit }),
+			prisma.mii.findMany({
+				where,
+				orderBy,
+				select,
+				skip: (page - 1) * limit,
+				take: limit,
+			}),
 		]);
 	}
 
@@ -191,20 +183,28 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 				<div className="flex items-center gap-2">
 					{totalCount == filteredCount ? (
 						<>
-							<span className="text-2xl font-bold text-amber-900">{totalCount}</span>
-							<span className="text-lg text-amber-700">{totalCount === 1 ? "Mii" : "Miis"}</span>
+							<span className="text-2xl font-bold text-amber-900">
+								{totalCount}
+							</span>
+							<span className="text-lg text-amber-700">
+								{totalCount === 1 ? "Mii" : "Miis"}
+							</span>
 						</>
 					) : (
 						<>
-							<span className="text-2xl font-bold text-amber-900">{filteredCount}</span>
+							<span className="text-2xl font-bold text-amber-900">
+								{filteredCount}
+							</span>
 							<span className="text-sm text-amber-700">of</span>
-							<span className="text-lg font-semibold text-amber-800">{totalCount}</span>
+							<span className="text-lg font-semibold text-amber-800">
+								{totalCount}
+							</span>
 							<span className="text-lg text-amber-700">Miis</span>
 						</>
 					)}
 				</div>
 
-				<div className="relative flex items-center justify-end gap-2 w-full min-md:max-w-2/3 max-md:justify-center">
+				<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
 					<FilterMenu />
 					<SortSelect />
 				</div>
@@ -220,37 +220,66 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 							images={[
 								`/mii/${mii.id}/image?type=mii`,
 								`/mii/${mii.id}/image?type=qr-code`,
-								...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`),
+								...Array.from(
+									{ length: mii.imageCount },
+									(_, index) => `/mii/${mii.id}/image?type=image${index}`
+								),
 							]}
 						/>
 
 						<div className="p-4 flex flex-col gap-1 h-full">
-							<Link href={`/mii/${mii.id}`} className="font-bold text-2xl line-clamp-1" title={mii.name}>
+							<Link
+								href={`/mii/${mii.id}`}
+								className="font-bold text-2xl line-clamp-1"
+								title={mii.name}
+							>
 								{mii.name}
 							</Link>
 							<div id="tags" className="flex flex-wrap gap-1">
 								{mii.tags.map((tag) => (
-									<Link href={{ query: { tags: tag } }} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
+									<Link
+										href={{ query: { tags: tag } }}
+										key={tag}
+										className="px-2 py-1 bg-orange-300 rounded-full text-xs"
+									>
 										{tag}
 									</Link>
 								))}
 							</div>
 
 							<div className="mt-auto grid grid-cols-2 items-center">
-								<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} isLoggedIn={session?.user != null} abbreviate />
+								<LikeButton
+									likes={mii.likes}
+									miiId={mii.id}
+									isLiked={mii.isLiked}
+									isLoggedIn={session?.user != null}
+									abbreviate
+								/>
 
 								{!userId && (
-									<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis">
+									<Link
+										href={`/profile/${mii.user?.id}`}
+										className="text-sm text-right overflow-hidden text-ellipsis"
+									>
 										@{mii.user?.username}
 									</Link>
 								)}
 
 								{userId && Number(session?.user.id) == userId && (
 									<div className="flex gap-1 text-2xl justify-end text-zinc-400">
-										<Link href={`/edit/${mii.id}`} title="Edit Mii" aria-label="Edit Mii" data-tooltip="Edit">
+										<Link
+											href={`/edit/${mii.id}`}
+											title="Edit Mii"
+											aria-label="Edit Mii"
+											data-tooltip="Edit"
+										>
 											<Icon icon="mdi:pencil" />
 										</Link>
-										<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likes} />
+										<DeleteMiiButton
+											miiId={mii.id}
+											miiName={mii.name}
+											likes={mii.likes}
+										/>
 									</div>
 								)}
 							</div>

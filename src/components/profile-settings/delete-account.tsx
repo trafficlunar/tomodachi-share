@@ -42,14 +42,14 @@ export default function DeleteAccount() {
 			<button
 				name="deletion"
 				onClick={() => setIsOpen(true)}
-				className="pill button w-fit h-min ml-auto !bg-red-400 !border-red-500 hover:!bg-red-500"
+				className="pill button w-fit h-min ml-auto bg-red-400! border-red-500! hover:bg-red-500!"
 			>
 				Delete Account
 			</button>
 
 			{isOpen &&
 				createPortal(
-					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-[var(--header-height)] flex items-center justify-center z-40">
+					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
 						<div
 							onClick={close}
 							className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
@@ -79,7 +79,7 @@ export default function DeleteAccount() {
 								<button onClick={close} className="pill button">
 									Cancel
 								</button>
-								<SubmitButton onClick={handleSubmit} text="Delete" className="!bg-red-400 !border-red-500 hover:!bg-red-500" />
+								<SubmitButton onClick={handleSubmit} text="Delete" className="bg-red-400! border-red-500! hover:bg-red-500!" />
 							</div>
 						</div>
 					</div>,
