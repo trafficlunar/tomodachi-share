@@ -7,5 +7,5 @@ export default function ProfilePicture(props: Partial<ImageProps>) {
 	const { src, ...rest } = props;
 	const [imgSrc, setImgSrc] = useState(src);
 
-	return <Image {...rest} src={imgSrc || "/guest.webp"} alt={"profile picture"} width={128} height={128} onError={() => setImgSrc("/guest.webp")} />;
+	return <Image width={128} height={128} {...rest} src={imgSrc || "/guest.webp"} alt={"profile picture"} onError={() => setImgSrc("/guest.webp")} />;
 }

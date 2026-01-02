@@ -92,7 +92,7 @@ export default function RootLayout({
 				<Providers>
 					<Header />
 					<AdminBanner />
-					<main className="px-4 py-8 max-w-7xl w-full flex-grow flex flex-col">{children}</main>
+					<main className="px-4 py-8 max-w-7xl w-full grow flex flex-col">{children}</main>
 					<Footer />
 				</Providers>
 			</body>

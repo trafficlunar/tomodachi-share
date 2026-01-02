@@ -106,7 +106,7 @@ export default function EditForm({ mii, likes }: Props) {
 	return (
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
-				<div className="w-[18.75rem] h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
+				<div className="w-75 h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
 					<Carousel
 						images={[`/mii/${mii.id}/image?type=mii`, `/mii/${mii.id}/image?type=qr-code`, ...files.map((file) => URL.createObjectURL(file))]}
 					/>
@@ -139,9 +139,9 @@ export default function EditForm({ mii, likes }: Props) {
 
 				{/* Separator */}
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 					<span>Info</span>
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 				</div>
 
 				<div className="w-full grid grid-cols-3 items-center">
@@ -164,7 +164,7 @@ export default function EditForm({ mii, likes }: Props) {
 					<label htmlFor="tags" className="font-semibold">
 						Tags
 					</label>
-					<TagSelector tags={tags} setTags={setTags} />
+					<TagSelector tags={tags} setTags={setTags} showTagLimit />
 				</div>
 
 				<div className="w-full grid grid-cols-3 items-start">
@@ -172,10 +172,10 @@ export default function EditForm({ mii, likes }: Props) {
 						Description
 					</label>
 					<textarea
-						rows={3}
+						rows={5}
 						maxLength={256}
 						placeholder="(optional) Type a description..."
-						className="pill input !rounded-xl resize-none col-span-2"
+						className="pill input rounded-xl! resize-none col-span-2 text-sm"
 						value={description ?? ""}
 						onChange={(e) => setDescription(e.target.value)}
 					/>
@@ -183,9 +183,9 @@ export default function EditForm({ mii, likes }: Props) {
 
 				{/* Separator */}
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 					<span>Custom images</span>
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 				</div>
 
 				<div className="max-w-md w-full self-center">

@@ -32,7 +32,7 @@ export default function Dropzone({ onDrop, options, children }: Props) {
 			{...getRootProps()}
 			onDragOver={() => setIsDraggingOver(true)}
 			onDragLeave={() => setIsDraggingOver(false)}
-			className={`relative bg-orange-200 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border-2 border-dashed border-amber-500 select-none h-full transition-all duration-200 ${
+			className={`relative bg-orange-200 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border-2 border-dashed border-amber-500 select-none size-full transition-all duration-200 ${
 				isDraggingOver && "scale-105 brightness-90 shadow-xl"
 			}`}
 		>

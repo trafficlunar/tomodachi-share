@@ -14,7 +14,7 @@ import satori, { Font } from "satori";
 
 import { Mii } from "@prisma/client";
 
-const MIN_IMAGE_DIMENSIONS = [320, 240];
+const MIN_IMAGE_DIMENSIONS = [128, 128];
 const MAX_IMAGE_DIMENSIONS = [1920, 1080];
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024; // 4 MB
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
@@ -48,7 +48,7 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 			metadata.height < MIN_IMAGE_DIMENSIONS[1] ||
 			metadata.height > MAX_IMAGE_DIMENSIONS[1]
 		) {
-			return { valid: false, error: "Image dimensions are invalid. Resolution must be between 320x240 and 1920x1080" };
+			return { valid: false, error: "Image dimensions are invalid. Resolution must be between 128x128 and 1920x1080" };
 		}
 
 		// Check for inappropriate content
@@ -121,7 +121,7 @@ const loadFonts = async (): Promise<Font[]> => {
 	);
 };
 
-export async function generateMetadataImage(mii: Mii, author: string): Promise<Buffer> {
+export async function generateMetadataImage(mii: Mii, author: string): Promise<{ buffer?: Buffer; error?: string; status?: number }> {
 	const miiUploadsDirectory = path.join(uploadsDirectory, mii.id.toString());
 
 	// Load assets concurrently
@@ -146,13 +146,21 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<B
 		<div tw="w-full h-full bg-amber-50 border-2 border-amber-500 rounded-2xl p-4 flex flex-col">
 			<div tw="flex w-full">
 				{/* Mii image */}
-				<div tw="w-80 h-62 rounded-xl flex justify-center mr-2 px-2" style={{ backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a);" }}>
+				<div
+					tw="w-80 h-62 rounded-xl flex justify-center mr-2 px-2"
+					style={{
+						backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a);",
+					}}
+				>
 					<img
 						src={miiImage}
 						width={248}
 						height={248}
 						tw="w-full h-full"
-						style={{ objectFit: "contain", filter: "drop-shadow(0 10px 8px #00000024) drop-shadow(0 4px 3px #00000024)" }}
+						style={{
+							objectFit: "contain",
+							filter: "drop-shadow(0 10px 8px #00000024) drop-shadow(0 4px 3px #00000024)",
+						}}
 					/>
 				</div>
 
@@ -168,22 +176,29 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<B
 					{mii.name}
 				</span>
 				{/* Tags */}
-				<div id="tags" tw="flex flex-wrap mt-1 w-full">
-					{mii.tags.map((tag) => (
-						<span key={tag} tw="mr-1 px-2 py-1 bg-orange-300 rounded-full text-sm">
-							{tag}
-						</span>
-					))}
+				<div id="tags" tw="relative flex mt-1 w-full overflow-hidden">
+					<div tw="flex">
+						{mii.tags.map((tag) => (
+							<span key={tag} tw="mr-1 px-2 py-1 bg-orange-300 rounded-full text-sm shrink-0">
+								{tag}
+							</span>
+						))}
+					</div>
+
+					<div tw="absolute inset-0" style={{ position: "absolute", backgroundImage: "linear-gradient(to right, #fffbeb00 70%, #fffbeb);" }}></div>
 				</div>
 
 				{/* Author */}
-				<div tw="flex text-sm mt-2">
-					By: <span tw="ml-1.5 font-semibold">@{author}</span>
+				<div tw="flex mt-2 text-sm w-1/2">
+					By{" "}
+					<span tw="ml-1.5 font-semibold overflow-hidden" style={{ textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+						{author}
+					</span>
 				</div>
 
 				{/* Watermark */}
 				<div tw="absolute bottom-0 right-0 flex items-center">
-					<img src={`${process.env.NEXT_PUBLIC_BASE_URL}/logo.svg`} height={34} />
+					<img src={`${process.env.NEXT_PUBLIC_BASE_URL}/logo.svg`} height={32} />
 					{/* I tried using text-orange-400 but it wasn't correct..? */}
 					<span tw="ml-2 font-black text-xl" style={{ color: "#FF8904" }}>
 						TomodachiShare
@@ -203,11 +218,16 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<B
 	const buffer = await sharp(Buffer.from(svg)).png().toBuffer();
 
 	// Store the file
-	// I tried using .webp here but the quality looked awful
-	// but it actually might be well-liked due to the hatred of .webp
-	const fileLocation = path.join(miiUploadsDirectory, "metadata.png");
-	await fs.writeFile(fileLocation, buffer);
+	try {
+		// I tried using .webp here but the quality looked awful
+		// but it actually might be well-liked due to the hatred of .webp
+		const fileLocation = path.join(miiUploadsDirectory, "metadata.png");
+		await fs.writeFile(fileLocation, buffer);
+	} catch (error) {
+		console.error("Error storing 'metadata' image type", error);
+		return { error: `Failed to store metadata image for ${mii.id}`, status: 500 };
+	}
 
-	return buffer;
+	return { buffer };
 }
 //#endregion

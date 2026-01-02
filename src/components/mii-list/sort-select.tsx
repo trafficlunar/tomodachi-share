@@ -23,6 +23,7 @@ export default function SortSelect() {
 			if (!selectedItem) return;
 
 			const params = new URLSearchParams(searchParams);
+			params.set("page", "1");
 			params.set("sort", selectedItem);
 
 			if (selectedItem == "random") {
@@ -38,7 +39,7 @@ export default function SortSelect() {
 	return (
 		<div className="relative w-fit">
 			{/* Toggle button to open the dropdown */}
-			<button type="button" {...getToggleButtonProps()} aria-label="Sort dropdown" className="pill input w-full gap-1 !justify-between text-nowrap">
+			<button type="button" {...getToggleButtonProps()} aria-label="Sort dropdown" className="pill input w-full gap-1 justify-between! text-nowrap">
 				<span>Sort by </span>
 				{selectedItem || "Select a way to sort"}
 				<Icon icon="tabler:chevron-down" className="ml-2 size-5" />

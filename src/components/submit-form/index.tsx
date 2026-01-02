@@ -27,18 +27,6 @@ import SubmitButton from "../submit-button";
 import Dropzone from "../dropzone";
 
 export default function SubmitForm() {
-	const [platform, setPlatform] = useState<MiiPlatform>("SWITCH");
-	const [name, setName] = useState("");
-	const [tags, setTags] = useState<string[]>([]);
-	const [description, setDescription] = useState("");
-	const [accessKey, setAccessKey] = useState("");
-	const [gender, setGender] = useState<MiiGender>("MALE");
-	const [qrBytesRaw, setQrBytesRaw] = useState<number[]>([]);
-
-	const [miiPortraitUri, setMiiPortraitUri] = useState<string | undefined>();
-	const [generatedQrCodeUri, setGeneratedQrCodeUri] = useState<string | undefined>();
-
-	const [error, setError] = useState<string | undefined>(undefined);
 	const [files, setFiles] = useState<FileWithPath[]>([]);
 
 	const handleDrop = useCallback(
@@ -48,6 +36,21 @@ export default function SubmitForm() {
 		},
 		[files.length]
 	);
+
+	const [isQrScannerOpen, setIsQrScannerOpen] = useState(false);
+	const [miiPortraitUri, setMiiPortraitUri] = useState<string | undefined>();
+	const [generatedQrCodeUri, setGeneratedQrCodeUri] = useState<string | undefined>();
+
+	const [name, setName] = useState("");
+	const [tags, setTags] = useState<string[]>([]);
+	const [description, setDescription] = useState("");
+	const [accessKey, setAccessKey] = useState("");
+	const [qrBytesRaw, setQrBytesRaw] = useState<number[]>([]);
+
+	const [platform, setPlatform] = useState<MiiPlatform>("SWITCH");
+	const [gender, setGender] = useState<MiiGender>("MALE");
+
+	const [error, setError] = useState<string | undefined>(undefined);
 
 	const handleSubmit = async () => {
 		// Validate before sending request
@@ -77,7 +80,17 @@ export default function SubmitForm() {
 			formData.append("qrBytesRaw", JSON.stringify(qrBytesRaw));
 		} else if (platform === "SWITCH") {
 			const response = await fetch(miiPortraitUri!);
+
+			if (!response.ok) {
+				setError("Failed to check Mii portrait. Did you upload one?");
+				return;
+			}
+
 			const blob = await response.blob();
+			if (!blob.type.startsWith("image/")) {
+				setError("Invalid image file returned");
+				return;
+			}
 
 			formData.append("accessKey", accessKey);
 			formData.append("gender", gender);
@@ -141,10 +154,8 @@ export default function SubmitForm() {
 	return (
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
-				<div className="w-[18.75rem] h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
-					<Carousel
-						images={[miiPortraitUri ?? "/loading.svg", generatedQrCodeUri ?? "/loading.svg", ...files.map((file) => URL.createObjectURL(file))]}
-					/>
+				<div className="w-75 h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
+					<Carousel images={[miiPortraitUri ?? "/loading.svg", generatedQrCodeUri ?? "/loading.svg", ...files.map((file) => URL.createObjectURL(file))]} />
 
 					<div className="p-4 flex flex-col gap-1 h-full">
 						<h1 className="font-bold text-2xl line-clamp-1" title={name}>
@@ -174,9 +185,9 @@ export default function SubmitForm() {
 
 				{/* Separator */}
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 					<span>Info</span>
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 				</div>
 
 				{/* Platform select */}
@@ -186,6 +197,7 @@ export default function SubmitForm() {
 					</label>
 					<div className="relative col-span-2 grid grid-cols-2 bg-orange-300 border-2 border-orange-400 rounded-4xl shadow-md inset-shadow-sm/10">
 						{/* Animated indicator */}
+						{/* TODO: maybe change width as part of animation? */}
 						<div
 							className={`absolute inset-0 w-1/2 bg-orange-200 rounded-4xl transition-transform duration-300 ${
 								platform === "SWITCH" ? "translate-x-0" : "translate-x-full"
@@ -196,8 +208,8 @@ export default function SubmitForm() {
 						<button
 							type="button"
 							onClick={() => setPlatform("SWITCH")}
-							className={`p-2 text-black/35 cursor-pointer flex justify-center items-center gap-2 z-10 transition-colors ${
-								platform === "SWITCH" && "!text-black"
+							className={`p-2 text-slate-800/35 cursor-pointer flex justify-center items-center gap-2 z-10 transition-colors ${
+								platform === "SWITCH" && "text-slate-800!"
 							}`}
 						>
 							<Icon icon="cib:nintendo-switch" className="text-2xl" />
@@ -208,8 +220,8 @@ export default function SubmitForm() {
 						<button
 							type="button"
 							onClick={() => setPlatform("THREE_DS")}
-							className={`p-2 text-black/35 cursor-pointer flex justify-center items-center gap-2 z-10 transition-colors ${
-								platform === "THREE_DS" && "!text-black"
+							className={`p-2 text-slate-800/35 cursor-pointer flex justify-center items-center gap-2 z-10 transition-colors ${
+								platform === "THREE_DS" && "text-slate-800!"
 							}`}
 						>
 							<Icon icon="cib:nintendo-3ds" className="text-2xl" />
@@ -239,7 +251,7 @@ export default function SubmitForm() {
 					<label htmlFor="tags" className="font-semibold">
 						Tags
 					</label>
-					<TagSelector tags={tags} setTags={setTags} />
+					<TagSelector tags={tags} setTags={setTags} showTagLimit />
 				</div>
 
 				{/* Description */}
@@ -249,10 +261,10 @@ export default function SubmitForm() {
 					</label>
 					<textarea
 						name="description"
-						rows={3}
+						rows={5}
 						maxLength={256}
 						placeholder="(optional) Type a description..."
-						className="pill input !rounded-xl resize-none col-span-2"
+						className="pill input rounded-xl! resize-none col-span-2 text-sm"
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
 					/>
@@ -309,9 +321,9 @@ export default function SubmitForm() {
 
 						{/* Mii Portrait */}
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
-							<hr className="flex-grow border-zinc-300" />
+							<hr className="grow border-zinc-300" />
 							<span>Mii Portrait</span>
-							<hr className="flex-grow border-zinc-300" />
+							<hr className="grow border-zinc-300" />
 						</div>
 
 						<div className="flex flex-col items-center gap-2">
@@ -324,16 +336,21 @@ export default function SubmitForm() {
 				{platform === "THREE_DS" && (
 					<>
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
-							<hr className="flex-grow border-zinc-300" />
+							<hr className="grow border-zinc-300" />
 							<span>QR Code</span>
-							<hr className="flex-grow border-zinc-300" />
+							<hr className="grow border-zinc-300" />
 						</div>
 
 						<div className="flex flex-col items-center gap-2">
 							<QrUpload setQrBytesRaw={setQrBytesRaw} />
 							<span>or</span>
-							<QrScanner setQrBytesRaw={setQrBytesRaw} />
 
+							<button type="button" aria-label="Use your camera" onClick={() => setIsQrScannerOpen(true)} className="pill button gap-2">
+								<Icon icon="mdi:camera" fontSize={20} />
+								Use your camera
+							</button>
+
+							<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
 							<ThreeDsSubmitTutorialButton />
 							<span className="text-xs text-zinc-400">For emulators, aes_keys.txt is required.</span>
 						</div>
@@ -342,12 +359,12 @@ export default function SubmitForm() {
 
 				{/* Custom images selector */}
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-6 mb-2">
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 					<span>Custom images</span>
-					<hr className="flex-grow border-zinc-300" />
+					<hr className="grow border-zinc-300" />
 				</div>
 
-				<div className="max-w-md w-full self-center">
+				<div className="max-w-md w-full self-center flex flex-col items-center">
 					<Dropzone onDrop={handleDrop}>
 						<p className="text-center text-sm">
 							Drag and drop your images here
@@ -355,6 +372,8 @@ export default function SubmitForm() {
 							or click to open
 						</p>
 					</Dropzone>
+
+					<span className="text-xs text-zinc-400 mt-2">Animated images currently not supported.</span>
 				</div>
 
 				<ImageList files={files} setFiles={setFiles} />

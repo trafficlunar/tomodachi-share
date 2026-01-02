@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 
 import BannerForm from "@/components/admin/banner-form";
 import ControlCenter from "@/components/admin/control-center";
+import RegenerateImagesButton from "@/components/admin/regenerate-images";
 import UserManagement from "@/components/admin/user-management";
 import Reports from "@/components/admin/reports";
 
@@ -31,36 +32,37 @@ export default async function AdminPage() {
 
 			{/* Separator */}
 			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 				<span>Banners</span>
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 			</div>
 
 			<BannerForm />
 
 			{/* Separator */}
 			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 				<span>Control Center</span>
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 			</div>
 
 			<ControlCenter />
+			<RegenerateImagesButton />
 
 			{/* Separator */}
 			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 				<span>User Management</span>
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 			</div>
 
 			<UserManagement />
 
 			{/* Separator */}
 			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 				<span>Reports</span>
-				<hr className="flex-grow border-zinc-300" />
+				<hr className="grow border-zinc-300" />
 			</div>
 
 			<Reports />

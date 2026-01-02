@@ -77,7 +77,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 
 			{isOpen &&
 				createPortal(
-					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-[var(--header-height)] flex items-center justify-center z-40">
+					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
 						<div
 							onClick={close}
 							className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
@@ -99,7 +99,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 							<div className="overflow-hidden rounded-2xl h-full" ref={emblaRef}>
 								<div className="flex h-full items-center">
 									{imagesMap.map((image, index) => (
-										<div key={index} className="flex-shrink-0 w-full">
+										<div key={index} className="shrink-0 w-full">
 											<Image
 												src={image}
 												alt={alt}

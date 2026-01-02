@@ -21,7 +21,7 @@ export default function Skeleton() {
 					<div key={index} className="flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
 						{/* Carousel Skeleton */}
 						<div className="relative rounded-xl bg-zinc-300 border-2 border-zinc-300 mb-1">
-							<div className="aspect-[3/2]"></div>
+							<div className="aspect-3/2"></div>
 						</div>
 
 						{/* Content */}

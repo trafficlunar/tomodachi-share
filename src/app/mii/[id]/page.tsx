@@ -14,6 +14,7 @@ import DeleteMiiButton from "@/components/delete-mii";
 import ShareMiiButton from "@/components/share-mii-button";
 import ThreeDsScanTutorialButton from "@/components/tutorial/3ds-scan";
 import SwitchScanTutorialButton from "@/components/tutorial/switch-scan";
+import Description from "@/components/description";
 
 interface Props {
 	params: Promise<{ id: string }>;
@@ -29,6 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		include: {
 			user: {
 				select: {
+					name: true,
 					username: true,
 				},
 			},
@@ -43,28 +45,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 	const metadataImageUrl = `/mii/${mii.id}/image?type=metadata`;
 
-	const username = `@${mii.user.username}`;
-
 	return {
 		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `${mii.name} - TomodachiShare`,
-		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare with ${mii._count.likedBy} likes.`,
+		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 		keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection", ...mii.tags],
-		creator: username,
+		creator: mii.user.username,
 		openGraph: {
 			type: "article",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare with ${mii._count.likedBy} likes.`,
-			images: [metadataImageUrl],
+			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			images: [
+				{
+					url: metadataImageUrl,
+					alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character`,
+				},
+			],
 			publishedTime: mii.createdAt.toISOString(),
-			authors: username,
+			authors: mii.user.username,
 		},
 		twitter: {
 			card: "summary_large_image",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare with ${mii._count.likedBy} likes.`,
-			images: [metadataImageUrl],
-			creator: username,
+			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			images: [
+				{
+					url: metadataImageUrl,
+					alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character`,
+				},
+			],
+			creator: mii.user.username!,
 		},
 		alternates: {
 			canonical: `/mii/${mii.id}`,
@@ -83,6 +93,7 @@ export default async function MiiPage({ params }: Props) {
 		include: {
 			user: {
 				select: {
+					name: true,
 					username: true,
 				},
 			},
@@ -110,13 +121,13 @@ export default async function MiiPage({ params }: Props) {
 				<div className="relative grid grid-cols-3 gap-4 max-md:grid-cols-1">
 					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
 						{/* Mii Image */}
-						<div className="bg-gradient-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center h-50">
+						<div className="bg-linear-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center">
 							<ImageViewer
 								src={`/mii/${mii.id}/image?type=mii`}
 								alt="mii headshot"
 								width={200}
 								height={200}
-								className="drop-shadow-lg hover:scale-105 transition-transform duration-300 object-contain size-full"
+								className="drop-shadow-lg hover:scale-105 transition-transform"
 							/>
 						</div>
 						{/* QR Code/Access key */}
@@ -148,24 +159,22 @@ export default async function MiiPage({ params }: Props) {
 									From: <span className="text-right font-medium">{mii.islandName} Island</span>
 								</li>
 								<li>
-									Allowed Copying: <input type="checkbox" checked={mii.allowedCopying ?? false} disabled className="checkbox !cursor-auto" />
+									Allowed Copying: <input type="checkbox" checked={mii.allowedCopying ?? false} disabled className="checkbox cursor-auto!" />
 								</li>
 							</ul>
 						)}
 
 						{/* Mii Platform */}
 						<div className={`flex items-center gap-4 text-zinc-500 text-sm font-medium mb-2 w-full ${mii.platform !== "THREE_DS" && "mt-2"}`}>
-							<hr className="flex-grow border-zinc-300" />
+							<hr className="grow border-zinc-300" />
 							<span>Platform</span>
-							<hr className="flex-grow border-zinc-300" />
+							<hr className="grow border-zinc-300" />
 						</div>
 
 						<div data-tooltip-span title={mii.platform} className="grid grid-cols-2 gap-2 mb-2">
 							<div
-								className={`tooltip !mt-1 ${
-									mii.platform === "THREE_DS"
-										? "!bg-sky-400 !border-sky-400 before:!border-b-sky-400"
-										: "!bg-red-400 !border-red-400 before:!border-b-red-400"
+								className={`tooltip mt-1! ${
+									mii.platform === "THREE_DS" ? "bg-sky-400! border-sky-400! before:border-b-sky-400!" : "bg-red-400! border-red-400! before:border-b-red-400!"
 								}`}
 							>
 								{mii.platform === "THREE_DS" ? "3DS" : "Switch"}
@@ -190,17 +199,15 @@ export default async function MiiPage({ params }: Props) {
 
 						{/* Mii Gender */}
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-2 w-full">
-							<hr className="flex-grow border-zinc-300" />
+							<hr className="grow border-zinc-300" />
 							<span>Gender</span>
-							<hr className="flex-grow border-zinc-300" />
+							<hr className="grow border-zinc-300" />
 						</div>
 
 						<div data-tooltip-span title={mii.gender ?? "NULL"} className="grid grid-cols-2 gap-2">
 							<div
-								className={`tooltip !mt-1 ${
-									mii.gender === "MALE"
-										? "!bg-blue-400 !border-blue-400 before:!border-b-blue-400"
-										: "!bg-pink-400 !border-pink-400 before:!border-b-pink-400"
+								className={`tooltip mt-1! ${
+									mii.gender === "MALE" ? "bg-blue-400! border-blue-400! before:border-b-blue-400!" : "bg-pink-400! border-pink-400! before:border-b-pink-400!"
 								}`}
 							>
 								{mii.gender === "MALE" ? "Male" : "Female"}
@@ -229,15 +236,9 @@ export default async function MiiPage({ params }: Props) {
 						<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-1">
 							<div className="flex justify-between items-start">
 								{/* Submission name */}
-								<h1 className="text-4xl font-extrabold break-words text-amber-700">{mii.name}</h1>
+								<h1 className="text-4xl font-extrabold wrap-break-word text-amber-700">{mii.name}</h1>
 								{/* Like button */}
-								<LikeButton
-									likes={mii._count.likedBy ?? 0}
-									miiId={mii.id}
-									isLiked={(mii.likedBy ?? []).length > 0}
-									isLoggedIn={session?.user != null}
-									big
-								/>
+								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={(mii.likedBy ?? []).length > 0} isLoggedIn={session?.user != null} big />
 							</div>
 							{/* Tags */}
 							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
@@ -251,7 +252,7 @@ export default async function MiiPage({ params }: Props) {
 							{/* Author and Created date */}
 							<div className="mt-2">
 								<Link href={`/profile/${mii.userId}`} className="text-lg">
-									By: <span className="font-bold">@{mii.user.username}</span>
+									By <span className="font-bold">{mii.user.name}</span>
 								</Link>
 								<h4 className="text-sm">
 									Created:{" "}
@@ -269,7 +270,7 @@ export default async function MiiPage({ params }: Props) {
 							</div>
 
 							{/* Description */}
-							{mii.description && <p className="text-sm mt-2 ml-2 bg-white/50 p-3 rounded-lg border border-orange-200">{mii.description}</p>}
+							{mii.description && <Description text={mii.description} className="ml-2" />}
 						</div>
 
 						{/* Buttons */}
@@ -306,7 +307,7 @@ export default async function MiiPage({ params }: Props) {
 							{images.map((src, index) => (
 								<div
 									key={index}
-									className="relative aspect-[3/2] rounded-xl bg-black/65 border-2 border-amber-400 shadow-md overflow-hidden transition hover:shadow-lg shadow-black/30"
+									className="relative aspect-3/2 rounded-xl bg-black/65 border-2 border-amber-400 shadow-md overflow-hidden transition hover:shadow-lg shadow-black/30"
 								>
 									<Image
 										src={src}
@@ -321,7 +322,7 @@ export default async function MiiPage({ params }: Props) {
 										alt="mii screenshot"
 										width={256}
 										height={170}
-										className="aspect-[3/2] w-full object-contain hover:scale-105 duration-300 transition-transform relative z-10"
+										className="aspect-3/2 w-full object-contain hover:scale-105 duration-300 transition-transform relative z-10"
 										images={images}
 									/>
 								</div>

@@ -3,6 +3,8 @@ import type { MetadataRoute } from "next";
 
 type SitemapRoute = MetadataRoute.Sitemap[0];
 
+export const revalidate = 43200; // update every 12 hours
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 	if (!baseUrl) {
@@ -41,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 					url: `${baseUrl}/profile/${user.id}`,
 					lastModified: user.updatedAt,
 					changeFrequency: "weekly",
-					priority: 0.3,
+					priority: 0.2,
 				} as SitemapRoute)
 		),
 	];

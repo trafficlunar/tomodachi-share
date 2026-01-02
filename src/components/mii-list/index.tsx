@@ -2,11 +2,11 @@ import Link from "next/link";
 
 import { MiiGender, MiiPlatform, Prisma } from "@prisma/client";
 import { Icon } from "@iconify/react";
-import { z } from "zod";
 
+import crypto from "crypto";
 import seedrandom from "seedrandom";
 
-import { querySchema } from "@/lib/schemas";
+import { searchSchema } from "@/lib/schemas";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -22,37 +22,6 @@ interface Props {
 	userId?: number; // Profiles
 	inLikesPage?: boolean; // Self-explanatory
 }
-
-const searchSchema = z.object({
-	q: querySchema.optional(),
-	sort: z.enum(["likes", "newest", "oldest", "random"], { error: "Sort must be either 'likes', 'newest', 'oldest', or 'random'" }).default("newest"),
-	tags: z
-		.string()
-		.optional()
-		.transform((value) =>
-			value
-				?.split(",")
-				.map((tag) => tag.trim())
-				.filter((tag) => tag.length > 0)
-		),
-	platform: z.enum(MiiPlatform, { error: "Platform must be either 'THREE_DS', or 'SWITCH'" }).optional(),
-	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', or 'FEMALE'" }).optional(),
-	// todo: incorporate tagsSchema
-	// Pages
-	limit: z.coerce
-		.number({ error: "Limit must be a number" })
-		.int({ error: "Limit must be an integer" })
-		.min(1, { error: "Limit must be at least 1" })
-		.max(100, { error: "Limit cannot be more than 100" })
-		.optional(),
-	page: z.coerce
-		.number({ error: "Page must be a number" })
-		.int({ error: "Page must be an integer" })
-		.min(1, { error: "Page must be at least 1" })
-		.optional(),
-	// Random sort
-	seed: z.coerce.number({ error: "Seed must be a number" }).int({ error: "Seed must be an integer" }).optional(),
-});
 
 export default async function MiiList({ searchParams, userId, inLikesPage }: Props) {
 	const session = await auth();
@@ -128,7 +97,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 	if (sort === "random") {
 		// Use seed for consistent random results
-		const randomSeed = seed || Math.floor(Math.random() * 1_000_000_000);
+		const randomSeed = seed || crypto.randomInt(0, 1_000_000_000);
 
 		// Get all IDs that match the where conditions
 		const matchingIds = await prisma.mii.findMany({
@@ -174,7 +143,13 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		[totalCount, filteredCount, list] = await Promise.all([
 			prisma.mii.count({ where: { ...where, userId } }),
 			prisma.mii.count({ where, skip, take: limit }),
-			prisma.mii.findMany({ where, orderBy, select, skip: (page - 1) * limit, take: limit }),
+			prisma.mii.findMany({
+				where,
+				orderBy,
+				select,
+				skip: (page - 1) * limit,
+				take: limit,
+			}),
 		]);
 	}
 
@@ -204,7 +179,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 					)}
 				</div>
 
-				<div className="relative flex items-center justify-end gap-2 w-full min-md:max-w-2/3 max-md:justify-center">
+				<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
 					<FilterMenu />
 					<SortSelect />
 				</div>

@@ -44,8 +44,8 @@ export default function Pagination({ lastPage }: Props) {
 				aria-label="Go to First Page"
 				aria-disabled={page === 1}
 				tabIndex={page === 1 ? -1 : undefined}
-				className={`pill button !bg-orange-100 !p-0.5 aspect-square text-2xl ${
-					page === 1 ? "pointer-events-none opacity-50" : "hover:!bg-orange-400"
+				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${
+					page === 1 ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"
 				}`}
 			>
 				<Icon icon="stash:chevron-double-left" />
@@ -57,7 +57,7 @@ export default function Pagination({ lastPage }: Props) {
 				aria-label="Go to Previous Page"
 				aria-disabled={page === 1}
 				tabIndex={page === 1 ? -1 : undefined}
-				className={`pill !bg-orange-100 !p-0.5 aspect-square text-2xl ${page === 1 ? "pointer-events-none opacity-50" : "hover:!bg-orange-400"}`}
+				className={`pill bg-orange-100! p-0.5! aspect-square text-2xl ${page === 1 ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"}`}
 			>
 				<Icon icon="stash:chevron-left" />
 			</Link>
@@ -70,7 +70,7 @@ export default function Pagination({ lastPage }: Props) {
 						href={createPageUrl(number)}
 						aria-label={`Go to Page ${number}`}
 						aria-current={number === page ? "page" : undefined}
-						className={`pill !p-0 w-8 h-8 text-center !rounded-md ${number == page ? "!bg-orange-400" : "!bg-orange-100 hover:!bg-orange-400"}`}
+						className={`pill p-0! w-8 h-8 text-center rounded-md! ${number == page ? "bg-orange-400!" : "bg-orange-100! hover:bg-orange-400!"}`}
 					>
 						{number}
 					</Link>
@@ -79,12 +79,12 @@ export default function Pagination({ lastPage }: Props) {
 
 			{/* Next page */}
 			<Link
-				href={page === lastPage ? "#" : createPageUrl(page + 1)}
+				href={page >= lastPage ? "#" : createPageUrl(page + 1)}
 				aria-label="Go to Next Page"
-				aria-disabled={page === lastPage}
-				tabIndex={page === lastPage ? -1 : undefined}
-				className={`pill button !bg-orange-100 !p-0.5 aspect-square text-2xl ${
-					page === lastPage ? "pointer-events-none opacity-50" : "hover:!bg-orange-400"
+				aria-disabled={page >= lastPage}
+				tabIndex={page >= lastPage ? -1 : undefined}
+				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${
+					page >= lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"
 				}`}
 			>
 				<Icon icon="stash:chevron-right" />
@@ -92,12 +92,12 @@ export default function Pagination({ lastPage }: Props) {
 
 			{/* Go to last page */}
 			<Link
-				href={page === lastPage ? "#" : createPageUrl(lastPage)}
+				href={page >= lastPage ? "#" : createPageUrl(lastPage)}
 				aria-label="Go to Last Page"
-				aria-disabled={page === lastPage}
-				tabIndex={page === lastPage ? -1 : undefined}
-				className={`pill button !bg-orange-100 !p-0.5 aspect-square text-2xl ${
-					page === lastPage ? "pointer-events-none opacity-50" : "hover:!bg-orange-400"
+				aria-disabled={page >= lastPage}
+				tabIndex={page >= lastPage ? -1 : undefined}
+				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${
+					page >= lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"
 				}`}
 			>
 				<Icon icon="stash:chevron-double-right" />

@@ -34,7 +34,7 @@ export default function ReturnToIsland({ hasExpired }: Props) {
 					disabled={hasExpired}
 					checked={isChecked}
 					onChange={(e) => setIsChecked(e.target.checked)}
-					className={`checkbox ${hasExpired && "text-zinc-600 !bg-zinc-100 !border-zinc-300"}`}
+					className={`checkbox ${hasExpired && "text-zinc-600 bg-zinc-100! border-zinc-300!"}`}
 				/>
 				<label htmlFor="agreement" className={`${hasExpired && "text-zinc-500"}`}>
 					I Agree

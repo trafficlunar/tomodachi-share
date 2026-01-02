@@ -32,7 +32,7 @@ body {
 }
 
 .pill {
-	@apply flex justify-center items-center px-5 py-2 bg-orange-300 border-2 border-orange-400 rounded-4xl shadow-md;
+	@apply flex justify-center items-center px-5 py-2 bg-orange-300 border-2 border-orange-400 rounded-3xl shadow-md;
 }
 
 .button {
@@ -40,15 +40,15 @@ body {
 }
 
 .button:disabled {
-	@apply text-zinc-600 !bg-zinc-100 !border-zinc-300 cursor-auto;
+	@apply text-zinc-600 bg-zinc-100! border-zinc-300! cursor-auto;
 }
 
 .input {
-	@apply !bg-orange-200 outline-0 focus:ring-[3px] ring-orange-400/50 transition placeholder:text-black/40;
+	@apply bg-orange-200! outline-0 focus:ring-[3px] ring-orange-400/50 transition placeholder:text-black/40;
 }
 
 .input:disabled {
-	@apply text-zinc-600 !bg-zinc-100 !border-zinc-300;
+	@apply text-zinc-600 bg-zinc-100! border-zinc-300!;
 }
 
 .checkbox {
@@ -88,7 +88,7 @@ body {
 }
 
 [data-tooltip-span] > .tooltip {
-	@apply absolute left-1/2 top-full mt-2 px-2 py-1 bg-orange-400 border border-orange-400 rounded-md text-sm text-white whitespace-nowrap select-none pointer-events-none shadow-md opacity-0 scale-75 transition-all duration-200 ease-out origin-top -translate-x-1/2 z-[999999];
+	@apply absolute left-1/2 top-full mt-2 px-2 py-1 bg-orange-400 border border-orange-400 rounded-md text-sm text-white whitespace-nowrap select-none pointer-events-none shadow-md opacity-0 scale-75 transition-all duration-200 ease-out origin-top -translate-x-1/2 z-999999;
 }
 
 [data-tooltip-span] > .tooltip::before {

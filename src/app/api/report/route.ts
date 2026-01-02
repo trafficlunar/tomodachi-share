@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { ReportReason, ReportType } from "@prisma/client";
+import { Prisma, ReportReason, ReportType } from "@prisma/client";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { RateLimit } from "@/lib/rate-limit";
-import { MiiWithUsername } from "@/types";
 
 const reportSchema = z.object({
 	id: z.coerce.number({ error: "ID must be a number" }).int({ error: "ID must be an integer" }).positive({ error: "ID must be valid" }),
@@ -30,7 +29,15 @@ export async function POST(request: NextRequest) {
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
 	const { id, type, reason, notes } = parsed.data;
 
-	let mii: MiiWithUsername | null = null;
+	let mii: Prisma.MiiGetPayload<{
+		include: {
+			user: {
+				select: {
+					username: true;
+				};
+			};
+		};
+	}> | null = null;
 
 	// Check if the Mii or User exists
 	if (type === "mii") {

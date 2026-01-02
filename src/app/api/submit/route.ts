@@ -37,16 +37,14 @@ const submitSchema = z
 		miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
 
 		// QR code
-		qrBytesRaw: z
-			.array(z.number(), { error: "A QR code is required" })
-			.length(372, { error: "QR code size is not a valid Tomodachi Life QR code" })
-			.optional(),
+		qrBytesRaw: z.array(z.number(), { error: "A QR code is required" }).length(372, { error: "QR code size is not a valid Tomodachi Life QR code" }).optional(),
 
 		// Custom images
 		image1: z.union([z.instanceof(File), z.any()]).optional(),
 		image2: z.union([z.instanceof(File), z.any()]).optional(),
 		image3: z.union([z.instanceof(File), z.any()]).optional(),
 	})
+	// This refine function is probably useless
 	.refine(
 		(data) => {
 			// If platform is Switch, accessKey, gender, and miiPortraitImage must be present
@@ -230,10 +228,15 @@ export async function POST(request: NextRequest) {
 	}
 
 	try {
-		await generateMetadataImage(miiRecord, session.user.username!);
+		await generateMetadataImage(miiRecord, session.user.name!);
 	} catch (error) {
 		console.error(error);
-		return rateLimit.sendResponse({ error: `Failed to generate 'metadata' type image for mii ${miiRecord.id}` }, 500);
+		return rateLimit.sendResponse(
+			{
+				error: `Failed to generate 'metadata' type image for mii ${miiRecord.id}`,
+			},
+			500
+		);
 	}
 
 	// Compress and store user images

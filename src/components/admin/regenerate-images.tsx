@@ -2,23 +2,27 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+
 import { Icon } from "@iconify/react";
 import SubmitButton from "../submit-button";
 
-interface Props {
-	title: string;
-	description: string;
-	onSubmit: (close: () => void) => void;
-	error?: string;
-	children?: React.ReactNode;
-}
-
-export default function SubmitDialogButton({ title, description, onSubmit, error, children }: Props) {
+export default function RegenerateImagesButton() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
-	const submit = () => {
-		onSubmit(close);
+	const [error, setError] = useState<string | undefined>(undefined);
+
+	const handleSubmit = async () => {
+		const response = await fetch("/api/admin/regenerate-metadata-images", { method: "PATCH" });
+
+		if (!response.ok) {
+			const data = await response.json();
+			setError(data.error);
+
+			return;
+		}
+
+		close();
 	};
 
 	const close = () => {
@@ -37,8 +41,8 @@ export default function SubmitDialogButton({ title, description, onSubmit, error
 
 	return (
 		<>
-			<button onClick={() => setIsOpen(true)} aria-label="Open Submit Dialog" className="pill button size-11 p-1! text-2xl">
-				<Icon icon="material-symbols:check-rounded" />
+			<button onClick={() => setIsOpen(true)} className="pill button w-fit">
+				Regenerate all Mii metadata images
 			</button>
 
 			{isOpen &&
@@ -57,22 +61,21 @@ export default function SubmitDialogButton({ title, description, onSubmit, error
 							}`}
 						>
 							<div className="flex justify-between items-center mb-2">
-								<h2 className="text-xl font-bold">{title}</h2>
+								<h2 className="text-xl font-bold">Regenerate Images</h2>
 								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>
 
-							<p className="text-sm text-zinc-500">{description}</p>
+							<p className="text-sm text-zinc-500">Are you sure? This will delete and regenerate every metadata image.</p>
 
-							{children}
 							{error && <span className="text-red-400 font-bold mt-2">Error: {error}</span>}
 
 							<div className="flex justify-end gap-2 mt-4">
 								<button onClick={close} className="pill button">
 									Cancel
 								</button>
-								<SubmitButton onClick={submit} />
+								<SubmitButton onClick={handleSubmit} />
 							</div>
 						</div>
 					</div>,

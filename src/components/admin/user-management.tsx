@@ -238,7 +238,7 @@ export default function Punishments() {
 							rows={2}
 							maxLength={256}
 							placeholder="Type notes here for the punishment..."
-							className="pill input !rounded-xl resize-none"
+							className="pill input rounded-xl! resize-none"
 							value={notes}
 							onChange={(e) => setNotes(e.target.value)}
 						/>
@@ -249,7 +249,7 @@ export default function Punishments() {
 							rows={2}
 							maxLength={256}
 							placeholder="Type profile-related reasons here for the punishment..."
-							className="pill input !rounded-xl resize-none"
+							className="pill input rounded-xl! resize-none"
 							value={reasons}
 							onChange={(e) => setReasons(e.target.value)}
 						/>
@@ -273,7 +273,7 @@ export default function Punishments() {
 									value={newMii.reason}
 									onChange={(e) => setNewMii({ ...newMii, reason: e.target.value })}
 								/>
-								<button type="button" aria-label="Add Mii" onClick={addMiiToList} className="pill button aspect-square !p-2.5">
+								<button type="button" aria-label="Add Mii" onClick={addMiiToList} className="pill button aspect-square p-2.5!">
 									<Icon icon="ic:baseline-plus" className="size-4" />
 								</button>
 							</div>

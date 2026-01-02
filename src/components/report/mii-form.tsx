@@ -67,7 +67,7 @@ export default function ReportMiiForm({ mii, likes }: Props) {
 					rows={3}
 					maxLength={256}
 					placeholder="Type notes here for the report..."
-					className="pill input !rounded-xl resize-none col-span-2"
+					className="pill input rounded-xl! resize-none col-span-2"
 					value={notes}
 					onChange={(e) => setNotes(e.target.value)}
 				/>
