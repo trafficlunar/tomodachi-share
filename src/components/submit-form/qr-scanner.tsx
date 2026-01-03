@@ -17,7 +17,9 @@ interface Props {
 export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 	const [isVisible, setIsVisible] = useState(false);
 
-	const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
+	const [permissionGranted, setPermissionGranted] = useState<boolean | null>(
+		null
+	);
 
 	const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
 	const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
@@ -40,7 +42,8 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		selectedItem,
 	} = useSelect({
 		items: cameraItems,
-		selectedItem: cameraItems.find((item) => item.value === selectedDeviceId) ?? null,
+		selectedItem:
+			cameraItems.find((item) => item.value === selectedDeviceId) ?? null,
 		onSelectedItemChange: ({ selectedItem }) => {
 			setSelectedDeviceId(selectedItem?.value ?? null);
 		},
@@ -66,7 +69,12 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		canvas.height = video.videoHeight;
 		ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
 
-		const imageData = ctx.getImageData(0, 0, video.videoWidth, video.videoHeight);
+		const imageData = ctx.getImageData(
+			0,
+			0,
+			video.videoWidth,
+			video.videoHeight
+		);
 		const code = jsQR(imageData.data, imageData.width, imageData.height);
 		if (!code) return;
 
@@ -145,7 +153,12 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 			>
 				<div className="flex justify-between items-center mb-2">
 					<h2 className="text-xl font-bold">Scan QR Code</h2>
-					<button type="button" aria-label="Close" onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+					<button
+						type="button"
+						aria-label="Close"
+						onClick={close}
+						className="text-red-400 hover:text-red-500 text-2xl cursor-pointer"
+					>
 						<Icon icon="material-symbols:close-rounded" />
 					</button>
 				</div>
@@ -178,7 +191,9 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 										<li
 											key={item.value}
 											{...getItemProps({ item, index })}
-											className={`px-4 py-1 cursor-pointer text-sm ${highlightedIndex === index ? "bg-black/15" : ""}`}
+											className={`px-4 py-1 cursor-pointer text-sm ${
+												highlightedIndex === index ? "bg-black/15" : ""
+											}`}
 										>
 											{item.label}
 										</li>
@@ -191,9 +206,18 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 				<div className="relative w-full aspect-square">
 					{!permissionGranted ? (
 						<div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border-2 border-amber-500 text-center p-8">
-							<p className="text-red-400 font-bold text-lg mb-2">Camera access denied</p>
-							<p className="text-gray-600">Please allow camera access in your browser settings to scan QR codes</p>
-							<button type="button" onClick={requestPermission} className="pill button text-xs mt-2 py-0.5! px-2!">
+							<p className="text-red-400 font-bold text-lg mb-2">
+								Camera access denied
+							</p>
+							<p className="text-gray-600">
+								Please allow camera access in your browser settings to scan QR
+								codes
+							</p>
+							<button
+								type="button"
+								onClick={requestPermission}
+								className="pill button text-xs mt-2 py-0.5! px-2!"
+							>
 								Request Permission
 							</button>
 						</div>
@@ -204,12 +228,19 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 								ref={webcamRef}
 								audio={false}
 								videoConstraints={{
-									deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
-									...(selectedDeviceId ? {} : { facingMode: { ideal: "environment" } }),
+									deviceId: selectedDeviceId
+										? { exact: selectedDeviceId }
+										: undefined,
+									...(selectedDeviceId
+										? {}
+										: { facingMode: { ideal: "environment" } }),
 								}}
 								onUserMedia={async () => {
-									const newDevices = await navigator.mediaDevices.enumerateDevices();
-									const videoDevices = newDevices.filter((d) => d.kind === "videoinput");
+									const newDevices =
+										await navigator.mediaDevices.enumerateDevices();
+									const videoDevices = newDevices.filter(
+										(d) => d.kind === "videoinput"
+									);
 									setDevices(videoDevices);
 								}}
 								className="size-full object-cover rounded-2xl border-2 border-amber-500"

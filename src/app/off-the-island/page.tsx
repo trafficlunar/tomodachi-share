@@ -95,9 +95,7 @@ export default async function ExiledPage() {
 						<div key={mii.miiId} className="bg-orange-100 rounded-xl border-2 border-orange-400 flex">
 							<Image src={`/mii/${mii.miiId}/image?type=mii`} alt="mii image" width={96} height={96} />
 							<div className="p-4">
-								<p className="text-xl font-bold line-clamp-1" title={"hello"}>
-									{mii.mii.name}
-								</p>
+								<p className="text-xl font-bold line-clamp-1">{mii.mii.name}</p>
 								<p className="text-sm">
 									<span className="font-bold">Reason:</span> {mii.reason}
 								</p>
