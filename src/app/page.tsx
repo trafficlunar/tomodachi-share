@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+import Countdown from "@/components/countdown";
 import MiiList from "@/components/mii-list";
 import Skeleton from "@/components/mii-list/skeleton";
 
@@ -54,6 +55,7 @@ export default async function Page({ searchParams }: Props) {
 		<>
 			<h1 className="sr-only">{tags ? `Miis tagged with '${tags}' - TomodachiShare` : "TomodachiShare - index mii list"}</h1>
 
+			<Countdown />
 			<Suspense fallback={<Skeleton />}>
 				<MiiList searchParams={await searchParams} />
 			</Suspense>
