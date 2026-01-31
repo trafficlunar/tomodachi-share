@@ -1,24 +1,28 @@
 "use client";
 
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { querySchema } from "@/lib/schemas";
 
 export default function SearchBar() {
+	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [query, setQuery] = useState("");
 
 	const handleSearch = () => {
 		const result = querySchema.safeParse(query);
-		if (!result.success) redirect("/");
+		if (!result.success) {
+			router.push("/");
+			return;
+		}
 
 		// Clone current search params and add query param
 		const params = new URLSearchParams(searchParams.toString());
 		params.set("q", query);
 		params.set("page", "1");
 
-		redirect(`/?${params.toString()}`);
+		router.push(`/?${params.toString()}`);
 	};
 
 	const handleKeyDown = (event: React.KeyboardEvent) => {

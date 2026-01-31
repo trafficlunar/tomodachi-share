@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Icon, loadIcons } from "@iconify/react";
 import { abbreviateNumber } from "@/lib/abbreviation";
 
@@ -16,13 +16,18 @@ interface Props {
 }
 
 export default function LikeButton({ likes, isLiked, miiId, isLoggedIn, disabled, abbreviate, big }: Props) {
+	const router = useRouter();
+
 	const [isLikedState, setIsLikedState] = useState(isLiked);
 	const [likesState, setLikesState] = useState(likes);
 	const [isAnimating, setIsAnimating] = useState(false);
 
 	const onClick = async () => {
 		if (disabled) return;
-		if (!isLoggedIn) redirect("/login");
+		if (!isLoggedIn) {
+			router.push("/login");
+			return;
+		}
 
 		setIsLikedState(!isLikedState);
 		setLikesState(isLikedState ? likesState - 1 : likesState + 1);
