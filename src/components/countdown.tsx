@@ -34,30 +34,28 @@ export default function Countdown() {
 	}, []);
 
 	return (
-		<div className="flex justify-center">
-			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 mb-2 flex justify-center items-center gap-12 w-fit">
-				<div className="flex flex-col">
-					<h1 className="text-2xl font-bold">Living the Dream</h1>
-					<h2 className="text-right text-sm">releases in:</h2>
-				</div>
+		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg px-4 py-2.5 flex justify-center items-center gap-8 w-fit">
+			<div className="flex flex-col">
+				<h1 className="text-xl font-bold">Living the Dream</h1>
+				<h2 className="text-right text-sm">releases in:</h2>
+			</div>
 
-				<div className="flex gap-4">
-					<div className="flex flex-col text-center">
-						<span className="text-2xl font-semibold">{days}</span>
-						<span className="text-xs">days</span>
-					</div>
-					<div className="flex flex-col text-center">
-						<span className="text-2xl font-semibold">{hours}</span>
-						<span className="text-xs">hours</span>
-					</div>
-					<div className="flex flex-col text-center">
-						<span className="text-2xl font-semibold">{minutes}</span>
-						<span className="text-xs">minutes</span>
-					</div>
-					<div className="flex flex-col text-center">
-						<span className="text-2xl font-semibold">{seconds}</span>
-						<span className="text-xs">seconds</span>
-					</div>
+			<div className="flex gap-4">
+				<div className="flex flex-col text-center">
+					<span className="text-2xl font-semibold">{days}</span>
+					<span className="text-xs">days</span>
+				</div>
+				<div className="flex flex-col text-center">
+					<span className="text-2xl font-semibold">{hours}</span>
+					<span className="text-xs">hours</span>
+				</div>
+				<div className="flex flex-col text-center">
+					<span className="text-2xl font-semibold">{minutes}</span>
+					<span className="text-xs">minutes</span>
+				</div>
+				<div className="flex flex-col text-center">
+					<span className="text-2xl font-semibold">{seconds}</span>
+					<span className="text-xs">seconds</span>
 				</div>
 			</div>
 		</div>

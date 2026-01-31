@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { Icon } from "@iconify/react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -36,7 +37,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default async function Page({ searchParams }: Props) {
 	const session = await auth();
-	const { tags } = await searchParams;
+	const { page, tags } = await searchParams;
 
 	if (session?.user && !session.user.username) {
 		redirect("/create-username");
@@ -55,7 +56,21 @@ export default async function Page({ searchParams }: Props) {
 		<>
 			<h1 className="sr-only">{tags ? `Miis tagged with '${tags}' - TomodachiShare` : "TomodachiShare - index mii list"}</h1>
 
-			<Countdown />
+			{(!page || page === "1") && (
+				<div className="flex justify-center gap-2 mb-2">
+					<a
+						href="https://discord.gg/48cXBFKvWQ"
+						className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg px-4 py-2.5 flex justify-center items-center gap-4 w-fit"
+					>
+						<Icon icon="ic:baseline-discord" fontSize={48} className="text-indigo-400" />
+						<div>
+							<p className="text-xl font-bold">Join the Discord</p>
+							<p className="text-sm">Code: 48cXBFKvWQ</p>
+						</div>
+					</a>
+					<Countdown />
+				</div>
+			)}
 			<Suspense fallback={<Skeleton />}>
 				<MiiList searchParams={await searchParams} />
 			</Suspense>
