@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Redis } from "ioredis";
+import { createClient } from "redis";
 import { auth } from "./auth";
 
-const redis = new Redis(process.env.REDIS_URL!);
+const client = await createClient({
+	url: process.env.REDIS_URL,
+})
+	.on("error", (err) => console.error("Redis client error", err))
+	.connect();
 const windowSize = 60;
 
 interface RateLimitData {
@@ -41,18 +45,13 @@ export class RateLimit {
 		const expireAt = currentWindow + windowSize;
 
 		try {
-			// Create a Redis transaction
-			const tx = redis.multi();
-			tx.incr(key);
-			tx.expireat(key, expireAt);
-
-			// Execute transaction and get the count
-			const results = await tx.exec();
-			if (!results) {
+			// Execute a Redis transaction and get the count
+			const [result] = await client.multi().incr(key).expireAt(key, expireAt).exec();
+			if (!result) {
 				throw new Error("Redis transaction failed");
 			}
 
-			const count = results[0][1] as number;
+			const count = result as unknown as number;
 			const success = count <= this.maxRequests;
 			const remaining = Math.max(0, this.maxRequests - count);
 
