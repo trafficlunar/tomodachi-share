@@ -17,6 +17,7 @@ import Carousel from "../carousel";
 import LikeButton from "../like-button";
 import DeleteMiiButton from "../delete-mii";
 import Pagination from "./pagination";
+import FilterMenu from "./filter-menu";
 
 interface Props {
 	searchParams: { [key: string]: string | string[] | undefined };
@@ -30,7 +31,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { q: query, sort, tags, gender, page = 1, limit = 24, seed } = parsed.data;
+	const { q: query, sort, tags, exclude, gender, allowCopying, page = 1, limit = 24, seed } = parsed.data;
 
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
@@ -52,8 +53,11 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		}),
 		// Tag filtering
 		...(tags && tags.length > 0 && { tags: { hasEvery: tags } }),
+		...(exclude && exclude.length > 0 && { NOT: { tags: { hasSome: exclude } } }),
 		// Gender
 		...(gender && { gender: { equals: gender } }),
+		// Allow Copying
+		...(allowCopying && { allowedCopying: true }),
 		// Profiles
 		...(userId && { userId }),
 	};
@@ -74,6 +78,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		tags: true,
 		createdAt: true,
 		gender: true,
+		allowedCopying: true,
 		// Mii liked check
 		...(session?.user?.id && {
 			likedBy: {
@@ -171,9 +176,8 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 					)}
 				</div>
 
-				<div className="flex items-center justify-end gap-2 w-full min-[56rem]:max-w-2/3 max-[56rem]:justify-center max-sm:flex-col">
-					<GenderSelect />
-					<TagFilter />
+				<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
+					<FilterMenu />
 					<SortSelect />
 				</div>
 			</div>

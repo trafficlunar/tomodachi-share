@@ -26,7 +26,7 @@ export default function GenderSelect() {
 		}
 
 		startTransition(() => {
-			router.push(`?${params.toString()}`);
+			router.push(`?${params.toString()}`, { scroll: false });
 		});
 	};
 

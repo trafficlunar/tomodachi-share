@@ -8,12 +8,13 @@ interface Props {
 	tags: string[];
 	setTags: React.Dispatch<React.SetStateAction<string[]>>;
 	showTagLimit?: boolean;
+	isExclude?: boolean;
 }
 
 const tagRegex = /^[a-z0-9-_]*$/;
 const predefinedTags = ["anime", "art", "cartoon", "celebrity", "games", "history", "meme", "movie", "oc", "tv"];
 
-export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
+export default function TagSelector({ tags, setTags, showTagLimit, isExclude }: Props) {
 	const [inputValue, setInputValue] = useState<string>("");
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -37,15 +38,27 @@ export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
 	const { isOpen, openMenu, getToggleButtonProps, getMenuProps, getInputProps, getItemProps, highlightedIndex } = useCombobox<string>({
 		inputValue,
 		items: filteredItems,
+		selectedItem: null,
 		onInputValueChange: ({ inputValue }) => {
-			if (inputValue && !tagRegex.test(inputValue)) return;
-			setInputValue(inputValue || "");
+			const newValue = inputValue || "";
+			if (newValue && !tagRegex.test(newValue)) return;
+			setInputValue(newValue);
 		},
-		onStateChange: ({ type, selectedItem }) => {
+		onSelectedItemChange: ({ type, selectedItem }) => {
 			if (type === useCombobox.stateChangeTypes.ItemClick && selectedItem) {
 				addTag(selectedItem);
 				setInputValue("");
 			}
+		},
+		stateReducer: (_, { type, changes }) => {
+			// Prevent input from being filled when item is selected
+			if (type === useCombobox.stateChangeTypes.ItemClick) {
+				return {
+					...changes,
+					inputValue: "",
+				};
+			}
+			return changes;
 		},
 	});
 
@@ -53,10 +66,8 @@ export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
 		if (event.key === "Enter" && inputValue && !tags.includes(inputValue)) {
 			addTag(inputValue);
 			setInputValue("");
-		}
-
-		// Spill onto last tag
-		if (event.key === "Backspace" && inputValue === "") {
+		} else if (event.key === "Backspace" && inputValue === "") {
+			// Spill onto last tag
 			const lastTag = tags[tags.length - 1];
 			setInputValue(lastTag);
 			removeTag(lastTag);
@@ -81,7 +92,7 @@ export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
 				{/* Tags */}
 				<div className="flex flex-wrap gap-1.5 w-full">
 					{tags.map((tag) => (
-						<span key={tag} className="bg-orange-300 py-1 px-3 rounded-2xl flex items-center gap-1 text-sm">
+						<span key={tag} className={`py-1 px-3 rounded-2xl flex items-center gap-1 text-sm ${isExclude ? "bg-red-300" : "bg-orange-300"}`}>
 							{tag}
 							<button
 								type="button"

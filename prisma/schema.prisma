@@ -80,7 +80,7 @@ model Mii {
   lastName       String
   gender         MiiGender?
   islandName     String
-  allowedCopying Boolean
+  allowedCopying Boolean?
 
   createdAt DateTime @default(now())
 

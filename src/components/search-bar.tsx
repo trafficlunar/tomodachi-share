@@ -13,7 +13,7 @@ export default function SearchBar() {
 	const handleSearch = () => {
 		const result = querySchema.safeParse(query);
 		if (!result.success) {
-			router.push("/");
+			router.push("/", { scroll: false });
 			return;
 		}
 
@@ -22,7 +22,7 @@ export default function SearchBar() {
 		params.set("q", query);
 		params.set("page", "1");
 
-		router.push(`/?${params.toString()}`);
+		router.push(`/?${params.toString()}`, { scroll: false });
 	};
 
 	const handleKeyDown = (event: React.KeyboardEvent) => {

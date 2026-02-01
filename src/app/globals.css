@@ -25,9 +25,12 @@ body {
 	--color1: var(--color-amber-50);
 	--color2: var(--color-amber-100);
 
-	background-image: repeating-linear-gradient(45deg, var(--color1) 25%, transparent 25%, transparent 75%, var(--color1) 75%, var(--color1)),
+	background-image:
+		repeating-linear-gradient(45deg, var(--color1) 25%, transparent 25%, transparent 75%, var(--color1) 75%, var(--color1)),
 		repeating-linear-gradient(45deg, var(--color1) 25%, var(--color2) 25%, var(--color2) 75%, var(--color1) 75%, var(--color1));
-	background-position: 0 0, 10px 10px;
+	background-position:
+		0 0,
+		10px 10px;
 	background-size: 20px 20px;
 }
 
@@ -62,6 +65,13 @@ body {
 
 .checkbox:checked::after {
 	@apply block;
+}
+
+.checkbox-alt {
+	@apply relative appearance-none bg-zinc-400 rounded-2xl h-5 w-8.5 cursor-pointer transition-all
+                    after:transition-all after:bg-zinc-100 after:rounded-full after:h-3.5 after:absolute after:w-3.5
+                    after:left-[3px] after:top-[3px] hover:bg-zinc-500 checked:bg-orange-400 checked:after:left-[16px]
+                    checked:hover:bg-orange-500 ml-auto;
 }
 
 [data-tooltip] {
