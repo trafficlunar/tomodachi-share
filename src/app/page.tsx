@@ -57,7 +57,7 @@ export default async function Page({ searchParams }: Props) {
 			<h1 className="sr-only">{tags ? `Miis tagged with '${tags}' - TomodachiShare` : "TomodachiShare - index mii list"}</h1>
 
 			{(!page || page === "1") && (
-				<div className="flex justify-center gap-2 mb-2">
+				<div className="flex items-center justify-center gap-2 mb-2 max-sm:flex-col">
 					<a
 						href="https://discord.gg/48cXBFKvWQ"
 						className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg px-4 py-2.5 flex justify-center items-center gap-4 w-fit"

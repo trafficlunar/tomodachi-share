@@ -34,10 +34,10 @@ export default function Countdown() {
 	}, []);
 
 	return (
-		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg px-4 py-2.5 flex justify-center items-center gap-8 w-fit">
-			<div className="flex flex-col">
+		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg px-4 py-2.5 flex justify-center items-center gap-8 w-fit max-sm:max-w-72 max-sm:w-full max-sm:flex-col max-sm:gap-2">
+			<div className="flex flex-col max-sm:items-center">
 				<h1 className="text-xl font-bold">Living the Dream</h1>
-				<h2 className="text-right text-sm">releases in:</h2>
+				<h2 className="text-right text-sm max-sm:text-center">releases in:</h2>
 			</div>
 
 			<div className="flex gap-4">
