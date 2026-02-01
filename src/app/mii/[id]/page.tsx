@@ -144,7 +144,7 @@ export default async function MiiPage({ params }: Props) {
 							<li>
 								From: <span className="text-right font-medium">{mii.islandName} Island</span>
 							</li>
-							{mii.allowedCopying && (
+							{mii.allowedCopying !== null && (
 								<li>
 									Allowed Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox cursor-auto!" />
 								</li>
