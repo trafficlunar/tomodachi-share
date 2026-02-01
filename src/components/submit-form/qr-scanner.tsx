@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Webcam from "react-webcam";
 import jsQR from "jsqr";
 import { Icon } from "@iconify/react";
 
@@ -22,7 +21,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 	const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
 	const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
 
-	const webcamRef = useRef<Webcam>(null);
+	const videoRef = useRef<HTMLVideoElement>(null);
 	const requestRef = useRef<number>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -52,12 +51,9 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		// Continue scanning in a loop
 		requestRef.current = requestAnimationFrame(scanQRCode);
 
-		const webcam = webcamRef.current;
+		const video = videoRef.current;
 		const canvas = canvasRef.current;
-		if (!webcam || !canvas) return;
-
-		const video = webcam.video;
-		if (!video || video.videoWidth === 0 || video.videoHeight === 0) return;
+		if (!video || video.videoWidth === 0 || video.videoHeight === 0 || !canvas) return;
 
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
@@ -68,7 +64,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 
 		const imageData = ctx.getImageData(0, 0, video.videoWidth, video.videoHeight);
 		const code = jsQR(imageData.data, imageData.width, imageData.height);
-		if (!code) return;
+		if (!code || !code.binaryData) return;
 
 		// Cancel animation frame to stop scanning
 		if (requestRef.current) {
@@ -76,15 +72,20 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 			requestRef.current = null;
 		}
 
-		setQrBytesRaw(code.binaryData!);
+		setQrBytesRaw(code.binaryData);
 		setIsOpen(false);
 	}, [isOpen, setIsOpen, setQrBytesRaw]);
 
-	const requestPermission = async () => {
+	const requestPermission = () => {
+		if (!navigator.mediaDevices) return;
+
 		navigator.mediaDevices
-			.getUserMedia({ video: true })
+			.getUserMedia({ video: true, audio: false })
 			.then(() => setPermissionGranted(true))
-			.catch(() => setPermissionGranted(false));
+			.catch((err) => {
+				setPermissionGranted(false);
+				console.error("An error occurred trying to access the camera", err);
+			});
 	};
 
 	const close = () => {
@@ -98,34 +99,50 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		if (isOpen) {
 			// slight delay to trigger animation
 			setTimeout(() => setIsVisible(true), 10);
+			requestPermission();
 		}
 	}, [isOpen]);
 
 	useEffect(() => {
-		if (!isOpen) return;
-		requestPermission();
-
-		if (!navigator.mediaDevices.enumerateDevices) return;
-		navigator.mediaDevices.enumerateDevices().then((devices) => {
-			const videoDevices = devices.filter((d) => d.kind === "videoinput");
-			setDevices(videoDevices);
-			if (!selectedDeviceId && videoDevices.length > 0) {
-				setSelectedDeviceId(videoDevices[0].deviceId);
-			}
-		});
-	}, [isOpen, selectedDeviceId]);
-
-	useEffect(() => {
 		if (!isOpen || !permissionGranted) return;
+
+		navigator.mediaDevices
+			.enumerateDevices()
+			.then((devices) => {
+				const videoDevices = devices.filter((d) => d.kind === "videoinput");
+				setDevices(videoDevices);
+
+				const targetDeviceId = selectedDeviceId || videoDevices[0]?.deviceId;
+				if (!targetDeviceId) return;
+				setSelectedDeviceId(targetDeviceId);
+
+				// start camera stream
+				return navigator.mediaDevices.getUserMedia({
+					video: { deviceId: targetDeviceId },
+					audio: false,
+				});
+			})
+			.then((stream) => {
+				if (!stream || !videoRef.current) return;
+				videoRef.current.srcObject = stream;
+				videoRef.current.play();
+			})
+			.catch((err) => console.error("Camera error", err));
 
 		requestRef.current = requestAnimationFrame(scanQRCode);
 
+		// cleanup
 		return () => {
 			if (requestRef.current) {
 				cancelAnimationFrame(requestRef.current);
 			}
+			if (videoRef.current?.srcObject) {
+				const stream = videoRef.current.srcObject as MediaStream;
+				stream.getTracks().forEach((track) => track.stop());
+				videoRef.current.srcObject = null;
+			}
 		};
-	}, [isOpen, permissionGranted, scanQRCode]);
+	}, [isOpen, permissionGranted, selectedDeviceId, scanQRCode]);
 
 	if (!isOpen) return null;
 
@@ -133,9 +150,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
 			<div
 				onClick={close}
-				className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
-					isVisible ? "opacity-100" : "opacity-0"
-				}`}
+				className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
 			/>
 
 			<div
@@ -189,35 +204,19 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 				)}
 
 				<div className="relative w-full aspect-square">
-					{!permissionGranted ? (
-						<div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border-2 border-amber-500 text-center p-8">
+					{!permissionGranted && (
+						<div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-amber-50 border-2 border-amber-500 text-center p-8">
 							<p className="text-red-400 font-bold text-lg mb-2">Camera access denied</p>
 							<p className="text-gray-600">Please allow camera access in your browser settings to scan QR codes</p>
 							<button type="button" onClick={requestPermission} className="pill button text-xs mt-2 py-0.5! px-2!">
 								Request Permission
 							</button>
 						</div>
-					) : (
-						<>
-							<Webcam
-								key={selectedDeviceId}
-								ref={webcamRef}
-								audio={false}
-								videoConstraints={{
-									deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined,
-									...(selectedDeviceId ? {} : { facingMode: { ideal: "environment" } }),
-								}}
-								onUserMedia={async () => {
-									const newDevices = await navigator.mediaDevices.enumerateDevices();
-									const videoDevices = newDevices.filter((d) => d.kind === "videoinput");
-									setDevices(videoDevices);
-								}}
-								className="size-full object-cover rounded-2xl border-2 border-amber-500"
-							/>
-							<QrFinder />
-							<canvas ref={canvasRef} className="hidden" />
-						</>
 					)}
+
+					<video ref={videoRef} className="size-full object-cover rounded-2xl border-2 border-amber-500" />
+					<QrFinder />
+					<canvas ref={canvasRef} className="hidden" />
 				</div>
 
 				<div className="mt-4 flex justify-center">

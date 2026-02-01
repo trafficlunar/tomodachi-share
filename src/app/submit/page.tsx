@@ -32,8 +32,13 @@ export default async function SubmitPage() {
 	if (activePunishment) redirect("/off-the-island");
 
 	// Check if submissions are disabled
-	const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
-	const { value } = await response.json();
+	let value: boolean | null = true;
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
+		value = await response.json();
+	} catch (error) {
+		return <p>An error occurred!</p>;
+	}
 
 	if (!value)
 		return (

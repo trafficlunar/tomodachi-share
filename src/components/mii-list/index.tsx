@@ -10,8 +10,6 @@ import { searchSchema } from "@/lib/schemas";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-import GenderSelect from "./gender-select";
-import TagFilter from "./tag-filter";
 import SortSelect from "./sort-select";
 import Carousel from "../carousel";
 import LikeButton from "../like-button";
