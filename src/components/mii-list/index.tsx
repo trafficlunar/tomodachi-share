@@ -97,9 +97,6 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	let list: Prisma.MiiGetPayload<{ select: typeof select }>[];
 
 	if (sort === "random") {
-		// Use seed for consistent random results
-		const randomSeed = seed || crypto.randomInt(0, 1_000_000_000);
-
 		// Get all IDs that match the where conditions
 		const matchingIds = await prisma.mii.findMany({
 			where,
@@ -107,10 +104,12 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		});
 
 		totalCount = matchingIds.length;
-		filteredCount = Math.min(matchingIds.length, limit);
+		filteredCount = Math.max(0, Math.min(limit, totalCount - skip));
 
 		if (matchingIds.length === 0) return;
 
+		// Use seed for consistent random results
+		const randomSeed = seed || crypto.randomInt(0, 1_000_000_000);
 		const rng = seedrandom(randomSeed.toString());
 
 		// Randomize all IDs using the Durstenfeld algorithm
@@ -120,7 +119,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		}
 
 		// Convert to number[] array
-		const selectedIds = matchingIds.slice(0, limit).map((i) => i.id);
+		const selectedIds = matchingIds.slice(skip, skip + limit).map((i) => i.id);
 
 		list = await prisma.mii.findMany({
 			where: {

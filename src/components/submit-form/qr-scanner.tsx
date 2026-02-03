@@ -205,7 +205,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 
 				<div className="relative w-full aspect-square">
 					{!permissionGranted && (
-						<div className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-amber-50 border-2 border-amber-500 text-center p-8">
+						<div className="absolute inset-0 z-20 flex flex-col items-center justify-center rounded-2xl bg-amber-50 border-2 border-amber-500 text-center p-8">
 							<p className="text-red-400 font-bold text-lg mb-2">Camera access denied</p>
 							<p className="text-gray-600">Please allow camera access in your browser settings to scan QR codes</p>
 							<button type="button" onClick={requestPermission} className="pill button text-xs mt-2 py-0.5! px-2!">
