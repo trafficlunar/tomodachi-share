@@ -10,12 +10,12 @@ import { searchSchema } from "@/lib/schemas";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-import FilterMenu from "./filter-menu";
 import SortSelect from "./sort-select";
 import Carousel from "../carousel";
 import LikeButton from "../like-button";
 import DeleteMiiButton from "../delete-mii";
 import Pagination from "./pagination";
+import FilterMenu from "./filter-menu";
 
 interface Props {
 	searchParams: { [key: string]: string | string[] | undefined };
@@ -29,7 +29,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { q: query, sort, tags, platform, gender, page = 1, limit = 24, seed } = parsed.data;
+	const { q: query, sort, tags, exclude, platform, gender, allowCopying, page = 1, limit = 24, seed } = parsed.data;
 
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
@@ -51,10 +51,13 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		}),
 		// Tag filtering
 		...(tags && tags.length > 0 && { tags: { hasEvery: tags } }),
+		...(exclude && exclude.length > 0 && { NOT: { tags: { hasSome: exclude } } }),
 		// Platform
 		...(platform && { platform: { equals: platform } }),
 		// Gender
 		...(gender && { gender: { equals: gender } }),
+		// Allow Copying
+		...(allowCopying && { allowedCopying: true }),
 		// Profiles
 		...(userId && { userId }),
 	};
@@ -76,6 +79,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		tags: true,
 		createdAt: true,
 		gender: true,
+		allowedCopying: true,
 		// Mii liked check
 		...(session?.user?.id && {
 			likedBy: {
@@ -96,9 +100,6 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	let list: Prisma.MiiGetPayload<{ select: typeof select }>[];
 
 	if (sort === "random") {
-		// Use seed for consistent random results
-		const randomSeed = seed || crypto.randomInt(0, 1_000_000_000);
-
 		// Get all IDs that match the where conditions
 		const matchingIds = await prisma.mii.findMany({
 			where,
@@ -106,10 +107,12 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		});
 
 		totalCount = matchingIds.length;
-		filteredCount = Math.min(matchingIds.length, limit);
+		filteredCount = Math.max(0, Math.min(limit, totalCount - skip));
 
 		if (matchingIds.length === 0) return;
 
+		// Use seed for consistent random results
+		const randomSeed = seed || crypto.randomInt(0, 1_000_000_000);
 		const rng = seedrandom(randomSeed.toString());
 
 		// Randomize all IDs using the Durstenfeld algorithm
@@ -119,7 +122,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		}
 
 		// Convert to number[] array
-		const selectedIds = matchingIds.slice(0, limit).map((i) => i.id);
+		const selectedIds = matchingIds.slice(skip, skip + limit).map((i) => i.id);
 
 		list = await prisma.mii.findMany({
 			where: {
@@ -194,7 +197,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 						<Carousel
 							images={[
 								`/mii/${mii.id}/image?type=mii`,
-								...(mii.platform === "THREE_DS" ? [`/mii/${mii.id}/image?type=qr-code`] : []),
+								`/mii/${mii.id}/image?type=qr-code`,
 								...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`),
 							]}
 						/>

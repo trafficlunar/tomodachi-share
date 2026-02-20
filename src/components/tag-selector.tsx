@@ -8,32 +8,18 @@ interface Props {
 	tags: string[];
 	setTags: React.Dispatch<React.SetStateAction<string[]>>;
 	showTagLimit?: boolean;
+	isExclude?: boolean;
 }
 
 const tagRegex = /^[a-z0-9-_]*$/;
-const predefinedTags = [
-	"anime",
-	"art",
-	"cartoon",
-	"celebrity",
-	"games",
-	"history",
-	"meme",
-	"movie",
-	"oc",
-	"tv",
-];
+const predefinedTags = ["anime", "art", "cartoon", "celebrity", "games", "history", "meme", "movie", "oc", "tv"];
 
-export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
+export default function TagSelector({ tags, setTags, showTagLimit, isExclude }: Props) {
 	const [inputValue, setInputValue] = useState<string>("");
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const getFilteredItems = (): string[] =>
-		predefinedTags
-			.filter((item) =>
-				item.toLowerCase().includes(inputValue?.toLowerCase() || "")
-			)
-			.filter((item) => !tags.includes(item));
+		predefinedTags.filter((item) => item.toLowerCase().includes(inputValue?.toLowerCase() || "")).filter((item) => !tags.includes(item));
 
 	const filteredItems = getFilteredItems();
 	const isMaxItemsSelected = tags.length >= 8;
@@ -49,26 +35,30 @@ export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
 		setTags(tags.filter((t) => t !== tag));
 	};
 
-	const {
-		isOpen,
-		openMenu,
-		getToggleButtonProps,
-		getMenuProps,
-		getInputProps,
-		getItemProps,
-		highlightedIndex,
-	} = useCombobox<string>({
+	const { isOpen, openMenu, getToggleButtonProps, getMenuProps, getInputProps, getItemProps, highlightedIndex } = useCombobox<string>({
 		inputValue,
 		items: filteredItems,
+		selectedItem: null,
 		onInputValueChange: ({ inputValue }) => {
-			if (inputValue && !tagRegex.test(inputValue)) return;
-			setInputValue(inputValue || "");
+			const newValue = inputValue || "";
+			if (newValue && !tagRegex.test(newValue)) return;
+			setInputValue(newValue);
 		},
-		onStateChange: ({ type, selectedItem }) => {
+		onSelectedItemChange: ({ type, selectedItem }) => {
 			if (type === useCombobox.stateChangeTypes.ItemClick && selectedItem) {
 				addTag(selectedItem);
 				setInputValue("");
 			}
+		},
+		stateReducer: (_, { type, changes }) => {
+			// Prevent input from being filled when item is selected
+			if (type === useCombobox.stateChangeTypes.ItemClick) {
+				return {
+					...changes,
+					inputValue: "",
+				};
+			}
+			return changes;
 		},
 	});
 
@@ -76,10 +66,8 @@ export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
 		if (event.key === "Enter" && inputValue && !tags.includes(inputValue)) {
 			addTag(inputValue);
 			setInputValue("");
-		}
-
-		// Spill onto last tag
-		if (event.key === "Backspace" && inputValue === "") {
+		} else if (event.key === "Backspace" && inputValue === "") {
+			// Spill onto last tag
 			const lastTag = tags[tags.length - 1];
 			setInputValue(lastTag);
 			removeTag(lastTag);
@@ -104,10 +92,7 @@ export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
 				{/* Tags */}
 				<div className="flex flex-wrap gap-1.5 w-full">
 					{tags.map((tag) => (
-						<span
-							key={tag}
-							className="bg-orange-300 py-1 px-3 rounded-2xl flex items-center gap-1 text-sm"
-						>
+						<span key={tag} className={`py-1 px-3 rounded-2xl flex items-center gap-1 text-sm ${isExclude ? "bg-red-300" : "bg-orange-300"}`}>
 							{tag}
 							<button
 								type="button"
@@ -137,17 +122,9 @@ export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
 				</div>
 
 				{/* Control buttons */}
-				<div
-					className="flex items-center gap-1"
-					onClick={(e) => e.stopPropagation()}
-				>
+				<div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
 					{hasSelectedItems && (
-						<button
-							type="button"
-							aria-label="Remove All Tags"
-							className="text-black cursor-pointer"
-							onClick={() => setTags([])}
-						>
+						<button type="button" aria-label="Remove All Tags" className="text-black cursor-pointer" onClick={() => setTags([])}>
 							<Icon icon="mdi:close" />
 						</button>
 					)}
@@ -176,9 +153,7 @@ export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
 							<li
 								key={item}
 								{...getItemProps({ item, index })}
-								className={`px-4 py-1 cursor-pointer text-sm ${
-									highlightedIndex === index ? "bg-black/15" : ""
-								}`}
+								className={`px-4 py-1 cursor-pointer text-sm ${highlightedIndex === index ? "bg-black/15" : ""}`}
 							>
 								{item}
 							</li>
@@ -202,9 +177,7 @@ export default function TagSelector({ tags, setTags, showTagLimit }: Props) {
 			{showTagLimit && (
 				<div className="mt-1.5 text-xs min-h-4">
 					{isMaxItemsSelected ? (
-						<span className="text-red-400 font-medium">
-							Maximum of 8 tags reached. Remove a tag to add more.
-						</span>
+						<span className="text-red-400 font-medium">Maximum of 8 tags reached. Remove a tag to add more.</span>
 					) : (
 						<span className="text-black/60">{tags.length}/8 tags</span>
 					)}

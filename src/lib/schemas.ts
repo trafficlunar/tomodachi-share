@@ -30,7 +30,7 @@ export const tagsSchema = z
 			.max(20, { error: "Tags cannot be more than 20 characters long" })
 			.regex(/^[a-z0-9-_]+$/, {
 				error: "Tags can only contain lowercase letters, numbers, dashes, and underscores.",
-			})
+			}),
 	)
 	.min(1, { error: "There must be at least 1 tag" })
 	.max(8, { error: "There cannot be more than 8 tags" });
@@ -47,10 +47,20 @@ export const searchSchema = z.object({
 			value
 				?.split(",")
 				.map((tag) => tag.trim())
-				.filter((tag) => tag.length > 0)
+				.filter((tag) => tag.length > 0),
+		),
+	exclude: z
+		.string()
+		.optional()
+		.transform((value) =>
+			value
+				?.split(",")
+				.map((tag) => tag.trim())
+				.filter((tag) => tag.length > 0),
 		),
 	platform: z.enum(MiiPlatform, { error: "Platform must be either 'THREE_DS', or 'SWITCH'" }).optional(),
 	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', or 'FEMALE'" }).optional(),
+	allowCopying: z.coerce.boolean({ error: "Allow Copying must be either true or false" }).optional(),
 	// todo: incorporate tagsSchema
 	// Pages
 	limit: z.coerce

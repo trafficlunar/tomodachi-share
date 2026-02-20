@@ -31,7 +31,7 @@ export default function SortSelect() {
 			}
 
 			startTransition(() => {
-				router.push(`?${params.toString()}`);
+				router.push(`?${params.toString()}`, { scroll: false });
 			});
 		},
 	});
@@ -54,11 +54,7 @@ export default function SortSelect() {
 			>
 				{isOpen &&
 					items.map((item, index) => (
-						<li
-							key={item}
-							{...getItemProps({ item, index })}
-							className={`px-4 py-1 cursor-pointer text-sm ${highlightedIndex === index ? "bg-black/15" : ""}`}
-						>
+						<li key={item} {...getItemProps({ item, index })} className={`px-4 py-1 cursor-pointer text-sm ${highlightedIndex === index ? "bg-black/15" : ""}`}>
 							{item}
 						</li>
 					))}
