@@ -28,6 +28,18 @@ export default async function LoginPage() {
 				</div>
 
 				<LoginButtons />
+
+				<p className="mt-8 text-xs text-zinc-400">
+					By signing up, you agree to the{" "}
+					<a href="/terms-of-service" className="underline hover:text-zinc-600">
+						Terms of Service
+					</a>{" "}
+					and{" "}
+					<a href="/privacy" className="underline hover:text-zinc-600">
+						Privacy Policy
+					</a>
+					.
+				</p>
 			</div>
 		</div>
 	);

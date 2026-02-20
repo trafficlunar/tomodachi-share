@@ -34,7 +34,7 @@ export default function SubmitForm() {
 			if (files.length >= 3) return;
 			setFiles((prev) => [...prev, ...acceptedFiles]);
 		},
-		[files.length]
+		[files.length],
 	);
 
 	const [isQrScannerOpen, setIsQrScannerOpen] = useState(false);
@@ -101,7 +101,7 @@ export default function SubmitForm() {
 		const { id, error } = await response.json();
 
 		if (!response.ok) {
-			setError(error);
+			setError(String(error)); // app can crash if error message is not a string
 			return;
 		}
 

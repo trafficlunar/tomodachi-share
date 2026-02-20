@@ -1,15 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Redis } from "ioredis";
+import { createClient, RedisClientType } from "redis";
 import { auth } from "./auth";
 
-const redis = new Redis(process.env.REDIS_URL!);
-const windowSize = 60;
+const WINDOW_SIZE = 60;
+let client: RedisClientType | null = null;
 
 interface RateLimitData {
 	success: boolean;
 	limit: number;
 	remaining: number;
 	expires: number;
+}
+
+async function getRedisClient() {
+	if (!client) {
+		client = createClient({
+			url: process.env.REDIS_URL,
+		});
+		client.on("error", (err) => console.error("Redis client error", err));
+		await client.connect();
+	}
+	return client;
 }
 
 // Fixed window implementation
@@ -37,22 +48,19 @@ export class RateLimit {
 
 		const now = Date.now();
 		const seconds = Math.floor(now / 1000);
-		const currentWindow = Math.floor(seconds / windowSize) * windowSize;
-		const expireAt = currentWindow + windowSize;
+		const currentWindow = Math.floor(seconds / WINDOW_SIZE) * WINDOW_SIZE;
+		const expireAt = currentWindow + WINDOW_SIZE;
 
 		try {
-			// Create a Redis transaction
-			const tx = redis.multi();
-			tx.incr(key);
-			tx.expireat(key, expireAt);
+			const client = await getRedisClient();
 
-			// Execute transaction and get the count
-			const results = await tx.exec();
-			if (!results) {
+			// Execute a Redis transaction and get the count
+			const [result] = await client.multi().incr(key).expireAt(key, expireAt).exec();
+			if (!result) {
 				throw new Error("Redis transaction failed");
 			}
 
-			const count = results[0][1] as number;
+			const count = result as unknown as number;
 			const success = count <= this.maxRequests;
 			const remaining = Math.max(0, this.maxRequests - count);
 

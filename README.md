@@ -17,7 +17,7 @@
 
 ## About
 
-**TomodachiShare** is a fan-made website that lets you easily discover, upload, and share **Mii characters** for the game **Tomodachi Life**.
+TomodachiShare is a fan-made website that lets you easily discover, upload, and share Mii characters for the game Tomodachi Life.
 
 - 📷 Upload or scan your Mii QR codes
 - ✨ Generates Mii renders for previews
@@ -26,8 +26,6 @@
 - 🏝️ Build your perfect island by finding the perfect residents
 
 ### <a href="/DEVELOPMENT.md">Development Instructions</a>
-
-### <a href="/API.md">API Reference</a>
 
 ---
 

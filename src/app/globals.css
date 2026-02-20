@@ -25,9 +25,12 @@ body {
 	--color1: var(--color-amber-50);
 	--color2: var(--color-amber-100);
 
-	background-image: repeating-linear-gradient(45deg, var(--color1) 25%, transparent 25%, transparent 75%, var(--color1) 75%, var(--color1)),
+	background-image:
+		repeating-linear-gradient(45deg, var(--color1) 25%, transparent 25%, transparent 75%, var(--color1) 75%, var(--color1)),
 		repeating-linear-gradient(45deg, var(--color1) 25%, var(--color2) 25%, var(--color2) 75%, var(--color1) 75%, var(--color1));
-	background-position: 0 0, 10px 10px;
+	background-position:
+		0 0,
+		10px 10px;
 	background-size: 20px 20px;
 }
 
@@ -41,13 +44,16 @@ body {
 
 .button:disabled {
 	@apply text-zinc-600 bg-zinc-100! border-zinc-300! cursor-auto;
+	@apply text-zinc-600 bg-zinc-100! border-zinc-300! cursor-auto;
 }
 
 .input {
 	@apply bg-orange-200! outline-0 focus:ring-[3px] ring-orange-400/50 transition placeholder:text-black/40;
+	@apply bg-orange-200! outline-0 focus:ring-[3px] ring-orange-400/50 transition placeholder:text-black/40;
 }
 
 .input:disabled {
+	@apply text-zinc-600 bg-zinc-100! border-zinc-300!;
 	@apply text-zinc-600 bg-zinc-100! border-zinc-300!;
 }
 
@@ -64,7 +70,13 @@ body {
 	@apply block;
 }
 
-/* Tooltips */
+.checkbox-alt {
+	@apply relative appearance-none bg-zinc-400 rounded-2xl h-5 w-8.5 cursor-pointer transition-all
+                    after:transition-all after:bg-zinc-100 after:rounded-full after:h-3.5 after:absolute after:w-3.5
+                    after:left-[3px] after:top-[3px] hover:bg-zinc-500 checked:bg-orange-400 checked:after:left-[16px]
+                    checked:hover:bg-orange-500 ml-auto;
+}
+
 [data-tooltip] {
 	@apply relative z-10;
 }
@@ -79,23 +91,6 @@ body {
 
 [data-tooltip]:hover::before,
 [data-tooltip]:hover::after {
-	@apply opacity-100 scale-100;
-}
-
-/* Fallback Tooltips */
-[data-tooltip-span] {
-	@apply relative;
-}
-
-[data-tooltip-span] > .tooltip {
-	@apply absolute left-1/2 top-full mt-2 px-2 py-1 bg-orange-400 border border-orange-400 rounded-md text-sm text-white whitespace-nowrap select-none pointer-events-none shadow-md opacity-0 scale-75 transition-all duration-200 ease-out origin-top -translate-x-1/2 z-999999;
-}
-
-[data-tooltip-span] > .tooltip::before {
-	@apply content-[''] absolute left-1/2 -translate-x-1/2 -top-2 border-4 border-transparent border-b-orange-400;
-}
-
-[data-tooltip-span]:hover > .tooltip {
 	@apply opacity-100 scale-100;
 }
 

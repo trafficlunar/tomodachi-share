@@ -54,7 +54,7 @@ const submitSchema = z
 		{
 			message: "Gender and Mii portrait image are required for Switch platform",
 			path: ["gender", "miiPortraitImage"],
-		}
+		},
 	);
 
 export async function POST(request: NextRequest) {
@@ -99,17 +99,28 @@ export async function POST(request: NextRequest) {
 	});
 
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
-	const data = parsed.data;
+	const {
+		platform,
+		name: uncensoredName,
+		tags: uncensoredTags,
+		description: uncensoredDescription,
+		qrBytesRaw,
+		gender,
+		miiPortraitImage,
+		image1,
+		image2,
+		image3,
+	} = parsed.data;
 
 	// Censor potential inappropriate words
-	const name = profanity.censor(data.name);
-	const tags = data.tags.map((t) => profanity.censor(t));
-	const description = data.description && profanity.censor(data.description);
+	const name = profanity.censor(uncensoredName);
+	const tags = uncensoredTags.map((t) => profanity.censor(t));
+	const description = uncensoredDescription && profanity.censor(uncensoredDescription);
 
 	// Validate image files
 	const customImages: File[] = [];
 
-	for (const img of [data.image1, data.image2, data.image3]) {
+	for (const img of [image1, image2, image3]) {
 		if (!img) continue;
 
 		const imageValidation = await validateImage(img);
@@ -121,16 +132,16 @@ export async function POST(request: NextRequest) {
 	}
 
 	// Check Mii portrait image as well (Switch)
-	if (data.platform === "SWITCH") {
-		const imageValidation = await validateImage(data.miiPortraitImage);
+	if (platform === "SWITCH") {
+		const imageValidation = await validateImage(miiPortraitImage);
 		if (!imageValidation.valid) return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
 	}
 
-	const qrBytes = new Uint8Array(data.qrBytesRaw);
+	const qrBytes = new Uint8Array(qrBytesRaw);
 
 	// Convert QR code to JS (3DS)
 	let conversion: { mii: Mii; tomodachiLifeMii: TomodachiLifeMii } | undefined;
-	if (data.platform === "THREE_DS") {
+	if (platform === "THREE_DS") {
 		try {
 			conversion = convertQrCode(qrBytes);
 		} catch (error) {
@@ -142,14 +153,14 @@ export async function POST(request: NextRequest) {
 	const miiRecord = await prisma.mii.create({
 		data: {
 			userId: Number(session.user.id),
-			platform: data.platform,
+			platform,
 			name,
 			tags,
 			description,
-			gender: data.gender ?? "MALE",
+			gender: gender ?? "MALE",
 
 			// Automatically detect certain information if on 3DS
-			...(data.platform === "THREE_DS" &&
+			...(platform === "THREE_DS" &&
 				conversion && {
 					firstName: conversion.tomodachiLifeMii.firstName,
 					lastName: conversion.tomodachiLifeMii.lastName,
@@ -168,7 +179,7 @@ export async function POST(request: NextRequest) {
 		let portraitBuffer: Buffer | undefined;
 
 		// Download the image of the Mii (3DS)
-		if (data.platform === "THREE_DS") {
+		if (platform === "THREE_DS") {
 			const studioUrl = conversion?.mii.studioUrl({ width: 512 });
 			const studioResponse = await fetch(studioUrl!);
 
@@ -177,8 +188,8 @@ export async function POST(request: NextRequest) {
 			}
 
 			portraitBuffer = Buffer.from(await studioResponse.arrayBuffer());
-		} else if (data.platform === "SWITCH") {
-			portraitBuffer = Buffer.from(await data.miiPortraitImage.arrayBuffer());
+		} else if (platform === "SWITCH") {
+			portraitBuffer = Buffer.from(await miiPortraitImage.arrayBuffer());
 		}
 
 		if (!portraitBuffer) throw Error("Mii portrait buffer not initialised");
@@ -215,6 +226,8 @@ export async function POST(request: NextRequest) {
 		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
 
+		console.error("Error processing Mii files:", error);
+		return rateLimit.sendResponse({ error: "Failed to process and store Mii files" }, 500);
 		console.error("Error generating QR code:", error);
 		return rateLimit.sendResponse({ error: "Failed to generate QR code" }, 500);
 	}
@@ -227,7 +240,7 @@ export async function POST(request: NextRequest) {
 			{
 				error: `Failed to generate 'metadata' type image for mii ${miiRecord.id}`,
 			},
-			500
+			500,
 		);
 	}
 
@@ -240,7 +253,7 @@ export async function POST(request: NextRequest) {
 				const fileLocation = path.join(miiUploadsDirectory, `image${index}.webp`);
 
 				await fs.writeFile(fileLocation, webpBuffer);
-			})
+			}),
 		);
 
 		// Update database to tell it how many images exist

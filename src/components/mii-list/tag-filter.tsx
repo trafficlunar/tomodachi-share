@@ -4,12 +4,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import TagSelector from "../tag-selector";
 
-export default function TagFilter() {
+interface Props {
+	isExclude?: boolean;
+}
+
+export default function TagFilter({ isExclude }: Props) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [, startTransition] = useTransition();
 
-	const rawTags = searchParams.get("tags") || "";
+	const rawTags = searchParams.get(isExclude ? "exclude" : "tags") || "";
 	const preexistingTags = useMemo(
 		() =>
 			rawTags
@@ -18,7 +22,7 @@ export default function TagFilter() {
 						.map((tag) => tag.trim())
 						.filter((tag) => tag.length > 0)
 				: [],
-		[rawTags]
+		[rawTags],
 	);
 
 	const [tags, setTags] = useState<string[]>(preexistingTags);
@@ -39,20 +43,20 @@ export default function TagFilter() {
 		params.set("page", "1");
 
 		if (tags.length > 0) {
-			params.set("tags", stateTags);
+			params.set(isExclude ? "exclude" : "tags", stateTags);
 		} else {
-			params.delete("tags");
+			params.delete(isExclude ? "exclude" : "tags");
 		}
 
 		startTransition(() => {
-			router.push(`?${params.toString()}`);
+			router.push(`?${params.toString()}`, { scroll: false });
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [tags]);
 
 	return (
 		<div className="w-72">
-			<TagSelector tags={tags} setTags={setTags} />
+			<TagSelector tags={tags} setTags={setTags} isExclude={isExclude} />
 		</div>
 	);
 }

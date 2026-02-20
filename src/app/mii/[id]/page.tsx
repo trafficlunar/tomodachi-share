@@ -103,7 +103,7 @@ export default async function MiiPage({ params }: Props) {
 							userId: Number(session.user.id),
 						},
 						select: { userId: true },
-				  }
+					}
 				: false,
 			_count: {
 				select: { likedBy: true }, // Get total like count
@@ -234,6 +234,7 @@ export default async function MiiPage({ params }: Props) {
 								{/* Submission name */}
 								<h1 className="text-4xl font-extrabold wrap-break-word text-amber-700">{mii.name}</h1>
 								{/* Like button */}
+								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={(mii.likedBy ?? []).length > 0} isLoggedIn={session?.user != null} big />
 								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={(mii.likedBy ?? []).length > 0} isLoggedIn={session?.user != null} big />
 							</div>
 							{/* Tags */}

@@ -20,7 +20,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
-	const [emblaRef, emblaApi] = useEmblaCarousel();
+	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 15 });
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
@@ -44,7 +44,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 		// Keep order of images whilst opening at src prop
 		const index = images.indexOf(src);
 		if (index !== -1) {
-			emblaApi.scrollTo(index);
+			emblaApi.scrollTo(index, true);
 			setSelectedIndex(index);
 		}
 
@@ -80,83 +80,74 @@ export default function ImageViewer({ src, alt, width, height, className, images
 					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
 						<div
 							onClick={close}
-							className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
-								isVisible ? "opacity-100" : "opacity-0"
-							}`}
+							className={`absolute inset-0 backdrop-brightness-40 backdrop-contrast-125 backdrop-blur-sm transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
 						/>
 
-						<div
-							className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl mx-4 shadow-lg aspect-square w-full max-w-xl relative transition-discrete duration-300 ${
-								isVisible ? "scale-100 opacity-100" : "scale-75 opacity-0"
-							}`}
+						<button
+							type="button"
+							aria-label="Close"
+							onClick={close}
+							className={`pill button p-2! aspect-square text-2xl absolute top-4 right-4 ${isVisible ? "opacity-100" : "opacity-0"}`}
 						>
-							<div className="z-50 absolute right-0 bg-amber-500 rounded-tr-xl rounded-bl-md p-1 flex justify-between items-center">
-								<button type="button" aria-label="Close" onClick={close} className="text-2xl cursor-pointer">
-									<Icon icon="material-symbols:close-rounded" />
-								</button>
-							</div>
+							<Icon icon="material-symbols:close-rounded" />
+						</button>
 
-							<div className="overflow-hidden rounded-2xl h-full" ref={emblaRef}>
-								<div className="flex h-full items-center">
-									{imagesMap.map((image, index) => (
-										<div key={index} className="shrink-0 w-full">
-											<Image
-												src={image}
-												alt={alt}
-												width={576}
-												height={576}
-												className="object-contain"
-												style={{ imageRendering: image.includes("qr-code") ? "pixelated" : "auto" }}
-											/>
-										</div>
-									))}
-								</div>
+						<div
+							className={`overflow-hidden max-w-4xl h-[75vh] max-md:h-[55vh] transition-discrete duration-300 ${isVisible ? "scale-100 opacity-100" : "scale-90 opacity-0"}`}
+							ref={emblaRef}
+						>
+							<div className="flex h-full">
+								{imagesMap.map((image, index) => (
+									<div key={index} className="flex-[0_0_100%] h-full flex items-center px-4">
+										<Image
+											src={image}
+											alt={alt}
+											width={896}
+											height={896}
+											priority={index === selectedIndex}
+											loading={Math.abs(index - selectedIndex) <= 1 ? "eager" : "lazy"}
+											className="max-w-full max-h-full object-contain drop-shadow-lg"
+											style={{ imageRendering: image.includes("qr-code") ? "pixelated" : "auto" }}
+										/>
+									</div>
+								))}
 							</div>
 						</div>
 
-						{images.length != 0 && (
+						{images.length > 1 && (
 							<>
+								{/* Carousel counter */}
+								<div
+									className={`flex justify-center gap-2 bg-orange-300/25 text-orange-300 w-15 font-semibold text-sm py-1 rounded-full border border-orange-300 absolute top-4 left-4 transition-opacity duration-300 ${
+										isVisible ? "opacity-100" : "opacity-0"
+									}`}
+								>
+									{selectedIndex + 1} / {images.length}
+								</div>
+
 								{/* Carousel buttons */}
 								{/* Prev button */}
-								<div
-									className={`z-50 absolute left-2 top-1/2 -translate-y-1/2 transition-opacity duration-300 ${
-										isVisible ? "opacity-100" : "opacity-0"
-									}`}
+								<button
+									type="button"
+									aria-label="Scroll Carousel Left"
+									onClick={() => emblaApi?.scrollPrev()}
+									className={`absolute left-2 top-1/2 -translate-y-1/2 pill button p-0.5! aspect-square text-4xl transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
 								>
-									<button
-										type="button"
-										aria-label="Scroll Carousel Left"
-										onClick={() => emblaApi?.scrollPrev()}
-										disabled={!emblaApi?.canScrollPrev()}
-										className={`bg-white p-1 rounded-full shadow text-4xl transition-opacity ${
-											emblaApi?.canScrollPrev() ? "opacity-100 cursor-pointer" : "opacity-50"
-										}`}
-									>
-										<Icon icon="ic:round-chevron-left" />
-									</button>
-								</div>
+									<Icon icon="ic:round-chevron-left" />
+								</button>
 								{/* Next button */}
-								<div
-									className={`z-50 absolute right-2 top-1/2 -translate-y-1/2 transition-opacity duration-300 ${
-										isVisible ? "opacity-100" : "opacity-0"
-									}`}
+								<button
+									type="button"
+									aria-label="Scroll Carousel Right"
+									onClick={() => emblaApi?.scrollNext()}
+									className={`absolute right-2 top-1/2 -translate-y-1/2 pill button p-0.5! aspect-square text-4xl transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
 								>
-									<button
-										type="button"
-										aria-label="Scroll Carousel Right"
-										onClick={() => emblaApi?.scrollNext()}
-										disabled={!emblaApi?.canScrollNext()}
-										className={`bg-white p-1 rounded-full shadow text-4xl transition-opacity ${
-											emblaApi?.canScrollNext() ? "opacity-100 cursor-pointer" : "opacity-50"
-										}`}
-									>
-										<Icon icon="ic:round-chevron-right" />
-									</button>
-								</div>
+									<Icon icon="ic:round-chevron-right" />
+								</button>
 
 								{/* Carousel snaps */}
 								<div
-									className={`z-50 flex justify-center gap-3 absolute left-1/2 -translate-x-1/2 bottom-4 transition-opacity duration-300 ${
+									className={`flex justify-center gap-2 bg-orange-300/25 p-2.5 rounded-full border border-orange-300 absolute left-1/2 -translate-x-1/2 bottom-4 transition-opacity duration-300 ${
 										isVisible ? "opacity-100" : "opacity-0"
 									}`}
 								>
@@ -165,14 +156,14 @@ export default function ImageViewer({ src, alt, width, height, className, images
 											key={index}
 											aria-label={`Go to ${index} in Carousel`}
 											onClick={() => emblaApi?.scrollTo(index)}
-											className={`size-2.5 cursor-pointer rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
+											className={`size-2 cursor-pointer rounded-full transition-all duration-300 ${index === selectedIndex ? "bg-orange-300 w-8" : "bg-orange-300/40"}`}
 										/>
 									))}
 								</div>
 							</>
 						)}
 					</div>,
-					document.body
+					document.body,
 				)}
 		</>
 	);
