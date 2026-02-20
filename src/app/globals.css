@@ -44,13 +44,16 @@ body {
 
 .button:disabled {
 	@apply text-zinc-600 bg-zinc-100! border-zinc-300! cursor-auto;
+	@apply text-zinc-600 bg-zinc-100! border-zinc-300! cursor-auto;
 }
 
 .input {
 	@apply bg-orange-200! outline-0 focus:ring-[3px] ring-orange-400/50 transition placeholder:text-black/40;
+	@apply bg-orange-200! outline-0 focus:ring-[3px] ring-orange-400/50 transition placeholder:text-black/40;
 }
 
 .input:disabled {
+	@apply text-zinc-600 bg-zinc-100! border-zinc-300!;
 	@apply text-zinc-600 bg-zinc-100! border-zinc-300!;
 }
 
@@ -91,7 +94,7 @@ body {
 	@apply opacity-100 scale-100;
 }
 
-/* Scrollbar */
+/* Scrollbars */
 /* Firefox */
 * {
 	scrollbar-color: #ff8903 transparent;

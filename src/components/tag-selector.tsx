@@ -97,7 +97,7 @@ export default function TagSelector({ tags, setTags, showTagLimit, isExclude }: 
 							<button
 								type="button"
 								aria-label="Delete Tag"
-								className="text-black cursor-pointer"
+								className="text-slate-800 cursor-pointer"
 								onClick={(e) => {
 									e.stopPropagation();
 									removeTag(tag);

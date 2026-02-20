@@ -146,8 +146,22 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 		<div tw="w-full h-full bg-amber-50 border-2 border-amber-500 rounded-2xl p-4 flex flex-col">
 			<div tw="flex w-full">
 				{/* Mii image */}
-				<div tw="w-80 rounded-xl flex justify-center mr-2" style={{ backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a);" }}>
-					<img src={miiImage} width={248} height={248} style={{ filter: "drop-shadow(0 10px 8px #00000024) drop-shadow(0 4px 3px #00000024)" }} />
+				<div
+					tw="w-80 h-62 rounded-xl flex justify-center mr-2 px-2"
+					style={{
+						backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a);",
+					}}
+				>
+					<img
+						src={miiImage}
+						width={248}
+						height={248}
+						tw="w-full h-full"
+						style={{
+							objectFit: "contain",
+							filter: "drop-shadow(0 10px 8px #00000024) drop-shadow(0 4px 3px #00000024)",
+						}}
+					/>
 				</div>
 
 				{/* QR code */}

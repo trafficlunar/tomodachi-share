@@ -1,4 +1,4 @@
-import { MiiGender } from "@prisma/client";
+import { MiiGender, MiiPlatform } from "@prisma/client";
 import { z } from "zod";
 
 // profanity censoring bypasses the regex in some of these but I think it's funny
@@ -58,6 +58,7 @@ export const searchSchema = z.object({
 				.map((tag) => tag.trim())
 				.filter((tag) => tag.length > 0),
 		),
+	platform: z.enum(MiiPlatform, { error: "Platform must be either 'THREE_DS', or 'SWITCH'" }).optional(),
 	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', or 'FEMALE'" }).optional(),
 	allowCopying: z.coerce.boolean({ error: "Allow Copying must be either true or false" }).optional(),
 	// todo: incorporate tagsSchema
