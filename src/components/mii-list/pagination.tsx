@@ -21,7 +21,7 @@ export default function Pagination({ lastPage }: Props) {
 			params.set("page", pageNumber.toString());
 			return `${pathname}?${params.toString()}`;
 		},
-		[searchParams, pathname]
+		[searchParams, pathname],
 	);
 
 	const numbers = useMemo(() => {
@@ -44,9 +44,7 @@ export default function Pagination({ lastPage }: Props) {
 				aria-label="Go to First Page"
 				aria-disabled={page === 1}
 				tabIndex={page === 1 ? -1 : undefined}
-				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${
-					page === 1 ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"
-				}`}
+				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${page === 1 ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"}`}
 			>
 				<Icon icon="stash:chevron-double-left" />
 			</Link>
@@ -83,9 +81,7 @@ export default function Pagination({ lastPage }: Props) {
 				aria-label="Go to Next Page"
 				aria-disabled={page >= lastPage}
 				tabIndex={page >= lastPage ? -1 : undefined}
-				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${
-					page >= lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"
-				}`}
+				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${page >= lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"}`}
 			>
 				<Icon icon="stash:chevron-right" />
 			</Link>
@@ -96,9 +92,7 @@ export default function Pagination({ lastPage }: Props) {
 				aria-label="Go to Last Page"
 				aria-disabled={page >= lastPage}
 				tabIndex={page >= lastPage ? -1 : undefined}
-				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${
-					page >= lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"
-				}`}
+				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${page >= lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"}`}
 			>
 				<Icon icon="stash:chevron-double-right" />
 			</Link>

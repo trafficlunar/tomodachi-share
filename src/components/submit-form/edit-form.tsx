@@ -30,7 +30,7 @@ export default function EditForm({ mii, likes }: Props) {
 
 			setFiles((prev) => [...prev, ...acceptedFiles]);
 		},
-		[files.length]
+		[files.length],
 	);
 
 	const [error, setError] = useState<string | undefined>(undefined);
@@ -91,7 +91,7 @@ export default function EditForm({ mii, likes }: Props) {
 						const blob = await response.blob();
 
 						return Object.assign(new File([blob], `image${index}.webp`, { type: "image/webp" }), { path });
-					})
+					}),
 				);
 
 				setFiles(existing);
@@ -107,9 +107,7 @@ export default function EditForm({ mii, likes }: Props) {
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
 				<div className="w-75 h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
-					<Carousel
-						images={[`/mii/${mii.id}/image?type=mii`, `/mii/${mii.id}/image?type=qr-code`, ...files.map((file) => URL.createObjectURL(file))]}
-					/>
+					<Carousel images={[`/mii/${mii.id}/image?type=mii`, `/mii/${mii.id}/image?type=qr-code`, ...files.map((file) => URL.createObjectURL(file))]} />
 
 					<div className="p-4 flex flex-col gap-1 h-full">
 						<h1 className="font-bold text-2xl line-clamp-1" title={name}>

@@ -57,7 +57,7 @@ export default function SubmitTutorialButton() {
 						isOpen={isOpen}
 						setIsOpen={setIsOpen}
 					/>,
-					document.body
+					document.body,
 				)}
 		</>
 	);

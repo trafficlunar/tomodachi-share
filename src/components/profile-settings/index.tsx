@@ -151,13 +151,7 @@ export default function ProfileSettings({ currentDescription }: Props) {
 				</div>
 
 				<div className="flex justify-end gap-1 h-min col-span-2">
-					<input
-						type="text"
-						className="pill input flex-1"
-						placeholder="Type here..."
-						value={displayName}
-						onChange={(e) => setDisplayName(e.target.value)}
-					/>
+					<input type="text" className="pill input flex-1" placeholder="Type here..." value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
 					<SubmitDialogButton
 						title="Confirm Display Name Change"
 						description="Are you sure? This will only be visible on your profile. You can change it again later."

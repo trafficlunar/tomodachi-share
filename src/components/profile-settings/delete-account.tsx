@@ -39,11 +39,7 @@ export default function DeleteAccount() {
 
 	return (
 		<>
-			<button
-				name="deletion"
-				onClick={() => setIsOpen(true)}
-				className="pill button w-fit h-min ml-auto bg-red-400! border-red-500! hover:bg-red-500!"
-			>
+			<button name="deletion" onClick={() => setIsOpen(true)} className="pill button w-fit h-min ml-auto bg-red-400! border-red-500! hover:bg-red-500!">
 				Delete Account
 			</button>
 
@@ -69,9 +65,7 @@ export default function DeleteAccount() {
 								</button>
 							</div>
 
-							<p className="text-sm text-zinc-500">
-								Are you sure? This is permanent and will remove all uploaded Miis. This action cannot be undone.
-							</p>
+							<p className="text-sm text-zinc-500">Are you sure? This is permanent and will remove all uploaded Miis. This action cannot be undone.</p>
 
 							{error && <span className="text-red-400 font-bold mt-2">Error: {error}</span>}
 
@@ -83,7 +77,7 @@ export default function DeleteAccount() {
 							</div>
 						</div>
 					</div>,
-					document.body
+					document.body,
 				)}
 		</>
 	);

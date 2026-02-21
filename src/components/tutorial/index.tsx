@@ -102,9 +102,7 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 		<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
 			<div
 				onClick={close}
-				className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
-					isVisible ? "opacity-100" : "opacity-0"
-				}`}
+				className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
 			/>
 
 			<div
@@ -191,11 +189,7 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 						</button>
 
 						{/* Only show tutorial name on step slides */}
-						<span
-							className={`text-sm transition-opacity duration-300 ${
-								(currentSlide.type === "finish" || currentSlide.type === "start") && "opacity-0"
-							}`}
-						>
+						<span className={`text-sm transition-opacity duration-300 ${(currentSlide.type === "finish" || currentSlide.type === "start") && "opacity-0"}`}>
 							{currentSlide?.tutorialTitle}
 						</span>
 

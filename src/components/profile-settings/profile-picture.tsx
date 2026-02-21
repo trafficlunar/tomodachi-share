@@ -86,8 +86,8 @@ export default function ProfilePictureSettings() {
 						onSubmit={handleSubmit}
 					>
 						<p className="text-sm text-zinc-500 mt-2">
-							After submitting, you can change it again on{" "}
-							{changeDate.toDate().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.
+							After submitting, you can change it again on {changeDate.toDate().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+							.
 						</p>
 
 						<div className="bg-orange-100 rounded-xl border-2 border-amber-500 mt-4 px-2 py-1 flex items-center">

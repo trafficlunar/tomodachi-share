@@ -146,8 +146,8 @@ export default function Punishments() {
 												punishment.type === "WARNING"
 													? "bg-yellow-50 border-yellow-400"
 													: punishment.type === "TEMP_EXILE"
-													? "bg-orange-100 border-orange-200"
-													: "bg-red-50 border-red-200"
+														? "bg-orange-100 border-orange-200"
+														: "bg-red-50 border-red-200"
 											}`}
 										>
 											<div className="flex items-center justify-between mb-2">
@@ -156,8 +156,8 @@ export default function Punishments() {
 														punishment.type === "WARNING"
 															? "bg-yellow-200 text-yellow-800 border-yellow-500"
 															: punishment.type === "TEMP_EXILE"
-															? "bg-orange-200 text-orange-800 border-orange-500"
-															: "bg-red-200 text-red-800 border-red-500"
+																? "bg-orange-200 text-orange-800 border-orange-500"
+																: "bg-red-200 text-red-800 border-red-500"
 													}`}
 												>
 													{punishment.type}
@@ -286,9 +286,7 @@ export default function Punishments() {
 										<div key={index} className="bg-white border border-orange-200 rounded-md p-3 flex items-center justify-between">
 											<div className="flex-1">
 												<div className="flex items-center gap-2">
-													<span className="bg-orange-200 text-orange-800 border border-orange-400 px-2 py-1 rounded text-xs font-semibold">
-														ID: {mii.id}
-													</span>
+													<span className="bg-orange-200 text-orange-800 border border-orange-400 px-2 py-1 rounded text-xs font-semibold">ID: {mii.id}</span>
 													<span className="text-sm text-gray-500">{mii.reason}</span>
 												</div>
 											</div>

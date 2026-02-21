@@ -56,13 +56,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 					<span>Delete</span>
 				</button>
 			) : (
-				<button
-					onClick={() => setIsOpen(true)}
-					aria-label="Delete Mii"
-					title="Delete Mii"
-					data-tooltip="Delete"
-					className="cursor-pointer aspect-square"
-				>
+				<button onClick={() => setIsOpen(true)} aria-label="Delete Mii" title="Delete Mii" data-tooltip="Delete" className="cursor-pointer aspect-square">
 					<Icon icon="mdi:trash" />
 				</button>
 			)}
@@ -111,7 +105,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 							</div>
 						</div>
 					</div>,
-					document.body
+					document.body,
 				)}
 		</>
 	);

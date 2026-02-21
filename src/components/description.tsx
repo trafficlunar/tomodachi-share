@@ -63,12 +63,7 @@ export default function Description({ text, className }: Props) {
 								href={`/profile/${id}`}
 								className="inline-flex items-center align-bottom gap-1.5 pr-2 bg-orange-100 border border-orange-400 rounded-lg mx-1 text-orange-800 text-xs"
 							>
-								<ProfilePicture
-									src={linkedProfile.image || "/guest.webp"}
-									width={24}
-									height={24}
-									className="bg-white rounded-lg border-r border-orange-400"
-								/>
+								<ProfilePicture src={linkedProfile.image || "/guest.webp"} width={24} height={24} className="bg-white rounded-lg border-r border-orange-400" />
 								{linkedProfile.name}
 							</Link>
 						);

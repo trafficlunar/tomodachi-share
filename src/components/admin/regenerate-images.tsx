@@ -79,7 +79,7 @@ export default function RegenerateImagesButton() {
 							</div>
 						</div>
 					</div>,
-					document.body
+					document.body,
 				)}
 		</>
 	);

@@ -57,8 +57,8 @@ export default async function ExiledPage() {
 					{activePunishment.type === "PERM_EXILE"
 						? "Exiled permanently"
 						: activePunishment.type === "TEMP_EXILE"
-						? `Exiled for ${duration} ${duration === 1 ? "day" : "days"}`
-						: "Warning"}
+							? `Exiled for ${duration} ${duration === 1 ? "day" : "days"}`
+							: "Warning"}
 				</h2>
 				<p>
 					You have been exiled from the TomodachiShare island because you violated the{" "}

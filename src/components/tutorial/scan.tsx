@@ -35,7 +35,7 @@ export default function ScanTutorialButton() {
 						isOpen={isOpen}
 						setIsOpen={setIsOpen}
 					/>,
-					document.body
+					document.body,
 				)}
 		</>
 	);
