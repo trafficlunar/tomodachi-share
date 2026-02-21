@@ -36,9 +36,7 @@ export default function SubmitForm() {
 
 	const [isQrScannerOpen, setIsQrScannerOpen] = useState(false);
 	const [studioUrl, setStudioUrl] = useState<string | undefined>();
-	const [generatedQrCodeUrl, setGeneratedQrCodeUrl] = useState<
-		string | undefined
-	>();
+	const [generatedQrCodeUrl, setGeneratedQrCodeUrl] = useState<string | undefined>();
 
 	const [error, setError] = useState<string | undefined>(undefined);
 
@@ -129,29 +127,16 @@ export default function SubmitForm() {
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
 				<div className="w-75 h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
-					<Carousel
-						images={[
-							studioUrl ?? "/loading.svg",
-							generatedQrCodeUrl ?? "/loading.svg",
-							...files.map((file) => URL.createObjectURL(file)),
-						]}
-					/>
+					<Carousel images={[studioUrl ?? "/loading.svg", generatedQrCodeUrl ?? "/loading.svg", ...files.map((file) => URL.createObjectURL(file))]} />
 
 					<div className="p-4 flex flex-col gap-1 h-full">
 						<h1 className="font-bold text-2xl line-clamp-1" title={name}>
 							{name || "Mii name"}
 						</h1>
 						<div id="tags" className="flex flex-wrap gap-1">
-							{tags.length == 0 && (
-								<span className="px-2 py-1 bg-orange-300 rounded-full text-xs">
-									tag
-								</span>
-							)}
+							{tags.length == 0 && <span className="px-2 py-1 bg-orange-300 rounded-full text-xs">tag</span>}
 							{tags.map((tag) => (
-								<span
-									key={tag}
-									className="px-2 py-1 bg-orange-300 rounded-full text-xs"
-								>
+								<span key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
 									{tag}
 								</span>
 							))}
@@ -167,9 +152,7 @@ export default function SubmitForm() {
 			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-2 max-w-2xl w-full">
 				<div>
 					<h2 className="text-2xl font-bold">Submit your Mii</h2>
-					<p className="text-sm text-zinc-500">
-						Share your creation for others to see.
-					</p>
+					<p className="text-sm text-zinc-500">Share your creation for others to see.</p>
 				</div>
 
 				{/* Separator */}
@@ -227,26 +210,15 @@ export default function SubmitForm() {
 					<QrUpload setQrBytesRaw={setQrBytesRaw} />
 					<span>or</span>
 
-					<button
-						type="button"
-						aria-label="Use your camera"
-						onClick={() => setIsQrScannerOpen(true)}
-						className="pill button gap-2"
-					>
+					<button type="button" aria-label="Use your camera" onClick={() => setIsQrScannerOpen(true)} className="pill button gap-2">
 						<Icon icon="mdi:camera" fontSize={20} />
 						Use your camera
 					</button>
 
-					<QrScanner
-						isOpen={isQrScannerOpen}
-						setIsOpen={setIsQrScannerOpen}
-						setQrBytesRaw={setQrBytesRaw}
-					/>
+					<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
 					<SubmitTutorialButton />
 
-					<span className="text-xs text-zinc-400">
-						For emulators, aes_keys.txt is required.
-					</span>
+					<span className="text-xs text-zinc-400">For emulators, aes_keys.txt is required.</span>
 				</div>
 
 				{/* Separator */}
@@ -265,18 +237,14 @@ export default function SubmitForm() {
 						</p>
 					</Dropzone>
 
-					<span className="text-xs text-zinc-400 mt-2">
-						Animated images currently not supported.
-					</span>
+					<span className="text-xs text-zinc-400 mt-2">Animated images currently not supported.</span>
 				</div>
 
 				<ImageList files={files} setFiles={setFiles} />
 
 				<hr className="border-zinc-300 my-2" />
 				<div className="flex justify-between items-center">
-					{error && (
-						<span className="text-red-400 font-bold">Error: {error}</span>
-					)}
+					{error && <span className="text-red-400 font-bold">Error: {error}</span>}
 
 					<SubmitButton onClick={handleSubmit} className="ml-auto" />
 				</div>

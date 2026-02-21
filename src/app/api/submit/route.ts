@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 
 import fs from "fs/promises";
@@ -25,11 +26,9 @@ const submitSchema = z.object({
 	name: nameSchema,
 	tags: tagsSchema,
 	description: z.string().trim().max(256).optional(),
-	qrBytesRaw: z
-		.array(z.number(), { error: "A QR code is required" })
-		.length(372, {
-			error: "QR code size is not a valid Tomodachi Life QR code",
-		}),
+	qrBytesRaw: z.array(z.number(), { error: "A QR code is required" }).length(372, {
+		error: "QR code size is not a valid Tomodachi Life QR code",
+	}),
 	image1: z.union([z.instanceof(File), z.any()]).optional(),
 	image2: z.union([z.instanceof(File), z.any()]).optional(),
 	image3: z.union([z.instanceof(File), z.any()]).optional(),
@@ -37,19 +36,16 @@ const submitSchema = z.object({
 
 export async function POST(request: NextRequest) {
 	const session = await auth();
-	if (!session)
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	Sentry.setUser({ id: session.user.id, username: session.user.username });
 
 	const rateLimit = new RateLimit(request, 2);
 	const check = await rateLimit.handle();
 	if (check) return check;
 
-	const response = await fetch(
-		`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`,
-	);
+	const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
 	const { value } = await response.json();
-	if (!value)
-		return rateLimit.sendResponse({ error: "Submissions are disabled" }, 409);
+	if (!value) return rateLimit.sendResponse({ error: "Submissions are disabled" }, 409);
 
 	// Parse data
 	const formData = await request.formData();
@@ -59,11 +55,11 @@ export async function POST(request: NextRequest) {
 	try {
 		rawTags = JSON.parse(formData.get("tags") as string);
 		rawQrBytesRaw = JSON.parse(formData.get("qrBytesRaw") as string);
-	} catch {
-		return rateLimit.sendResponse(
-			{ error: "Invalid JSON in tags or QR bytes" },
-			400,
-		);
+	} catch (error) {
+		Sentry.captureException(error, {
+			extra: { stage: "submit-json-parse" },
+		});
+		return rateLimit.sendResponse({ error: "Invalid JSON in tags or QR code data" }, 400);
 	}
 
 	const parsed = submitSchema.safeParse({
@@ -76,26 +72,13 @@ export async function POST(request: NextRequest) {
 		image3: formData.get("image3"),
 	});
 
-	if (!parsed.success)
-		return rateLimit.sendResponse(
-			{ error: parsed.error.issues[0].message },
-			400,
-		);
-	const {
-		name: uncensoredName,
-		tags: uncensoredTags,
-		description: uncensoredDescription,
-		qrBytesRaw,
-		image1,
-		image2,
-		image3,
-	} = parsed.data;
+	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
+	const { name: uncensoredName, tags: uncensoredTags, description: uncensoredDescription, qrBytesRaw, image1, image2, image3 } = parsed.data;
 
 	// Censor potential inappropriate words
 	const name = profanity.censor(uncensoredName);
 	const tags = uncensoredTags.map((t) => profanity.censor(t));
-	const description =
-		uncensoredDescription && profanity.censor(uncensoredDescription);
+	const description = uncensoredDescription && profanity.censor(uncensoredDescription);
 
 	// Validate image files
 	const images: File[] = [];
@@ -107,10 +90,7 @@ export async function POST(request: NextRequest) {
 		if (imageValidation.valid) {
 			images.push(img);
 		} else {
-			return rateLimit.sendResponse(
-				{ error: imageValidation.error },
-				imageValidation.status ?? 400,
-			);
+			return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
 		}
 	}
 
@@ -121,7 +101,8 @@ export async function POST(request: NextRequest) {
 	try {
 		conversion = convertQrCode(qrBytes);
 	} catch (error) {
-		return rateLimit.sendResponse({ error }, 400);
+		Sentry.captureException(error, { extra: { stage: "qr-conversion" } });
+		return rateLimit.sendResponse({ error: error instanceof Error ? error.message : String(error) }, 400);
 	}
 
 	// Create Mii in database
@@ -141,10 +122,7 @@ export async function POST(request: NextRequest) {
 	});
 
 	// Ensure directories exist
-	const miiUploadsDirectory = path.join(
-		uploadsDirectory,
-		miiRecord.id.toString(),
-	);
+	const miiUploadsDirectory = path.join(uploadsDirectory, miiRecord.id.toString());
 	await fs.mkdir(miiUploadsDirectory, { recursive: true });
 
 	// Download the image of the Mii
@@ -164,17 +142,13 @@ export async function POST(request: NextRequest) {
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
 
 		console.error("Failed to download Mii image:", error);
-		return rateLimit.sendResponse(
-			{ error: "Failed to download Mii image" },
-			500,
-		);
+		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "studio-image-download" } });
+		return rateLimit.sendResponse({ error: "Failed to download Mii image" }, 500);
 	}
 
 	try {
 		// Compress and store
-		const studioWebpBuffer = await sharp(studioBuffer)
-			.webp({ quality: 85 })
-			.toBuffer();
+		const studioWebpBuffer = await sharp(studioBuffer).webp({ quality: 85 }).toBuffer();
 		const studioFileLocation = path.join(miiUploadsDirectory, "mii.webp");
 
 		await fs.writeFile(studioFileLocation, studioWebpBuffer);
@@ -191,9 +165,7 @@ export async function POST(request: NextRequest) {
 		const codeBuffer = Buffer.from(codeBase64, "base64");
 
 		// Compress and store
-		const codeWebpBuffer = await sharp(codeBuffer)
-			.webp({ quality: 85 })
-			.toBuffer();
+		const codeWebpBuffer = await sharp(codeBuffer).webp({ quality: 85 }).toBuffer();
 		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
 
 		await fs.writeFile(codeFileLocation, codeWebpBuffer);
@@ -203,10 +175,8 @@ export async function POST(request: NextRequest) {
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
 
 		console.error("Error processing Mii files:", error);
-		return rateLimit.sendResponse(
-			{ error: "Failed to process and store Mii files" },
-			500,
-		);
+		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "file-processing" } });
+		return rateLimit.sendResponse({ error: "Failed to process and store Mii files" }, 500);
 	}
 
 	// Compress and store user images
@@ -215,10 +185,7 @@ export async function POST(request: NextRequest) {
 			images.map(async (image, index) => {
 				const buffer = Buffer.from(await image.arrayBuffer());
 				const webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer();
-				const fileLocation = path.join(
-					miiUploadsDirectory,
-					`image${index}.webp`,
-				);
+				const fileLocation = path.join(miiUploadsDirectory, `image${index}.webp`);
 
 				await fs.writeFile(fileLocation, webpBuffer);
 			}),
@@ -235,10 +202,9 @@ export async function POST(request: NextRequest) {
 		});
 	} catch (error) {
 		console.error("Error storing user images:", error);
-		return rateLimit.sendResponse(
-			{ error: "Failed to store user images" },
-			500,
-		);
+
+		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "user-image-storage" } });
+		return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
 	}
 
 	return rateLimit.sendResponse({ success: true, id: miiRecord.id });

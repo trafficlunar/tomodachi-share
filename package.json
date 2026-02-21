@@ -8,8 +8,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"postinstall": "prisma generate",
-		"test": "vitest"
+		"postinstall": "prisma generate"
 	},
 	"dependencies": {
 		"@2toad/profanity": "^3.2.0",
@@ -17,6 +16,7 @@
 		"@bprogress/next": "^3.2.12",
 		"@hello-pangea/dnd": "^18.0.1",
 		"@prisma/client": "^6.19.2",
+		"@sentry/nextjs": "^10.39.0",
 		"bit-buffer": "^0.3.0",
 		"canvas-confetti": "^1.9.4",
 		"dayjs": "^1.11.19",
@@ -53,7 +53,6 @@
 		"prisma": "^6.19.2",
 		"schema-dts": "^1.1.5",
 		"tailwindcss": "^4.1.18",
-		"typescript": "^5.9.3",
-		"vitest": "^4.0.18"
+		"typescript": "^5.9.3"
 	}
 }

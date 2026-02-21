@@ -4,6 +4,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import type { ReactNode } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 import fs from "fs/promises";
 import path from "path";
@@ -62,6 +63,7 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 
 			if (!moderationResponse.ok) {
 				console.error("Moderation API error");
+				Sentry.captureException("Moderation API error", { extra: { stage: "moderation-api-response", status: moderationResponse.status } });
 				return { valid: false, error: "Content moderation check failed", status: 500 };
 			}
 
@@ -71,13 +73,15 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 			}
 		} catch (moderationError) {
 			console.error("Error fetching moderation API:", moderationError);
+			Sentry.captureException(moderationError, { extra: { stage: "moderation-api-fetch" } });
 			return { valid: false, error: "Moderation API is down", status: 503 };
 		}
 
 		return { valid: true };
 	} catch (error) {
 		console.error("Error validating image:", error);
-		return { valid: false, error: "Failed to process image file.", status: 500 };
+		Sentry.captureException(error, { extra: { stage: "image-validation" } });
+		return { valid: false, error: "Failed to process image file", status: 500 };
 	}
 }
 //#endregion
@@ -117,7 +121,7 @@ const loadFonts = async (): Promise<Font[]> => {
 				};
 			}
 			return fontCache[weight]!;
-		})
+		}),
 	);
 };
 
@@ -131,13 +135,13 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 			sharp(buffer)
 				.png()
 				.toBuffer()
-				.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`)
+				.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`),
 		),
 		fs.readFile(path.join(miiUploadsDirectory, "qr-code.webp")).then((buffer) =>
 			sharp(buffer)
 				.png()
 				.toBuffer()
-				.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`)
+				.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`),
 		),
 		loadFonts(),
 	]);
@@ -211,6 +215,7 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 		await fs.writeFile(fileLocation, buffer);
 	} catch (error) {
 		console.error("Error storing 'metadata' image type", error);
+		Sentry.captureException(error, { extra: { stage: "metadata-image-storage", miiId: mii.id } });
 		return { error: `Failed to store metadata image for ${mii.id}`, status: 500 };
 	}
 

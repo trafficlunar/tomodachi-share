@@ -118,7 +118,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 							<>
 								{/* Carousel counter */}
 								<div
-									className={`flex justify-center gap-2 bg-orange-300/25 text-orange-300 w-15 font-semibold text-sm py-1 rounded-full border border-orange-300 absolute top-4 left-4 transition-opacity duration-300 ${
+									className={`flex justify-center gap-2 bg-orange-300 w-15 font-semibold text-sm py-1 rounded-full border-2 border-orange-400 absolute top-4 left-4 transition-opacity duration-300 ${
 										isVisible ? "opacity-100" : "opacity-0"
 									}`}
 								>
@@ -147,7 +147,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 
 								{/* Carousel snaps */}
 								<div
-									className={`flex justify-center gap-2 bg-orange-300/25 p-2.5 rounded-full border border-orange-300 absolute left-1/2 -translate-x-1/2 bottom-4 transition-opacity duration-300 ${
+									className={`flex justify-center gap-2 bg-orange-300 p-2.5 rounded-full border-2 border-orange-400 absolute left-1/2 -translate-x-1/2 bottom-4 transition-opacity duration-300 ${
 										isVisible ? "opacity-100" : "opacity-0"
 									}`}
 								>
@@ -156,7 +156,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 											key={index}
 											aria-label={`Go to ${index} in Carousel`}
 											onClick={() => emblaApi?.scrollTo(index)}
-											className={`size-2 cursor-pointer rounded-full transition-all duration-300 ${index === selectedIndex ? "bg-orange-300 w-8" : "bg-orange-300/40"}`}
+											className={`size-2 cursor-pointer rounded-full transition-all duration-300 ${index === selectedIndex ? "bg-slate-800 w-8" : "bg-slate-800/30"}`}
 										/>
 									))}
 								</div>
