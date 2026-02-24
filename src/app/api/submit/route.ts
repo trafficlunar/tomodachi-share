@@ -68,7 +68,6 @@ export async function POST(request: NextRequest) {
 	if (check) return check;
 
 	const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
-	const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
 	const { value } = await response.json();
 	if (!value) return rateLimit.sendResponse({ error: "Submissions are temporarily disabled" }, 503);
 
@@ -237,6 +236,14 @@ export async function POST(request: NextRequest) {
 		console.error("Error processing Mii files:", error);
 		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "file-processing" } });
 		return rateLimit.sendResponse({ error: "Failed to process and store Mii files" }, 500);
+	}
+
+	try {
+		await generateMetadataImage(miiRecord, session.user.name!);
+	} catch (error) {
+		console.error(error);
+		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "metadata-image" } });
+		return rateLimit.sendResponse({ error: `Failed to generate 'metadata' type image for mii ${miiRecord.id}` }, 500);
 	}
 
 	// Compress and store user images

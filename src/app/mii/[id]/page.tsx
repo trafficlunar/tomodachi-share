@@ -178,7 +178,7 @@ export default async function MiiPage({ params }: Props) {
 							</div>
 
 							<div
-								className={`rounded-xl flex justify-center items-center size-16 text-4xl border-2 shadow-sm ${
+								className={`rounded-xl flex justify-center items-center size-13 text-3xl border-2 shadow-sm ${
 									mii.platform === "THREE_DS" ? "bg-sky-100 border-sky-400" : "bg-white border-gray-300"
 								}`}
 							>
@@ -186,7 +186,7 @@ export default async function MiiPage({ params }: Props) {
 							</div>
 
 							<div
-								className={`rounded-xl flex justify-center items-center size-16 text-4xl border-2 shadow-sm ${
+								className={`rounded-xl flex justify-center items-center size-13 text-3xl border-2 shadow-sm ${
 									mii.platform === "SWITCH" ? "bg-red-100 border-red-400" : "bg-white border-gray-300"
 								}`}
 							>
@@ -201,17 +201,21 @@ export default async function MiiPage({ params }: Props) {
 							<hr className="grow border-zinc-300" />
 						</div>
 
-						<div data-tooltip-span title={mii.gender ?? "NULL"} className="grid grid-cols-2 gap-2">
+						<div data-tooltip-span title={mii.gender ?? "NULL"} className="flex gap-1">
 							<div
 								className={`tooltip mt-1! ${
-									mii.gender === "MALE" ? "bg-blue-400! border-blue-400! before:border-b-blue-400!" : "bg-pink-400! border-pink-400! before:border-b-pink-400!"
+									mii.gender === "MALE"
+										? "bg-blue-400! border-blue-400! before:border-b-blue-400!"
+										: mii.gender === "FEMALE"
+											? "bg-pink-400! border-pink-400! before:border-b-pink-400!"
+											: "bg-purple-400! border-purple-400! before:border-b-purple-400!"
 								}`}
 							>
-								{mii.gender === "MALE" ? "Male" : "Female"}
+								{mii.gender === "MALE" ? "Male" : mii.gender === "FEMALE" ? "Female" : "Nonbinary"}
 							</div>
 
 							<div
-								className={`rounded-xl flex justify-center items-center size-16 text-5xl border-2 shadow-sm ${
+								className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
 									mii.gender === "MALE" ? "bg-blue-100 border-blue-400" : "bg-white border-gray-300"
 								}`}
 							>
@@ -219,11 +223,19 @@ export default async function MiiPage({ params }: Props) {
 							</div>
 
 							<div
-								className={`rounded-xl flex justify-center items-center size-16 text-5xl border-2 shadow-sm ${
+								className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
 									mii.gender === "FEMALE" ? "bg-pink-100 border-pink-400" : "bg-white border-gray-300"
 								}`}
 							>
 								<Icon icon="foundation:female" className="text-pink-400" />
+							</div>
+
+							<div
+								className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
+									mii.gender === "NONBINARY" ? "bg-purple-100 border-purple-400" : "bg-white border-gray-300"
+								}`}
+							>
+								<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
 							</div>
 						</div>
 					</div>

@@ -164,6 +164,7 @@ enum MiiPlatform {
 enum MiiGender {
   MALE
   FEMALE
+  NONBINARY
 }
 
 enum ReportType {

@@ -59,7 +59,7 @@ export const searchSchema = z.object({
 				.filter((tag) => tag.length > 0),
 		),
 	platform: z.enum(MiiPlatform, { error: "Platform must be either 'THREE_DS', or 'SWITCH'" }).optional(),
-	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', or 'FEMALE'" }).optional(),
+	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', 'FEMALE', or 'NONBINARY' if on Switch platform" }).optional(),
 	allowCopying: z.coerce.boolean({ error: "Allow Copying must be either true or false" }).optional(),
 	// todo: incorporate tagsSchema
 	// Pages

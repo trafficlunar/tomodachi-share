@@ -279,7 +279,8 @@ export default function SubmitForm() {
 								type="button"
 								onClick={() => setGender("MALE")}
 								aria-label="Filter for Male Miis"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all ${
+								data-tooltip="Male"
+								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-blue-400! after:border-blue-400! before:border-b-blue-400!  ${
 									gender === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 								}`}
 							>
@@ -290,11 +291,24 @@ export default function SubmitForm() {
 								type="button"
 								onClick={() => setGender("FEMALE")}
 								aria-label="Filter for Female Miis"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all ${
+								data-tooltip="Female"
+								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${
 									gender === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 								}`}
 							>
 								<Icon icon="foundation:female" className="text-pink-400" />
+							</button>
+
+							<button
+								type="button"
+								onClick={() => setGender("NONBINARY")}
+								aria-label="Filter for Nonbinary Miis"
+								data-tooltip="Nonbinary"
+								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400!  ${
+									gender === "NONBINARY" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+								}`}
+							>
+								<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
 							</button>
 						</div>
 					</div>

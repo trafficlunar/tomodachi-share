@@ -4,8 +4,9 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 
-import { MiiGender } from "@prisma/client";
+import { MiiGender, MiiPlatform } from "@prisma/client";
 
+import PlatformSelect from "./platform-select";
 import TagFilter from "./tag-filter";
 import GenderSelect from "./gender-select";
 import OtherFilters from "./other-filters";
@@ -16,9 +17,10 @@ export default function FilterMenu() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
+	const platform = (searchParams.get("platform") as MiiPlatform) || undefined;
+	const gender = (searchParams.get("gender") as MiiGender) || undefined;
 	const rawTags = searchParams.get("tags") || "";
 	const rawExclude = searchParams.get("exclude") || "";
-	const gender = (searchParams.get("gender") as MiiGender) || undefined;
 	const allowCopying = (searchParams.get("allowCopying") as unknown as boolean) || false;
 
 	const tags = useMemo(
@@ -61,11 +63,12 @@ export default function FilterMenu() {
 	// Count all active filters
 	useEffect(() => {
 		let count = tags.length + exclude.length;
+		if (platform) count++;
 		if (gender) count++;
 		if (allowCopying) count++;
 
 		setFilterCount(count);
-	}, [tags, exclude, gender, allowCopying]);
+	}, [tags, exclude, platform, gender, allowCopying]);
 
 	return (
 		<div className="relative">
@@ -85,6 +88,20 @@ export default function FilterMenu() {
 
 					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium w-full mb-2">
 						<hr className="grow border-zinc-300" />
+						<span>Platform</span>
+						<hr className="grow border-zinc-300" />
+					</div>
+					<PlatformSelect />
+
+					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium w-full mt-2 mb-1">
+						<hr className="grow border-zinc-300" />
+						<span>Gender</span>
+						<hr className="grow border-zinc-300" />
+					</div>
+					<GenderSelect />
+
+					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium w-full mt-2 mb-2">
+						<hr className="grow border-zinc-300" />
 						<span>Tags Include</span>
 						<hr className="grow border-zinc-300" />
 					</div>
@@ -97,19 +114,16 @@ export default function FilterMenu() {
 					</div>
 					<TagFilter isExclude />
 
-					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium w-full mt-2 mb-1">
-						<hr className="grow border-zinc-300" />
-						<span>Gender</span>
-						<hr className="grow border-zinc-300" />
-					</div>
-					<GenderSelect />
-
-					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium w-full mt-2 mb-1">
-						<hr className="grow border-zinc-300" />
-						<span>Other</span>
-						<hr className="grow border-zinc-300" />
-					</div>
-					<OtherFilters />
+					{platform !== "SWITCH" && (
+						<>
+							<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium w-full mt-2 mb-1">
+								<hr className="grow border-zinc-300" />
+								<span>Other</span>
+								<hr className="grow border-zinc-300" />
+							</div>
+							<OtherFilters />
+						</>
+					)}
 				</div>
 			)}
 		</div>

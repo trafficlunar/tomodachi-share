@@ -3,16 +3,15 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Icon } from "@iconify/react";
-import { MiiGender } from "@prisma/client";
+import { MiiGender, MiiPlatform } from "@prisma/client";
 
 export default function GenderSelect() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [, startTransition] = useTransition();
 
-	const [selected, setSelected] = useState<MiiGender | null>(
-		(searchParams.get("gender") as MiiGender) ?? null
-	);
+	const [selected, setSelected] = useState<MiiGender | null>((searchParams.get("gender") as MiiGender) ?? null);
+	const platform = (searchParams.get("platform") as MiiPlatform) || undefined;
 
 	const handleClick = (gender: MiiGender) => {
 		const filter = selected === gender ? null : gender;
@@ -33,20 +32,16 @@ export default function GenderSelect() {
 	};
 
 	return (
-		<div className="grid grid-cols-2 gap-0.5 w-fit">
+		<div className="flex gap-0.5 w-fit">
 			<button
 				onClick={() => handleClick("MALE")}
 				aria-label="Filter for Male Miis"
 				data-tooltip-span
 				className={`cursor-pointer rounded-xl flex justify-center items-center size-13 text-5xl border-2 transition-all ${
-					selected === "MALE"
-						? "bg-blue-100 border-blue-400 shadow-md"
-						: "bg-white border-gray-300 hover:border-gray-400"
+					selected === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 				}`}
 			>
-				<div className="tooltip bg-blue-400! border-blue-400! before:border-b-blue-400!">
-					Male
-				</div>
+				<div className="tooltip bg-blue-400! border-blue-400! before:border-b-blue-400!">Male</div>
 				<Icon icon="foundation:male" className="text-blue-400" />
 			</button>
 
@@ -55,16 +50,26 @@ export default function GenderSelect() {
 				aria-label="Filter for Female Miis"
 				data-tooltip-span
 				className={`cursor-pointer rounded-xl flex justify-center items-center size-13 text-5xl border-2 transition-all ${
-					selected === "FEMALE"
-						? "bg-pink-100 border-pink-400 shadow-md"
-						: "bg-white border-gray-300 hover:border-gray-400"
+					selected === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 				}`}
 			>
-				<div className="tooltip bg-pink-400! border-pink-400! before:border-b-pink-400!">
-					Female
-				</div>
+				<div className="tooltip bg-pink-400! border-pink-400! before:border-b-pink-400!">Female</div>
 				<Icon icon="foundation:female" className="text-pink-400" />
 			</button>
+
+			{platform !== "THREE_DS" && (
+				<button
+					onClick={() => handleClick("NONBINARY")}
+					aria-label="Filter for Nonbinary Miis"
+					data-tooltip-span
+					className={`cursor-pointer rounded-xl flex justify-center items-center size-13 text-5xl border-2 transition-all ${
+						selected === "NONBINARY" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+					}`}
+				>
+					<div className="tooltip bg-purple-400! border-purple-400! before:border-b-purple-400!">Nonbinary</div>
+					<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
+				</button>
+			)}
 		</div>
 	);
 }

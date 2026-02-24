@@ -38,7 +38,7 @@ export default function PlatformSelect() {
 					selected === "THREE_DS" ? "bg-sky-100 border-sky-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 				}`}
 			>
-				<div className="tooltip !bg-sky-400 !border-sky-400 before:!border-b-sky-400">3DS</div>
+				<div className="tooltip bg-sky-400! border-sky-400! before:border-b-sky-400!">3DS</div>
 				<Icon icon="cib:nintendo-3ds" className="text-sky-400" />
 			</button>
 
@@ -50,7 +50,7 @@ export default function PlatformSelect() {
 					selected === "SWITCH" ? "bg-red-100 border-red-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 				}`}
 			>
-				<div className="tooltip !bg-red-400 !border-red-400 before:!border-b-red-400">Switch</div>
+				<div className="tooltip bg-red-400! border-red-400! before:border-b-red-400!">Switch</div>
 				<Icon icon="cib:nintendo-switch" className="text-red-400" />
 			</button>
 		</div>
