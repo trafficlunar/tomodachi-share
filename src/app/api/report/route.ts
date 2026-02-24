@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 import { Prisma, ReportReason, ReportType } from "@prisma/client";
 
@@ -18,6 +19,7 @@ const reportSchema = z.object({
 export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	Sentry.setUser({ id: session.user.id, username: session.user.username });
 
 	const rateLimit = new RateLimit(request, 2);
 	const check = await rateLimit.handle();
@@ -83,6 +85,7 @@ export async function POST(request: NextRequest) {
 		});
 	} catch (error) {
 		console.error("Report creation failed", error);
+		Sentry.captureException(error, { extra: { stage: "create-report" } });
 		return rateLimit.sendResponse({ error: "Failed to create report" }, 500);
 	}
 

@@ -91,11 +91,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 								<input type="text" disabled className="pill input w-full text-sm" value={url} />
 
 								{/* Copy button */}
-								<button
-									className="absolute! top-2.5 right-2.5 cursor-pointer"
-									data-tooltip={hasCopiedUrl ? "Copied!" : "Copy URL"}
-									onClick={handleCopyUrl}
-								>
+								<button className="absolute! top-2.5 right-2.5 cursor-pointer" data-tooltip={hasCopiedUrl ? "Copied!" : "Copy URL"} onClick={handleCopyUrl}>
 									<div className="relative text-xl">
 										{/* Copy icon */}
 										<Icon
@@ -124,14 +120,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 							</div>
 
 							<div className="flex justify-center items-center p-4 w-full bg-orange-100 border border-orange-400 rounded-lg">
-								<Image
-									src={`/mii/${miiId}/image?type=metadata`}
-									alt="mii 'metadata' image"
-									width={248}
-									height={248}
-									unoptimized
-									className="drop-shadow-md"
-								/>
+								<Image src={`/mii/${miiId}/image?type=metadata`} alt="mii 'metadata' image" width={248} height={248} unoptimized className="drop-shadow-md" />
 							</div>
 
 							<div className="flex justify-end gap-2 mt-4">
@@ -158,9 +147,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 											{/* Copy icon */}
 											<Icon
 												icon="solar:copy-bold"
-												className={` transition-all duration-300 ${
-													hasCopiedImage ? "opacity-0 scale-75 rotate-12" : "opacity-100 scale-100 rotate-0"
-												}`}
+												className={` transition-all duration-300 ${hasCopiedImage ? "opacity-0 scale-75 rotate-12" : "opacity-100 scale-100 rotate-0"}`}
 											/>
 
 											{/* Check icon */}
@@ -180,7 +167,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 							</div>
 						</div>
 					</div>,
-					document.body
+					document.body,
 				)}
 		</>
 	);

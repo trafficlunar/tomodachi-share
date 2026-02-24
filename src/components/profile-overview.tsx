@@ -7,12 +7,7 @@ export default async function ProfileOverview() {
 
 	return (
 		<li title="Your profile">
-			<Link
-				href={`/profile/${session?.user.id}`}
-				aria-label="Go to profile"
-				className="pill button gap-2! p-0! h-full max-w-64"
-				data-tooltip="Your Profile"
-			>
+			<Link href={`/profile/${session?.user.id}`} aria-label="Go to profile" className="pill button gap-2! p-0! h-full max-w-64" data-tooltip="Your Profile">
 				<Image
 					src={session?.user?.image ?? "/guest.webp"}
 					alt="profile picture"

@@ -51,8 +51,7 @@ export default async function ProfileInformation({ userId, page }: Props) {
 
 					<div className="mt-3 text-sm flex gap-8">
 						<h4 title={`${user.createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC`}>
-							<span className="font-medium">Created:</span>{" "}
-							{user.createdAt.toLocaleDateString("en-GB", { month: "long", day: "2-digit", year: "numeric" })}
+							<span className="font-medium">Created:</span> {user.createdAt.toLocaleDateString("en-GB", { month: "long", day: "2-digit", year: "numeric" })}
 						</h4>
 						<h4>
 							Liked <span className="font-bold">{likedMiis}</span> Miis

@@ -144,10 +144,8 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		};
 	}, [isOpen, permissionGranted, selectedDeviceId, scanQRCode]);
 
-	if (!isOpen) return null;
-
 	return (
-		<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
+		<div className={`fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40 ${!isOpen ? "hidden" : ""}`}>
 			<div
 				onClick={close}
 				className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
@@ -165,43 +163,41 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 					</button>
 				</div>
 
-				{devices.length > 1 && (
-					<div className="mb-4 flex flex-col gap-1">
-						<label className="text-sm font-semibold">Camera:</label>
-						<div className="relative w-full">
-							{/* Toggle button to open the dropdown */}
-							<button
-								type="button"
-								aria-label="Select camera dropdown"
-								{...getToggleButtonProps({}, { suppressRefError: true })}
-								className="pill input w-full px-2! py-0.5! justify-between! text-sm"
-							>
-								{selectedItem?.label || "Select a camera"}
+				<div className={`mb-4 flex flex-col gap-1 ${devices.length <= 1 ? "hidden" : ""}`}>
+					<label className="text-sm font-semibold">Camera:</label>
+					<div className="relative w-full">
+						{/* Toggle button to open the dropdown */}
+						<button
+							type="button"
+							aria-label="Select camera dropdown"
+							{...getToggleButtonProps({}, { suppressRefError: true })}
+							className="pill input w-full px-2! py-0.5! justify-between! text-sm"
+						>
+							{selectedItem?.label || "Select a camera"}
 
-								<Icon icon="tabler:chevron-down" className="ml-2 size-5" />
-							</button>
+							<Icon icon="tabler:chevron-down" className="ml-2 size-5" />
+						</button>
 
-							{/* Dropdown menu */}
-							<ul
-								{...getMenuProps({}, { suppressRefError: true })}
-								className={`absolute z-50 w-full bg-orange-200 border-2 border-orange-400 rounded-lg mt-1 shadow-lg max-h-60 overflow-y-auto ${
-									isDropdownOpen ? "block" : "hidden"
-								}`}
-							>
-								{isDropdownOpen &&
-									cameraItems.map((item, index) => (
-										<li
-											key={item.value}
-											{...getItemProps({ item, index })}
-											className={`px-4 py-1 cursor-pointer text-sm ${highlightedIndex === index ? "bg-black/15" : ""}`}
-										>
-											{item.label}
-										</li>
-									))}
-							</ul>
-						</div>
+						{/* Dropdown menu */}
+						<ul
+							{...getMenuProps({}, { suppressRefError: true })}
+							className={`absolute z-50 w-full bg-orange-200 border-2 border-orange-400 rounded-lg mt-1 shadow-lg max-h-60 overflow-y-auto ${
+								isDropdownOpen ? "block" : "hidden"
+							}`}
+						>
+							{isDropdownOpen &&
+								cameraItems.map((item, index) => (
+									<li
+										key={item.value}
+										{...getItemProps({ item, index })}
+										className={`px-4 py-1 cursor-pointer text-sm ${highlightedIndex === index ? "bg-black/15" : ""}`}
+									>
+										{item.label}
+									</li>
+								))}
+						</ul>
 					</div>
-				)}
+				</div>
 
 				<div className="relative w-full aspect-square">
 					{!permissionGranted && (

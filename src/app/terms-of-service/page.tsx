@@ -16,8 +16,8 @@ export default function PrivacyPage() {
 			<hr className="border-black/20 mt-1 mb-4" />
 
 			<p>
-				By registering for, or using this service, you confirm that you understand and agree to the terms below. If you do not agree to these terms,
-				you should not use the service.
+				By registering for, or using this service, you confirm that you understand and agree to the terms below. If you do not agree to these terms, you should
+				not use the service.
 			</p>
 			<p className="mt-1">
 				If you have any questions or concerns, please contact me at:{" "}
@@ -54,8 +54,8 @@ export default function PrivacyPage() {
 
 					<section>
 						<p className="mb-2">
-							We reserve the right to suspend or terminate your access to the site at any time if you violate these Terms of Service or engage in any
-							activities that disrupt the functionality of the site.
+							We reserve the right to suspend or terminate your access to the site at any time if you violate these Terms of Service or engage in any activities
+							that disrupt the functionality of the site.
 						</p>
 						<p>
 							To request deletion of your account and personal data, please refer to the{" "}
@@ -81,12 +81,12 @@ export default function PrivacyPage() {
 
 					<section>
 						<p className="mb-2">
-							This service is provided &quot;as is&quot; and without any warranties. We are not responsible for any user-generated content or the
-							actions of users on the site. You use the site at your own risk.
+							This service is provided &quot;as is&quot; and without any warranties. We are not responsible for any user-generated content or the actions of
+							users on the site. You use the site at your own risk.
 						</p>
 						<p>
-							We do not guarantee continuous or secure access to the service and are not liable for any damages resulting from interruptions, loss of
-							data, or unauthorized access.
+							We do not guarantee continuous or secure access to the service and are not liable for any damages resulting from interruptions, loss of data, or
+							unauthorized access.
 						</p>
 					</section>
 				</li>
@@ -98,7 +98,7 @@ export default function PrivacyPage() {
 							If you believe that content uploaded to this site infringes on your copyright, you may submit a DMCA takedown request by emailing{" "}
 							<a href="mailto:hello@trafficlunar.net" className="text-blue-700">
 								hello@trafficlunar.net
-							</a>
+							</a>{" "}
 							or by reporting the Mii on its page.
 						</p>
 						<p className="mb-2">Please include:</p>
@@ -108,8 +108,8 @@ export default function PrivacyPage() {
 							<li>A link to the allegedly infringing material</li>
 							<li>A statement that you have a good faith belief that the use is not authorized</li>
 							<li>
-								A statement that the information in the notice is accurate and, under penalty of perjury, that you are authorized to act on behalf of
-								the copyright owner
+								A statement that the information in the notice is accurate and, under penalty of perjury, that you are authorized to act on behalf of the
+								copyright owner
 							</li>
 							<li>Your electronic or physical signature</li>
 						</ul>
@@ -120,12 +120,12 @@ export default function PrivacyPage() {
 
 					<section>
 						<p className="mb-2">
-							This site is not affiliated with, endorsed by, or associated with Nintendo in any way. &quot;Mii&quot; and all related character designs
-							are trademarks of Nintendo Co., Ltd.
+							This site is not affiliated with, endorsed by, or associated with Nintendo in any way. &quot;Mii&quot; and all related character designs are
+							trademarks of Nintendo Co., Ltd.
 						</p>
 						<p>
-							All Mii-related content is shared by users under the assumption that it does not violate any third-party rights. If you believe your
-							rights have been infringed, please see the DMCA section above.
+							All Mii-related content is shared by users under the assumption that it does not violate any third-party rights. If you believe your rights have
+							been infringed, please see the DMCA section above.
 						</p>
 					</section>
 				</li>
@@ -134,8 +134,8 @@ export default function PrivacyPage() {
 
 					<section>
 						<p className="mb-2">
-							This Terms of Service may be updated from time to time. We encourage you to review the terms periodically to stay informed about the use
-							of the site. We may notify users via a site banner or other means if changes are made to the Terms of Service.
+							This Terms of Service may be updated from time to time. We encourage you to review the terms periodically to stay informed about the use of the
+							site. We may notify users via a site banner or other means if changes are made to the Terms of Service.
 						</p>
 					</section>
 				</li>

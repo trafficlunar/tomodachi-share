@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function Carousel({ images, className }: Props) {
-	const [emblaRef, emblaApi] = useEmblaCarousel();
+	const [emblaRef, emblaApi] = useEmblaCarousel({ duration: 15 });
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 	const [isFocused, setIsFocused] = useState(false);

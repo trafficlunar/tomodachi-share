@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 import { Mii } from "@prisma/client";
 
@@ -28,6 +29,7 @@ const editSchema = z.object({
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	Sentry.setUser({ id: session.user.id, username: session.user.username });
 
 	const rateLimit = new RateLimit(request, 1); // no grouped pathname; edit each mii 1 time a minute
 	const check = await rateLimit.handle();
@@ -128,10 +130,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 					const fileLocation = path.join(miiUploadsDirectory, `image${index}.webp`);
 
 					await fs.writeFile(fileLocation, webpBuffer);
-				})
+				}),
 			);
 		} catch (error) {
 			console.error("Error uploading user images:", error);
+			Sentry.captureException(error, { extra: { stage: "edit-custom-images" } });
 			return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
 		}
 	} else if (description === undefined) {

@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Icon } from "@iconify/react";
 import confetti from "canvas-confetti";
-import ReturnToIsland from "../admin/return-to-island";
 
 interface Slide {
 	// step is never used, undefined is assumed as a step
@@ -30,7 +29,7 @@ interface Props {
 export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 	const [isVisible, setIsVisible] = useState(false);
 
-	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 15 });
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	// Build index map
@@ -102,9 +101,7 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 		<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
 			<div
 				onClick={close}
-				className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
-					isVisible ? "opacity-100" : "opacity-0"
-				}`}
+				className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}
 			/>
 
 			<div
@@ -191,11 +188,7 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 						</button>
 
 						{/* Only show tutorial name on step slides */}
-						<span
-							className={`text-sm transition-opacity duration-300 ${
-								(currentSlide.type === "finish" || currentSlide.type === "start") && "opacity-0"
-							}`}
-						>
+						<span className={`text-sm transition-opacity duration-300 ${(currentSlide.type === "finish" || currentSlide.type === "start") && "opacity-0"}`}>
 							{currentSlide?.tutorialTitle}
 						</span>
 

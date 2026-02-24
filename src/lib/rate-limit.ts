@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, RedisClientType } from "redis";
+import * as Sentry from "@sentry/nextjs";
 import { auth } from "./auth";
 
 const WINDOW_SIZE = 60;
@@ -17,7 +18,10 @@ async function getRedisClient() {
 		client = createClient({
 			url: process.env.REDIS_URL,
 		});
-		client.on("error", (err) => console.error("Redis client error", err));
+		client.on("error", (error) => {
+			console.error("Redis client error", error);
+			Sentry.captureException(error, { tags: { source: "redis-client" } });
+		});
 		await client.connect();
 	}
 	return client;
@@ -67,6 +71,7 @@ export class RateLimit {
 			return { success, limit: this.maxRequests, remaining, expires: expireAt };
 		} catch (error) {
 			console.error("Rate limit check failed", error);
+			Sentry.captureException(error, { tags: { source: "rate-limit-check" } });
 			return {
 				success: false,
 				limit: this.maxRequests,

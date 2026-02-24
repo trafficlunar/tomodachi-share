@@ -54,10 +54,7 @@ export default function AdminBanner() {
 						<span>{data.message}</span>
 					</div>
 
-					<button
-						onClick={handleClose}
-						className="min-sm:absolute right-2 cursor-pointer p-1.5"
-					>
+					<button onClick={handleClose} className="min-sm:absolute right-2 cursor-pointer p-1.5">
 						<Icon icon="humbleicons:times" className="text-2xl min-w-6" />
 					</button>
 				</div>

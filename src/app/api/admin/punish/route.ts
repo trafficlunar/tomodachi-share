@@ -21,7 +21,7 @@ const punishSchema = z.object({
 			z.object({
 				id: z.number({ error: "Mii ID must be a number" }).int({ error: "Mii ID must be an integer" }).positive({ error: "Mii ID must be valid" }),
 				reason: z.string(),
-			})
+			}),
 		)
 		.optional(),
 });

@@ -43,7 +43,7 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 			};
 			reader.readAsDataURL(file);
 		},
-		[setQrBytesRaw]
+		[setQrBytesRaw],
 	);
 
 	return (

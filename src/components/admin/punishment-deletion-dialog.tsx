@@ -87,7 +87,7 @@ export default function PunishmentDeletionDialog({ punishmentId }: Props) {
 							</div>
 						</div>
 					</div>,
-					document.body
+					document.body,
 				)}
 		</>
 	);

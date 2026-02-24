@@ -15,6 +15,7 @@ import ShareMiiButton from "@/components/share-mii-button";
 import ThreeDsScanTutorialButton from "@/components/tutorial/3ds-scan";
 import SwitchScanTutorialButton from "@/components/tutorial/switch-scan";
 import Description from "@/components/description";
+import { MiiPlatform } from "@prisma/client";
 
 interface Props {
 	params: Promise<{ id: string }>;
@@ -48,13 +49,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	return {
 		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `${mii.name} - TomodachiShare`,
-		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+		description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 		keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection", ...mii.tags],
 		creator: mii.user.username,
 		openGraph: {
 			type: "article",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 			images: [
 				{
 					url: metadataImageUrl,
@@ -67,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		twitter: {
 			card: "summary_large_image",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 			images: [
 				{
 					url: metadataImageUrl,
@@ -125,8 +126,8 @@ export default async function MiiPage({ params }: Props) {
 							<ImageViewer
 								src={`/mii/${mii.id}/image?type=mii`}
 								alt="mii headshot"
-								width={200}
-								height={200}
+								width={250}
+								height={250}
 								className="drop-shadow-lg hover:scale-105 transition-transform"
 							/>
 						</div>
@@ -234,7 +235,6 @@ export default async function MiiPage({ params }: Props) {
 								{/* Submission name */}
 								<h1 className="text-4xl font-extrabold wrap-break-word text-amber-700">{mii.name}</h1>
 								{/* Like button */}
-								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={(mii.likedBy ?? []).length > 0} isLoggedIn={session?.user != null} big />
 								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={(mii.likedBy ?? []).length > 0} isLoggedIn={session?.user != null} big />
 							</div>
 							{/* Tags */}

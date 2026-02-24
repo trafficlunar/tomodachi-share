@@ -54,11 +54,7 @@ export default function Footer() {
 						•
 					</span>
 
-					<a
-						href="https://trafficlunar.net"
-						target="_blank"
-						className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline group"
-					>
+					<a href="https://trafficlunar.net" target="_blank" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline group">
 						Made by <span className="text-orange-400 group-hover:text-orange-500 font-medium transition-colors duration-200">trafficlunar</span>
 					</a>
 				</div>

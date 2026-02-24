@@ -35,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 					changeFrequency: "weekly",
 					priority: 0.7,
 					images: [`${baseUrl}/mii/${mii.id}/image?type=metadata`],
-				} as SitemapRoute)
+				}) as SitemapRoute,
 		),
 		...users.map(
 			(user) =>
@@ -44,7 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 					lastModified: user.updatedAt,
 					changeFrequency: "weekly",
 					priority: 0.2,
-				} as SitemapRoute)
+				}) as SitemapRoute,
 		),
 	];
 

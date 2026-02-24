@@ -76,7 +76,7 @@ export default function SubmitDialogButton({ title, description, onSubmit, error
 							</div>
 						</div>
 					</div>,
-					document.body
+					document.body,
 				)}
 		</>
 	);

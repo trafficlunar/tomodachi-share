@@ -7,9 +7,7 @@ sjcl.beware["CTR mode is dangerous because it doesn't protect message integrity.
 // Converts hair dye to studio color
 // Reference: https://github.com/ariankordi/nwf-mii-cemu-toy/blob/9906440c1dafbe3f40ac8b95e10a22ebd85b441e/assets/data-conversion.js#L282
 // (Credits to kat21)
-const hairDyeConverter = [
-	55, 51, 50, 12, 16, 12, 67, 61, 51, 64, 69, 66, 65, 86, 85, 93, 92, 19, 20, 20, 15, 32, 35, 26, 38, 41, 43, 18, 95, 97, 97, 99,
-];
+const hairDyeConverter = [55, 51, 50, 12, 16, 12, 67, 61, 51, 64, 69, 66, 65, 86, 85, 93, 92, 19, 20, 20, 15, 32, 35, 26, 38, 41, 43, 18, 95, 97, 97, 99];
 
 // All possible values for 2-bit hair dye mode.
 export enum HairDyeMode {

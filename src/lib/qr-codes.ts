@@ -17,14 +17,13 @@ import { TomodachiLifeMii, HairDyeMode } from "./tomodachi-life-mii";
 // In "sjcl-with-all" v1.0.8 from npm, the name is "u"
 
 /** Private _ctrMode function defined here: {@link https://github.com/bitwiseshiftleft/sjcl/blob/85caa53c281eeeb502310013312c775d35fe0867/core/ccm.js#L194} */
-const sjclCcmCtrMode: ((
-	prf: sjcl.SjclCipher, data: sjcl.BitArray, iv: sjcl.BitArray,
-	tag: sjcl.BitArray, tlen: number, L: number
-) => { data: sjcl.BitArray; tag: sjcl.BitArray }) | undefined =
+const sjclCcmCtrMode:
+	| ((prf: sjcl.SjclCipher, data: sjcl.BitArray, iv: sjcl.BitArray, tag: sjcl.BitArray, tlen: number, L: number) => { data: sjcl.BitArray; tag: sjcl.BitArray })
+	| undefined =
 	// @ts-expect-error -- Referencing a private function that is not in the types.
 	sjcl.mode.ccm.u; // NOTE: This may need to be changed with a different sjcl build. Read above
 
-export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: TomodachiLifeMii } {
+export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: TomodachiLifeMii } | never {
 	// Decrypt 96 byte 3DS/Wii U format Mii data from the QR code.
 	// References (Credits: jaames, kazuki-4ys):
 	// - https://gist.github.com/jaames/96ce8daa11b61b758b6b0227b55f9f78
@@ -32,7 +31,9 @@ export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: 
 
 	// Check that the private _ctrMode function is defined.
 	if (!sjclCcmCtrMode) {
-		throw new Error("Private sjcl.mode.ccm._ctrMode function cannot be found. The build of sjcl expected may have changed. Read src/lib/qr-codes.ts for more details.");
+		throw new Error(
+			"Private sjcl.mode.ccm._ctrMode function cannot be found. The build of sjcl expected may have changed. Read src/lib/qr-codes.ts for more details.",
+		);
 	}
 
 	// Verify that the length is not smaller than expected.
@@ -52,9 +53,11 @@ export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: 
 	// Isolate the actual ciphertext from the tag and adjust IV.
 	// Copied from sjcl.mode.ccm.decrypt: https://github.com/bitwiseshiftleft/sjcl/blob/85caa53c281eeeb502310013312c775d35fe0867/core/ccm.js#L83
 	const tlen = 128; // Tag length in bits.
-	const dataWithoutTag = sjcl.bitArray.clamp(encryptedBits,
+	const dataWithoutTag = sjcl.bitArray.clamp(
+		encryptedBits,
 		// remove tag from out, tag length = 128
-		sjcl.bitArray.bitLength(encryptedBits) - tlen);
+		sjcl.bitArray.bitLength(encryptedBits) - tlen,
+	);
 
 	let decryptedBits: { data: sjcl.BitArray };
 	try {
@@ -93,7 +96,7 @@ export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: 
 			case HairDyeMode.HairEyebrowBeard:
 				mii.eyebrowColor = tomodachiLifeMii.studioHairColor;
 				mii.facialHairColor = tomodachiLifeMii.studioHairColor;
-				// Fall-through and also apply to hair.
+			// Fall-through and also apply to hair.
 			case HairDyeMode.Hair:
 				mii.hairColor = tomodachiLifeMii.studioHairColor;
 				break;

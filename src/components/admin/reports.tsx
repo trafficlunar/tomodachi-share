@@ -42,8 +42,8 @@ export default async function Reports() {
 										report.status == "OPEN"
 											? "bg-orange-200 text-orange-800 border-orange-400"
 											: report.status == "RESOLVED"
-											? "bg-green-200 text-green-800 border-green-400"
-											: "bg-zinc-200 text-zinc-800 border-zinc-400"
+												? "bg-green-200 text-green-800 border-green-400"
+												: "bg-zinc-200 text-zinc-800 border-zinc-400"
 									}`}
 								>
 									{report.status}
@@ -68,10 +68,7 @@ export default async function Reports() {
 						<div className="grid grid-cols-4 text-xs text-zinc-600 mt-4 max-sm:grid-cols-2">
 							<div>
 								<p>Target ID</p>
-								<Link
-									href={report.reportType === "MII" ? `/mii/${report.targetId}` : `/profile/${report.targetId}`}
-									className="text-blue-600 text-sm"
-								>
+								<Link href={report.reportType === "MII" ? `/mii/${report.targetId}` : `/profile/${report.targetId}`} className="text-blue-600 text-sm">
 									{report.targetId}
 								</Link>
 							</div>
