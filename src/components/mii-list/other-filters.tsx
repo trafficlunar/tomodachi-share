@@ -32,7 +32,7 @@ export default function OtherFilters() {
 			<label htmlFor="allowCopying" className="text-sm">
 				Allow Copying
 			</label>
-			<input type="checkbox" name="allowCopying" className="checkbox-alt" checked={allowCopying} onChange={handleChangeAllowCopying} />
+			<input type="checkbox" id="allowCopying" className="checkbox-alt" checked={allowCopying} onChange={handleChangeAllowCopying} />
 		</div>
 	);
 }

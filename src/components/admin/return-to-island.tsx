@@ -30,7 +30,7 @@ export default function ReturnToIsland({ hasExpired }: Props) {
 			<div className="flex justify-center items-center gap-2">
 				<input
 					type="checkbox"
-					name="agreement"
+					id="agreement"
 					disabled={hasExpired}
 					checked={isChecked}
 					onChange={(e) => setIsChecked(e.target.checked)}

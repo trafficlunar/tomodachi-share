@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FileWithPath } from "react-dropzone";
 import { Icon } from "@iconify/react";
 
@@ -12,15 +12,17 @@ import { MiiGender, MiiPlatform } from "@prisma/client";
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 import { convertQrCode } from "@/lib/qr-codes";
 import Mii from "@/lib/mii.js/mii";
-import { TomodachiLifeMii } from "@/lib/tomodachi-life-mii";
+import { ThreeDsTomodachiLifeMii } from "@/lib/three-ds-tomodachi-life-mii";
+import { SwitchMiiInstructions } from "@/types";
 
 import TagSelector from "../tag-selector";
 import ImageList from "./image-list";
 import PortraitUpload from "./portrait-upload";
 import QrUpload from "./qr-upload";
 import QrScanner from "./qr-scanner";
-import SwitchSubmitTutorialButton from "../tutorial/switch-submit";
 import ThreeDsSubmitTutorialButton from "../tutorial/3ds-submit";
+import MiiEditor from "./mii-editor";
+import SwitchSubmitTutorialButton from "../tutorial/switch-submit";
 import LikeButton from "../like-button";
 import Carousel from "../carousel";
 import SubmitButton from "../submit-button";
@@ -48,6 +50,53 @@ export default function SubmitForm() {
 
 	const [platform, setPlatform] = useState<MiiPlatform>("SWITCH");
 	const [gender, setGender] = useState<MiiGender>("MALE");
+	const instructions = useRef<SwitchMiiInstructions>({
+		head: { type: 0, skinColor: 0 },
+		hair: {
+			setType: 0,
+			bangsType: 0,
+			backType: 0,
+			color: 0,
+			subColor: 0,
+			style: 0,
+			isFlipped: false,
+		},
+		eyebrows: { type: 0, color: 0, height: 0, distance: 0, rotation: 0, size: 0, stretch: 0 },
+		eyes: {
+			eyesType: 0,
+			eyelashesTop: 0,
+			eyelashesBottom: 0,
+			eyelidTop: 0,
+			eyelidBottom: 0,
+			eyeliner: 0,
+			pupil: 0,
+			color: 0,
+			height: 0,
+			distance: 0,
+			rotation: 0,
+			size: 0,
+			stretch: 0,
+		},
+		nose: { type: 0, height: 0, size: 0 },
+		lips: { type: 0, color: 0, height: 0, rotation: 0, size: 0, stretch: 0, hasLipstick: false },
+		ears: { type: 0, height: 0, size: 0 },
+		glasses: { type: 0, ringColor: 0, shadesColor: 0, height: 0, size: 0, stretch: 0 },
+		other: {
+			wrinkles1: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
+			wrinkles2: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
+			beard: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
+			moustache: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
+			goatee: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
+			mole: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
+			eyeShadow: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
+			blush: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
+		},
+		height: 0,
+		weight: 0,
+		datingPreferences: [],
+		voice: { speed: 0, pitch: 0, depth: 0, delivery: 0, tone: 0 },
+		personality: { movement: 0, speech: 0, energy: 0, thinking: 0, overall: 0 },
+	});
 
 	const [error, setError] = useState<string | undefined>(undefined);
 
@@ -70,13 +119,14 @@ export default function SubmitForm() {
 		formData.append("name", name);
 		formData.append("tags", JSON.stringify(tags));
 		formData.append("description", description);
-		formData.append("qrBytesRaw", JSON.stringify(qrBytesRaw));
 		files.forEach((file, index) => {
 			// image1, image2, etc.
 			formData.append(`image${index + 1}`, file);
 		});
 
-		if (platform === "SWITCH") {
+		if (platform === "THREE_DS") {
+			formData.append("qrBytesRaw", JSON.stringify(qrBytesRaw));
+		} else if (platform === "SWITCH") {
 			const response = await fetch(miiPortraitUri!);
 
 			if (!response.ok) {
@@ -92,6 +142,7 @@ export default function SubmitForm() {
 
 			formData.append("gender", gender);
 			formData.append("miiPortraitImage", blob);
+			formData.append("instructions", JSON.stringify(instructions.current));
 		}
 
 		const response = await fetch("/api/submit", {
@@ -109,7 +160,7 @@ export default function SubmitForm() {
 	};
 
 	useEffect(() => {
-		if (qrBytesRaw.length == 0) return;
+		if (platform === "SWITCH" || qrBytesRaw.length == 0) return;
 		const qrBytes = new Uint8Array(qrBytesRaw);
 
 		const preview = async () => {
@@ -123,7 +174,7 @@ export default function SubmitForm() {
 
 			// Convert QR code to JS (3DS)
 			if (platform === "THREE_DS") {
-				let conversion: { mii: Mii; tomodachiLifeMii: TomodachiLifeMii };
+				let conversion: { mii: Mii; tomodachiLifeMii: ThreeDsTomodachiLifeMii };
 				try {
 					conversion = convertQrCode(qrBytes);
 					setMiiPortraitUri(conversion.mii.studioUrl({ width: 512 }));
@@ -153,7 +204,13 @@ export default function SubmitForm() {
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
 				<div className="w-75 h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
-					<Carousel images={[miiPortraitUri ?? "/loading.svg", generatedQrCodeUri ?? "/loading.svg", ...files.map((file) => URL.createObjectURL(file))]} />
+					<Carousel
+						images={[
+							miiPortraitUri ?? "/loading.svg",
+							...(platform === "THREE_DS" ? [generatedQrCodeUri ?? "/loading.svg"] : []),
+							...files.map((file) => URL.createObjectURL(file)),
+						]}
+					/>
 
 					<div className="p-4 flex flex-col gap-1 h-full">
 						<h1 className="font-bold text-2xl line-clamp-1" title={name}>
@@ -234,7 +291,7 @@ export default function SubmitForm() {
 						Name
 					</label>
 					<input
-						name="name"
+						id="name"
 						type="text"
 						className="pill input w-full col-span-2"
 						minLength={2}
@@ -258,7 +315,7 @@ export default function SubmitForm() {
 						Description
 					</label>
 					<textarea
-						name="description"
+						id="description"
 						rows={5}
 						maxLength={256}
 						placeholder="(optional) Type a description..."
@@ -269,92 +326,100 @@ export default function SubmitForm() {
 				</div>
 
 				{/* Gender (switch only) */}
-				{platform === "SWITCH" && (
-					<div className="w-full grid grid-cols-3 items-start">
-						<label htmlFor="gender" className="font-semibold py-2">
-							Gender
-						</label>
-						<div className="col-span-2 flex gap-1">
-							<button
-								type="button"
-								onClick={() => setGender("MALE")}
-								aria-label="Filter for Male Miis"
-								data-tooltip="Male"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-blue-400! after:border-blue-400! before:border-b-blue-400!  ${
-									gender === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
-							>
-								<Icon icon="foundation:male" className="text-blue-400" />
-							</button>
+				<div className={`w-full grid grid-cols-3 items-start ${platform === "SWITCH" ? "" : "hidden"}`}>
+					<label htmlFor="gender" className="font-semibold py-2">
+						Gender
+					</label>
+					<div className="col-span-2 flex gap-1">
+						<button
+							type="button"
+							onClick={() => setGender("MALE")}
+							aria-label="Filter for Male Miis"
+							data-tooltip="Male"
+							className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-blue-400! after:border-blue-400! before:border-b-blue-400!  ${
+								gender === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+							}`}
+						>
+							<Icon icon="foundation:male" className="text-blue-400" />
+						</button>
 
-							<button
-								type="button"
-								onClick={() => setGender("FEMALE")}
-								aria-label="Filter for Female Miis"
-								data-tooltip="Female"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${
-									gender === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
-							>
-								<Icon icon="foundation:female" className="text-pink-400" />
-							</button>
+						<button
+							type="button"
+							onClick={() => setGender("FEMALE")}
+							aria-label="Filter for Female Miis"
+							data-tooltip="Female"
+							className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${
+								gender === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+							}`}
+						>
+							<Icon icon="foundation:female" className="text-pink-400" />
+						</button>
 
-							<button
-								type="button"
-								onClick={() => setGender("NONBINARY")}
-								aria-label="Filter for Nonbinary Miis"
-								data-tooltip="Nonbinary"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400!  ${
-									gender === "NONBINARY" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
-							>
-								<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
-							</button>
-						</div>
+						<button
+							type="button"
+							onClick={() => setGender("NONBINARY")}
+							aria-label="Filter for Nonbinary Miis"
+							data-tooltip="Nonbinary"
+							className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400!  ${
+								gender === "NONBINARY" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+							}`}
+						>
+							<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
+						</button>
 					</div>
-				)}
-
-				{platform === "SWITCH" && (
-					<>
-						{/* Separator */}
-						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
-							<hr className="grow border-zinc-300" />
-							<span>Mii Portrait</span>
-							<hr className="grow border-zinc-300" />
-						</div>
-
-						<div className="flex flex-col items-center gap-2">
-							<PortraitUpload setImage={setMiiPortraitUri} />
-						</div>
-					</>
-				)}
-
-				{/* QR code selector */}
-				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
-					<hr className="grow border-zinc-300" />
-					<span>QR Code</span>
-					<hr className="grow border-zinc-300" />
 				</div>
 
-				<div className="flex flex-col items-center gap-2">
-					<QrUpload setQrBytesRaw={setQrBytesRaw} />
-					<span>or</span>
+				{/* (Switch Only) Mii Portrait */}
+				<div className={`${platform === "SWITCH" ? "" : "hidden"}`}>
+					{/* Separator */}
+					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+						<hr className="grow border-zinc-300" />
+						<span>Mii Portrait</span>
+						<hr className="grow border-zinc-300" />
+					</div>
 
-					<button type="button" aria-label="Use your camera" onClick={() => setIsQrScannerOpen(true)} className="pill button gap-2">
-						<Icon icon="mdi:camera" fontSize={20} />
-						Use your camera
-					</button>
+					<div className="flex flex-col items-center gap-2">
+						<PortraitUpload setImage={setMiiPortraitUri} />
+					</div>
+				</div>
 
-					<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
-					{platform === "THREE_DS" ? (
-						<>
-							<ThreeDsSubmitTutorialButton />
+				{/* (3DS only) QR code scanning */}
+				<div className={`${platform === "THREE_DS" ? "" : "hidden"}`}>
+					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+						<hr className="grow border-zinc-300" />
+						<span>QR Code</span>
+						<hr className="grow border-zinc-300" />
+					</div>
 
-							<span className="text-xs text-zinc-400">For emulators, aes_keys.txt is required.</span>
-						</>
-					) : (
+					<div className="flex flex-col items-center gap-2">
+						<QrUpload setQrBytesRaw={setQrBytesRaw} />
+						<span>or</span>
+
+						<button type="button" aria-label="Use your camera" onClick={() => setIsQrScannerOpen(true)} className="pill button gap-2">
+							<Icon icon="mdi:camera" fontSize={20} />
+							Use your camera
+						</button>
+
+						<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
+						<ThreeDsSubmitTutorialButton />
+
+						<span className="text-xs text-zinc-400">For emulators, aes_keys.txt is required.</span>
+					</div>
+				</div>
+
+				{/* (Switch only) Mii instructions */}
+				<div className={`${platform === "SWITCH" ? "" : "hidden"}`}>
+					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+						<hr className="grow border-zinc-300" />
+						<span>Mii Instructions</span>
+						<hr className="grow border-zinc-300" />
+					</div>
+
+					<div className="flex flex-col items-center gap-2">
+						<MiiEditor instructions={instructions} />
 						<SwitchSubmitTutorialButton />
-					)}
+						<span className="text-xs text-zinc-400">Instructions are recommended, but not required.</span>
+					</div>
 				</div>
 
 				{/* Custom images selector */}

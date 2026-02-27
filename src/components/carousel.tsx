@@ -19,7 +19,9 @@ export default function Carousel({ images, className }: Props) {
 
 	useEffect(() => {
 		if (!emblaApi) return;
+		emblaApi.reInit();
 		setScrollSnaps(emblaApi.scrollSnapList());
+		setSelectedIndex(0);
 		emblaApi.on("select", () => setSelectedIndex(emblaApi.selectedScrollSnap()));
 	}, [images, emblaApi]);
 
@@ -74,20 +76,20 @@ export default function Carousel({ images, className }: Props) {
 					>
 						<Icon icon="ic:round-chevron-right" />
 					</button>
-
-					<div className="flex justify-center p-2 gap-2 absolute right-0">
-						{scrollSnaps.map((_, index) => (
-							<button
-								key={index}
-								type="button"
-								aria-label={`Go to ${index} in Carousel`}
-								onClick={() => emblaApi?.scrollTo(index)}
-								className={`size-1.5 cursor-pointer rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
-							/>
-						))}
-					</div>
 				</>
 			)}
+
+			<div className="flex justify-center p-2 gap-2 absolute right-0">
+				{scrollSnaps.map((_, index) => (
+					<button
+						key={index}
+						type="button"
+						aria-label={`Go to ${index} in Carousel`}
+						onClick={() => emblaApi?.scrollTo(index)}
+						className={`size-1.5 cursor-pointer rounded-full ${index === selectedIndex ? "bg-black" : "bg-black/25"}`}
+					/>
+				))}
+			</div>
 		</div>
 	);
 }

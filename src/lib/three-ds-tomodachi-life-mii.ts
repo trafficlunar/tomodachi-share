@@ -1,4 +1,4 @@
-import { TOMODACHI_LIFE_DECRYPTION_KEY } from "../lib/constants";
+import { TOMODACHI_LIFE_DECRYPTION_KEY } from "./constants";
 import sjcl from "sjcl-with-all";
 
 // @ts-expect-error - This is not in the types, but it's a function needed to enable CTR mode.
@@ -19,7 +19,7 @@ export enum HairDyeMode {
 
 // Reference: https://github.com/ariankordi/nwf-mii-cemu-toy/blob/ffl-renderer-proto-integrate/assets/kaitai-structs/tomodachi_life_qr_code.ksy
 // (Credits to ariankordi for the byte locations)
-export class TomodachiLifeMii {
+export class ThreeDsTomodachiLifeMii {
 	firstName: string;
 	lastName: string;
 	islandName: string;
@@ -73,7 +73,7 @@ export class TomodachiLifeMii {
 		this.studioHairColor = hairDyeConverter[this.hairDye];
 	}
 
-	static fromBytes(bytes: Uint8Array): TomodachiLifeMii {
+	static fromBytes(bytes: Uint8Array): ThreeDsTomodachiLifeMii {
 		const iv = bytes.subarray(0x70, 128);
 		const encryptedExtraData = bytes.subarray(128, -4);
 
@@ -88,7 +88,7 @@ export class TomodachiLifeMii {
 		const decryptedExtraData = sjcl.codec.bytes.fromBits(decryptedBits);
 		const data = new Uint8Array(decryptedExtraData);
 
-		return new TomodachiLifeMii(data.buffer);
+		return new ThreeDsTomodachiLifeMii(data.buffer);
 	}
 
 	private readUtf16String(buffer: ArrayBuffer, offset: number, byteLength: number): string {

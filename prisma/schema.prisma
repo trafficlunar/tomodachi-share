@@ -78,6 +78,7 @@ model Mii {
   description String?     @db.VarChar(256)
   platform    MiiPlatform @default(THREE_DS)
 
+  instructions   Json?
   firstName      String?
   lastName       String?
   gender         MiiGender?

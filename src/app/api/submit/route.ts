@@ -12,13 +12,14 @@ import { MiiGender, MiiPlatform } from "@prisma/client";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { nameSchema, tagsSchema } from "@/lib/schemas";
+import { nameSchema, switchMiiInstructionsSchema, tagsSchema } from "@/lib/schemas";
 import { RateLimit } from "@/lib/rate-limit";
-
 import { generateMetadataImage, validateImage } from "@/lib/images";
 import { convertQrCode } from "@/lib/qr-codes";
 import Mii from "@/lib/mii.js/mii";
-import { TomodachiLifeMii } from "@/lib/tomodachi-life-mii";
+import { ThreeDsTomodachiLifeMii } from "@/lib/three-ds-tomodachi-life-mii";
+
+import { SwitchMiiInstructions } from "@/types";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
@@ -32,11 +33,15 @@ const submitSchema = z
 		// Switch
 		gender: z.enum(MiiGender).default("MALE"),
 		miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
+		instructions: switchMiiInstructionsSchema,
 
 		// QR code
-		qrBytesRaw: z.array(z.number(), { error: "A QR code is required" }).length(372, {
-			error: "QR code size is not a valid Tomodachi Life QR code",
-		}),
+		qrBytesRaw: z
+			.array(z.number(), { error: "A QR code is required" })
+			.length(372, {
+				error: "QR code size is not a valid Tomodachi Life QR code",
+			})
+			.nullish(),
 
 		// Custom images
 		image1: z.union([z.instanceof(File), z.any()]).optional(),
@@ -53,8 +58,8 @@ const submitSchema = z
 			return true;
 		},
 		{
-			message: "Gender and Mii portrait image are required for Switch platform",
-			path: ["gender", "miiPortraitImage"],
+			message: "Gender, Mii portrait image, and instructions are required for Switch platform",
+			path: ["gender", "miiPortraitImage", "instructions"],
 		},
 	);
 
@@ -95,6 +100,7 @@ export async function POST(request: NextRequest) {
 
 		gender: formData.get("gender") ?? undefined, // ZOD MOMENT
 		miiPortraitImage: formData.get("miiPortraitImage"),
+		instructions: JSON.parse((formData.get("instructions") as string) ?? {}),
 
 		qrBytesRaw: rawQrBytesRaw,
 
@@ -103,7 +109,19 @@ export async function POST(request: NextRequest) {
 		image3: formData.get("image3"),
 	});
 
-	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
+	if (!parsed.success) {
+		const error = parsed.error.issues[0].message;
+		const issues = parsed.error.issues;
+		const hasInstructionsErrors = issues.some((issue) => issue.path[0] === "instructions");
+
+		if (hasInstructionsErrors) {
+			Sentry.captureException(error, {
+				extra: { issues, rawInstructions: formData.get("instructions"), stage: "submit-instructions" },
+			});
+		}
+
+		return rateLimit.sendResponse({ error }, 400);
+	}
 	const {
 		platform,
 		name: uncensoredName,
@@ -112,6 +130,7 @@ export async function POST(request: NextRequest) {
 		qrBytesRaw,
 		gender,
 		miiPortraitImage,
+		instructions,
 		image1,
 		image2,
 		image3,
@@ -137,15 +156,41 @@ export async function POST(request: NextRequest) {
 	}
 
 	// Check Mii portrait image as well (Switch)
+	let minifiedInstructions: Partial<SwitchMiiInstructions>;
 	if (platform === "SWITCH") {
 		const imageValidation = await validateImage(miiPortraitImage);
 		if (!imageValidation.valid) return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
+
+		// Minimize instructions to save space and improve user experience
+		function minimize(object: Partial<SwitchMiiInstructions>): Partial<SwitchMiiInstructions> {
+			for (const key in object) {
+				const value = object[key as keyof SwitchMiiInstructions];
+
+				if (!value) {
+					delete object[key as keyof SwitchMiiInstructions];
+					continue;
+				}
+
+				// Recurse into nested objects
+				if (typeof value === "object") {
+					minimize(value as Partial<SwitchMiiInstructions>);
+
+					if (Object.keys(value).length === 0) {
+						delete object[key as keyof SwitchMiiInstructions];
+					}
+				}
+			}
+
+			return object;
+		}
+
+		minifiedInstructions = minimize(instructions as SwitchMiiInstructions);
 	}
 
-	const qrBytes = new Uint8Array(qrBytesRaw);
+	const qrBytes = new Uint8Array(qrBytesRaw ?? []);
 
 	// Convert QR code to JS (3DS)
-	let conversion: { mii: Mii; tomodachiLifeMii: TomodachiLifeMii } | undefined;
+	let conversion: { mii: Mii; tomodachiLifeMii: ThreeDsTomodachiLifeMii } | undefined;
 	if (platform === "THREE_DS") {
 		try {
 			conversion = convertQrCode(qrBytes);
@@ -166,14 +211,17 @@ export async function POST(request: NextRequest) {
 			gender: gender ?? "MALE",
 
 			// Automatically detect certain information if on 3DS
-			...(platform === "THREE_DS" &&
-				conversion && {
-					firstName: conversion.tomodachiLifeMii.firstName,
-					lastName: conversion.tomodachiLifeMii.lastName,
-					gender: conversion.mii.gender == 0 ? MiiGender.MALE : MiiGender.FEMALE,
-					islandName: conversion.tomodachiLifeMii.islandName,
-					allowedCopying: conversion.mii.allowCopying,
-				}),
+			...(platform === "THREE_DS"
+				? conversion && {
+						firstName: conversion.tomodachiLifeMii.firstName,
+						lastName: conversion.tomodachiLifeMii.lastName,
+						gender: conversion.mii.gender == 0 ? MiiGender.MALE : MiiGender.FEMALE,
+						islandName: conversion.tomodachiLifeMii.islandName,
+						allowedCopying: conversion.mii.allowCopying,
+					}
+				: {
+						instructions,
+					}),
 		},
 	});
 
@@ -212,30 +260,32 @@ export async function POST(request: NextRequest) {
 		return rateLimit.sendResponse({ error: "Failed to download/store Mii portrait" }, 500);
 	}
 
-	try {
-		// Generate a new QR code for aesthetic reasons
-		const byteString = String.fromCharCode(...qrBytes);
-		const generatedCode = qrcode(0, "L");
-		generatedCode.addData(byteString, "Byte");
-		generatedCode.make();
+	if (platform === "THREE_DS") {
+		try {
+			// Generate a new QR code for aesthetic reasons
+			const byteString = String.fromCharCode(...qrBytes);
+			const generatedCode = qrcode(0, "L");
+			generatedCode.addData(byteString, "Byte");
+			generatedCode.make();
 
-		// Store QR code
-		const codeDataUrl = generatedCode.createDataURL();
-		const codeBase64 = codeDataUrl.replace(/^data:image\/gif;base64,/, "");
-		const codeBuffer = Buffer.from(codeBase64, "base64");
+			// Store QR code
+			const codeDataUrl = generatedCode.createDataURL();
+			const codeBase64 = codeDataUrl.replace(/^data:image\/gif;base64,/, "");
+			const codeBuffer = Buffer.from(codeBase64, "base64");
 
-		// Compress and store
-		const codeWebpBuffer = await sharp(codeBuffer).webp({ quality: 85 }).toBuffer();
-		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
+			// Compress and store
+			const codeWebpBuffer = await sharp(codeBuffer).webp({ quality: 85 }).toBuffer();
+			const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
 
-		await fs.writeFile(codeFileLocation, codeWebpBuffer);
-	} catch (error) {
-		// Clean up if something went wrong
-		await prisma.mii.delete({ where: { id: miiRecord.id } });
+			await fs.writeFile(codeFileLocation, codeWebpBuffer);
+		} catch (error) {
+			// Clean up if something went wrong
+			await prisma.mii.delete({ where: { id: miiRecord.id } });
 
-		console.error("Error processing Mii files:", error);
-		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "file-processing" } });
-		return rateLimit.sendResponse({ error: "Failed to process and store Mii files" }, 500);
+			console.error("Error processing Mii files:", error);
+			Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "file-processing" } });
+			return rateLimit.sendResponse({ error: "Failed to process and store Mii files" }, 500);
+		}
 	}
 
 	try {

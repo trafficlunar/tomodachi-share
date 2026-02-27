@@ -9,11 +9,7 @@ export default function SubmitTutorialButton() {
 
 	return (
 		<>
-			<button
-				type="button"
-				onClick={() => setIsOpen(true)}
-				className="text-sm text-orange-400 cursor-pointer underline-offset-2 hover:underline"
-			>
+			<button type="button" onClick={() => setIsOpen(true)} className="text-sm text-orange-400 cursor-pointer underline-offset-2 hover:underline">
 				How to?
 			</button>
 
@@ -22,47 +18,9 @@ export default function SubmitTutorialButton() {
 					<Tutorial
 						tutorials={[
 							{
-								title: "Allow Copying",
-								thumbnail: "/tutorial/switch/allow-copying/thumbnail.png",
-								hint: "Suggested!",
-								steps: [
-									{ type: "start" },
-									{
-										text: "1. Enter the town hall",
-										imageSrc: "/tutorial/switch/step1.png",
-									},
-									{
-										text: "2. Go into 'Mii List'",
-										imageSrc: "/tutorial/switch/allow-copying/step2.png",
-									},
-									{
-										text: "3. Select and edit the Mii you wish to submit",
-										imageSrc: "/tutorial/switch/allow-copying/step3.png",
-									},
-									{
-										text: "4. Click 'Other Settings' in the information screen",
-										imageSrc: "/tutorial/switch/allow-copying/step4.png",
-									},
-									{
-										text: "5. Click on 'Don't Allow' under the 'Copying' text",
-										imageSrc: "/tutorial/switch/allow-copying/step5.png",
-									},
-									{
-										text: "6. Press 'Allow'",
-										imageSrc: "/tutorial/switch/allow-copying/step6.png",
-									},
-									{
-										text: "7. Confirm the edits to the Mii",
-										imageSrc: "/tutorial/switch/allow-copying/step7.png",
-									},
-									{ type: "finish" },
-								],
-							},
-							{
 								title: "Create QR Code",
 								thumbnail: "/tutorial/switch/create-qr-code/thumbnail.png",
 								steps: [
-									{ type: "start" },
 									{
 										text: "1. Enter the town hall",
 										imageSrc: "/tutorial/switch/step1.png",
@@ -94,7 +52,7 @@ export default function SubmitTutorialButton() {
 						isOpen={isOpen}
 						setIsOpen={setIsOpen}
 					/>,
-					document.body
+					document.body,
 				)}
 		</>
 	);

@@ -147,7 +147,7 @@ export default function EditForm({ mii, likes }: Props) {
 						Name
 					</label>
 					<input
-						name="name"
+						id="name"
 						type="text"
 						className="pill input w-full col-span-2"
 						minLength={2}
