@@ -7,15 +7,18 @@ import { Icon } from "@iconify/react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { MiiPlatform } from "@prisma/client";
 
 import LikeButton from "@/components/like-button";
 import ImageViewer from "@/components/image-viewer";
-import DeleteMiiButton from "@/components/delete-mii";
-import ShareMiiButton from "@/components/share-mii-button";
+import DeleteMiiButton from "@/components/mii/delete-mii-button";
+import ShareMiiButton from "@/components/mii/share-mii-button";
 import ThreeDsScanTutorialButton from "@/components/tutorial/3ds-scan";
 import SwitchScanTutorialButton from "@/components/tutorial/switch-scan";
 import Description from "@/components/description";
-import { MiiPlatform } from "@prisma/client";
+import MiiInstructions from "@/components/mii/instructions";
+
+import { SwitchMiiInstructions } from "@/types";
 
 interface Props {
 	params: Promise<{ id: string }>;
@@ -120,7 +123,7 @@ export default async function MiiPage({ params }: Props) {
 		<div className="flex flex-col items-center">
 			<div className="max-w-5xl w-full flex flex-col gap-4">
 				<div className="relative grid grid-cols-3 gap-4 max-md:grid-cols-1">
-					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
+					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 h-min flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
 						{/* Mii Image */}
 						<div className="bg-linear-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center">
 							<ImageViewer
@@ -232,13 +235,15 @@ export default async function MiiPage({ params }: Props) {
 								<Icon icon="foundation:female" className="text-pink-400" />
 							</div>
 
-							<div
-								className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
-									mii.gender === "NONBINARY" ? "bg-purple-100 border-purple-400" : "bg-white border-gray-300"
-								}`}
-							>
-								<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
-							</div>
+							{mii.platform !== "THREE_DS" && (
+								<div
+									className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
+										mii.gender === "NONBINARY" ? "bg-purple-100 border-purple-400" : "bg-white border-gray-300"
+									}`}
+								>
+									<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
+								</div>
+							)}
 						</div>
 					</div>
 
@@ -305,7 +310,7 @@ export default async function MiiPage({ params }: Props) {
 						</div>
 
 						{/* Instructions */}
-						<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4">{JSON.stringify(mii.instructions)}</div>
+						{mii.platform === "SWITCH" && <MiiInstructions instructions={mii.instructions as Partial<SwitchMiiInstructions>} />}
 					</div>
 				</div>
 
@@ -343,7 +348,7 @@ export default async function MiiPage({ params }: Props) {
 							))}
 						</div>
 					) : (
-						<p className="indent-8 text-black/50">There is nothing here...</p>
+						<p className="indent-7.5 text-black/50">There is nothing here...</p>
 					)}
 				</div>
 			</div>

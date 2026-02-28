@@ -121,7 +121,7 @@ body {
 
 /* Range input */
 input[type="range"] {
-	@apply appearance-none bg-transparent cursor-pointer;
+	@apply appearance-none bg-transparent not-disabled:cursor-pointer;
 }
 
 /* Track */
@@ -135,8 +135,7 @@ input[type="range"]::-moz-range-track {
 
 /* Thumb */
 input[type="range"]::-webkit-slider-thumb {
-	@apply appearance-none size-4 bg-orange-400 border-2 border-orange-500 rounded-full shadow-md transition;
-	margin-top: -6px; /* center thumb vertically */
+	@apply appearance-none size-4 bg-orange-400 border-2 border-orange-500 rounded-full shadow-md transition -mt-1.5;
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -145,9 +144,9 @@ input[type="range"]::-moz-range-thumb {
 
 /* Hover */
 input[type="range"]:hover::-webkit-slider-thumb {
-	@apply bg-orange-500;
+	@apply not-disabled:bg-orange-500;
 }
 
 input[type="range"]:hover::-moz-range-thumb {
-	@apply bg-orange-500;
+	@apply not-disabled:bg-orange-500;
 }

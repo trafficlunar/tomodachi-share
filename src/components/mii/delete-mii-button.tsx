@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
 
-import LikeButton from "./like-button";
-import SubmitButton from "./submit-button";
+import LikeButton from "../like-button";
+import SubmitButton from "../submit-button";
 
 interface Props {
 	miiId: number;

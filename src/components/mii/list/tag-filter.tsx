@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
-import TagSelector from "../tag-selector";
+import TagSelector from "../../tag-selector";
 
 interface Props {
 	isExclude?: boolean;

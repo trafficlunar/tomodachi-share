@@ -5,8 +5,8 @@ import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 
 import ProfileInformation from "@/components/profile-information";
-import MiiList from "@/components/mii-list";
-import Skeleton from "@/components/mii-list/skeleton";
+import MiiList from "@/components/mii/list";
+import Skeleton from "@/components/mii/list/skeleton";
 
 interface Props {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
