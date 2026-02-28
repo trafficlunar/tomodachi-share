@@ -128,7 +128,7 @@ export default async function MiiPage({ params }: Props) {
 								alt="mii headshot"
 								width={250}
 								height={250}
-								className="drop-shadow-lg hover:scale-105 transition-transform"
+								className="drop-shadow-lg hover:scale-105 transition-transform w-full max-h-96 object-contain"
 							/>
 						</div>
 						{/* QR Code */}
@@ -303,6 +303,9 @@ export default async function MiiPage({ params }: Props) {
 							</Link>
 							{mii.platform === "THREE_DS" ? <ThreeDsScanTutorialButton /> : <SwitchScanTutorialButton />}
 						</div>
+
+						{/* Instructions */}
+						<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4">{JSON.stringify(mii.instructions)}</div>
 					</div>
 				</div>
 

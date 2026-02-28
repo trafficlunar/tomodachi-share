@@ -91,6 +91,34 @@ export async function POST(request: NextRequest) {
 		return rateLimit.sendResponse({ error: "Invalid JSON in tags or QR code data" }, 400);
 	}
 
+	// Minify instructions to save space and improve user experience
+	let minifiedInstructions: Partial<SwitchMiiInstructions> | undefined;
+	if (formData.get("platform") === "SWITCH") {
+		function minify(object: Partial<SwitchMiiInstructions>): Partial<SwitchMiiInstructions> {
+			for (const key in object) {
+				const value = object[key as keyof SwitchMiiInstructions];
+
+				if (!value) {
+					delete object[key as keyof SwitchMiiInstructions];
+					continue;
+				}
+
+				// Recurse into nested objects
+				if (typeof value === "object") {
+					minify(value as Partial<SwitchMiiInstructions>);
+
+					if (Object.keys(value).length === 0) {
+						delete object[key as keyof SwitchMiiInstructions];
+					}
+				}
+			}
+
+			return object;
+		}
+
+		minifiedInstructions = minify(JSON.parse((formData.get("instructions") as string) ?? "{}") as SwitchMiiInstructions);
+	}
+
 	// Parse and check all submission info
 	const parsed = submitSchema.safeParse({
 		platform: formData.get("platform"),
@@ -100,7 +128,7 @@ export async function POST(request: NextRequest) {
 
 		gender: formData.get("gender") ?? undefined, // ZOD MOMENT
 		miiPortraitImage: formData.get("miiPortraitImage"),
-		instructions: JSON.parse((formData.get("instructions") as string) ?? {}),
+		instructions: minifiedInstructions,
 
 		qrBytesRaw: rawQrBytesRaw,
 
@@ -156,35 +184,9 @@ export async function POST(request: NextRequest) {
 	}
 
 	// Check Mii portrait image as well (Switch)
-	let minifiedInstructions: Partial<SwitchMiiInstructions>;
 	if (platform === "SWITCH") {
 		const imageValidation = await validateImage(miiPortraitImage);
 		if (!imageValidation.valid) return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
-
-		// Minimize instructions to save space and improve user experience
-		function minimize(object: Partial<SwitchMiiInstructions>): Partial<SwitchMiiInstructions> {
-			for (const key in object) {
-				const value = object[key as keyof SwitchMiiInstructions];
-
-				if (!value) {
-					delete object[key as keyof SwitchMiiInstructions];
-					continue;
-				}
-
-				// Recurse into nested objects
-				if (typeof value === "object") {
-					minimize(value as Partial<SwitchMiiInstructions>);
-
-					if (Object.keys(value).length === 0) {
-						delete object[key as keyof SwitchMiiInstructions];
-					}
-				}
-			}
-
-			return object;
-		}
-
-		minifiedInstructions = minimize(instructions as SwitchMiiInstructions);
 	}
 
 	const qrBytes = new Uint8Array(qrBytesRaw ?? []);
@@ -220,7 +222,7 @@ export async function POST(request: NextRequest) {
 						allowedCopying: conversion.mii.allowCopying,
 					}
 				: {
-						instructions,
+						instructions: minifiedInstructions,
 					}),
 		},
 	});

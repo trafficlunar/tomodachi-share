@@ -134,31 +134,38 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 		fs.readFile(path.join(miiUploadsDirectory, "mii.webp")).then((buffer) =>
 			sharp(buffer)
 				.png()
+				// extend to fix shadow bug on landscape pictures
+				.extend({
+					left: 16,
+					right: 16,
+					background: { r: 0, g: 0, b: 0, alpha: 0 },
+				})
 				.toBuffer()
 				.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`),
 		),
-		fs.readFile(path.join(miiUploadsDirectory, "qr-code.webp")).then((buffer) =>
-			sharp(buffer)
-				.png()
-				.toBuffer()
-				.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`),
-		),
+		mii.platform === "THREE_DS"
+			? fs.readFile(path.join(miiUploadsDirectory, "qr-code.webp")).then((buffer) =>
+					sharp(buffer)
+						.png()
+						.toBuffer()
+						.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`),
+				)
+			: Promise.resolve(null),
 		loadFonts(),
 	]);
 
 	const jsx: ReactNode = (
 		<div tw="w-full h-full bg-amber-50 border-2 border-amber-500 rounded-2xl p-4 flex flex-col">
 			<div tw="flex w-full">
-				{/* Mii image */}
+				{/* Mii portrait */}
 				<div
-					tw="w-80 h-62 rounded-xl flex justify-center mr-2 px-2"
+					tw={`h-62 rounded-xl flex justify-center items-center mr-2 ${mii.platform === "THREE_DS" ? "w-80" : "w-100"}`}
 					style={{
 						backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a);",
 					}}
 				>
 					<img
 						src={miiImage}
-						width={248}
 						height={248}
 						tw="w-full h-full"
 						style={{
@@ -169,9 +176,19 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 				</div>
 
 				{/* QR code */}
-				<div tw="w-60 bg-amber-200 rounded-xl flex justify-center items-center">
-					<img src={qrCodeImage} width={190} height={190} tw="border-2 border-amber-300 rounded-lg" />
-				</div>
+				{mii.platform === "THREE_DS" ? (
+					<div tw="w-60 bg-amber-200 rounded-xl flex justify-center items-center">
+						<img src={qrCodeImage!} width={190} height={190} tw="border-2 border-amber-300 rounded-lg" />
+					</div>
+				) : (
+					<div tw="w-40 bg-amber-200 rounded-xl flex flex-col justify-center items-center p-6">
+						<span tw="text-amber-900 font-extrabold text-xl text-center leading-tight">Switch Guide</span>
+						<p tw="text-amber-800 text-sm text-center mt-1.5">You need to manually create the Mii, visit site for instructions.</p>
+						<div tw="mt-auto bg-amber-600 rounded-lg w-full py-2 flex justify-center">
+							<span tw="text-white font-semibold">View Steps</span>
+						</div>
+					</div>
+				)}
 			</div>
 
 			<div tw="flex flex-col w-full h-30 relative">

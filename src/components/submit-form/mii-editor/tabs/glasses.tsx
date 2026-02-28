@@ -23,6 +23,7 @@ export default function GlassesTab({ instructions }: Props) {
 
 					<div className="flex justify-center h-74 mt-auto">
 						<TypeSelector
+							hasNoneOption
 							length={50}
 							type={type}
 							setType={(i) => {

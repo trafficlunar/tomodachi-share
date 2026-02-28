@@ -173,15 +173,13 @@ export default function SubmitForm() {
 			}
 
 			// Convert QR code to JS (3DS)
-			if (platform === "THREE_DS") {
-				let conversion: { mii: Mii; tomodachiLifeMii: ThreeDsTomodachiLifeMii };
-				try {
-					conversion = convertQrCode(qrBytes);
-					setMiiPortraitUri(conversion.mii.studioUrl({ width: 512 }));
-				} catch (error) {
-					setError(error instanceof Error ? error.message : String(error));
-					return;
-				}
+			let conversion: { mii: Mii; tomodachiLifeMii: ThreeDsTomodachiLifeMii };
+			try {
+				conversion = convertQrCode(qrBytes);
+				setMiiPortraitUri(conversion.mii.studioUrl({ width: 512 }));
+			} catch (error) {
+				setError(error instanceof Error ? error.message : String(error));
+				return;
 			}
 
 			// Generate a new QR code for aesthetic reasons
