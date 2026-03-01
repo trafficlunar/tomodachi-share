@@ -5,8 +5,8 @@ import { Suspense } from "react";
 import { auth } from "@/lib/auth";
 
 import ProfileInformation from "@/components/profile-information";
-import Skeleton from "@/components/mii-list/skeleton";
-import MiiList from "@/components/mii-list";
+import Skeleton from "@/components/mii/list/skeleton";
+import MiiList from "@/components/mii/list";
 
 interface Props {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

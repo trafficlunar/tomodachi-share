@@ -91,6 +91,23 @@ body {
 	@apply opacity-100 scale-100;
 }
 
+/* Fallback Tooltips */
+[data-tooltip-span] {
+	@apply relative;
+}
+
+[data-tooltip-span] > .tooltip {
+	@apply absolute left-1/2 top-full mt-2 px-2 py-1 bg-orange-400 border border-orange-400 rounded-md text-sm text-white whitespace-nowrap select-none pointer-events-none shadow-md opacity-0 scale-75 transition-all duration-200 ease-out origin-top -translate-x-1/2 z-999999;
+}
+
+[data-tooltip-span] > .tooltip::before {
+	@apply content-[''] absolute left-1/2 -translate-x-1/2 -top-2 border-4 border-transparent border-b-orange-400;
+}
+
+[data-tooltip-span]:hover > .tooltip {
+	@apply opacity-100 scale-100;
+}
+
 /* Scrollbar */
 /* Firefox */
 * {
@@ -100,4 +117,36 @@ body {
 /* Chrome, and Safari */
 *::-webkit-scrollbar-track {
 	background: #ff8903;
+}
+
+/* Range input */
+input[type="range"] {
+	@apply appearance-none bg-transparent not-disabled:cursor-pointer;
+}
+
+/* Track */
+input[type="range"]::-webkit-slider-runnable-track {
+	@apply h-2 bg-orange-200 border-2 border-orange-400 rounded-full;
+}
+
+input[type="range"]::-moz-range-track {
+	@apply h-1 bg-orange-200 border-2 border-orange-400 rounded-full;
+}
+
+/* Thumb */
+input[type="range"]::-webkit-slider-thumb {
+	@apply appearance-none size-4 bg-orange-400 border-2 border-orange-500 rounded-full shadow-md transition -mt-1.5;
+}
+
+input[type="range"]::-moz-range-thumb {
+	@apply size-3.5 bg-orange-400 border-2 border-orange-500 rounded-full shadow-md transition;
+}
+
+/* Hover */
+input[type="range"]:hover::-webkit-slider-thumb {
+	@apply not-disabled:bg-orange-500;
+}
+
+input[type="range"]:hover::-moz-range-thumb {
+	@apply not-disabled:bg-orange-500;
 }

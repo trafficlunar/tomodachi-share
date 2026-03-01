@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Icon } from "@iconify/react";
 import confetti from "canvas-confetti";
-import ReturnToIsland from "../admin/return-to-island";
 
 interface Slide {
 	// step is never used, undefined is assumed as a step
@@ -30,7 +29,7 @@ interface Props {
 export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 	const [isVisible, setIsVisible] = useState(false);
 
-	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 15 });
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	// Build index map

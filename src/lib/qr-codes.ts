@@ -4,7 +4,7 @@ import sjcl from "sjcl-with-all";
 
 import { MII_DECRYPTION_KEY, MII_QR_ENCRYPTED_LENGTH } from "./constants";
 import Mii from "./mii.js/mii";
-import { TomodachiLifeMii, HairDyeMode } from "./tomodachi-life-mii";
+import { ThreeDsTomodachiLifeMii, HairDyeMode } from "./three-ds-tomodachi-life-mii";
 
 // AES-CCM encrypted Mii QR codes have some errata (https://www.3dbrew.org/wiki/AES_Registers#CCM_mode_pitfall)
 // causing them to not be easily decryptable by asmcrypto
@@ -23,7 +23,7 @@ const sjclCcmCtrMode:
 	// @ts-expect-error -- Referencing a private function that is not in the types.
 	sjcl.mode.ccm.u; // NOTE: This may need to be changed with a different sjcl build. Read above
 
-export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: TomodachiLifeMii } | never {
+export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: ThreeDsTomodachiLifeMii } | never {
 	// Decrypt 96 byte 3DS/Wii U format Mii data from the QR code.
 	// References (Credits: jaames, kazuki-4ys):
 	// - https://gist.github.com/jaames/96ce8daa11b61b758b6b0227b55f9f78
@@ -89,7 +89,7 @@ export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: 
 		const buffer = Buffer.from(result); // Convert to node Buffer.
 		const mii = new Mii(buffer); // Will verify the Mii data further.
 		// Decrypt Tomodachi Life Mii data from encrypted QR code bytes.
-		const tomodachiLifeMii = TomodachiLifeMii.fromBytes(bytes);
+		const tomodachiLifeMii = ThreeDsTomodachiLifeMii.fromBytes(bytes);
 
 		// Apply hair dye fields.
 		switch (tomodachiLifeMii.hairDyeMode) {

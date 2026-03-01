@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "MiiGender" ADD VALUE 'NONBINARY';

@@ -1,26 +1,37 @@
 "use client";
 
+import Image from "next/image";
+
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
-import { redirect } from "next/navigation";
+
+import LikeButton from "../like-button";
 import SubmitButton from "../submit-button";
 
-export default function DeleteAccount() {
+interface Props {
+	miiId: number;
+	miiName: string;
+	likes: number;
+	inMiiPage?: boolean;
+}
+
+export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Props) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
 	const [error, setError] = useState<string | undefined>(undefined);
 
 	const handleSubmit = async () => {
-		const response = await fetch("/api/auth/delete", { method: "DELETE" });
+		const response = await fetch(`/api/mii/${miiId}/delete`, { method: "DELETE" });
 		if (!response.ok) {
 			const { error } = await response.json();
 			setError(error);
 			return;
 		}
 
-		redirect("/404");
+		close();
+		window.location.reload(); // I would use router.refresh() here but the Mii list doesn't update
 	};
 
 	const close = () => {
@@ -39,9 +50,16 @@ export default function DeleteAccount() {
 
 	return (
 		<>
-			<button onClick={() => setIsOpen(true)} className="pill button w-fit h-min ml-auto bg-red-400! border-red-500! hover:bg-red-500!">
-				Delete Account
-			</button>
+			{inMiiPage ? (
+				<button onClick={() => setIsOpen(true)} aria-label="Delete Mii" className="cursor-pointer">
+					<Icon icon="mdi:trash" />
+					<span>Delete</span>
+				</button>
+			) : (
+				<button onClick={() => setIsOpen(true)} aria-label="Delete Mii" title="Delete Mii" data-tooltip="Delete" className="cursor-pointer aspect-square">
+					<Icon icon="mdi:trash" />
+				</button>
+			)}
 
 			{isOpen &&
 				createPortal(
@@ -59,13 +77,23 @@ export default function DeleteAccount() {
 							}`}
 						>
 							<div className="flex justify-between items-center mb-2">
-								<h2 className="text-xl font-bold">Delete Account</h2>
+								<h2 className="text-xl font-bold">Delete Mii</h2>
 								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>
 
-							<p className="text-sm text-zinc-500">Are you sure? This is permanent and will remove all uploaded Miis. This action cannot be undone.</p>
+							<p className="text-sm text-zinc-500">Are you sure? This will delete your Mii permanently. This action cannot be undone.</p>
+
+							<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 flex">
+								<Image src={`/mii/${miiId}/image?type=mii`} alt="mii image" width={128} height={128} />
+								<div className="p-4">
+									<p className="text-xl font-bold line-clamp-1" title={miiName}>
+										{miiName}
+									</p>
+									<LikeButton likes={likes} isLiked={true} disabled />
+								</div>
+							</div>
 
 							{error && <span className="text-red-400 font-bold mt-2">Error: {error}</span>}
 

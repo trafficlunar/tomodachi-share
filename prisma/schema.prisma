@@ -69,17 +69,20 @@ model Session {
 }
 
 model Mii {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  name        String   @db.VarChar(64)
-  imageCount  Int      @default(0)
-  tags        String[]
-  description String?  @db.VarChar(256)
+  id     Int @id @default(autoincrement())
+  userId Int
 
-  firstName      String
-  lastName       String
+  name        String      @db.VarChar(64)
+  imageCount  Int         @default(0)
+  tags        String[]
+  description String?     @db.VarChar(256)
+  platform    MiiPlatform @default(THREE_DS)
+
+  instructions   Json?
+  firstName      String?
+  lastName       String?
   gender         MiiGender?
-  islandName     String
+  islandName     String?
   allowedCopying Boolean?
 
   createdAt DateTime @default(now())
@@ -154,9 +157,15 @@ model Punishment {
   @@map("punishments")
 }
 
+enum MiiPlatform {
+  SWITCH
+  THREE_DS // can't start with a number
+}
+
 enum MiiGender {
   MALE
   FEMALE
+  NONBINARY
 }
 
 enum ReportType {

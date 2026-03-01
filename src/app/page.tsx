@@ -7,8 +7,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 import Countdown from "@/components/countdown";
-import MiiList from "@/components/mii-list";
-import Skeleton from "@/components/mii-list/skeleton";
+import MiiList from "@/components/mii/list";
+import Skeleton from "@/components/mii/list/skeleton";
 
 interface Props {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
