@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Prisma } from "@prisma/client";
+import { MiiGender, MiiPlatform, Prisma } from "@prisma/client";
 import { Icon } from "@iconify/react";
 
 import crypto from "crypto";
@@ -29,7 +29,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { q: query, sort, tags, exclude, gender, allowCopying, page = 1, limit = 24, seed } = parsed.data;
+	const { q: query, sort, tags, exclude, platform, gender, allowCopying, page = 1, limit = 24, seed } = parsed.data;
 
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
@@ -52,6 +52,8 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		// Tag filtering
 		...(tags && tags.length > 0 && { tags: { hasEvery: tags } }),
 		...(exclude && exclude.length > 0 && { NOT: { tags: { hasSome: exclude } } }),
+		// Platform
+		...(platform && { platform: { equals: platform } }),
 		// Gender
 		...(gender && { gender: { equals: gender } }),
 		// Allow Copying
@@ -71,6 +73,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 				},
 			},
 		}),
+		platform: true,
 		name: true,
 		imageCount: true,
 		tags: true,
@@ -143,7 +146,13 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		[totalCount, filteredCount, list] = await Promise.all([
 			prisma.mii.count({ where: { ...where, userId } }),
 			prisma.mii.count({ where, skip, take: limit }),
-			prisma.mii.findMany({ where, orderBy, select, skip: (page - 1) * limit, take: limit }),
+			prisma.mii.findMany({
+				where,
+				orderBy,
+				select,
+				skip: (page - 1) * limit,
+				take: limit,
+			}),
 		]);
 	}
 
@@ -156,7 +165,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 	return (
 		<div className="w-full">
-			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-center gap-2 mb-2 max-[56rem]:flex-col">
+			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-center gap-2 mb-2 max-md:flex-col">
 				<div className="flex items-center gap-2">
 					{totalCount == filteredCount ? (
 						<>
