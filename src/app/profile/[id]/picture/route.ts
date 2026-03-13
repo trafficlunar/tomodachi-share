@@ -16,7 +16,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
 	const userId = parsed.data;
 
-	const filePath = path.join(process.cwd(), "uploads", "user", `${userId}.webp`);
+	const filePath = path.join(process.cwd(), "uploads", "user", `${userId}.png`);
 
 	try {
 		const buffer = await fs.readFile(filePath);

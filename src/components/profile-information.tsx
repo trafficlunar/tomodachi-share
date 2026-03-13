@@ -30,7 +30,7 @@ export default async function ProfileInformation({ userId, page }: Props) {
 			<div className="flex w-full gap-4 overflow-x-scroll">
 				{/* Profile picture */}
 				<Link href={`/profile/${user.id}`} className="size-28 aspect-square">
-					<ProfilePicture src={user.image ?? "/guest.webp"} className="rounded-full bg-white border-2 border-orange-400 shadow max-md:self-center" />
+					<ProfilePicture src={user.image ?? "/guest.png"} className="rounded-full bg-white border-2 border-orange-400 shadow max-md:self-center" />
 				</Link>
 				{/* User information */}
 				<div className="flex flex-col w-full relative py-3">

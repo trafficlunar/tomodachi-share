@@ -49,7 +49,7 @@ export async function PATCH(request: NextRequest) {
 	if (!image) {
 		await prisma.user.update({
 			where: { id: Number(session.user.id) },
-			data: { image: `/guest.webp`, imageUpdatedAt: new Date() },
+			data: { image: `/guest.png`, imageUpdatedAt: new Date() },
 		});
 
 		return rateLimit.sendResponse({ success: true });
@@ -64,10 +64,10 @@ export async function PATCH(request: NextRequest) {
 
 	try {
 		const buffer = Buffer.from(await image.arrayBuffer());
-		const webpBuffer = await sharp(buffer, { animated: true }).resize({ width: 128, height: 128 }).webp({ quality: 85 }).toBuffer();
-		const fileLocation = path.join(uploadsDirectory, `${session.user.id}.webp`);
+		const pngBuffer = await sharp(buffer, { animated: true }).resize({ width: 128, height: 128 }).png({ quality: 85 }).toBuffer();
+		const fileLocation = path.join(uploadsDirectory, `${session.user.id}.png`);
 
-		await fs.writeFile(fileLocation, webpBuffer);
+		await fs.writeFile(fileLocation, pngBuffer);
 	} catch (error) {
 		console.error("Error uploading profile picture:", error);
 		Sentry.captureException(error, { extra: { stage: "upload-profile-picture" } });

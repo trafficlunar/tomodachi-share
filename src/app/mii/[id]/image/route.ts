@@ -32,8 +32,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 	if (!searchParamsParsed.success) return rateLimit.sendResponse({ error: searchParamsParsed.error.issues[0].message }, 400);
 	const { type: imageType } = searchParamsParsed.data;
 
-	const fileExtension = imageType === "metadata" ? ".png" : ".webp";
-	const filePath = path.join(process.cwd(), "uploads", "mii", miiId.toString(), `${imageType}${fileExtension}`);
+	const filePath = path.join(process.cwd(), "uploads", "mii", miiId.toString(), `${imageType}.png`);
 
 	let buffer: Buffer | undefined;
 	// Only find Mii if image type is 'metadata'
@@ -109,7 +108,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 	}
 
 	return rateLimit.sendResponse(buffer, 200, {
-		"Content-Type": "image/webp",
+		"Content-Type": "image/png",
 		"X-Robots-Tag": "noindex, noimageindex, nofollow",
 		"Cache-Control": "no-store",
 	});

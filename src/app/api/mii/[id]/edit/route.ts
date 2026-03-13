@@ -126,10 +126,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 			await Promise.all(
 				images.map(async (image, index) => {
 					const buffer = Buffer.from(await image.arrayBuffer());
-					const webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer();
-					const fileLocation = path.join(miiUploadsDirectory, `image${index}.webp`);
+					const pngBuffer = await sharp(buffer).png({ quality: 85 }).toBuffer();
+					const fileLocation = path.join(miiUploadsDirectory, `image${index}.png`);
 
-					await fs.writeFile(fileLocation, webpBuffer);
+					await fs.writeFile(fileLocation, pngBuffer);
 				}),
 			);
 		} catch (error) {

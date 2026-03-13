@@ -130,16 +130,14 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 
 	// Load assets concurrently
 	const [miiImage, qrCodeImage, fonts] = await Promise.all([
-		// Read and convert the .webp images to .png (because satori doesn't support it)
-		fs.readFile(path.join(miiUploadsDirectory, "mii.webp")).then((buffer) =>
+		// Read and convert the images to data URI
+		fs.readFile(path.join(miiUploadsDirectory, "mii.png")).then((buffer) =>
 			sharp(buffer)
-				.png()
 				.toBuffer()
 				.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`),
 		),
-		fs.readFile(path.join(miiUploadsDirectory, "qr-code.webp")).then((buffer) =>
+		fs.readFile(path.join(miiUploadsDirectory, "qr-code.png")).then((buffer) =>
 			sharp(buffer)
-				.png()
 				.toBuffer()
 				.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`),
 		),
@@ -209,8 +207,6 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 
 	// Store the file
 	try {
-		// I tried using .webp here but the quality looked awful
-		// but it actually might be well-liked due to the hatred of .webp
 		const fileLocation = path.join(miiUploadsDirectory, "metadata.png");
 		await fs.writeFile(fileLocation, buffer);
 	} catch (error) {

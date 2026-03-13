@@ -148,10 +148,10 @@ export async function POST(request: NextRequest) {
 
 	try {
 		// Compress and store
-		const studioWebpBuffer = await sharp(studioBuffer).webp({ quality: 85 }).toBuffer();
-		const studioFileLocation = path.join(miiUploadsDirectory, "mii.webp");
+		const studioPngBuffer = await sharp(studioBuffer).png({ quality: 85 }).toBuffer();
+		const studioFileLocation = path.join(miiUploadsDirectory, "mii.png");
 
-		await fs.writeFile(studioFileLocation, studioWebpBuffer);
+		await fs.writeFile(studioFileLocation, studioPngBuffer);
 
 		// Generate a new QR code for aesthetic reasons
 		const byteString = String.fromCharCode(...qrBytes);
@@ -165,10 +165,10 @@ export async function POST(request: NextRequest) {
 		const codeBuffer = Buffer.from(codeBase64, "base64");
 
 		// Compress and store
-		const codeWebpBuffer = await sharp(codeBuffer).webp({ quality: 85 }).toBuffer();
-		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
+		const codePngBuffer = await sharp(codeBuffer).png({ quality: 85 }).toBuffer();
+		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.png");
 
-		await fs.writeFile(codeFileLocation, codeWebpBuffer);
+		await fs.writeFile(codeFileLocation, codePngBuffer);
 		await generateMetadataImage(miiRecord, session.user.name!);
 	} catch (error) {
 		// Clean up if something went wrong
@@ -184,10 +184,10 @@ export async function POST(request: NextRequest) {
 		await Promise.all(
 			images.map(async (image, index) => {
 				const buffer = Buffer.from(await image.arrayBuffer());
-				const webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer();
-				const fileLocation = path.join(miiUploadsDirectory, `image${index}.webp`);
+				const pngBuffer = await sharp(buffer).png({ quality: 85 }).toBuffer();
+				const fileLocation = path.join(miiUploadsDirectory, `image${index}.png`);
 
-				await fs.writeFile(fileLocation, webpBuffer);
+				await fs.writeFile(fileLocation, pngBuffer);
 			}),
 		);
 

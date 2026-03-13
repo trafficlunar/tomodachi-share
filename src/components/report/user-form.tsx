@@ -43,7 +43,7 @@ export default function ReportUserForm({ user }: Props) {
 			<hr className="border-zinc-300" />
 
 			<div className="bg-orange-100 rounded-xl border-2 border-orange-400 flex p-4 gap-4">
-				<ProfilePicture src={user.image ?? "/guest.webp"} width={96} height={96} className="aspect-square rounded-full border-2 border-orange-400" />
+				<ProfilePicture src={user.image ?? "/guest.png"} width={96} height={96} className="aspect-square rounded-full border-2 border-orange-400" />
 				<div className="flex flex-col justify-center">
 					<p className="text-xl font-bold overflow-hidden text-ellipsis">{user.name}</p>
 					<p className="text-sm font-bold overflow-hidden text-ellipsis">@{user.username}</p>
