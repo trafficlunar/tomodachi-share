@@ -14,7 +14,7 @@ export async function DELETE(request: NextRequest) {
 
 	const activePunishment = await prisma.punishment.findFirst({
 		where: {
-			userId: Number(session.user.id),
+			userId: Number(session.user?.id),
 			returned: false,
 		},
 		include: {

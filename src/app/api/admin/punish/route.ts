@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	if (Number(session.user.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+	if (Number(session.user?.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
 	const searchParams = request.nextUrl.searchParams;
 	const parsedUserId = idSchema.safeParse(searchParams.get("id"));
@@ -69,7 +69,7 @@ export async function DELETE(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-	if (Number(session.user.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+	if (Number(session.user?.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
 	const searchParams = request.nextUrl.searchParams;
 	const parsedPunishmentId = idSchema.safeParse(searchParams.get("id"));

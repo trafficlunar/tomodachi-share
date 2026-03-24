@@ -39,9 +39,6 @@ export default async function Page({ searchParams }: Props) {
 	const session = await auth();
 	const { page, tags } = await searchParams;
 
-	if (session?.user && !session.user.username) {
-		redirect("/create-username");
-	}
 	if (session?.user) {
 		const activePunishment = await prisma.punishment.findFirst({
 			where: {

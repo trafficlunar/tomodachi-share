@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		include: {
 			user: {
 				select: {
-					username: true,
+					name: true,
 				},
 			},
 			_count: {
@@ -44,28 +44,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 	const metadataImageUrl = `/mii/${mii.id}/image?type=metadata`;
 
-	const username = `@${mii.user.username}`;
+	const name = `@${mii.user.name}`;
 
 	return {
 		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `${mii.name} - TomodachiShare`,
-		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
+		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${name} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
 		keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection", ...mii.tags],
-		creator: username,
+		creator: name,
 		openGraph: {
 			type: "article",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${name} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
 			images: [{ url: metadataImageUrl, alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character` }],
 			publishedTime: mii.createdAt.toISOString(),
-			authors: username,
+			authors: name,
 		},
 		twitter: {
 			card: "summary_large_image",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${username} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${name} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
 			images: [{ url: metadataImageUrl, alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character` }],
-			creator: username,
+			creator: name,
 		},
 		alternates: {
 			canonical: `/mii/${mii.id}`,
@@ -85,7 +85,6 @@ export default async function MiiPage({ params }: Props) {
 			user: {
 				select: {
 					name: true,
-					username: true,
 				},
 			},
 			likedBy: session?.user
@@ -215,7 +214,7 @@ export default async function MiiPage({ params }: Props) {
 
 						{/* Buttons */}
 						<div className="flex gap-3 w-fit bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 text-3xl text-orange-400 max-md:place-self-center *:size-12 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-xs">
-							{session && (Number(session.user.id) === mii.userId || Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) && (
+							{session && (Number(session.user?.id) === mii.userId || Number(session.user?.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) && (
 								<>
 									<Link aria-label="Edit Mii" href={`/edit/${mii.id}`}>
 										<Icon icon="mdi:pencil" />

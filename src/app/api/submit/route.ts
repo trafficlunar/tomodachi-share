@@ -37,7 +37,7 @@ const submitSchema = z.object({
 export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user.id, username: session.user.username });
+	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 2);
 	const check = await rateLimit.handle();
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
 	// Create Mii in database
 	const miiRecord = await prisma.mii.create({
 		data: {
-			userId: Number(session.user.id),
+			userId: Number(session.user?.id),
 			name,
 			tags,
 			description,
@@ -169,7 +169,7 @@ export async function POST(request: NextRequest) {
 		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.png");
 
 		await fs.writeFile(codeFileLocation, codePngBuffer);
-		await generateMetadataImage(miiRecord, session.user.name!);
+		await generateMetadataImage(miiRecord, session.user?.name!);
 	} catch (error) {
 		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });

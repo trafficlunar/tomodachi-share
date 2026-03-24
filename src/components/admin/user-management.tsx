@@ -14,7 +14,6 @@ import PunishmentDeletionDialog from "./punishment-deletion-dialog";
 interface ApiResponse {
 	success: boolean;
 	name: string;
-	username: string;
 	image: string;
 	createdAt: string;
 	punishments: Prisma.PunishmentGetPayload<{
@@ -115,7 +114,7 @@ export default function Punishments() {
 							<ProfilePicture src={user.image} width={96} height={96} className="rounded-full border-2 border-orange-400" />
 							<div className="p-2 flex flex-col">
 								<p className="text-xl font-bold">{user.name}</p>
-								<p className="text-black/60 text-sm font-medium">@{user.username}</p>
+								<p className="text-black/60 text-sm font-medium">@{user.name}</p>
 								<p className="text-sm mt-auto">
 									<span className="font-medium">Created:</span>{" "}
 									{new Date(user.createdAt).toLocaleString("en-GB", {

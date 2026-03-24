@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default async function AdminPage() {
 	const session = await auth();
 
-	if (!session || Number(session.user.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) redirect("/404");
+	if (!session || Number(session.user?.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) redirect("/404");
 
 	return (
 		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-4">

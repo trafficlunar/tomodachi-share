@@ -22,10 +22,9 @@ export default async function SubmitPage() {
 	const session = await auth();
 
 	if (!session) redirect("/login");
-	if (!session.user.username) redirect("/create-username");
 	const activePunishment = await prisma.punishment.findFirst({
 		where: {
-			userId: Number(session?.user.id),
+			userId: Number(session?.user?.id),
 			returned: false,
 		},
 	});

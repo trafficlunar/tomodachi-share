@@ -10,7 +10,7 @@ import { RateLimit } from "@/lib/rate-limit";
 export async function PATCH(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user.id, username: session.user.username });
+	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 3);
 	const check = await rateLimit.handle();
@@ -24,7 +24,7 @@ export async function PATCH(request: NextRequest) {
 
 	try {
 		await prisma.user.update({
-			where: { id: Number(session.user.id) },
+			where: { id: Number(session.user?.id) },
 			data: { description: profanity.censor(description) },
 		});
 	} catch (error) {

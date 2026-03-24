@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import Link from "next/link";
 
 import { Prisma } from "@prisma/client";
@@ -25,7 +26,6 @@ interface Props {
 
 export default async function MiiList({ searchParams, userId, inLikesPage }: Props) {
 	const session = await auth();
-
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
@@ -34,7 +34,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
 
-	if (inLikesPage && session?.user.id) {
+	if (inLikesPage && session?.user?.id) {
 		const likedMiis = await prisma.like.findMany({
 			where: { userId: Number(session.user.id) },
 			select: { miiId: true },
@@ -67,7 +67,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 			user: {
 				select: {
 					id: true,
-					username: true,
+					name: true,
 				},
 			},
 		}),
@@ -210,11 +210,11 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 								{!userId && (
 									<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis">
-										@{mii.user?.username}
+										@{mii.user?.name}
 									</Link>
 								)}
 
-								{userId && Number(session?.user.id) == userId && (
+								{userId && Number(session?.user?.id) == userId && (
 									<div className="flex gap-1 text-2xl justify-end text-zinc-400">
 										<Link href={`/edit/${mii.id}`} title="Edit Mii" aria-label="Edit Mii" data-tooltip="Edit">
 											<Icon icon="mdi:pencil" />
