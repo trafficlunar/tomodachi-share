@@ -21,13 +21,13 @@ const TABS: { name: keyof SwitchMiiInstructions["other"]; length: number }[] = [
 
 export default function OtherTab({ instructions }: Props) {
 	const [tab, setTab] = useState(0);
+	const [isFlipped, setIsFlipped] = useState(false);
 
 	// One type/color state per tab
 	const [types, setTypes] = useState<number[]>(Array(TABS.length).fill(0));
 	const [colors, setColors] = useState<number[]>(Array(TABS.length).fill(0));
 
 	const currentTab = TABS[tab];
-	const isColorPickerDisabled = currentTab.colorsDisabled ? currentTab.colorsDisabled.includes(types[tab]) : false;
 
 	const setType = (value: number) => {
 		setTypes((prev) => {
@@ -78,8 +78,26 @@ export default function OtherTab({ instructions }: Props) {
 				</div>
 
 				<div className="shrink-0 w-21 pb-3 flex flex-col items-center">
-					<ColorPicker disabled={isColorPickerDisabled} color={colors[tab]} setColor={setColor} />
+					<ColorPicker color={colors[tab]} setColor={setColor} />
 					<NumberInputs target={instructions.current.other[currentTab.name]} />
+
+					{tab === 3 && (
+						<div className="flex gap-1.5 items-center w-full mt-auto">
+							<input
+								type="checkbox"
+								id="subcolor"
+								className="checkbox"
+								checked={isFlipped}
+								onChange={(e) => {
+									setIsFlipped(e.target.checked);
+									instructions.current.other.moustache.isFlipped = e.target.checked;
+								}}
+							/>
+							<label htmlFor="subcolor" className="text-xs">
+								Flip
+							</label>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

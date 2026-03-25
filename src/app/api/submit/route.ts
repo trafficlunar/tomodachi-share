@@ -254,6 +254,7 @@ export async function POST(request: NextRequest) {
 		const fileLocation = path.join(miiUploadsDirectory, "mii.png");
 
 		await fs.writeFile(fileLocation, pngBuffer);
+		await generateMetadataImage(miiRecord, session.user?.name!);
 	} catch (error) {
 		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
@@ -281,7 +282,6 @@ export async function POST(request: NextRequest) {
 			const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.png");
 
 			await fs.writeFile(codeFileLocation, codePngBuffer);
-			await generateMetadataImage(miiRecord, session.user?.name!);
 		} catch (error) {
 			// Clean up if something went wrong
 			await prisma.mii.delete({ where: { id: miiRecord.id } });

@@ -133,7 +133,11 @@ export default function HeadTab({ instructions }: Props) {
 						<PersonalityViewer
 							data={personality}
 							onClick={(key, i) => {
-								setPersonality((p) => ({ ...p, [key]: i }));
+								setPersonality((p) => {
+									const updated = { ...p, [key]: i };
+									instructions.current.personality = updated;
+									return updated;
+								});
 								instructions.current.personality = personality;
 							}}
 						/>

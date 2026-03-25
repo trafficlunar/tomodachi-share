@@ -149,6 +149,13 @@ export default function MiiInstructions({ instructions }: Props) {
 							<ColorPosition color={hair.subColor} />
 						</TableCell>
 					)}
+					{hair.subColor2 && (
+						<TableCell label="Sub Color (Back)">
+							<ColorPosition color={hair.subColor2} />
+						</TableCell>
+					)}
+					{hair.style && <TableCell label="Tying Style">{hair.style}</TableCell>}
+					{hair.isFlipped && <TableCell label="Flipped">{hair.isFlipped ? "Yes" : "No"}</TableCell>}
 				</Section>
 			)}
 			{eyebrows && <Section name="Eyebrows" instructions={eyebrows}></Section>}
@@ -164,7 +171,11 @@ export default function MiiInstructions({ instructions }: Props) {
 				</Section>
 			)}
 			{nose && <Section name="Nose" instructions={nose}></Section>}
-			{lips && <Section name="Lips" instructions={lips}></Section>}
+			{lips && (
+				<Section name="Lips" instructions={lips}>
+					{lips.hasLipstick && <TableCell label="Lipstick">{lips.hasLipstick ? "Yes" : "No"}</TableCell>}
+				</Section>
+			)}
 			{ears && <Section name="Ears" instructions={ears}></Section>}
 			{glasses && (
 				<Section name="Glasses" instructions={glasses}>
@@ -185,7 +196,9 @@ export default function MiiInstructions({ instructions }: Props) {
 					<Section isSubSection name="Wrinkles 1" instructions={other.wrinkles1} />
 					<Section isSubSection name="Wrinkles 2" instructions={other.wrinkles2} />
 					<Section isSubSection name="Beard" instructions={other.beard} />
-					<Section isSubSection name="Moustache" instructions={other.moustache} />
+					<Section isSubSection name="Moustache" instructions={other.moustache}>
+						{other.moustache && other.moustache.isFlipped && <TableCell label="Flipped">{other.moustache.isFlipped ? "Yes" : "No"}</TableCell>}
+					</Section>
 					<Section isSubSection name="Goatee" instructions={other.goatee} />
 					<Section isSubSection name="Mole" instructions={other.mole} />
 					<Section isSubSection name="Eye Shadow" instructions={other.eyeShadow} />
@@ -214,24 +227,24 @@ export default function MiiInstructions({ instructions }: Props) {
 						</div>
 					)}
 					{datingPreferences && (
-						<div className="pl-2">
-							<h4 className="text-lg font-semibold mt-4">Dating Preferences</h4>
+						<div className="pl-2 not-nth-2:mt-4">
+							<h4 className="font-semibold text-xl text-amber-800 mb-1">Dating Preferences</h4>
 							<div className="w-min">
 								<DatingPreferencesViewer data={datingPreferences} />
 							</div>
 						</div>
 					)}
 					{voice && (
-						<div className="pl-2">
-							<h4 className="font-semibold text-xl text-amber-800 mb-1 mt-4">Voice</h4>
+						<div className="pl-2 not-nth-2:mt-4">
+							<h4 className="font-semibold text-xl text-amber-800 mb-1">Voice</h4>
 							<div className="w-min">
 								<VoiceViewer data={voice} />
 							</div>
 						</div>
 					)}
 					{personality && (
-						<div className="pl-2">
-							<h4 className="font-semibold text-xl text-amber-800 mb-1 mt-4">Personality</h4>
+						<div className="pl-2 not-nth-2:mt-4">
+							<h4 className="font-semibold text-xl text-amber-800 mb-1">Personality</h4>
 							<div className="w-min">
 								<PersonalityViewer data={personality} />
 							</div>
