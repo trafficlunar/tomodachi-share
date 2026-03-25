@@ -9,7 +9,7 @@ interface Props {
 }
 
 const TABS: { name: keyof SwitchMiiInstructions["eyes"]; length: number; colorsDisabled?: boolean }[] = [
-	{ name: "main", length: 121 },
+	{ name: "main", length: 76 },
 	{ name: "eyelashesTop", length: 6, colorsDisabled: true },
 	{ name: "eyelashesBottom", length: 2, colorsDisabled: true },
 	{ name: "eyelidTop", length: 3, colorsDisabled: true },

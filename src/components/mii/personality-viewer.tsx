@@ -25,8 +25,17 @@ export default function PersonalityViewer({ data, onClick }: Props) {
 						<span className="text-sm font-semibold w-24 shrink-0">{label}</span>
 						<span className="text-sm text-zinc-500 w-14 text-right">{left}</span>
 						<div className="flex gap-0.5">
-							{Array.from({ length: 6 }).map((_, i) => {
-								const colors = ["bg-green-400", "bg-green-300", "bg-teal-200", "bg-orange-200", "bg-orange-300", "bg-orange-400"];
+							{Array.from({ length: 8 }).map((_, i) => {
+								const colors = [
+									"bg-green-400",
+									"bg-green-300",
+									"bg-emerald-200",
+									"bg-teal-200",
+									"bg-orange-200",
+									"bg-orange-300",
+									"bg-orange-400",
+									"bg-orange-500",
+								];
 								return (
 									<button
 										key={i}

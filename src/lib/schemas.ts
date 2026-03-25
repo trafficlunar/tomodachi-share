@@ -315,11 +315,11 @@ export const switchMiiInstructionsSchema = z
 			.optional(),
 		personality: z
 			.object({
-				movement: z.number().int().min(0).max(5).optional(),
-				speech: z.number().int().min(0).max(5).optional(),
-				energy: z.number().int().min(0).max(5).optional(),
-				thinking: z.number().int().min(0).max(5).optional(),
-				overall: z.number().int().min(0).max(5).optional(),
+				movement: z.number().int().min(0).max(7).optional(),
+				speech: z.number().int().min(0).max(7).optional(),
+				energy: z.number().int().min(0).max(7).optional(),
+				thinking: z.number().int().min(0).max(7).optional(),
+				overall: z.number().int().min(0).max(7).optional(),
 			})
 			.optional(),
 	})

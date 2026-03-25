@@ -23,7 +23,7 @@ export default function EyebrowsTab({ instructions }: Props) {
 					<div className="flex justify-center h-74 mt-auto">
 						<TypeSelector
 							hasNoneOption
-							length={43}
+							length={48}
 							type={type}
 							setType={(i) => {
 								setType(i);

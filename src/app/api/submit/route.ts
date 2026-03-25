@@ -159,7 +159,6 @@ export async function POST(request: NextRequest) {
 		qrBytesRaw,
 		gender,
 		miiPortraitImage,
-		instructions,
 		image1,
 		image2,
 		image3,
