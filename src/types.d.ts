@@ -4,182 +4,182 @@ import { DefaultSession } from "next-auth";
 // Some types have different options disabled, we're ignoring them for now
 interface SwitchMiiInstructions {
 	head: {
-		type: number; // 16 types, default is 2
-		skinColor: number; // Additional 14 are not in color menu, default is 2
+		type: number | null; // 16 types, default is 2
+		skinColor: number | null; // Additional 14 are not in color menu, default is 2
 	};
 	hair: {
 		setType: number | null; // 245 types, default is 43
 		bangsType: number | null; // 83 types, default is none, if a set is selected, set bangs and back to none and vice-versa
 		backType: number | null; // 111 types, default is none, same here (set related)
-		color: number;
+		color: number | null;
 		subColor: number | null; // Default is none
 		subColor2: number | null; // Only used when bangs/back is selected
 		style: number | null; // is this different for each hair?
 		isFlipped: boolean; // Only for sets and fringe
 	};
 	eyebrows: {
-		type: number; // 1 is None, 43 types, default is 28
-		color: number;
-		height: number;
-		distance: number;
-		rotation: number;
-		size: number;
-		stretch: number;
+		type: number | null; // 1 is None, 43 types, default is 28
+		color: number | null;
+		height: number | null;
+		distance: number | null;
+		rotation: number | null;
+		size: number | null;
+		stretch: number | null;
 	};
 	eyes: {
 		main: {
-			type: number; // 1 is None, 121 types default is 6
-			color: number;
-			height: number;
-			distance: number;
-			rotation: number;
-			size: number;
-			stretch: number;
+			type: number | null; // 1 is None, 121 types default is 6
+			color: number | null;
+			height: number | null;
+			distance: number | null;
+			rotation: number | null;
+			size: number | null;
+			stretch: number | null;
 		};
 		eyelashesTop: {
-			type: number; // 6 types, default is 1
-			height: number;
-			distance: number;
-			rotation: number;
-			size: number;
-			stretch: number;
+			type: number | null; // 6 types, default is 1
+			height: number | null;
+			distance: number | null;
+			rotation: number | null;
+			size: number | null;
+			stretch: number | null;
 		};
 		eyelashesBottom: {
-			type: number; // 2 types, default is 1
-			height: number;
-			distance: number;
-			rotation: number;
-			size: number;
-			stretch: number;
+			type: number | null; // 2 types, default is 1
+			height: number | null;
+			distance: number | null;
+			rotation: number | null;
+			size: number | null;
+			stretch: number | null;
 		};
 		eyelidTop: {
-			type: number; // 3 types, default is 1
-			height: number;
-			distance: number;
-			rotation: number;
-			size: number;
-			stretch: number;
+			type: number | null; // 3 types, default is 1
+			height: number | null;
+			distance: number | null;
+			rotation: number | null;
+			size: number | null;
+			stretch: number | null;
 		};
 		eyelidBottom: {
-			type: number; // 3 types, default is 1
-			height: number;
-			distance: number;
-			rotation: number;
-			size: number;
-			stretch: number;
+			type: number | null; // 3 types, default is 1
+			height: number | null;
+			distance: number | null;
+			rotation: number | null;
+			size: number | null;
+			stretch: number | null;
 		};
 		eyeliner: {
-			type: number; // 2 types, default is 1
-			color: number;
+			type: number | null; // 2 types, default is 1
+			color: number | null;
 		};
 		pupil: {
-			type: number; // 10 types, default is 1
-			height: number;
-			distance: number;
-			rotation: number;
-			size: number;
-			stretch: number;
+			type: number | null; // 10 types, default is 1
+			height: number | null;
+			distance: number | null;
+			rotation: number | null;
+			size: number | null;
+			stretch: number | null;
 		};
 	};
 	nose: {
-		type: number; // 1 is None, 32 types, default is 6
-		height: number;
-		size: number;
+		type: number | null; // 1 is None, 32 types, default is 6
+		height: number | null;
+		size: number | null;
 	};
 	lips: {
-		type: number; // 1 is None, 53 types, default is 2
-		color: number;
-		height: number;
-		rotation: number;
-		size: number;
-		stretch: number;
+		type: number | null; // 1 is None, 53 types, default is 2
+		color: number | null;
+		height: number | null;
+		rotation: number | null;
+		size: number | null;
+		stretch: number | null;
 		hasLipstick: boolean;
 	};
 	ears: {
-		type: number; // 5 types, default is 1
-		height: number; // Does not work for default
-		size: number; // Does not work for default
+		type: number | null; // 5 types, default is 1
+		height: number | null; // Does not work for default
+		size: number | null; // Does not work for default
 	};
 	glasses: {
-		type: number; // NOTE: THERE IS A GAP AT 40!!! 1 is None, 58 types, default is 1
-		ringColor: number;
-		shadesColor: number; // Only works after gap
-		height: number;
-		size: number;
-		stretch: number;
+		type: number | null; // NOTE: THERE IS A GAP AT 40!!! 1 is None, 58 types, default is 1
+		ringColor: number | null;
+		shadesColor: number | null; // Only works after gap
+		height: number | null;
+		size: number | null;
+		stretch: number | null;
 	};
 	other: {
 		// names were assumed
 		wrinkles1: {
-			type: number; // 9 types, default is 1
-			height: number;
-			distance: number;
-			size: number;
-			stretch: number;
+			type: number | null; // 9 types, default is 1
+			height: number | null;
+			distance: number | null;
+			size: number | null;
+			stretch: number | null;
 		};
 		wrinkles2: {
-			type: number; // 15 types, default is 1
-			height: number;
-			distance: number;
-			size: number;
-			stretch: number;
+			type: number | null; // 15 types, default is 1
+			height: number | null;
+			distance: number | null;
+			size: number | null;
+			stretch: number | null;
 		};
 		beard: {
-			type: number; // 15 types, default is 1
-			color: number;
+			type: number | null; // 15 types, default is 1
+			color: number | null;
 		};
 		moustache: {
-			type: number; // 16 types, default is 1
-			color: number; // is this same as hair?
-			height: number;
+			type: number | null; // 16 types, default is 1
+			color: number | null; // is this same as hair?
+			height: number | null;
 			isFlipped: boolean;
-			size: number;
-			stretch: number;
+			size: number | null;
+			stretch: number | null;
 		};
 		goatee: {
-			type: number; // 14 types, default is 1
-			color: number;
+			type: number | null; // 14 types, default is 1
+			color: number | null;
 		};
 		mole: {
-			type: number; // 2 types, default is 1
-			color: number; // is this same as hair?
-			height: number;
-			distance: number;
-			size: number;
+			type: number | null; // 2 types, default is 1
+			color: number | null; // is this same as hair?
+			height: number | null;
+			distance: number | null;
+			size: number | null;
 		};
 		eyeShadow: {
-			type: number; // 4 types, default is 1
-			color: number;
-			height: number;
-			distance: number;
-			size: number;
-			stretch: number;
+			type: number | null; // 4 types, default is 1
+			color: number | null;
+			height: number | null;
+			distance: number | null;
+			size: number | null;
+			stretch: number | null;
 		};
 		blush: {
-			type: number; // 8 types, default is 1
-			color: number;
-			height: number;
-			distance: number;
-			size: number;
-			stretch: number;
+			type: number | null; // 8 types, default is 1
+			color: number | null;
+			height: number | null;
+			distance: number | null;
+			size: number | null;
+			stretch: number | null;
 		};
 	};
 	// makeup, use video?
-	height: number;
-	weight: number;
+	height: number | null;
+	weight: number | null;
 	datingPreferences: MiiGender[];
 	voice: {
-		speed: number;
-		pitch: number;
-		depth: number;
-		delivery: number;
-		tone: number; // 1 to 6
+		speed: number | null;
+		pitch: number | null;
+		depth: number | null;
+		delivery: number | null;
+		tone: number | null; // 1 to 6
 	};
 	personality: {
-		movement: number; // 8 levels, slow to quick
-		speech: number; // 8 levels, polite to honest
-		energy: number; // 8 levels, flat to varied
-		thinking: number; // 8 levels, serious to chill
-		overall: number; // 8 levels, normal to quirky
+		movement: number | null; // 8 levels, slow to quick
+		speech: number | null; // 8 levels, polite to honest
+		energy: number | null; // 8 levels, flat to varied
+		thinking: number | null; // 8 levels, serious to chill
+		overall: number | null; // 8 levels, normal to quirky
 	};
 }

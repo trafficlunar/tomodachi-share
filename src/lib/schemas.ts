@@ -113,19 +113,73 @@ export const switchMiiInstructionsSchema = z
 			.optional(),
 		eyes: z
 			.object({
-				eyesType: z.number().int().min(0).max(120).optional(),
-				eyelashesTop: z.number().int().min(0).max(5).optional(),
-				eyelashesBottom: z.number().int().min(0).max(1).optional(),
-				eyelidTop: z.number().int().min(0).max(2).optional(),
-				eyelidBottom: z.number().int().min(0).max(2).optional(),
-				eyeliner: z.number().int().min(0).max(1).optional(),
-				pupil: z.number().int().min(0).max(9).optional(),
-				color: colorSchema,
-				height: geometrySchema,
-				distance: geometrySchema,
-				rotation: geometrySchema,
-				size: geometrySchema,
-				stretch: geometrySchema,
+				main: z
+					.object({
+						type: z.number().int().min(0).max(120).optional(),
+						color: colorSchema,
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyelashesTop: z
+					.object({
+						type: z.number().int().min(0).max(5).optional(),
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyelashesBottom: z
+					.object({
+						type: z.number().int().min(0).max(1).optional(),
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyelidTop: z
+					.object({
+						type: z.number().int().min(0).max(2).optional(),
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyelidBottom: z
+					.object({
+						type: z.number().int().min(0).max(2).optional(),
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyeliner: z
+					.object({
+						type: z.number().int().min(0).max(1).optional(),
+						color: colorSchema,
+					})
+					.optional(),
+				pupil: z
+					.object({
+						type: z.number().int().min(0).max(9).optional(),
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
 			})
 			.optional(),
 		nose: z
@@ -261,11 +315,11 @@ export const switchMiiInstructionsSchema = z
 			.optional(),
 		personality: z
 			.object({
-				movement: z.number().int().min(1).max(8).optional(),
-				speech: z.number().int().min(1).max(8).optional(),
-				energy: z.number().int().min(1).max(8).optional(),
-				thinking: z.number().int().min(1).max(8).optional(),
-				overall: z.number().int().min(1).max(8).optional(),
+				movement: z.number().int().min(0).max(5).optional(),
+				speech: z.number().int().min(0).max(5).optional(),
+				energy: z.number().int().min(0).max(5).optional(),
+				thinking: z.number().int().min(0).max(5).optional(),
+				overall: z.number().int().min(0).max(5).optional(),
 			})
 			.optional(),
 	})

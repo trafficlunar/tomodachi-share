@@ -192,7 +192,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 				{miis.map((mii) => (
 					<div
 						key={mii.id}
-						className={`flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.platform === "SWITCH" ? "border-red-300" : "border-blue-200"}`}
+						className="flex flex-col relative bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600"
 					>
 						<Carousel
 							images={[
@@ -203,8 +203,15 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 						/>
 
 						<div className="p-4 flex flex-col gap-1 h-full">
-							<Link href={`/mii/${mii.id}`} className="font-bold text-2xl line-clamp-1" title={mii.name}>
+							<Link href={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1" title={mii.name}>
 								{mii.name}
+								<div className="absolute right-0 top-1/2 -translate-y-1/2 text-[1.25rem] opacity-25">
+									{mii.platform === "SWITCH" ? (
+										<Icon icon="cib:nintendo-switch" className="text-red-400" />
+									) : (
+										<Icon icon="cib:nintendo-3ds" className="text-sky-400" />
+									)}
+								</div>
 							</Link>
 							<div id="tags" className="flex flex-wrap gap-1">
 								{mii.tags.map((tag) => (

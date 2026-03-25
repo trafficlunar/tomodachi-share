@@ -76,7 +76,7 @@ function TableCell({ label, children }: TableCellProps) {
 }
 
 function Section({ name, instructions, children, isSubSection }: SectionProps) {
-	if (typeof instructions !== "object") return null;
+	if (typeof instructions !== "object" || !instructions) return null;
 
 	const type = "type" in instructions ? instructions.type : undefined;
 	const color = "color" in instructions ? instructions.color : undefined;
@@ -87,7 +87,7 @@ function Section({ name, instructions, children, isSubSection }: SectionProps) {
 	const stretch = "stretch" in instructions ? instructions.stretch : undefined;
 
 	return (
-		<div className={`p-3 ${isSubSection ? "mt-2" : "border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5"}`}>
+		<div className={`p-3 ${isSubSection ? "not-first:mt-2 pt-0!" : "border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5"}`}>
 			<h3 className="font-semibold text-xl text-amber-800 mb-1">{name}</h3>
 
 			<table className="w-full">
@@ -154,41 +154,13 @@ export default function MiiInstructions({ instructions }: Props) {
 			{eyebrows && <Section name="Eyebrows" instructions={eyebrows}></Section>}
 			{eyes && (
 				<Section name="Eyes" instructions={eyes}>
-					{eyes.eyesType && (
-						<TableCell label="Eyes Type">
-							<GridPosition index={eyes.eyesType} />
-						</TableCell>
-					)}
-					{eyes.eyelashesTop && (
-						<TableCell label="Eyelashes Top Type">
-							<GridPosition index={eyes.eyelashesTop} />
-						</TableCell>
-					)}
-					{eyes.eyelashesBottom && (
-						<TableCell label="Eyelashes Bottom Type">
-							<GridPosition index={eyes.eyelashesBottom} />
-						</TableCell>
-					)}
-					{eyes.eyelidTop && (
-						<TableCell label="Eyelid Top Type">
-							<GridPosition index={eyes.eyelidTop} />
-						</TableCell>
-					)}
-					{eyes.eyelidBottom && (
-						<TableCell label="Eyelid Bottom Type">
-							<GridPosition index={eyes.eyelidBottom} />
-						</TableCell>
-					)}
-					{eyes.eyeliner && (
-						<TableCell label="Eyeliner Type">
-							<GridPosition index={eyes.eyeliner} />
-						</TableCell>
-					)}
-					{eyes.pupil && (
-						<TableCell label="Pupil Type">
-							<GridPosition index={eyes.pupil} />
-						</TableCell>
-					)}
+					<Section isSubSection name="Main" instructions={eyes.main} />
+					<Section isSubSection name="Eyelashes Top" instructions={eyes.eyelashesTop} />
+					<Section isSubSection name="Eyelashes Bottom" instructions={eyes.eyelashesBottom} />
+					<Section isSubSection name="Eyelid Top" instructions={eyes.eyelidTop} />
+					<Section isSubSection name="Eyelid Bottom" instructions={eyes.eyelidBottom} />
+					<Section isSubSection name="Eyeliner" instructions={eyes.eyeliner} />
+					<Section isSubSection name="Pupil" instructions={eyes.pupil} />
 				</Section>
 			)}
 			{nose && <Section name="Nose" instructions={nose}></Section>}

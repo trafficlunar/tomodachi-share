@@ -93,10 +93,11 @@ export default function HeadTab({ instructions }: Props) {
 									<DatingPreferencesViewer
 										data={datingPreferences}
 										onChecked={(e, gender) => {
-											setDatingPreferences((prev) =>
-												e.target.checked ? (prev.includes(gender) ? prev : [...prev, gender]) : prev.filter((p) => p !== gender),
-											);
-											instructions.current.datingPreferences = datingPreferences;
+											setDatingPreferences((prev) => {
+												const updated = e.target.checked ? (prev.includes(gender) ? prev : [...prev, gender]) : prev.filter((p) => p !== gender);
+												instructions.current.datingPreferences = updated;
+												return updated;
+											});
 										}}
 									/>
 								</div>

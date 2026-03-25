@@ -1,5 +1,6 @@
 import { SwitchMiiInstructions } from "@/types";
 import React, { useState } from "react";
+import { Icon } from "@iconify/react";
 
 import HeadTab from "./tabs/head";
 import HairTab from "./tabs/hair";
@@ -11,10 +12,9 @@ import EarsTab from "./tabs/ears";
 import GlassesTab from "./tabs/glasses";
 import OtherTab from "./tabs/other";
 import MiscTab from "./tabs/misc";
-import { Icon } from "@iconify/react";
 
 interface Props {
-	instructions: React.RefObject<Partial<SwitchMiiInstructions>>;
+	instructions: React.RefObject<SwitchMiiInstructions>;
 }
 
 type Tab = "head" | "hair" | "eyebrows" | "eyes" | "nose" | "lips" | "ears" | "glasses" | "other" | "misc";
@@ -47,8 +47,6 @@ export const TAB_COMPONENTS: Record<Tab, React.ComponentType<any>> = {
 
 export default function MiiEditor({ instructions }: Props) {
 	const [tab, setTab] = useState<Tab>("head");
-
-	const ActiveTab = TAB_COMPONENTS[tab];
 
 	return (
 		<>

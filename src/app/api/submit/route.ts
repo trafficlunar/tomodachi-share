@@ -100,12 +100,7 @@ export async function POST(request: NextRequest) {
 			for (const key in object) {
 				const value = object[key as keyof SwitchMiiInstructions];
 
-				if (value === null || value === undefined) {
-					delete object[key as keyof SwitchMiiInstructions];
-					continue;
-				}
-
-				if (DEFAULT_ZERO_FIELDS.has(key) && value === 0) {
+				if (!value || (DEFAULT_ZERO_FIELDS.has(key) && value === 0)) {
 					delete object[key as keyof SwitchMiiInstructions];
 					continue;
 				}
