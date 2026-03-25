@@ -14,7 +14,7 @@ import ImageViewer from "@/components/image-viewer";
 import DeleteMiiButton from "@/components/mii/delete-mii-button";
 import ShareMiiButton from "@/components/mii/share-mii-button";
 import ThreeDsScanTutorialButton from "@/components/tutorial/3ds-scan";
-import SwitchScanTutorialButton from "@/components/tutorial/switch-scan";
+import SwitchScanTutorialButton from "@/components/tutorial/switch-add-mii";
 import Description from "@/components/description";
 import MiiInstructions from "@/components/mii/instructions";
 

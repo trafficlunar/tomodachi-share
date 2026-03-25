@@ -24,7 +24,8 @@ export default function GlassesTab({ instructions }: Props) {
 					<div className="flex justify-center h-74 mt-auto">
 						<TypeSelector
 							hasNoneOption
-							length={50}
+							isGlassesTab
+							length={58}
 							type={type}
 							setType={(i) => {
 								setType(i);
@@ -44,6 +45,7 @@ export default function GlassesTab({ instructions }: Props) {
 					/>
 					<ColorPicker
 						color={shadesColor}
+						disabled={type < 44}
 						setColor={(i) => {
 							setShadesColor(i);
 							instructions.current.glasses.shadesColor = i;

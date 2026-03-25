@@ -9,8 +9,9 @@ interface Props {
 }
 
 export default function LipsTab({ instructions }: Props) {
-	const [type, setType] = useState(0);
+	const [type, setType] = useState(1);
 	const [color, setColor] = useState(0);
+	const [hasLipstick, setHasLipstick] = useState(false);
 
 	return (
 		<div className="relative grow p-3 pb-0!">
@@ -22,7 +23,7 @@ export default function LipsTab({ instructions }: Props) {
 
 					<div className="flex justify-center h-74 mt-auto">
 						<TypeSelector
-							length={35}
+							length={53}
 							type={type}
 							setType={(i) => {
 								setType(i);
@@ -41,6 +42,22 @@ export default function LipsTab({ instructions }: Props) {
 						}}
 					/>
 					<NumberInputs target={instructions.current.lips} />
+
+					<div className="flex gap-1.5 items-center w-full mt-auto">
+						<input
+							type="checkbox"
+							id="subcolor"
+							className="checkbox"
+							checked={hasLipstick}
+							onChange={(e) => {
+								setHasLipstick(e.target.checked);
+								instructions.current.lips.hasLipstick = e.target.checked;
+							}}
+						/>
+						<label htmlFor="subcolor" className="text-xs">
+							Lipstick
+						</label>
+					</div>
 				</div>
 			</div>
 		</div>

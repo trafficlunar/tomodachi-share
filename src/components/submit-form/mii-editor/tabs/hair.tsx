@@ -11,24 +11,41 @@ type Tab = "sets" | "bangs" | "back";
 
 export default function HairTab({ instructions }: Props) {
 	const [tab, setTab] = useState<Tab>("sets");
-	const [setsType, setSetsType] = useState(0);
-	const [bangsType, setBangsType] = useState(0);
-	const [backType, setBackType] = useState(0);
+	const [setsType, setSetsType] = useState<number | null>(43);
+	const [bangsType, setBangsType] = useState<number | null>(null);
+	const [backType, setBackType] = useState<number | null>(null);
 	const [color, setColor] = useState(0);
 	const [subColor, setSubColor] = useState<number | null>(null);
+	const [subColor2, setSubColor2] = useState<number | null>(null);
+	const [style, setStyle] = useState<number | null>(null);
 	const [isFlipped, setIsFlipped] = useState(false);
 
 	const type = tab === "sets" ? setsType : tab === "bangs" ? bangsType : backType;
+	const length = tab === "sets" ? 245 : tab === "bangs" ? 83 : 111;
+
 	const setType = (value: number) => {
 		if (tab === "sets") {
 			setSetsType(value);
 			instructions.current.hair.setType = value;
+			// Clear bangs and back
+			setBangsType(null);
+			setBackType(null);
+			setSubColor2(null);
+			instructions.current.hair.bangsType = null;
+			instructions.current.hair.backType = null;
+			instructions.current.hair.subColor2 = null;
 		} else if (tab === "bangs") {
 			setBangsType(value);
 			instructions.current.hair.bangsType = value;
+			// Clear set
+			setSetsType(null);
+			instructions.current.hair.setType = null;
 		} else {
 			setBackType(value);
 			instructions.current.hair.backType = value;
+			// Clear set
+			setSetsType(null);
+			instructions.current.hair.setType = null;
 		}
 	};
 
@@ -68,22 +85,7 @@ export default function HairTab({ instructions }: Props) {
 					</div>
 
 					<div className="flex justify-center h-74 mt-auto">
-						<TypeSelector
-							length={50}
-							type={type}
-							setType={(i) => {
-								setType(i);
-
-								// Update ref
-								if (tab === "sets") {
-									instructions.current.hair.setType = i;
-								} else if (tab === "bangs") {
-									instructions.current.hair.bangsType = i;
-								} else if (tab === "back") {
-									instructions.current.hair.backType = i;
-								}
-							}}
-						/>
+						<TypeSelector length={length} type={type} setType={setType} />
 					</div>
 				</div>
 
@@ -97,23 +99,68 @@ export default function HairTab({ instructions }: Props) {
 					/>
 
 					<div className="flex gap-1.5 items-center mb-2 w-full">
-						<input type="checkbox" id="subcolor" className="checkbox" checked={subColor !== null} onChange={(e) => setSubColor(e.target.checked ? 0 : null)} />
+						<input
+							type="checkbox"
+							id="subcolor"
+							className="checkbox"
+							checked={tab === "back" ? subColor2 !== null : subColor !== null}
+							onChange={(e) => {
+								if (tab === "back") {
+									setSubColor2(e.target.checked ? 0 : null);
+									instructions.current.hair.subColor2 = e.target.checked ? 0 : null;
+								} else {
+									setSubColor(e.target.checked ? 0 : null);
+									instructions.current.hair.subColor = e.target.checked ? 0 : null;
+								}
+							}}
+						/>
 						<label htmlFor="subcolor" className="text-xs">
 							Sub color
 						</label>
 					</div>
 
 					<ColorPicker
-						disabled={subColor === null}
-						color={subColor ? subColor : 0}
+						disabled={tab === "back" ? subColor2 === null : subColor === null}
+						color={tab === "back" ? (subColor2 ?? 0) : (subColor ?? 0)}
 						setColor={(i) => {
-							setSubColor(i);
-							instructions.current.hair.subColor = i;
+							if (tab === "back") {
+								setSubColor2(i);
+								instructions.current.hair.subColor2 = i;
+							} else {
+								setSubColor(i);
+								instructions.current.hair.subColor = i;
+							}
 						}}
 					/>
 
+					<p className="text-sm mb-1">Tying style</p>
+					<div className="grid grid-cols-3 w-full gap-0.5">
+						{Array.from({ length: 3 }).map((_, i) => (
+							<button
+								type="button"
+								key={i}
+								onClick={() => {
+									setStyle(i);
+									instructions.current.hair.style = i;
+								}}
+								className={`size-full aspect-square cursor-pointer hover:bg-orange-300 transition-colors duration-100 rounded-lg ${style === i ? "bg-orange-400!" : ""}`}
+							>
+								{i + 1}
+							</button>
+						))}
+					</div>
+
 					<div className="flex gap-1.5 items-center w-full mt-auto">
-						<input type="checkbox" id="subcolor" className="checkbox" checked={isFlipped} onChange={(e) => setIsFlipped(e.target.checked)} />
+						<input
+							type="checkbox"
+							id="subcolor"
+							className="checkbox"
+							checked={isFlipped}
+							onChange={(e) => {
+								setIsFlipped(e.target.checked);
+								instructions.current.hair.isFlipped = e.target.checked;
+							}}
+						/>
 						<label htmlFor="subcolor" className="text-xs">
 							Flip
 						</label>

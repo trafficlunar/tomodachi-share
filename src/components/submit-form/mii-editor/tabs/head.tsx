@@ -10,8 +10,8 @@ interface Props {
 const COLORS = ["FFD8BA", "FFD5AC", "FEC1A4", "FEC68F", "FEB089", "FEBA6B", "F39866", "E89854", "E37E3F", "B45627", "914220", "59371F", "662D16", "392D1E"];
 
 export default function HeadTab({ instructions }: Props) {
-	const [color, setColor] = useState(108);
-	const [type, setType] = useState(0);
+	const [color, setColor] = useState(109);
+	const [type, setType] = useState(1);
 
 	return (
 		<div className="relative grow p-3 pb-0!">

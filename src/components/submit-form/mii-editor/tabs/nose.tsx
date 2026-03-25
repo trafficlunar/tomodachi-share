@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function NoseTab({ instructions }: Props) {
-	const [type, setType] = useState(0);
+	const [type, setType] = useState(5);
 
 	return (
 		<div className="relative grow p-3 pb-0!">
@@ -20,7 +20,7 @@ export default function NoseTab({ instructions }: Props) {
 
 					<div className="flex justify-center h-74 mt-auto">
 						<TypeSelector
-							length={35}
+							length={32}
 							type={type}
 							setType={(i) => {
 								setType(i);

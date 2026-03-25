@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function EyebrowsTab({ instructions }: Props) {
-	const [type, setType] = useState(0);
+	const [type, setType] = useState(27);
 	const [color, setColor] = useState(0);
 
 	return (
@@ -23,7 +23,7 @@ export default function EyebrowsTab({ instructions }: Props) {
 					<div className="flex justify-center h-74 mt-auto">
 						<TypeSelector
 							hasNoneOption
-							length={35}
+							length={43}
 							type={type}
 							setType={(i) => {
 								setType(i);

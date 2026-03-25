@@ -50,46 +50,41 @@ export default function SubmitForm() {
 
 	const [platform, setPlatform] = useState<MiiPlatform>("SWITCH");
 	const [gender, setGender] = useState<MiiGender>("MALE");
-	const instructions = useRef<SwitchMiiInstructions>({
-		head: { type: 0, skinColor: 0 },
+	const instructions = useRef<Partial<SwitchMiiInstructions>>({
+		head: { type: 1, skinColor: 1 },
 		hair: {
-			setType: 0,
-			bangsType: 0,
-			backType: 0,
+			setType: 43,
+			bangsType: null,
+			backType: null,
 			color: 0,
-			subColor: 0,
-			style: 0,
+			subColor: null,
+			subColor2: null,
+			style: 1,
 			isFlipped: false,
 		},
-		eyebrows: { type: 0, color: 0, height: 0, distance: 0, rotation: 0, size: 0, stretch: 0 },
+		eyebrows: { type: 28, color: 0, height: 0, distance: 0, rotation: 0, size: 0, stretch: 0 },
 		eyes: {
-			eyesType: 0,
-			eyelashesTop: 0,
-			eyelashesBottom: 0,
-			eyelidTop: 0,
-			eyelidBottom: 0,
-			eyeliner: 0,
-			pupil: 0,
-			color: 0,
-			height: 0,
-			distance: 0,
-			rotation: 0,
-			size: 0,
-			stretch: 0,
+			main: { type: 6, color: 0, height: 0, distance: 0, rotation: 0, size: 0, stretch: 0 },
+			eyelashesTop: { type: 1, height: 0, distance: 0, rotation: 0, size: 0, stretch: 0 },
+			eyelashesBottom: { type: 1, height: 0, distance: 0, rotation: 0, size: 0, stretch: 0 },
+			eyelidTop: { type: 1, height: 0, distance: 0, rotation: 0, size: 0, stretch: 0 },
+			eyelidBottom: { type: 1, height: 0, distance: 0, rotation: 0, size: 0, stretch: 0 },
+			eyeliner: { type: 1, color: 0 },
+			pupil: { type: 1, height: 0, distance: 0, rotation: 0, size: 0, stretch: 0 },
 		},
-		nose: { type: 0, height: 0, size: 0 },
-		lips: { type: 0, color: 0, height: 0, rotation: 0, size: 0, stretch: 0, hasLipstick: false },
-		ears: { type: 0, height: 0, size: 0 },
-		glasses: { type: 0, ringColor: 0, shadesColor: 0, height: 0, size: 0, stretch: 0 },
+		nose: { type: 6, height: 0, size: 0 },
+		lips: { type: 2, color: 0, height: 0, rotation: 0, size: 0, stretch: 0, hasLipstick: false },
+		ears: { type: 1, height: 0, size: 0 },
+		glasses: { type: 1, ringColor: 0, shadesColor: 0, height: 0, size: 0, stretch: 0 },
 		other: {
-			wrinkles1: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
-			wrinkles2: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
-			beard: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
-			moustache: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
-			goatee: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
-			mole: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
-			eyeShadow: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
-			blush: { type: 0, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
+			wrinkles1: { type: 1, height: 0, distance: 0, size: 0, stretch: 0 },
+			wrinkles2: { type: 1, height: 0, distance: 0, size: 0, stretch: 0 },
+			beard: { type: 1, color: 0 },
+			moustache: { type: 1, color: 0, height: 0, isFlipped: false, size: 0, stretch: 0 },
+			goatee: { type: 1, color: 0 },
+			mole: { type: 1, color: 0, height: 0, distance: 0, size: 0 },
+			eyeShadow: { type: 1, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
+			blush: { type: 1, color: 0, height: 0, distance: 0, size: 0, stretch: 0 },
 		},
 		height: 0,
 		weight: 0,
@@ -378,6 +373,7 @@ export default function SubmitForm() {
 
 					<div className="flex flex-col items-center gap-2">
 						<PortraitUpload setImage={setMiiPortraitUri} />
+						<SwitchSubmitTutorialButton />
 					</div>
 				</div>
 
@@ -416,7 +412,9 @@ export default function SubmitForm() {
 					<div className="flex flex-col items-center gap-2">
 						<MiiEditor instructions={instructions} />
 						<SwitchSubmitTutorialButton />
-						<span className="text-xs text-zinc-400">Instructions are recommended, but not required.</span>
+						<span className="text-xs text-zinc-400 text-center px-32">
+							Mii editor may be inaccurate. Instructions are recommended, but not required - you do not have to add every instruction.
+						</span>
 					</div>
 				</div>
 

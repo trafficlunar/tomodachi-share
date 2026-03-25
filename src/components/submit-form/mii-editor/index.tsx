@@ -14,7 +14,7 @@ import MiscTab from "./tabs/misc";
 import { Icon } from "@iconify/react";
 
 interface Props {
-	instructions: React.RefObject<SwitchMiiInstructions>;
+	instructions: React.RefObject<Partial<SwitchMiiInstructions>>;
 }
 
 type Tab = "head" | "hair" | "eyebrows" | "eyes" | "nose" | "lips" | "ears" | "glasses" | "other" | "misc";
@@ -28,7 +28,7 @@ export const TAB_ICONS: Record<Tab, string> = {
 	lips: "material-symbols-light:lips",
 	ears: "ion:ear",
 	glasses: "solar:glasses-bold",
-	other: "mingcute:head-ai-fill",
+	other: "mdi:sparkles",
 	misc: "material-symbols:settings",
 };
 

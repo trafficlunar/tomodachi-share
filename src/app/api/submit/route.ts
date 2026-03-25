@@ -94,17 +94,23 @@ export async function POST(request: NextRequest) {
 	// Minify instructions to save space and improve user experience
 	let minifiedInstructions: Partial<SwitchMiiInstructions> | undefined;
 	if (formData.get("platform") === "SWITCH") {
+		const DEFAULT_ZERO_FIELDS = new Set(["height", "distance", "rotation", "size", "stretch"]);
+
 		function minify(object: Partial<SwitchMiiInstructions>): Partial<SwitchMiiInstructions> {
 			for (const key in object) {
 				const value = object[key as keyof SwitchMiiInstructions];
 
-				if (!value) {
+				if (value === null || value === undefined) {
 					delete object[key as keyof SwitchMiiInstructions];
 					continue;
 				}
 
-				// Recurse into nested objects
-				if (typeof value === "object") {
+				if (DEFAULT_ZERO_FIELDS.has(key) && value === 0) {
+					delete object[key as keyof SwitchMiiInstructions];
+					continue;
+				}
+
+				if (typeof value === "object" && !Array.isArray(value)) {
 					minify(value as Partial<SwitchMiiInstructions>);
 
 					if (Object.keys(value).length === 0) {

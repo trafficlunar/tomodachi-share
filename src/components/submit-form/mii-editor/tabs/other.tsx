@@ -8,15 +8,15 @@ interface Props {
 	instructions: React.RefObject<SwitchMiiInstructions>;
 }
 
-const TABS: { name: keyof SwitchMiiInstructions["other"]; length: number; colorsDisabled?: number[] }[] = [
-	{ name: "wrinkles1", length: 50 },
-	{ name: "wrinkles2", length: 40 },
-	{ name: "beard", length: 20 },
-	{ name: "moustache", length: 10 },
-	{ name: "goatee", length: 5 },
-	{ name: "mole", length: 15 },
-	{ name: "eyeShadow", length: 3 },
-	{ name: "blush", length: 8, colorsDisabled: [6] },
+const TABS: { name: keyof SwitchMiiInstructions["other"]; length: number }[] = [
+	{ name: "wrinkles1", length: 9 },
+	{ name: "wrinkles2", length: 15 },
+	{ name: "beard", length: 15 },
+	{ name: "moustache", length: 16 },
+	{ name: "goatee", length: 14 },
+	{ name: "mole", length: 2 },
+	{ name: "eyeShadow", length: 4 },
+	{ name: "blush", length: 8 },
 ];
 
 export default function OtherTab({ instructions }: Props) {
@@ -73,7 +73,7 @@ export default function OtherTab({ instructions }: Props) {
 					</div>
 
 					<div className="flex justify-center h-74 mt-auto">
-						<TypeSelector hasNoneOption length={currentTab.length} type={types[tab]} setType={setType} />
+						<TypeSelector length={currentTab.length} type={types[tab]} setType={setType} />
 					</div>
 				</div>
 

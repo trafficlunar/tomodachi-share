@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 interface Props {
-	target: { height?: number; distance?: number; rotation?: number; size?: number; stretch?: number };
+	target: { height?: number; distance?: number; rotation?: number; size?: number; stretch?: number } | any;
 }
 
 export default function NumberInputs({ target }: Props) {
@@ -11,8 +11,10 @@ export default function NumberInputs({ target }: Props) {
 	const [size, setSize] = useState(0);
 	const [stretch, setStretch] = useState(0);
 
+	if (!target) return null;
+
 	return (
-		<div className="grid grid-rows-5 h-full">
+		<div className="grid grid-rows-5 min-h-0">
 			{target.height != undefined && (
 				<div className="w-full">
 					<label htmlFor="height" className="text-xs">

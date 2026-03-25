@@ -143,7 +143,7 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 															alt="tutorial thumbnail"
 															width={128}
 															height={128}
-															className="rounded-lg border-2 border-zinc-300"
+															className="rounded-lg border-2 border-zinc-300 object-cover"
 														/>
 														<p className="mt-2">{tutorial.title}</p>
 														{/* Set opacity to 0 to keep height the same with other tutorials */}

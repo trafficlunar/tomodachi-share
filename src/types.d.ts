@@ -1,23 +1,24 @@
 import { MiiGender, Prisma } from "@prisma/client";
 import { DefaultSession } from "next-auth";
 
-// All color properties are assumed to be the same 108 colors
+// Some types have different options disabled, we're ignoring them for now
 interface SwitchMiiInstructions {
 	head: {
-		type: number; // 16 types
-		skinColor: number; // additional 14 are not in color menu
+		type: number; // 16 types, default is 2
+		skinColor: number; // Additional 14 are not in color menu, default is 2
 	};
 	hair: {
-		setType: number; // at least 25
-		bangsType: number; // at least 25
-		backType: number; // at least 25
+		setType: number | null; // 245 types, default is 43
+		bangsType: number | null; // 83 types, default is none, if a set is selected, set bangs and back to none and vice-versa
+		backType: number | null; // 111 types, default is none, same here (set related)
 		color: number;
-		subColor: number;
-		style: number; // is this different for each hair?
-		isFlipped: boolean; // is this different for bangs/back?
+		subColor: number | null; // Default is none
+		subColor2: number | null; // Only used when bangs/back is selected
+		style: number | null; // is this different for each hair?
+		isFlipped: boolean; // Only for sets and fringe
 	};
 	eyebrows: {
-		type: number; // 0 is None, at least 25 (including None)
+		type: number; // 1 is None, 43 types, default is 28
 		color: number;
 		height: number;
 		distance: number;
@@ -26,43 +27,83 @@ interface SwitchMiiInstructions {
 		stretch: number;
 	};
 	eyes: {
-		eyesType: number; // At least 25
-		eyelashesTop: number; // 6 types
-		eyelashesBottom: number; // unknown
-		eyelidTop: number; // 0 is None, 2 additional types
-		eyelidBottom: number; // unknown
-		eyeliner: number; // unknown
-		pupil: number; // 0 is default, 9 additional types
-		color: number; // is this same as hair?
-		height: number;
-		distance: number;
-		rotation: number;
-		size: number;
-		stretch: number;
+		main: {
+			type: number; // 1 is None, 121 types default is 6
+			color: number;
+			height: number;
+			distance: number;
+			rotation: number;
+			size: number;
+			stretch: number;
+		};
+		eyelashesTop: {
+			type: number; // 6 types, default is 1
+			height: number;
+			distance: number;
+			rotation: number;
+			size: number;
+			stretch: number;
+		};
+		eyelashesBottom: {
+			type: number; // 2 types, default is 1
+			height: number;
+			distance: number;
+			rotation: number;
+			size: number;
+			stretch: number;
+		};
+		eyelidTop: {
+			type: number; // 3 types, default is 1
+			height: number;
+			distance: number;
+			rotation: number;
+			size: number;
+			stretch: number;
+		};
+		eyelidBottom: {
+			type: number; // 3 types, default is 1
+			height: number;
+			distance: number;
+			rotation: number;
+			size: number;
+			stretch: number;
+		};
+		eyeliner: {
+			type: number; // 2 types, default is 1
+			color: number;
+		};
+		pupil: {
+			type: number; // 10 types, default is 1
+			height: number;
+			distance: number;
+			rotation: number;
+			size: number;
+			stretch: number;
+		};
 	};
 	nose: {
-		type: number; // 0 is None, at least 24 additional
+		type: number; // 1 is None, 32 types, default is 6
 		height: number;
 		size: number;
 	};
 	lips: {
-		type: number; // 0 is None, at least 24 additional
-		color: number; // is this same as hair?
+		type: number; // 1 is None, 53 types, default is 2
+		color: number;
 		height: number;
 		rotation: number;
 		size: number;
 		stretch: number;
-		hasLipstick: boolean; // is this what it's called?
+		hasLipstick: boolean;
 	};
 	ears: {
-		type: number; // 0 is Default, 4 additional
-		height: number;
-		size: number;
+		type: number; // 5 types, default is 1
+		height: number; // Does not work for default
+		size: number; // Does not work for default
 	};
 	glasses: {
-		type: number; // NOTE: THERE IS A GAP!!! 0 is None, at least 29 additional
-		ringColor: number; // i'm assuming based off icon
-		shadesColor: number; // i'm assuming based off icon
+		type: number; // NOTE: THERE IS A GAP AT 40!!! 1 is None, 58 types, default is 1
+		ringColor: number;
+		shadesColor: number; // Only works after gap
 		height: number;
 		size: number;
 		stretch: number;
@@ -70,64 +111,53 @@ interface SwitchMiiInstructions {
 	other: {
 		// names were assumed
 		wrinkles1: {
-			type: number; // 0 is None, at least BLANK additional
-			color: number; // is this same as hair?
+			type: number; // 9 types, default is 1
 			height: number;
 			distance: number;
 			size: number;
 			stretch: number;
 		};
 		wrinkles2: {
-			type: number; // 0 is None, at least BLANK additional
-			color: number; // is this same as hair?
+			type: number; // 15 types, default is 1
 			height: number;
 			distance: number;
 			size: number;
 			stretch: number;
 		};
 		beard: {
-			type: number; // 0 is None, at least BLANK additional
-			color: number; // is this same as hair?
-			height: number;
-			distance: number;
-			size: number;
-			stretch: number;
+			type: number; // 15 types, default is 1
+			color: number;
 		};
 		moustache: {
-			type: number; // 0 is None, at least BLANK additional
+			type: number; // 16 types, default is 1
 			color: number; // is this same as hair?
 			height: number;
-			distance: number;
+			isFlipped: boolean;
 			size: number;
 			stretch: number;
 		};
 		goatee: {
-			type: number; // 0 is None, at least BLANK additional
-			color: number; // is this same as hair?
-			height: number;
-			distance: number;
-			size: number;
-			stretch: number;
+			type: number; // 14 types, default is 1
+			color: number;
 		};
 		mole: {
-			type: number; // 0 is None, at least BLANK additional
+			type: number; // 2 types, default is 1
 			color: number; // is this same as hair?
 			height: number;
 			distance: number;
 			size: number;
-			stretch: number;
 		};
 		eyeShadow: {
-			type: number; // 0 is None, at least 3 additional
-			color: number; // is this same as hair?
+			type: number; // 4 types, default is 1
+			color: number;
 			height: number;
 			distance: number;
 			size: number;
 			stretch: number;
 		};
 		blush: {
-			type: number; // 0 is None, at least 7 additional
-			color: number; // is this same as hair?
+			type: number; // 8 types, default is 1
+			color: number;
 			height: number;
 			distance: number;
 			size: number;
