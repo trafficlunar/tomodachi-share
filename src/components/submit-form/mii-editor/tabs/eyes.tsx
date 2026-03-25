@@ -1,7 +1,6 @@
 import { SwitchMiiInstructions } from "@/types";
 import { useState } from "react";
 import ColorPicker from "../color-picker";
-import TypeSelector from "../type-selector";
 import NumberInputs from "../number-inputs";
 
 interface Props {
@@ -22,20 +21,9 @@ export default function OtherTab({ instructions }: Props) {
 	const [tab, setTab] = useState(0);
 
 	// One type/color state per tab
-	const [types, setTypes] = useState<number[]>([5, 0, 0, 0, 0, 0, 0]);
 	const [colors, setColors] = useState<number[]>(Array(TABS.length).fill(0));
 
 	const currentTab = TABS[tab];
-
-	const setType = (value: number) => {
-		setTypes((prev) => {
-			const copy = [...prev];
-			copy[tab] = value;
-			return copy;
-		});
-
-		instructions.current.eyes[currentTab.name].type = value;
-	};
 
 	const setColor = (value: number) => {
 		setColors((prev) => {
@@ -68,10 +56,6 @@ export default function OtherTab({ instructions }: Props) {
 								))}
 							</div>
 						</div>
-					</div>
-
-					<div className="flex justify-center h-74 mt-auto">
-						<TypeSelector hasNoneOption={tab === 0} length={currentTab.length} type={types[tab]} setType={setType} />
 					</div>
 				</div>
 

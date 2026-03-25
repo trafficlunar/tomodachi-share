@@ -1,7 +1,6 @@
 import { SwitchMiiInstructions } from "@/types";
 import { useState } from "react";
 import ColorPicker from "../color-picker";
-import TypeSelector from "../type-selector";
 
 interface Props {
 	instructions: React.RefObject<SwitchMiiInstructions>;
@@ -11,43 +10,13 @@ type Tab = "sets" | "bangs" | "back";
 
 export default function HairTab({ instructions }: Props) {
 	const [tab, setTab] = useState<Tab>("sets");
-	const [setsType, setSetsType] = useState<number | null>(43);
-	const [bangsType, setBangsType] = useState<number | null>(null);
-	const [backType, setBackType] = useState<number | null>(null);
 	const [color, setColor] = useState(0);
 	const [subColor, setSubColor] = useState<number | null>(null);
 	const [subColor2, setSubColor2] = useState<number | null>(null);
 	const [style, setStyle] = useState<number | null>(null);
 	const [isFlipped, setIsFlipped] = useState(false);
 
-	const type = tab === "sets" ? setsType : tab === "bangs" ? bangsType : backType;
 	const length = tab === "sets" ? 245 : tab === "bangs" ? 83 : 111;
-
-	const setType = (value: number) => {
-		if (tab === "sets") {
-			setSetsType(value);
-			instructions.current.hair.setType = value;
-			// Clear bangs and back
-			setBangsType(null);
-			setBackType(null);
-			setSubColor2(null);
-			instructions.current.hair.bangsType = null;
-			instructions.current.hair.backType = null;
-			instructions.current.hair.subColor2 = null;
-		} else if (tab === "bangs") {
-			setBangsType(value);
-			instructions.current.hair.bangsType = value;
-			// Clear set
-			setSetsType(null);
-			instructions.current.hair.setType = null;
-		} else {
-			setBackType(value);
-			instructions.current.hair.backType = value;
-			// Clear set
-			setSetsType(null);
-			instructions.current.hair.setType = null;
-		}
-	};
 
 	return (
 		<div className="relative grow p-3 pb-0!">
@@ -82,10 +51,6 @@ export default function HairTab({ instructions }: Props) {
 								</button>
 							</div>
 						</div>
-					</div>
-
-					<div className="flex justify-center h-74 mt-auto">
-						<TypeSelector length={length} type={type} setType={setType} />
 					</div>
 				</div>
 

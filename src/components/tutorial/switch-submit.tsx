@@ -18,27 +18,23 @@ export default function SubmitTutorialButton() {
 					<Tutorial
 						tutorials={[
 							{
-								title: "Mii Instructions",
+								title: "Submitting",
 								steps: [
 									{
-										text: "1. Press X to open the menu, then select 'Add a Mii' (or 'Residents' if you're submitting an existing Mii)",
-										imageSrc: "/tutorial/switch/step1.jpg",
+										text: "1. Press X to open the menu, then select 'Residents'",
+										imageSrc: "/tutorial/switch/submitting/step1.jpg",
 									},
 									{
-										text: "2. Press 'From scratch' and choose the Male template (instructions may be slightly inaccurate if you select Female, it's fine if you change all defaults)",
-										imageSrc: "/tutorial/switch/step2.jpg",
+										text: "2. Find the Mii you want to submit and edit it",
+										imageSrc: "/tutorial/switch/submitting/step2.jpg",
 									},
 									{
-										text: "3. Customize your Mii to your liking",
-										imageSrc: "/tutorial/switch/step3.jpg",
+										text: "3. Press Y to open the parts list, take a screenshot then upload to this submit form",
+										imageSrc: "/tutorial/switch/submitting/step3.jpg",
 									},
 									{
-										text: "4. All instructions are optional but if you want to add height, distance, etc. the value will be relative to how many times you clicked the button - positive for up/left, negative for down/right",
+										text: "4. Adding Mii colors and settings is recommended. All instructions are optional; for values like height or distance, use the number of button clicks (positive for up/left, negative for down/right)",
 										imageSrc: "/tutorial/switch/step4.jpg",
-									},
-									{
-										text: "5. Upload instructions, then screenshot the Mii for the portrait (feel free to crop it)",
-										imageSrc: "/tutorial/switch/step5.jpg",
 									},
 									{ type: "finish" },
 								],

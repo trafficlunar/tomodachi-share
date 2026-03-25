@@ -78,7 +78,6 @@ function TableCell({ label, children }: TableCellProps) {
 function Section({ name, instructions, children, isSubSection }: SectionProps) {
 	if (typeof instructions !== "object" || !instructions) return null;
 
-	const type = "type" in instructions ? instructions.type : undefined;
 	const color = "color" in instructions ? instructions.color : undefined;
 	const height = "height" in instructions ? instructions.height : undefined;
 	const distance = "distance" in instructions ? instructions.distance : undefined;
@@ -92,11 +91,6 @@ function Section({ name, instructions, children, isSubSection }: SectionProps) {
 
 			<table className="w-full">
 				<tbody>
-					{type && (
-						<TableCell label="Type">
-							<GridPosition index={type} />
-						</TableCell>
-					)}
 					{color && (
 						<TableCell label="Color">
 							<ColorPosition color={color} />
@@ -129,21 +123,6 @@ export default function MiiInstructions({ instructions }: Props) {
 			{head && <Section name="Head" instructions={head}></Section>}
 			{hair && (
 				<Section name="Hair" instructions={hair}>
-					{hair.setType && (
-						<TableCell label="Set Type">
-							<GridPosition index={hair.setType} />
-						</TableCell>
-					)}
-					{hair.bangsType && (
-						<TableCell label="Bangs Type">
-							<GridPosition index={hair.bangsType} />
-						</TableCell>
-					)}
-					{hair.backType && (
-						<TableCell label="Back Type">
-							<GridPosition index={hair.backType} />
-						</TableCell>
-					)}
 					{hair.subColor && (
 						<TableCell label="Sub Color">
 							<ColorPosition color={hair.subColor} />

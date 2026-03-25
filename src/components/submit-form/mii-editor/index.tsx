@@ -69,8 +69,9 @@ export default function MiiEditor({ instructions }: Props) {
 				{(Object.keys(TAB_COMPONENTS) as Tab[]).map((t) => {
 					const TabComponent = TAB_COMPONENTS[t];
 					return (
-						<div key={t} className={t === tab ? "grow flex" : "hidden"}>
+						<div key={t} className={t === tab ? "grow flex relative" : "hidden"}>
 							<TabComponent instructions={instructions} />
+							<p className="absolute top-32 left-32 z-10 text-lg font-bold w-48 text-center">Your parts screenshot should handle the types!</p>
 						</div>
 					);
 				})}

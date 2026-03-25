@@ -1,7 +1,6 @@
 import { useState } from "react";
 import ColorPicker from "../color-picker";
 import { SwitchMiiInstructions } from "@/types";
-import TypeSelector from "../type-selector";
 
 interface Props {
 	instructions: React.RefObject<SwitchMiiInstructions>;
@@ -19,17 +18,6 @@ export default function HeadTab({ instructions }: Props) {
 				<div className="grow flex flex-col">
 					<div className="flex items-center h-8">
 						<h1 className="font-bold text-xl">Head</h1>
-					</div>
-
-					<div className="flex justify-center h-74 mt-auto">
-						<TypeSelector
-							length={16}
-							type={type}
-							setType={(i) => {
-								setType(i);
-								instructions.current.head.type = i;
-							}}
-						/>
 					</div>
 				</div>
 

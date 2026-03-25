@@ -24,15 +24,15 @@ export default function SwitchAddMiiTutorialButton() {
 								steps: [
 									{
 										text: "1. Press X to open the menu, then select 'Add a Mii'",
-										imageSrc: "/tutorial/switch/step1.jpg",
+										imageSrc: "/tutorial/switch/adding-mii/step1.jpg",
 									},
 									{
 										text: "2. Press 'From scratch' and choose the Male template (instructions may be slightly inaccurate if you select Female)",
-										imageSrc: "/tutorial/switch/step2.jpg",
+										imageSrc: "/tutorial/switch/adding-mii/step2.jpg",
 									},
 									{
 										text: "3. Follow all instructions (not all instructions will be there, check next slide for more)",
-										imageSrc: "/tutorial/switch/step3.jpg",
+										imageSrc: "/tutorial/switch/adding-mii/step3.jpg",
 									},
 									{
 										text: "4. If the instructions have height, distance, etc. the value will be relative to how many times to click the button - positive for up/left, negative for down/right",

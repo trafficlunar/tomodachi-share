@@ -1,5 +1,4 @@
 import { SwitchMiiInstructions } from "@/types";
-import TypeSelector from "../type-selector";
 import NumberInputs from "../number-inputs";
 import { useState } from "react";
 
@@ -16,17 +15,6 @@ export default function EarsTab({ instructions }: Props) {
 				<div className="grow flex flex-col">
 					<div className="flex items-center h-8">
 						<h1 className="font-bold text-xl">Ears</h1>
-					</div>
-
-					<div className="flex justify-center h-74 mt-auto">
-						<TypeSelector
-							length={5}
-							type={type}
-							setType={(i) => {
-								setType(i);
-								instructions.current.ears.type = i;
-							}}
-						/>
 					</div>
 				</div>
 

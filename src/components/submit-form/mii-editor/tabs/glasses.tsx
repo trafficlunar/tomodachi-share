@@ -1,15 +1,13 @@
+import { useState } from "react";
 import { SwitchMiiInstructions } from "@/types";
 import ColorPicker from "../color-picker";
-import TypeSelector from "../type-selector";
 import NumberInputs from "../number-inputs";
-import { useState } from "react";
 
 interface Props {
 	instructions: React.RefObject<SwitchMiiInstructions>;
 }
 
 export default function GlassesTab({ instructions }: Props) {
-	const [type, setType] = useState(0);
 	const [ringColor, setRingColor] = useState(0);
 	const [shadesColor, setShadesColor] = useState(0);
 
@@ -19,19 +17,6 @@ export default function GlassesTab({ instructions }: Props) {
 				<div className="grow flex flex-col">
 					<div className="flex items-center h-8">
 						<h1 className="font-bold text-xl">Glasses</h1>
-					</div>
-
-					<div className="flex justify-center h-74 mt-auto">
-						<TypeSelector
-							hasNoneOption
-							isGlassesTab
-							length={58}
-							type={type}
-							setType={(i) => {
-								setType(i);
-								instructions.current.glasses.type = i;
-							}}
-						/>
 					</div>
 				</div>
 
@@ -45,7 +30,6 @@ export default function GlassesTab({ instructions }: Props) {
 					/>
 					<ColorPicker
 						color={shadesColor}
-						disabled={type < 44}
 						setColor={(i) => {
 							setShadesColor(i);
 							instructions.current.glasses.shadesColor = i;

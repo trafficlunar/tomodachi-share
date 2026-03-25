@@ -22,7 +22,7 @@ export default function PortraitUpload({ setImage }: Props) {
 			};
 			reader.readAsDataURL(file);
 		},
-		[setImage]
+		[setImage],
 	);
 
 	return (
@@ -31,7 +31,7 @@ export default function PortraitUpload({ setImage }: Props) {
 				<p className="text-center text-sm">
 					{!hasImage ? (
 						<>
-							Drag and drop your Mii&apos;s portrait here
+							Drag and drop a screenshot of your Mii&apos;s parts here
 							<br />
 							or click to open
 						</>
