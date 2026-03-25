@@ -74,21 +74,13 @@ export const searchSchema = z.object({
 	seed: z.coerce.number({ error: "Seed must be a number" }).int({ error: "Seed must be an integer" }).optional(),
 });
 
-// Account Info
-export const usernameSchema = z
+export const userNameSchema = z
 	.string()
 	.trim()
-	.min(3, "Username must be at least 3 characters long")
-	.max(20, "Username cannot be more than 20 characters long")
-	.regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores");
-
-export const displayNameSchema = z
-	.string()
-	.trim()
-	.min(2, { error: "Display name must be at least 2 characters long" })
-	.max(64, { error: "Display name cannot be more than 64 characters long" })
+	.min(2, { error: "Name must be at least 2 characters long" })
+	.max(64, { error: "Name cannot be more than 64 characters long" })
 	.regex(/^[a-zA-Z0-9-_. ']+$/, {
-		error: "Display name can only contain letters, numbers, dashes, underscores, apostrophes, and spaces.",
+		error: "Name can only contain letters, numbers, dashes, underscores, apostrophes, and spaces.",
 	});
 
 const colorSchema = z.number().int().min(0).max(107).optional();

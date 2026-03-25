@@ -102,7 +102,7 @@ export class RateLimit {
 	async handle(): Promise<NextResponse<object | unknown> | undefined> {
 		const session = await auth();
 		const ip = this.request.headers.get("CF-Connecting-IP") || this.request.headers.get("X-Forwarded-For")?.split(",")[0];
-		const identifier = (session ? session.user.id : ip) ?? "anonymous";
+		const identifier = (session ? session.user?.id : ip) ?? "anonymous";
 
 		this.data = await this.check(identifier);
 

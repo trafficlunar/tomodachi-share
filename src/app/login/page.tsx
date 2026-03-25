@@ -12,9 +12,7 @@ export default async function LoginPage() {
 	const session = await auth();
 
 	// If the user is already logged in, redirect
-	if (session) {
-		redirect("/");
-	}
+	if (session) redirect("/");
 
 	return (
 		<div className="grow flex items-center justify-center">

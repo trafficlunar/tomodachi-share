@@ -90,7 +90,7 @@ export default function EditForm({ mii, likes }: Props) {
 						const response = await fetch(path);
 						const blob = await response.blob();
 
-						return Object.assign(new File([blob], `image${index}.webp`, { type: "image/webp" }), { path });
+						return Object.assign(new File([blob], `image${index}.png`, { type: "image/png" }), { path });
 					}),
 				);
 

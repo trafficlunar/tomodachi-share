@@ -19,7 +19,7 @@ const reportSchema = z.object({
 export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user.id, username: session.user.username });
+	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 2);
 	const check = await rateLimit.handle();
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 		include: {
 			user: {
 				select: {
-					username: true;
+					name: true;
 				};
 			};
 		};
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 			include: {
 				user: {
 					select: {
-						username: true,
+						name: true,
 					},
 				},
 			},
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 		where: {
 			targetId: id,
 			reportType: type.toUpperCase() as ReportType,
-			authorId: Number(session.user.id),
+			authorId: Number(session.user?.id),
 		},
 	});
 
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 				targetId: id,
 				reason: reason.toUpperCase() as ReportReason,
 				reasonNotes: notes,
-				authorId: Number(session.user.id),
+				authorId: Number(session.user?.id),
 				creatorId: mii ? mii.userId : undefined,
 			},
 		});
@@ -92,11 +92,11 @@ export async function POST(request: NextRequest) {
 	// Send notification to ntfy
 	if (process.env.NTFY_URL) {
 		// This is only shown if report type is MII
-		const miiCreatorMessage = mii ? `by @${mii.user.username} (ID: ${mii.userId})` : "";
+		const miiCreatorMessage = mii ? `by ${mii.user.name} (ID: ${mii.userId})` : "";
 
 		await fetch(process.env.NTFY_URL, {
 			method: "POST",
-			body: `Report by @${session.user.username} (ID: ${session.user.id}) on ${type.toUpperCase()} (ID: ${id}) ${miiCreatorMessage}`,
+			body: `Report by ${session.user?.name} (ID: ${session.user?.id}) on ${type.toUpperCase()} (ID: ${id}) ${miiCreatorMessage}`,
 			headers: {
 				Title: "Report recieved - TomodachiShare",
 				Priority: "urgent",

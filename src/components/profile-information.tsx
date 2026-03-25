@@ -15,7 +15,7 @@ interface Props {
 export default async function ProfileInformation({ userId, page }: Props) {
 	const session = await auth();
 
-	const id = userId ? userId : Number(session?.user.id);
+	const id = userId ? userId : Number(session?.user?.id);
 	const user = await prisma.user.findUnique({ where: { id } });
 	const likedMiis = await prisma.like.count({ where: { userId: id } });
 
@@ -23,14 +23,14 @@ export default async function ProfileInformation({ userId, page }: Props) {
 
 	const isAdmin = id === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID);
 	const isContributor = process.env.NEXT_PUBLIC_CONTRIBUTORS_USER_IDS?.split(",").includes(id.toString());
-	const isOwnProfile = Number(session?.user.id) === id;
+	const isOwnProfile = Number(session?.user?.id) === id;
 
 	return (
 		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex gap-4 mb-2 max-md:flex-col">
 			<div className="flex w-full gap-4 overflow-x-scroll">
 				{/* Profile picture */}
 				<Link href={`/profile/${user.id}`} className="size-28 aspect-square">
-					<ProfilePicture src={user.image ?? "/guest.webp"} className="rounded-full bg-white border-2 border-orange-400 shadow max-md:self-center" />
+					<ProfilePicture src={user.image ?? "/guest.png"} className="rounded-full bg-white border-2 border-orange-400 shadow max-md:self-center" />
 				</Link>
 				{/* User information */}
 				<div className="flex flex-col w-full relative py-3">
@@ -47,7 +47,7 @@ export default async function ProfileInformation({ userId, page }: Props) {
 							</div>
 						)}
 					</div>
-					<h2 className="text-black/60 text-sm font-semibold wrap-break-word">@{user?.username}</h2>
+					<h2 className="text-black/60 text-sm font-semibold wrap-break-word">ID: {user?.id}</h2>
 
 					<div className="mt-3 text-sm flex gap-8">
 						<h4 title={`${user.createdAt.toLocaleTimeString("en-GB", { timeZone: "UTC" })} UTC`}>

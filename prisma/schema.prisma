@@ -9,7 +9,6 @@ datasource db {
 
 model User {
   id            Int       @id @default(autoincrement())
-  username      String?   @unique
   name          String
   email         String    @unique
   emailVerified DateTime?
@@ -19,8 +18,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  usernameUpdatedAt DateTime?
-  imageUpdatedAt    DateTime?
+  imageUpdatedAt DateTime?
 
   accounts Account[]
   sessions Session[]

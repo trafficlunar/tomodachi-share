@@ -22,7 +22,7 @@ export default function Dropzone({ onDrop, options, children }: Props) {
 		onDrop: handleDrop,
 		maxFiles: 3,
 		accept: {
-			"image/*": [".png", ".jpg", ".jpeg", ".bmp", ".webp", ".heic"],
+			"image/*": [".png", ".jpg", ".jpeg", ".bmp", ".png", ".heic"],
 		},
 		...options,
 	});

@@ -8,7 +8,7 @@ import { RateLimit } from "@/lib/rate-limit";
 export async function DELETE(request: NextRequest) {
 	const session = await auth();
 	if (!session || !session.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user.id, username: session.user.username });
+	Sentry.setUser({ id: session.user.id, name: session.user.name });
 
 	const rateLimit = new RateLimit(request, 1);
 	const check = await rateLimit.handle();

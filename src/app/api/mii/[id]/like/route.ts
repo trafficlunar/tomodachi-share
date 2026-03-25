@@ -22,7 +22,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		const existingLike = await tx.like.findUnique({
 			where: {
 				userId_miiId: {
-					userId: Number(session.user.id),
+					userId: Number(session.user?.id),
 					miiId,
 				},
 			},
@@ -33,7 +33,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 			await tx.like.delete({
 				where: {
 					userId_miiId: {
-						userId: Number(session.user.id),
+						userId: Number(session.user?.id),
 						miiId,
 					},
 				},
@@ -42,7 +42,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 			// Add a like if it doesn't exist
 			await tx.like.create({
 				data: {
-					userId: Number(session.user.id),
+					userId: Number(session.user?.id),
 					miiId,
 				},
 			});

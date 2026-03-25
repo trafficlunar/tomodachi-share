@@ -66,7 +66,7 @@ const submitSchema = z
 export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user.id, username: session.user.username });
+	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 3);
 	const check = await rateLimit.handle();
@@ -205,7 +205,7 @@ export async function POST(request: NextRequest) {
 	// Create Mii in database
 	const miiRecord = await prisma.mii.create({
 		data: {
-			userId: Number(session.user.id),
+			userId: Number(session.user?.id),
 			platform,
 			name,
 			tags,
@@ -249,10 +249,10 @@ export async function POST(request: NextRequest) {
 		}
 
 		if (!portraitBuffer) throw Error("Mii portrait buffer not initialised");
-		const webpBuffer = await sharp(portraitBuffer).webp({ quality: 85 }).toBuffer();
-		const fileLocation = path.join(miiUploadsDirectory, "mii.webp");
+		const pngBuffer = await sharp(portraitBuffer).png({ quality: 85 }).toBuffer();
+		const fileLocation = path.join(miiUploadsDirectory, "mii.png");
 
-		await fs.writeFile(fileLocation, webpBuffer);
+		await fs.writeFile(fileLocation, pngBuffer);
 	} catch (error) {
 		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
@@ -276,10 +276,11 @@ export async function POST(request: NextRequest) {
 			const codeBuffer = Buffer.from(codeBase64, "base64");
 
 			// Compress and store
-			const codeWebpBuffer = await sharp(codeBuffer).webp({ quality: 85 }).toBuffer();
-			const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.webp");
+			const codePngBuffer = await sharp(codeBuffer).png({ quality: 85 }).toBuffer();
+			const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.png");
 
-			await fs.writeFile(codeFileLocation, codeWebpBuffer);
+			await fs.writeFile(codeFileLocation, codePngBuffer);
+			await generateMetadataImage(miiRecord, session.user?.name!);
 		} catch (error) {
 			// Clean up if something went wrong
 			await prisma.mii.delete({ where: { id: miiRecord.id } });
@@ -290,23 +291,15 @@ export async function POST(request: NextRequest) {
 		}
 	}
 
-	try {
-		await generateMetadataImage(miiRecord, session.user.name!);
-	} catch (error) {
-		console.error(error);
-		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "metadata-image" } });
-		return rateLimit.sendResponse({ error: `Failed to generate 'metadata' type image for mii ${miiRecord.id}` }, 500);
-	}
-
 	// Compress and store user images
 	try {
 		await Promise.all(
 			customImages.map(async (image, index) => {
 				const buffer = Buffer.from(await image.arrayBuffer());
-				const webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer();
-				const fileLocation = path.join(miiUploadsDirectory, `image${index}.webp`);
+				const pngBuffer = await sharp(buffer).png({ quality: 85 }).toBuffer();
+				const fileLocation = path.join(miiUploadsDirectory, `image${index}.png`);
 
-				await fs.writeFile(fileLocation, webpBuffer);
+				await fs.writeFile(fileLocation, pngBuffer);
 			}),
 		);
 

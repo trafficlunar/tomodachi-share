@@ -22,10 +22,9 @@ export default async function SubmitPage() {
 	const session = await auth();
 
 	if (!session) redirect("/login");
-	if (!session.user.username) redirect("/create-username");
 	const activePunishment = await prisma.punishment.findFirst({
 		where: {
-			userId: Number(session?.user.id),
+			userId: Number(session?.user?.id),
 			returned: false,
 		},
 	});
@@ -33,6 +32,12 @@ export default async function SubmitPage() {
 
 	// Check if submissions are disabled
 	let value: boolean | null = true;
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
+		value = await response.json();
+	} catch (error) {
+		return <p>An error occurred!</p>;
+	}
 	try {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
 		value = await response.json();

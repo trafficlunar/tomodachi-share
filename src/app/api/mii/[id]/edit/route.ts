@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
-import { Mii } from "@prisma/client";
+import { Mii, Prisma } from "@prisma/client";
 
 import fs from "fs/promises";
 import path from "path";
@@ -29,7 +29,7 @@ const editSchema = z.object({
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user.id, username: session.user.username });
+	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 1); // no grouped pathname; edit each mii 1 time a minute
 	const check = await rateLimit.handle();
@@ -49,7 +49,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	});
 
 	if (!mii) return rateLimit.sendResponse({ error: "Mii not found" }, 404);
-	if (!(Number(session.user.id) === mii.userId || Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)))
+	if (!(Number(session.user?.id) === mii.userId || Number(session.user?.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)))
 		return rateLimit.sendResponse({ error: "You don't have ownership of that Mii" }, 403);
 
 	// Parse form data
@@ -90,7 +90,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	}
 
 	// Edit Mii in database
-	const updateData: Partial<Mii> = {};
+	const updateData: Prisma.MiiUpdateInput = {};
 	if (name !== undefined) updateData.name = profanity.censor(name); // Censor potential inappropriate words
 	if (tags !== undefined) updateData.tags = tags.map((t) => profanity.censor(t)); // Same here
 	if (description !== undefined) updateData.description = profanity.censor(description);
@@ -126,10 +126,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 			await Promise.all(
 				images.map(async (image, index) => {
 					const buffer = Buffer.from(await image.arrayBuffer());
-					const webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer();
-					const fileLocation = path.join(miiUploadsDirectory, `image${index}.webp`);
+					const pngBuffer = await sharp(buffer).png({ quality: 85 }).toBuffer();
+					const fileLocation = path.join(miiUploadsDirectory, `image${index}.png`);
 
-					await fs.writeFile(fileLocation, webpBuffer);
+					await fs.writeFile(fileLocation, pngBuffer);
 				}),
 			);
 		} catch (error) {

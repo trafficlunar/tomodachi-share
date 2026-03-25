@@ -35,7 +35,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			user: {
 				select: {
 					name: true,
-					username: true,
 				},
 			},
 			_count: {
@@ -49,16 +48,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 	const metadataImageUrl = `/mii/${mii.id}/image?type=metadata`;
 
+	const name = `@${mii.user.name}`;
+
 	return {
 		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `${mii.name} - TomodachiShare`,
-		description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+		description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 		keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection", ...mii.tags],
-		creator: mii.user.username,
+		creator: name,
 		openGraph: {
 			type: "article",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 			images: [
 				{
 					url: metadataImageUrl,
@@ -66,19 +67,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 				},
 			],
 			publishedTime: mii.createdAt.toISOString(),
-			authors: mii.user.username,
+			authors: name,
 		},
 		twitter: {
 			card: "summary_large_image",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 			images: [
 				{
 					url: metadataImageUrl,
 					alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character`,
 				},
 			],
-			creator: mii.user.username!,
+			creator: mii.user.name!,
 		},
 		alternates: {
 			canonical: `/mii/${mii.id}`,
@@ -98,7 +99,6 @@ export default async function MiiPage({ params }: Props) {
 			user: {
 				select: {
 					name: true,
-					username: true,
 				},
 			},
 			likedBy: session?.user
@@ -291,7 +291,7 @@ export default async function MiiPage({ params }: Props) {
 
 						{/* Buttons */}
 						<div className="flex gap-3 w-fit bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 text-3xl text-orange-400 max-md:place-self-center *:size-12 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-xs">
-							{session && (Number(session.user.id) === mii.userId || Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) && (
+							{session && (Number(session.user?.id) === mii.userId || Number(session.user?.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) && (
 								<>
 									<Link aria-label="Edit Mii" href={`/edit/${mii.id}`}>
 										<Icon icon="mdi:pencil" />

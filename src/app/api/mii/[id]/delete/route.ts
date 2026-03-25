@@ -14,7 +14,7 @@ const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user.id, username: session.user.username });
+	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 30, "/api/mii/delete");
 	const check = await rateLimit.handle();
@@ -33,7 +33,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 	});
 
 	if (!mii) return rateLimit.sendResponse({ error: "Mii not found" }, 404);
-	if (!(Number(session.user.id) === mii.userId || Number(session.user.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)))
+	if (!(Number(session.user?.id) === mii.userId || Number(session.user?.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)))
 		return rateLimit.sendResponse({ error: "You don't have ownership of that Mii" }, 403);
 
 	const miiUploadsDirectory = path.join(uploadsDirectory, miiId.toString());

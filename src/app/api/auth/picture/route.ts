@@ -21,14 +21,14 @@ const formDataSchema = z.object({
 export async function PATCH(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user.id, username: session.user.username });
+	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 3);
 	const check = await rateLimit.handle();
 	if (check) return check;
 
 	// Check if profile picture was updated in the last 7 days
-	const user = await prisma.user.findUnique({ where: { id: Number(session.user.id) } });
+	const user = await prisma.user.findUnique({ where: { id: Number(session.user?.id) } });
 	if (user && user.imageUpdatedAt) {
 		const timePeriod = dayjs().subtract(7, "days");
 		const lastUpdate = dayjs(user.imageUpdatedAt);
@@ -48,8 +48,8 @@ export async function PATCH(request: NextRequest) {
 	// If there is no image, set the profile picture to the guest image
 	if (!image) {
 		await prisma.user.update({
-			where: { id: Number(session.user.id) },
-			data: { image: `/guest.webp`, imageUpdatedAt: new Date() },
+			where: { id: Number(session.user?.id) },
+			data: { image: `/guest.png`, imageUpdatedAt: new Date() },
 		});
 
 		return rateLimit.sendResponse({ success: true });
@@ -64,10 +64,10 @@ export async function PATCH(request: NextRequest) {
 
 	try {
 		const buffer = Buffer.from(await image.arrayBuffer());
-		const webpBuffer = await sharp(buffer, { animated: true }).resize({ width: 128, height: 128 }).webp({ quality: 85 }).toBuffer();
-		const fileLocation = path.join(uploadsDirectory, `${session.user.id}.webp`);
+		const pngBuffer = await sharp(buffer, { animated: true }).resize({ width: 128, height: 128 }).png({ quality: 85 }).toBuffer();
+		const fileLocation = path.join(uploadsDirectory, `${session.user?.id}.png`);
 
-		await fs.writeFile(fileLocation, webpBuffer);
+		await fs.writeFile(fileLocation, pngBuffer);
 	} catch (error) {
 		console.error("Error uploading profile picture:", error);
 		Sentry.captureException(error, { extra: { stage: "upload-profile-picture" } });
@@ -76,8 +76,8 @@ export async function PATCH(request: NextRequest) {
 
 	try {
 		await prisma.user.update({
-			where: { id: Number(session.user.id) },
-			data: { image: `/profile/${session.user.id}/picture`, imageUpdatedAt: new Date() },
+			where: { id: Number(session.user?.id) },
+			data: { image: `/profile/${session.user?.id}/picture`, imageUpdatedAt: new Date() },
 		});
 	} catch (error) {
 		console.error("Failed to update profile picture:", error);

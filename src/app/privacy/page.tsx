@@ -32,8 +32,8 @@ export default function PrivacyPage() {
 						<p className="mb-2">The following types of information are stored when you use this website:</p>
 						<ul className="list-disc list-inside">
 							<li>
-								<strong>Account Information:</strong> When you sign up or log in using Discord or Github, your username, e-mail, and profile picture are
-								collected. Your authentication tokens may also be temporarily stored to maintain your login session.
+								<strong>Account Information:</strong> When you sign up or log in using Discord or Github, your name, e-mail, and profile picture are collected.
+								Your authentication tokens may also be temporarily stored to maintain your login session.
 							</li>
 							<li>
 								<strong>Miis:</strong> We store any Miis you submit, including associated images (such as a picture of your Mii, QR codes, and custom images).
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
 						</p>
 						<ul className="list-disc list-inside ml-4">
 							<li>Errors and performance data is collected.</li>
-							<li>Only your user ID and username are sent, no other personally identifiable information is collected.</li>
+							<li>Only your user ID and name are sent, no other personally identifiable information is collected.</li>
 							<li>You can use ad blockers or browser privacy features to opt out.</li>
 						</ul>
 					</section>

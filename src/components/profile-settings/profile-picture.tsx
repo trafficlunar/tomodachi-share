@@ -59,7 +59,7 @@ export default function ProfilePictureSettings() {
 						</p>
 
 						<Image
-							src={newPicture ? URL.createObjectURL(newPicture) : "/guest.webp"}
+							src={newPicture ? URL.createObjectURL(newPicture) : "/guest.png"}
 							alt="new profile picture"
 							width={96}
 							height={96}
@@ -93,7 +93,7 @@ export default function ProfilePictureSettings() {
 						<div className="bg-orange-100 rounded-xl border-2 border-amber-500 mt-4 px-2 py-1 flex items-center">
 							<p className="font-semibold mb-2">New profile picture:</p>
 							<Image
-								src={newPicture ? URL.createObjectURL(newPicture) : "/guest.webp"}
+								src={newPicture ? URL.createObjectURL(newPicture) : "/guest.png"}
 								alt="new profile picture"
 								width={128}
 								height={128}

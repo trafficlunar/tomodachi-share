@@ -1,18 +1,6 @@
 import { MiiGender, Prisma } from "@prisma/client";
 import { DefaultSession } from "next-auth";
 
-declare module "next-auth" {
-	interface Session {
-		user: {
-			username?: string;
-		} & DefaultSession["user"];
-	}
-
-	interface User {
-		username?: string;
-	}
-}
-
 // All color properties are assumed to be the same 108 colors
 interface SwitchMiiInstructions {
 	head: {
