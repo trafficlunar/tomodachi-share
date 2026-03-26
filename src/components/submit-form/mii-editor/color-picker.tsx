@@ -64,7 +64,7 @@ export default function ColorPicker({ disabled, color, setColor, tab = "hair" }:
 
 			{isOpen && (
 				<div
-					className={`absolute inset-0 z-10 w-full p-0.5 bg-orange-100 rounded-lg transition-transform duration-500 overflow-x-auto
+					className={`absolute inset-0 z-10 w-full p-0.5 bg-orange-100 rounded-lg transition-transform duration-500 overflow-x-auto flex
 						 ${isVisible ? "opacity-100" : "opacity-0"}`}
 					style={{
 						transition: isVisible
@@ -72,7 +72,7 @@ export default function ColorPicker({ disabled, color, setColor, tab = "hair" }:
 							: "transform 1000ms cubic-bezier(0.55, 0, 0.45, 1), opacity 300ms",
 					}}
 				>
-					<div className="w-max flex items-center">
+					<div className="w-max flex items-center justify-center grow shrink-0">
 						<div className="mr-8 flex flex-col gap-0.5">
 							{COLORS.slice(getExtraSlice().start, getExtraSlice().end).map((c, i) => {
 								const actualIndex = i + getExtraSlice().start;
@@ -113,7 +113,7 @@ export default function ColorPicker({ disabled, color, setColor, tab = "hair" }:
 							))}
 						</div>
 
-						<button type="button" onClick={close} className="h-full w-16 ml-4 cursor-pointer transition-transform hover:scale-115 active:scale-90">
+						<button type="button" onClick={close} className="h-4/5 w-16 ml-4 cursor-pointer transition-transform hover:scale-115 active:scale-90">
 							<Icon icon={"tabler:chevron-right"} className="text-4xl" />
 						</button>
 					</div>

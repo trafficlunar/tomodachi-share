@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function LipsTab({ instructions }: Props) {
-	const [color, setColor] = useState(0);
+	const [color, setColor] = useState(128);
 	const [hasLipstick, setHasLipstick] = useState(false);
 
 	return (

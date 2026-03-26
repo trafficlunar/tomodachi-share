@@ -10,7 +10,7 @@ type Tab = "sets" | "bangs" | "back";
 
 export default function HairTab({ instructions }: Props) {
 	const [tab, setTab] = useState<Tab>("sets");
-	const [color, setColor] = useState(0);
+	const [color, setColor] = useState(3);
 	const [subColor, setSubColor] = useState<number | null>(null);
 	const [subColor2, setSubColor2] = useState<number | null>(null);
 	const [style, setStyle] = useState<number | null>(null);

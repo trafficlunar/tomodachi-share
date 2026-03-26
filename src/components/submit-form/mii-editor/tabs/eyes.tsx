@@ -21,7 +21,7 @@ export default function EyesTab({ instructions }: Props) {
 	const [tab, setTab] = useState(0);
 
 	// One type/color state per tab
-	const [colors, setColors] = useState<number[]>(Array(TABS.length).fill(0));
+	const [colors, setColors] = useState<number[]>(Array(TABS.length).fill(122));
 
 	const currentTab = TABS[tab];
 

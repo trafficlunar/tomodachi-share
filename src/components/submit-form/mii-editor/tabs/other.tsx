@@ -23,7 +23,7 @@ export default function OtherTab({ instructions }: Props) {
 	const [isFlipped, setIsFlipped] = useState(false);
 
 	// One type/color state per tab
-	const [colors, setColors] = useState<number[]>(Array(TABS.length).fill(0));
+	const [colors, setColors] = useState<number[]>([0, 0, 0, 0, 0, 0, 139, 0]);
 
 	const currentTab = TABS[tab];
 
@@ -60,7 +60,7 @@ export default function OtherTab({ instructions }: Props) {
 			</div>
 
 			<div className="absolute inset-0 flex flex-col justify-center items-center">
-				<ColorPicker disabled={tab === 0 || tab === 1} color={colors[tab]} setColor={setColor} />
+				<ColorPicker disabled={tab === 0 || tab === 1} color={colors[tab]} setColor={setColor} tab={tab === 6 ? "eyeliner" : "hair"} />
 				<NumberInputs target={instructions.current.other[currentTab.name]} />
 
 				{tab === 3 && (

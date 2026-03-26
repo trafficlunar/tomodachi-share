@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function EyebrowsTab({ instructions }: Props) {
-	const [color, setColor] = useState(0);
+	const [color, setColor] = useState(3);
 
 	return (
 		<>
