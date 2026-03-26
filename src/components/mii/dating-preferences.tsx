@@ -1,3 +1,5 @@
+"use client";
+
 import { ChangeEvent } from "react";
 import { MiiGender } from "@prisma/client";
 import { SwitchMiiInstructions } from "@/types";
@@ -22,9 +24,7 @@ export default function DatingPreferencesViewer({ data, onChecked }: Props) {
 							id={gender}
 							className="checkbox"
 							checked={data.includes(genderEnum)}
-							{...(typeof window !== "undefined" && onChecked
-								? { onChange: (e: ChangeEvent<HTMLInputElement>) => onChecked(e, genderEnum) }
-								: { readOnly: true })}
+							{...(onChecked ? { onChange: (e: ChangeEvent<HTMLInputElement>) => onChecked(e, genderEnum) } : { readOnly: true })}
 						/>
 						<label htmlFor={gender} className="text-sm select-none">
 							{gender}

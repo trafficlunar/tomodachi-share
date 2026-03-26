@@ -26,7 +26,7 @@ export default function VoiceViewer({ data, onClick, onClickTone }: Props) {
 						min={0}
 						max={100}
 						step={1}
-						value={data[label as keyof typeof data]}
+						value={data[label as keyof typeof data] ?? 50}
 						disabled={!onClick}
 						onChange={(e) => {
 							if (onClick) onClick(e, label);

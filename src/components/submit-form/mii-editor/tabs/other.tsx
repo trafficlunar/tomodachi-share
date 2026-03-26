@@ -34,7 +34,10 @@ export default function OtherTab({ instructions }: Props) {
 			return copy;
 		});
 
-		instructions.current.other[currentTab.name].color = value;
+		const target = instructions.current.other[currentTab.name];
+		if ("color" in target) {
+			target.color = value;
+		}
 	};
 
 	return (

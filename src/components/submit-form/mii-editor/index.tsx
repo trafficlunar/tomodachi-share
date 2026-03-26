@@ -51,7 +51,7 @@ export default function MiiEditor({ instructions }: Props) {
 	return (
 		<>
 			<div className="w-full h-91 flex flex-col sm:flex-row bg-orange-100 border-2 border-orange-200 rounded-xl overflow-hidden">
-				<div className="h-9 flex flex-row sm:flex-col">
+				<div className="w-full flex flex-row sm:flex-col max-sm:max-h-9 sm:max-w-9">
 					{(Object.keys(TAB_COMPONENTS) as Tab[]).map((t) => (
 						<button
 							key={t}

@@ -64,61 +64,59 @@ export default function ColorPicker({ disabled, color, setColor, tab = "hair" }:
 
 			{isOpen && (
 				<div
-					className={`absolute inset-0 z-10 w-full p-4 bg-orange-100 rounded-lg transition-transform duration-500
-						flex items-center ${isVisible ? "opacity-100" : "opacity-0"}`}
+					className={`absolute inset-0 z-10 w-full p-0.5 bg-orange-100 rounded-lg transition-transform duration-500 overflow-x-auto
+						 ${isVisible ? "opacity-100" : "opacity-0"}`}
 					style={{
 						transition: isVisible
 							? "transform 500ms cubic-bezier(0.34, 1.28, 0.64, 1), opacity 300ms"
 							: "transform 1000ms cubic-bezier(0.55, 0, 0.45, 1), opacity 300ms",
 					}}
 				>
-					<div className="mr-8 flex flex-col gap-0.5">
-						{COLORS.slice(getExtraSlice().start, getExtraSlice().end).map((c, i) => {
-							const actualIndex = i + getExtraSlice().start;
-							return (
+					<div className="w-max flex items-center">
+						<div className="mr-8 flex flex-col gap-0.5">
+							{COLORS.slice(getExtraSlice().start, getExtraSlice().end).map((c, i) => {
+								const actualIndex = i + getExtraSlice().start;
+								return (
+									<button
+										type="button"
+										key={actualIndex}
+										onClick={() => setColor(actualIndex)}
+										className={`size-7.5 cursor-pointer rounded-md ring-orange-500 ring-offset-2 ${color === actualIndex ? "ring-2 z-10" : ""}`}
+										style={{
+											backgroundColor: `#${c}`,
+											opacity: isVisible ? 1 : 0,
+											transform: isVisible ? "scale(1)" : "scale(0.7)",
+											transition: `opacity 250ms ease, transform 320ms cubic-bezier(0.34, 1.4, 0.64, 1)`,
+											// stagger by column then row for a wave effect
+											transitionDelay: isVisible ? `${120 + (i % 10) * 18 + Math.floor(i / 10) * 10}ms` : "0ms",
+										}}
+									></button>
+								);
+							})}
+						</div>
+
+						<div className="grid grid-cols-10 gap-0.5 overflow-x-auto">
+							{COLORS.slice(8, 108).map((c, i) => (
 								<button
 									type="button"
-									key={actualIndex}
-									onClick={() => setColor(actualIndex)}
-									className={`size-7.5 cursor-pointer rounded-md ring-orange-500 ring-offset-2 ${color === actualIndex ? "ring-2 z-10" : ""}`}
+									key={i + 8}
+									onClick={() => setColor(i + 8)}
+									className={`size-7.5 cursor-pointer rounded-md ring-orange-500 ring-offset-2 ${color === i + 8 ? "ring-2 z-10" : ""}`}
 									style={{
 										backgroundColor: `#${c}`,
 										opacity: isVisible ? 1 : 0,
 										transform: isVisible ? "scale(1)" : "scale(0.7)",
 										transition: `opacity 250ms ease, transform 320ms cubic-bezier(0.34, 1.4, 0.64, 1)`,
-										// stagger by column then row for a wave effect
 										transitionDelay: isVisible ? `${120 + (i % 10) * 18 + Math.floor(i / 10) * 10}ms` : "0ms",
 									}}
 								></button>
-							);
-						})}
-					</div>
+							))}
+						</div>
 
-					<div className="grid grid-cols-10 gap-0.5 overflow-x-auto">
-						{COLORS.slice(8, 108).map((c, i) => (
-							<button
-								type="button"
-								key={i + 8}
-								onClick={() => setColor(i + 8)}
-								className={`size-7.5 cursor-pointer rounded-md ring-orange-500 ring-offset-2 ${color === i + 8 ? "ring-2 z-10" : ""}`}
-								style={{
-									backgroundColor: `#${c}`,
-									opacity: isVisible ? 1 : 0,
-									transform: isVisible ? "scale(1)" : "scale(0.7)",
-									transition: `opacity 250ms ease, transform 320ms cubic-bezier(0.34, 1.4, 0.64, 1)`,
-									transitionDelay: isVisible ? `${120 + (i % 10) * 18 + Math.floor(i / 10) * 10}ms` : "0ms",
-								}}
-							></button>
-						))}
+						<button type="button" onClick={close} className="h-full w-16 ml-4 cursor-pointer transition-transform hover:scale-115 active:scale-90">
+							<Icon icon={"tabler:chevron-right"} className="text-4xl" />
+						</button>
 					</div>
-
-					<button
-						type="button"
-						onClick={close}
-						className="absolute h-full w-16 top-0 right-0 cursor-pointer transition-transform hover:scale-115 active:scale-90"
-					>
-						<Icon icon={"tabler:chevron-right"} className="text-4xl" />
-					</button>
 				</div>
 			)}
 		</>
