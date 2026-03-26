@@ -24,7 +24,7 @@ export default function ControlCenter() {
 		<div className="bg-orange-100 rounded-xl border-2 border-orange-400 p-2 flex flex-col gap-2">
 			<div className="flex items-center gap-2">
 				<input
-					name="submit"
+					id="submit"
 					type="checkbox"
 					className="checkbox size-6!"
 					placeholder="Enter banner text"

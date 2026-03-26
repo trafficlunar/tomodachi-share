@@ -38,6 +38,12 @@ export default async function SubmitPage() {
 	} catch (error) {
 		return <p>An error occurred!</p>;
 	}
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
+		value = await response.json();
+	} catch (error) {
+		return <p>An error occurred!</p>;
+	}
 
 	if (!value)
 		return (

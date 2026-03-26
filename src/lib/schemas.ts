@@ -1,4 +1,4 @@
-import { MiiGender } from "@prisma/client";
+import { MiiGender, MiiPlatform } from "@prisma/client";
 import { z } from "zod";
 
 // profanity censoring bypasses the regex in some of these but I think it's funny
@@ -58,7 +58,8 @@ export const searchSchema = z.object({
 				.map((tag) => tag.trim())
 				.filter((tag) => tag.length > 0),
 		),
-	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', or 'FEMALE'" }).optional(),
+	platform: z.enum(MiiPlatform, { error: "Platform must be either 'THREE_DS', or 'SWITCH'" }).optional(),
+	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', 'FEMALE', or 'NONBINARY' if on Switch platform" }).optional(),
 	allowCopying: z.coerce.boolean({ error: "Allow Copying must be either true or false" }).optional(),
 	// todo: incorporate tagsSchema
 	// Pages
@@ -81,3 +82,223 @@ export const userNameSchema = z
 	.regex(/^[a-zA-Z0-9-_. ']+$/, {
 		error: "Name can only contain letters, numbers, dashes, underscores, apostrophes, and spaces.",
 	});
+
+const colorSchema = z.number().int().min(0).max(152).optional();
+const geometrySchema = z.number().int().min(-10).max(10).optional();
+
+export const switchMiiInstructionsSchema = z
+	.object({
+		head: z.object({ skinColor: colorSchema }).optional(),
+		hair: z
+			.object({
+				color: colorSchema,
+				subColor: colorSchema,
+				style: z.number().int().min(1).max(3).optional(),
+				isFlipped: z.boolean().optional(),
+			})
+			.optional(),
+		eyebrows: z
+			.object({
+				color: colorSchema,
+				height: geometrySchema,
+				distance: geometrySchema,
+				rotation: geometrySchema,
+				size: geometrySchema,
+				stretch: geometrySchema,
+			})
+			.optional(),
+		eyes: z
+			.object({
+				main: z
+					.object({
+						color: colorSchema,
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyelashesTop: z
+					.object({
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyelashesBottom: z
+					.object({
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyelidTop: z
+					.object({
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyelidBottom: z
+					.object({
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyeliner: z
+					.object({
+						color: colorSchema,
+					})
+					.optional(),
+				pupil: z
+					.object({
+						height: geometrySchema,
+						distance: geometrySchema,
+						rotation: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+			})
+			.optional(),
+		nose: z
+			.object({
+				height: geometrySchema,
+				size: geometrySchema,
+			})
+			.optional(),
+		lips: z
+			.object({
+				color: colorSchema,
+				height: geometrySchema,
+				rotation: geometrySchema,
+				size: geometrySchema,
+				stretch: geometrySchema,
+				hasLipstick: z.boolean().optional(),
+			})
+			.optional(),
+		ears: z
+			.object({
+				height: geometrySchema,
+				size: geometrySchema,
+			})
+			.optional(),
+		glasses: z
+			.object({
+				ringColor: colorSchema,
+				shadesColor: colorSchema,
+				height: geometrySchema,
+				size: geometrySchema,
+				stretch: geometrySchema,
+			})
+			.optional(),
+		other: z
+			.object({
+				wrinkles1: z
+					.object({
+						color: colorSchema,
+						height: geometrySchema,
+						distance: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				wrinkles2: z
+					.object({
+						color: colorSchema,
+						height: geometrySchema,
+						distance: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				beard: z
+					.object({
+						color: colorSchema,
+						height: geometrySchema,
+						distance: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				moustache: z
+					.object({
+						color: colorSchema,
+						height: geometrySchema,
+						distance: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+						isFlipped: z.boolean().optional(),
+					})
+					.optional(),
+				goatee: z
+					.object({
+						color: colorSchema,
+						height: geometrySchema,
+						distance: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				mole: z
+					.object({
+						color: colorSchema,
+						height: geometrySchema,
+						distance: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				eyeShadow: z
+					.object({
+						color: colorSchema,
+						height: geometrySchema,
+						distance: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+				blush: z
+					.object({
+						color: colorSchema,
+						height: geometrySchema,
+						distance: geometrySchema,
+						size: geometrySchema,
+						stretch: geometrySchema,
+					})
+					.optional(),
+			})
+			.optional(),
+		height: z.number().int().min(0).max(100).optional(),
+		weight: z.number().int().min(0).max(100).optional(),
+		datingPreferences: z.array(z.enum(MiiGender)).optional(),
+		voice: z
+			.object({
+				speed: z.number().int().min(0).max(100).optional(),
+				pitch: z.number().int().min(0).max(100).optional(),
+				depth: z.number().int().min(0).max(100).optional(),
+				delivery: z.number().int().min(0).max(100).optional(),
+				tone: z.number().int().min(1).max(6).optional(),
+			})
+			.optional(),
+		personality: z
+			.object({
+				movement: z.number().int().min(0).max(7).optional(),
+				speech: z.number().int().min(0).max(7).optional(),
+				energy: z.number().int().min(0).max(7).optional(),
+				thinking: z.number().int().min(0).max(7).optional(),
+				overall: z.number().int().min(0).max(7).optional(),
+			})
+			.optional(),
+	})
+	.optional();

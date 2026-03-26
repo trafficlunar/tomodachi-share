@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Icon } from "@iconify/react";
 import confetti from "canvas-confetti";
-import ReturnToIsland from "../admin/return-to-island";
 
 interface Slide {
 	// step is never used, undefined is assumed as a step
@@ -30,7 +29,7 @@ interface Props {
 export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 	const [isVisible, setIsVisible] = useState(false);
 
-	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 15 });
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	// Build index map
@@ -106,7 +105,7 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 			/>
 
 			<div
-				className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg w-full max-w-md h-120 transition-discrete duration-300 flex flex-col ${
+				className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg w-full max-w-xl h-120 transition-discrete duration-300 flex flex-col ${
 					isVisible ? "scale-100 opacity-100" : "scale-75 opacity-0"
 				}`}
 			>
@@ -144,7 +143,7 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 															alt="tutorial thumbnail"
 															width={128}
 															height={128}
-															className="rounded-lg border-2 border-zinc-300"
+															className="rounded-lg border-2 border-zinc-300 object-cover"
 														/>
 														<p className="mt-2">{tutorial.title}</p>
 														{/* Set opacity to 0 to keep height the same with other tutorials */}

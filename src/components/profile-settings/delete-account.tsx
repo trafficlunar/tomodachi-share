@@ -39,7 +39,7 @@ export default function DeleteAccount() {
 
 	return (
 		<>
-			<button name="deletion" onClick={() => setIsOpen(true)} className="pill button w-fit h-min ml-auto bg-red-400! border-red-500! hover:bg-red-500!">
+			<button onClick={() => setIsOpen(true)} className="pill button w-fit h-min ml-auto bg-red-400! border-red-500! hover:bg-red-500!">
 				Delete Account
 			</button>
 

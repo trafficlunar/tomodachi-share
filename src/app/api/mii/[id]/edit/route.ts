@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
-import { Mii } from "@prisma/client";
+import { Mii, Prisma } from "@prisma/client";
 
 import fs from "fs/promises";
 import path from "path";
@@ -90,7 +90,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	}
 
 	// Edit Mii in database
-	const updateData: Partial<Mii> = {};
+	const updateData: Prisma.MiiUpdateInput = {};
 	if (name !== undefined) updateData.name = profanity.censor(name); // Censor potential inappropriate words
 	if (tags !== undefined) updateData.tags = tags.map((t) => profanity.censor(t)); // Same here
 	if (description !== undefined) updateData.description = profanity.censor(description);
@@ -139,7 +139,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		}
 	} else if (description === undefined) {
 		// If images or description were not changed, regenerate the metadata image
-		await generateMetadataImage(updatedMii, updatedMii.user.name!);
+		try {
+			await generateMetadataImage(updatedMii, updatedMii.user.name!);
+		} catch (error) {
+			console.error(error);
+			return rateLimit.sendResponse({ error: `Failed to generate 'metadata' type image for mii ${miiId}` }, 500);
+		}
 	}
 
 	return rateLimit.sendResponse({ success: true });

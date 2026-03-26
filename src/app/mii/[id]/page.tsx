@@ -7,14 +7,18 @@ import { Icon } from "@iconify/react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { MiiPlatform } from "@prisma/client";
 
 import LikeButton from "@/components/like-button";
 import ImageViewer from "@/components/image-viewer";
-import DeleteMiiButton from "@/components/delete-mii";
-import ShareMiiButton from "@/components/share-mii-button";
-import ScanTutorialButton from "@/components/tutorial/scan";
-import ProfilePicture from "@/components/profile-picture";
+import DeleteMiiButton from "@/components/mii/delete-mii-button";
+import ShareMiiButton from "@/components/mii/share-mii-button";
+import ThreeDsScanTutorialButton from "@/components/tutorial/3ds-scan";
+import SwitchScanTutorialButton from "@/components/tutorial/switch-add-mii";
 import Description from "@/components/description";
+import MiiInstructions from "@/components/mii/instructions";
+
+import { SwitchMiiInstructions } from "@/types";
 
 interface Props {
 	params: Promise<{ id: string }>;
@@ -49,23 +53,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	return {
 		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `${mii.name} - TomodachiShare`,
-		description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${name} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
+		description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
 		keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection", ...mii.tags],
 		creator: name,
 		openGraph: {
 			type: "article",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${name} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
-			images: [{ url: metadataImageUrl, alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character` }],
+			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			images: [
+				{
+					url: metadataImageUrl,
+					alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character`,
+				},
+			],
 			publishedTime: mii.createdAt.toISOString(),
 			authors: name,
 		},
 		twitter: {
 			card: "summary_large_image",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a Tomodachi Life Mii created by ${name} on TomodachiShare. From ${mii.islandName} Island with ${mii._count.likedBy} likes.`,
-			images: [{ url: metadataImageUrl, alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character` }],
-			creator: name,
+			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			images: [
+				{
+					url: metadataImageUrl,
+					alt: `${mii.name}, ${mii.tags.join(", ")} ${mii.gender} Mii character`,
+				},
+			],
+			creator: mii.user.name!,
 		},
 		alternates: {
 			canonical: `/mii/${mii.id}`,
@@ -109,51 +123,104 @@ export default async function MiiPage({ params }: Props) {
 		<div className="flex flex-col items-center">
 			<div className="max-w-5xl w-full flex flex-col gap-4">
 				<div className="relative grid grid-cols-3 gap-4 max-md:grid-cols-1">
-					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
+					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 h-min flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
 						{/* Mii Image */}
 						<div className="bg-linear-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center">
 							<ImageViewer
 								src={`/mii/${mii.id}/image?type=mii`}
 								alt="mii headshot"
-								width={200}
-								height={200}
-								className="drop-shadow-lg hover:scale-105 transition-transform"
+								width={250}
+								height={250}
+								className="drop-shadow-lg hover:scale-105 transition-transform w-full max-h-96 object-contain"
 							/>
 						</div>
 						{/* QR Code */}
-						<div className="bg-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center p-2">
-							<ImageViewer
-								src={`/mii/${mii.id}/image?type=qr-code`}
-								alt="mii qr code"
-								width={128}
-								height={128}
-								className="border-2 border-amber-300 rounded-lg hover:brightness-90 transition-all"
-							/>
-						</div>
+						{mii.platform === "THREE_DS" && (
+							<div className="bg-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center p-2">
+								<ImageViewer
+									src={`/mii/${mii.id}/image?type=qr-code`}
+									alt="mii qr code"
+									width={128}
+									height={128}
+									className="border-2 border-amber-300 rounded-lg hover:brightness-90 transition-all"
+								/>
+							</div>
+						)}
 						<hr className="w-full border-t-2 border-t-amber-400" />
 
 						{/* Mii Info */}
-						<ul className="text-sm w-full p-2 *:flex *:justify-between *:items-center *:my-1">
-							<li>
-								Name:{" "}
-								<span className="text-right font-medium">
-									{mii.firstName} {mii.lastName}
-								</span>
-							</li>
-							<li>
-								From: <span className="text-right font-medium">{mii.islandName} Island</span>
-							</li>
-							{mii.allowedCopying !== null && (
+						{mii.platform === "THREE_DS" && (
+							<ul className="text-sm w-full p-2 *:flex *:justify-between *:items-center *:my-1">
 								<li>
-									Allowed Copying: <input type="checkbox" checked={mii.allowedCopying} disabled className="checkbox cursor-auto!" />
+									Name:{" "}
+									<span className="text-right font-medium">
+										{mii.firstName} {mii.lastName}
+									</span>
 								</li>
-							)}
-						</ul>
+								<li>
+									From: <span className="text-right font-medium">{mii.islandName} Island</span>
+								</li>
+								<li>
+									Allowed Copying: <input type="checkbox" checked={mii.allowedCopying ?? false} disabled className="checkbox cursor-auto!" />
+								</li>
+							</ul>
+						)}
+
+						{/* Mii Platform */}
+						<div className={`flex items-center gap-4 text-zinc-500 text-sm font-medium mb-2 w-full ${mii.platform !== "THREE_DS" && "mt-2"}`}>
+							<hr className="grow border-zinc-300" />
+							<span>Platform</span>
+							<hr className="grow border-zinc-300" />
+						</div>
+
+						<div data-tooltip-span title={mii.platform} className="grid grid-cols-2 gap-2 mb-2">
+							<div
+								className={`tooltip mt-1! ${
+									mii.platform === "THREE_DS" ? "bg-sky-400! border-sky-400! before:border-b-sky-400!" : "bg-red-400! border-red-400! before:border-b-red-400!"
+								}`}
+							>
+								{mii.platform === "THREE_DS" ? "3DS" : "Switch"}
+							</div>
+
+							<div
+								className={`rounded-xl flex justify-center items-center size-13 text-3xl border-2 shadow-sm ${
+									mii.platform === "THREE_DS" ? "bg-sky-100 border-sky-400" : "bg-white border-gray-300"
+								}`}
+							>
+								<Icon icon="cib:nintendo-3ds" className="text-sky-500" />
+							</div>
+
+							<div
+								className={`rounded-xl flex justify-center items-center size-13 text-3xl border-2 shadow-sm ${
+									mii.platform === "SWITCH" ? "bg-red-100 border-red-400" : "bg-white border-gray-300"
+								}`}
+							>
+								<Icon icon="cib:nintendo-switch" className="text-red-400" />
+							</div>
+						</div>
 
 						{/* Mii Gender */}
-						<div className="grid grid-cols-2 gap-2">
+						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-2 w-full">
+							<hr className="grow border-zinc-300" />
+							<span>Gender</span>
+							<hr className="grow border-zinc-300" />
+						</div>
+
+						<div data-tooltip-span title={mii.gender ?? "NULL"} className="flex gap-1">
 							<div
-								className={`rounded-xl flex justify-center items-center size-16 text-5xl border-2 shadow-sm ${
+								className={`tooltip mt-1! ${
+									mii.gender === "MALE"
+										? "bg-blue-400! border-blue-400! before:border-b-blue-400!"
+										: mii.gender === "FEMALE"
+											? "bg-pink-400! border-pink-400! before:border-b-pink-400!"
+											: "bg-purple-400! border-purple-400! before:border-b-purple-400!"
+								}`}
+							>
+								{mii.gender === "MALE" ? "Male" : mii.gender === "FEMALE" ? "Female" : "Nonbinary"}
+							</div>
+
+							<div
+								className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
 									mii.gender === "MALE" ? "bg-blue-100 border-blue-400" : "bg-white border-gray-300"
 								}`}
 							>
@@ -161,12 +228,22 @@ export default async function MiiPage({ params }: Props) {
 							</div>
 
 							<div
-								className={`rounded-xl flex justify-center items-center size-16 text-5xl border-2 shadow-sm ${
+								className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
 									mii.gender === "FEMALE" ? "bg-pink-100 border-pink-400" : "bg-white border-gray-300"
 								}`}
 							>
 								<Icon icon="foundation:female" className="text-pink-400" />
 							</div>
+
+							{mii.platform !== "THREE_DS" && (
+								<div
+									className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
+										mii.gender === "NONBINARY" ? "bg-purple-100 border-purple-400" : "bg-white border-gray-300"
+									}`}
+								>
+									<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
+								</div>
+							)}
 						</div>
 					</div>
 
@@ -229,8 +306,11 @@ export default async function MiiPage({ params }: Props) {
 								<Icon icon="material-symbols:flag-rounded" />
 								<span>Report</span>
 							</Link>
-							<ScanTutorialButton />
+							{mii.platform === "THREE_DS" ? <ThreeDsScanTutorialButton /> : <SwitchScanTutorialButton />}
 						</div>
+
+						{/* Instructions */}
+						{mii.platform === "SWITCH" && <MiiInstructions instructions={mii.instructions as Partial<SwitchMiiInstructions>} />}
 					</div>
 				</div>
 
@@ -268,7 +348,7 @@ export default async function MiiPage({ params }: Props) {
 							))}
 						</div>
 					) : (
-						<p className="indent-8 text-black/50">There is nothing here...</p>
+						<p className="indent-7.5 text-black/50">There is nothing here...</p>
 					)}
 				</div>
 			</div>

@@ -16,7 +16,7 @@ import satori, { Font } from "satori";
 import { Mii } from "@prisma/client";
 
 const MIN_IMAGE_DIMENSIONS = [128, 128];
-const MAX_IMAGE_DIMENSIONS = [1920, 1080];
+const MAX_IMAGE_DIMENSIONS = [2000, 2000];
 const MAX_IMAGE_SIZE = 4 * 1024 * 1024; // 4 MB
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
@@ -49,7 +49,7 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 			metadata.height < MIN_IMAGE_DIMENSIONS[1] ||
 			metadata.height > MAX_IMAGE_DIMENSIONS[1]
 		) {
-			return { valid: false, error: "Image dimensions are invalid. Resolution must be between 128x128 and 1920x1080" };
+			return { valid: false, error: "Image dimensions are invalid. Resolution must be between 128x128 and 2000x2000" };
 		}
 
 		// Check for inappropriate content
@@ -133,29 +133,60 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 		// Read and convert the images to data URI
 		fs.readFile(path.join(miiUploadsDirectory, "mii.png")).then((buffer) =>
 			sharp(buffer)
+				// extend to fix shadow bug on landscape pictures
+				.extend({
+					left: 16,
+					right: 16,
+					background: { r: 0, g: 0, b: 0, alpha: 0 },
+				})
 				.toBuffer()
 				.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`),
 		),
-		fs.readFile(path.join(miiUploadsDirectory, "qr-code.png")).then((buffer) =>
-			sharp(buffer)
-				.toBuffer()
-				.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`),
-		),
+		mii.platform === "THREE_DS"
+			? fs.readFile(path.join(miiUploadsDirectory, "qr-code.png")).then((buffer) =>
+					sharp(buffer)
+						.toBuffer()
+						.then((pngBuffer) => `data:image/png;base64,${pngBuffer.toString("base64")}`),
+				)
+			: Promise.resolve(null),
 		loadFonts(),
 	]);
 
 	const jsx: ReactNode = (
 		<div tw="w-full h-full bg-amber-50 border-2 border-amber-500 rounded-2xl p-4 flex flex-col">
 			<div tw="flex w-full">
-				{/* Mii image */}
-				<div tw="w-80 rounded-xl flex justify-center mr-2" style={{ backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a);" }}>
-					<img src={miiImage} width={248} height={248} style={{ filter: "drop-shadow(0 10px 8px #00000024) drop-shadow(0 4px 3px #00000024)" }} />
+				{/* Mii portrait */}
+				<div
+					tw={`h-62 rounded-xl flex justify-center items-center mr-2 ${mii.platform === "THREE_DS" ? "w-80" : "w-100"}`}
+					style={{
+						backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a);",
+					}}
+				>
+					<img
+						src={miiImage}
+						height={248}
+						tw="w-full h-full"
+						style={{
+							objectFit: "contain",
+							filter: "drop-shadow(0 10px 8px #00000024) drop-shadow(0 4px 3px #00000024)",
+						}}
+					/>
 				</div>
 
 				{/* QR code */}
-				<div tw="w-60 bg-amber-200 rounded-xl flex justify-center items-center">
-					<img src={qrCodeImage} width={190} height={190} tw="border-2 border-amber-300 rounded-lg" />
-				</div>
+				{mii.platform === "THREE_DS" ? (
+					<div tw="w-60 bg-amber-200 rounded-xl flex justify-center items-center">
+						<img src={qrCodeImage!} width={190} height={190} tw="border-2 border-amber-300 rounded-lg" />
+					</div>
+				) : (
+					<div tw="w-40 bg-amber-200 rounded-xl flex flex-col justify-center items-center p-6">
+						<span tw="text-amber-900 font-extrabold text-xl text-center leading-tight">Switch Guide</span>
+						<p tw="text-amber-800 text-sm text-center mt-1.5">To fully create the Mii, visit the site for instructions.</p>
+						<div tw="mt-auto bg-amber-600 rounded-lg w-full py-2 flex justify-center">
+							<span tw="text-white font-semibold">View Steps</span>
+						</div>
+					</div>
+				)}
 			</div>
 
 			<div tw="flex flex-col w-full h-30 relative">
