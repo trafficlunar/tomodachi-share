@@ -181,7 +181,7 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 				) : (
 					<div tw="w-40 bg-amber-200 rounded-xl flex flex-col justify-center items-center p-6">
 						<span tw="text-amber-900 font-extrabold text-xl text-center leading-tight">Switch Guide</span>
-						<p tw="text-amber-800 text-sm text-center mt-1.5">You need to manually create the Mii, visit site for instructions.</p>
+						<p tw="text-amber-800 text-sm text-center mt-1.5">To fully create the Mii, visit the site for instructions.</p>
 						<div tw="mt-auto bg-amber-600 rounded-lg w-full py-2 flex justify-center">
 							<span tw="text-white font-semibold">View Steps</span>
 						</div>

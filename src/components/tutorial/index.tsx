@@ -105,7 +105,7 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 			/>
 
 			<div
-				className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg w-full max-w-md h-120 transition-discrete duration-300 flex flex-col ${
+				className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg w-full max-w-xl h-120 transition-discrete duration-300 flex flex-col ${
 					isVisible ? "scale-100 opacity-100" : "scale-75 opacity-0"
 				}`}
 			>

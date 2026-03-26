@@ -83,17 +83,14 @@ export const userNameSchema = z
 		error: "Name can only contain letters, numbers, dashes, underscores, apostrophes, and spaces.",
 	});
 
-const colorSchema = z.number().int().min(0).max(107).optional();
+const colorSchema = z.number().int().min(0).max(152).optional();
 const geometrySchema = z.number().int().min(-10).max(10).optional();
 
 export const switchMiiInstructionsSchema = z
 	.object({
-		head: z.object({ type: z.number().int().min(0).max(15).optional(), skinColor: z.number().int().min(0).max(121).optional() }).optional(),
+		head: z.object({ skinColor: colorSchema }).optional(),
 		hair: z
 			.object({
-				setType: z.number().int().min(0).max(244).optional(),
-				bangsType: z.number().int().min(0).max(82).optional(),
-				backType: z.number().int().min(0).max(110).optional(),
 				color: colorSchema,
 				subColor: colorSchema,
 				style: z.number().int().min(1).max(3).optional(),
@@ -102,7 +99,6 @@ export const switchMiiInstructionsSchema = z
 			.optional(),
 		eyebrows: z
 			.object({
-				type: z.number().int().min(0).max(42).optional(),
 				color: colorSchema,
 				height: geometrySchema,
 				distance: geometrySchema,
@@ -115,7 +111,6 @@ export const switchMiiInstructionsSchema = z
 			.object({
 				main: z
 					.object({
-						type: z.number().int().min(0).max(120).optional(),
 						color: colorSchema,
 						height: geometrySchema,
 						distance: geometrySchema,
@@ -126,7 +121,6 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				eyelashesTop: z
 					.object({
-						type: z.number().int().min(0).max(5).optional(),
 						height: geometrySchema,
 						distance: geometrySchema,
 						rotation: geometrySchema,
@@ -136,7 +130,6 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				eyelashesBottom: z
 					.object({
-						type: z.number().int().min(0).max(1).optional(),
 						height: geometrySchema,
 						distance: geometrySchema,
 						rotation: geometrySchema,
@@ -146,7 +139,6 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				eyelidTop: z
 					.object({
-						type: z.number().int().min(0).max(2).optional(),
 						height: geometrySchema,
 						distance: geometrySchema,
 						rotation: geometrySchema,
@@ -156,7 +148,6 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				eyelidBottom: z
 					.object({
-						type: z.number().int().min(0).max(2).optional(),
 						height: geometrySchema,
 						distance: geometrySchema,
 						rotation: geometrySchema,
@@ -166,13 +157,11 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				eyeliner: z
 					.object({
-						type: z.number().int().min(0).max(1).optional(),
 						color: colorSchema,
 					})
 					.optional(),
 				pupil: z
 					.object({
-						type: z.number().int().min(0).max(9).optional(),
 						height: geometrySchema,
 						distance: geometrySchema,
 						rotation: geometrySchema,
@@ -184,14 +173,12 @@ export const switchMiiInstructionsSchema = z
 			.optional(),
 		nose: z
 			.object({
-				type: z.number().int().min(0).max(31).optional(),
 				height: geometrySchema,
 				size: geometrySchema,
 			})
 			.optional(),
 		lips: z
 			.object({
-				type: z.number().int().min(0).max(52).optional(),
 				color: colorSchema,
 				height: geometrySchema,
 				rotation: geometrySchema,
@@ -202,14 +189,12 @@ export const switchMiiInstructionsSchema = z
 			.optional(),
 		ears: z
 			.object({
-				type: z.number().int().min(0).max(4).optional(),
 				height: geometrySchema,
 				size: geometrySchema,
 			})
 			.optional(),
 		glasses: z
 			.object({
-				type: z.number().int().min(0).max(57).optional(),
 				ringColor: colorSchema,
 				shadesColor: colorSchema,
 				height: geometrySchema,
@@ -221,7 +206,6 @@ export const switchMiiInstructionsSchema = z
 			.object({
 				wrinkles1: z
 					.object({
-						type: z.number().int().min(0).max(8).optional(),
 						color: colorSchema,
 						height: geometrySchema,
 						distance: geometrySchema,
@@ -231,7 +215,6 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				wrinkles2: z
 					.object({
-						type: z.number().int().min(0).max(14).optional(),
 						color: colorSchema,
 						height: geometrySchema,
 						distance: geometrySchema,
@@ -241,7 +224,6 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				beard: z
 					.object({
-						type: z.number().int().min(0).max(14).optional(),
 						color: colorSchema,
 						height: geometrySchema,
 						distance: geometrySchema,
@@ -251,17 +233,16 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				moustache: z
 					.object({
-						type: z.number().int().min(0).max(15).optional(),
 						color: colorSchema,
 						height: geometrySchema,
 						distance: geometrySchema,
 						size: geometrySchema,
 						stretch: geometrySchema,
+						isFlipped: z.boolean().optional(),
 					})
 					.optional(),
 				goatee: z
 					.object({
-						type: z.number().int().min(0).max(13).optional(),
 						color: colorSchema,
 						height: geometrySchema,
 						distance: geometrySchema,
@@ -271,7 +252,6 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				mole: z
 					.object({
-						type: z.number().int().min(0).max(1).optional(),
 						color: colorSchema,
 						height: geometrySchema,
 						distance: geometrySchema,
@@ -281,7 +261,6 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				eyeShadow: z
 					.object({
-						type: z.number().int().min(0).max(3).optional(),
 						color: colorSchema,
 						height: geometrySchema,
 						distance: geometrySchema,
@@ -291,7 +270,6 @@ export const switchMiiInstructionsSchema = z
 					.optional(),
 				blush: z
 					.object({
-						type: z.number().int().min(0).max(7).optional(),
 						color: colorSchema,
 						height: geometrySchema,
 						distance: geometrySchema,

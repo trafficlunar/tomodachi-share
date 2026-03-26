@@ -29,11 +29,11 @@ export default function SubmitTutorialButton() {
 										imageSrc: "/tutorial/switch/submitting/step2.jpg",
 									},
 									{
-										text: "3. Press Y to open the parts list, take a screenshot then upload to this submit form",
+										text: "3. Press Y to open the features list, then take a screenshot and upload to this submit form",
 										imageSrc: "/tutorial/switch/submitting/step3.jpg",
 									},
 									{
-										text: "4. Adding Mii colors and settings is recommended. All instructions are optional; for values like height or distance, use the number of button clicks (positive for up/left, negative for down/right)",
+										text: "4. Adding Mii colors and settings is recommended. All instructions are optional; for values like height or distance, use the number of button clicks (positive for buttons on right, negative for buttons on left)",
 										imageSrc: "/tutorial/switch/step4.jpg",
 									},
 									{ type: "finish" },

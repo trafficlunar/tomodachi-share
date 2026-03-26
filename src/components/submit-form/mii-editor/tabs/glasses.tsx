@@ -12,32 +12,28 @@ export default function GlassesTab({ instructions }: Props) {
 	const [shadesColor, setShadesColor] = useState(0);
 
 	return (
-		<div className="relative grow p-3 pb-0!">
-			<div className="flex h-full">
-				<div className="grow flex flex-col">
-					<div className="flex items-center h-8">
-						<h1 className="font-bold text-xl">Glasses</h1>
-					</div>
-				</div>
+		<>
+			<h1 className="absolute font-bold text-xl">Glasses</h1>
 
-				<div className="shrink-0 w-21 pb-3 flex flex-col items-center">
-					<ColorPicker
-						color={ringColor}
-						setColor={(i) => {
-							setRingColor(i);
-							instructions.current.glasses.ringColor = i;
-						}}
-					/>
-					<ColorPicker
-						color={shadesColor}
-						setColor={(i) => {
-							setShadesColor(i);
-							instructions.current.glasses.shadesColor = i;
-						}}
-					/>
-					<NumberInputs target={instructions.current.glasses} />
-				</div>
+			<div className="size-full flex flex-col justify-center items-center">
+				<ColorPicker
+					color={ringColor}
+					setColor={(i) => {
+						setRingColor(i);
+						instructions.current.glasses.ringColor = i;
+					}}
+					tab="glasses"
+				/>
+				<ColorPicker
+					color={shadesColor}
+					setColor={(i) => {
+						setShadesColor(i);
+						instructions.current.glasses.shadesColor = i;
+					}}
+					tab="glasses"
+				/>
+				<NumberInputs target={instructions.current.glasses} />
 			</div>
-		</div>
+		</>
 	);
 }

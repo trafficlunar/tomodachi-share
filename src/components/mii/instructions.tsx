@@ -40,16 +40,18 @@ function ColorPosition({ color }: { color: number }) {
 	if (!color) return null;
 	if (color <= 7) {
 		return (
-			<>
+			<span className="flex items-center">
+				<div className="size-5 rounded mr-1.5" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
 				Color menu on left, <GridPosition index={color} cols={1} />
-			</>
+			</span>
 		);
 	}
 	if (color >= 108) {
 		return (
-			<>
+			<span className="flex items-center">
+				<div className="size-5 rounded mr-1.5" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
 				Outside color menu, <GridPosition index={color - 108} cols={2} />
-			</>
+			</span>
 		);
 	}
 

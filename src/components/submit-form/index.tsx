@@ -372,6 +372,8 @@ export default function SubmitForm() {
 						<PortraitUpload setImage={setMiiPortraitUri} />
 						<SwitchSubmitTutorialButton />
 					</div>
+
+					<p className="text-xs text-zinc-400 text-center mt-2">You must upload a screenshot of the features, check tutorial on how.</p>
 				</div>
 
 				{/* (3DS only) QR code scanning */}

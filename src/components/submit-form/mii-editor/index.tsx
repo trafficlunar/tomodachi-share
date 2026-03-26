@@ -50,14 +50,14 @@ export default function MiiEditor({ instructions }: Props) {
 
 	return (
 		<>
-			<div className="w-full aspect-video flex bg-orange-100 border-2 border-orange-200 rounded-xl overflow-hidden">
-				<div className="w-9 h-full flex flex-col">
+			<div className="w-full h-91 flex flex-col sm:flex-row bg-orange-100 border-2 border-orange-200 rounded-xl overflow-hidden">
+				<div className="h-9 flex flex-row sm:flex-col">
 					{(Object.keys(TAB_COMPONENTS) as Tab[]).map((t) => (
 						<button
 							key={t}
 							type="button"
 							onClick={() => setTab(t)}
-							className={`size-9 flex justify-center items-center text-[1.35rem] cursor-pointer bg-orange-200 hover:bg-orange-300 transition-colors duration-75 ${tab === t ? "bg-orange-100!" : ""}`}
+							className={`size-full aspect-square flex justify-center items-center text-[1.35rem] cursor-pointer bg-orange-200 hover:bg-orange-300 transition-colors duration-75 ${tab === t ? "bg-orange-100!" : ""}`}
 						>
 							{/* ml because of border on left causing icons to look miscentered */}
 							<Icon icon={TAB_ICONS[t]} className="-ml-0.5" />
@@ -69,9 +69,8 @@ export default function MiiEditor({ instructions }: Props) {
 				{(Object.keys(TAB_COMPONENTS) as Tab[]).map((t) => {
 					const TabComponent = TAB_COMPONENTS[t];
 					return (
-						<div key={t} className={t === tab ? "grow flex relative" : "hidden"}>
+						<div key={t} className={t === tab ? "grow relative p-3" : "hidden"}>
 							<TabComponent instructions={instructions} />
-							<p className="absolute top-32 left-32 z-10 text-lg font-bold w-48 text-center">Your parts screenshot should handle the types!</p>
 						</div>
 					);
 				})}

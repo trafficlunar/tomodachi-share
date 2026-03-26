@@ -14,9 +14,9 @@ export default function NumberInputs({ target }: Props) {
 	if (!target) return null;
 
 	return (
-		<div className="grid grid-rows-5 min-h-0">
+		<div className="grid grid-cols-2 gap-x-4 h-min w-fit">
 			{target.height !== undefined && (
-				<div className="w-full">
+				<div>
 					<label htmlFor="height" className="text-xs">
 						Height
 					</label>
@@ -37,7 +37,7 @@ export default function NumberInputs({ target }: Props) {
 			)}
 
 			{target.distance !== undefined && (
-				<div className="w-full">
+				<div>
 					<label htmlFor="distance" className="text-xs">
 						Distance
 					</label>
@@ -58,7 +58,7 @@ export default function NumberInputs({ target }: Props) {
 			)}
 
 			{target.rotation !== undefined && (
-				<div className="w-full">
+				<div>
 					<label htmlFor="rotation" className="text-xs">
 						Rotation
 					</label>
@@ -79,7 +79,7 @@ export default function NumberInputs({ target }: Props) {
 			)}
 
 			{target.size !== undefined && (
-				<div className="w-full">
+				<div>
 					<label htmlFor="size" className="text-xs">
 						Size
 					</label>
@@ -100,7 +100,7 @@ export default function NumberInputs({ target }: Props) {
 			)}
 
 			{target.stretch !== undefined && (
-				<div className="w-full">
+				<div>
 					<label htmlFor="stretch" className="text-xs">
 						Stretch
 					</label>

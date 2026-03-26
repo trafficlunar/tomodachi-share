@@ -7,18 +7,12 @@ interface Props {
 
 export default function NoseTab({ instructions }: Props) {
 	return (
-		<div className="relative grow p-3 pb-0!">
-			<div className="flex h-full">
-				<div className="grow flex flex-col">
-					<div className="flex items-center h-8">
-						<h1 className="font-bold text-xl">Nose</h1>
-					</div>
-				</div>
+		<>
+			<h1 className="absolute font-bold text-xl">Nose</h1>
 
-				<div className="shrink-0 w-21 pb-3 flex flex-col items-center">
-					<NumberInputs target={instructions.current.nose} />
-				</div>
+			<div className="size-full flex flex-col justify-center items-center">
+				<NumberInputs target={instructions.current.nose} />
 			</div>
-		</div>
+		</>
 	);
 }

@@ -10,39 +10,32 @@ const COLORS = ["FFD8BA", "FFD5AC", "FEC1A4", "FEC68F", "FEB089", "FEBA6B", "F39
 
 export default function HeadTab({ instructions }: Props) {
 	const [color, setColor] = useState(109);
-	const [type, setType] = useState(1);
 
 	return (
-		<div className="relative grow p-3 pb-0!">
-			<div className="flex h-full">
-				<div className="grow flex flex-col">
-					<div className="flex items-center h-8">
-						<h1 className="font-bold text-xl">Head</h1>
-					</div>
-				</div>
+		<>
+			<h1 className="absolute font-bold text-xl">Head</h1>
 
-				<div className="shrink-0 w-21 pb-3 flex flex-col items-center">
-					<ColorPicker
-						color={color}
-						setColor={(i) => {
-							setColor(i);
-							instructions.current.head.skinColor = i;
-						}}
-					/>
+			<div className="size-full flex flex-col justify-center items-center">
+				<ColorPicker
+					color={color}
+					setColor={(i) => {
+						setColor(i);
+						instructions.current.head.skinColor = i;
+					}}
+				/>
 
-					<div className="grid grid-cols-2 gap-1 w-fit mt-auto">
-						{COLORS.map((hex, i) => (
-							<button
-								type="button"
-								key={i + 108}
-								onClick={() => setColor(i + 108)}
-								className={`size-9 rounded-lg cursor-pointer ring-offset-2 ring-orange-500 ${color === i + 108 ? "ring-2" : ""}`}
-								style={{ backgroundColor: `#${hex}` }}
-							></button>
-						))}
-					</div>
+				<div className="grid grid-cols-7 gap-1">
+					{COLORS.map((hex, i) => (
+						<button
+							type="button"
+							key={i + 108}
+							onClick={() => setColor(i + 108)}
+							className={`size-9 rounded-lg cursor-pointer ring-offset-2 ring-orange-500 ${color === i + 108 ? "ring-2" : ""}`}
+							style={{ backgroundColor: `#${hex}` }}
+						></button>
+					))}
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }

@@ -31,7 +31,7 @@ export default function PortraitUpload({ setImage }: Props) {
 				<p className="text-center text-sm">
 					{!hasImage ? (
 						<>
-							Drag and drop a screenshot of your Mii&apos;s parts here
+							Drag and drop a screenshot of your Mii&apos;s features here
 							<br />
 							or click to open
 						</>

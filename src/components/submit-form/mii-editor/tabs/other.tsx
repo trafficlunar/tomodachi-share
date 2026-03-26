@@ -38,52 +38,46 @@ export default function OtherTab({ instructions }: Props) {
 	};
 
 	return (
-		<div className="relative grow p-3 pb-0!">
-			<div className="flex h-full">
-				<div className="grow flex flex-col">
-					<div className="flex items-center h-8">
-						<h1 className="absolute font-bold text-xl">Other</h1>
+		<>
+			<h1 className="absolute font-bold text-xl">Other</h1>
 
-						<div className="flex justify-center grow">
-							<div className="rounded-2xl bg-orange-200">
-								{TABS.map((_, i) => (
-									<button
-										key={i}
-										type="button"
-										onClick={() => setTab(i)}
-										className={`px-3 py-1 rounded-2xl cursor-pointer hover:bg-orange-300/50 transition-colors duration-75 ${tab === i ? "bg-orange-300!" : "orange-200"}`}
-									>
-										{i}
-									</button>
-								))}
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div className="shrink-0 w-21 pb-3 flex flex-col items-center">
-					<ColorPicker color={colors[tab]} setColor={setColor} />
-					<NumberInputs target={instructions.current.other[currentTab.name]} />
-
-					{tab === 3 && (
-						<div className="flex gap-1.5 items-center w-full mt-auto">
-							<input
-								type="checkbox"
-								id="subcolor"
-								className="checkbox"
-								checked={isFlipped}
-								onChange={(e) => {
-									setIsFlipped(e.target.checked);
-									instructions.current.other.moustache.isFlipped = e.target.checked;
-								}}
-							/>
-							<label htmlFor="subcolor" className="text-xs">
-								Flip
-							</label>
-						</div>
-					)}
+			<div className="absolute right-3 z-10 flex justify-end">
+				<div className="rounded-2xl bg-orange-200">
+					{TABS.map((_, i) => (
+						<button
+							key={i}
+							type="button"
+							onClick={() => setTab(i)}
+							className={`px-3 py-1 rounded-2xl cursor-pointer hover:bg-orange-300/50 transition-colors duration-75 ${tab === i ? "bg-orange-300!" : "orange-200"}`}
+						>
+							{i + 1}
+						</button>
+					))}
 				</div>
 			</div>
-		</div>
+
+			<div className="absolute inset-0 flex flex-col justify-center items-center">
+				<ColorPicker disabled={tab === 0 || tab === 1} color={colors[tab]} setColor={setColor} />
+				<NumberInputs target={instructions.current.other[currentTab.name]} />
+
+				{tab === 3 && (
+					<div className="flex gap-1.5 items-center mt-4">
+						<input
+							type="checkbox"
+							id="subcolor"
+							className="checkbox"
+							checked={isFlipped}
+							onChange={(e) => {
+								setIsFlipped(e.target.checked);
+								instructions.current.other.moustache.isFlipped = e.target.checked;
+							}}
+						/>
+						<label htmlFor="subcolor" className="text-xs">
+							Flip
+						</label>
+					</div>
+				)}
+			</div>
+		</>
 	);
 }

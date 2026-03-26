@@ -6,11 +6,29 @@ interface Props {
 	disabled?: boolean;
 	color: number;
 	setColor: (color: number) => void;
+	tab?: "hair" | "eyes" | "lips" | "glasses" | "eyeliner";
 }
 
-export default function ColorPicker({ disabled, color, setColor }: Props) {
+export default function ColorPicker({ disabled, color, setColor, tab = "hair" }: Props) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
+
+	const getExtraSlice = () => {
+		switch (tab) {
+			case "hair":
+				return { start: 0, end: 8 };
+			case "eyes":
+				return { start: 122, end: 128 };
+			case "lips":
+				return { start: 128, end: 133 };
+			case "glasses":
+				return { start: 133, end: 139 };
+			case "eyeliner":
+				return { start: 139, end: 152 };
+			default:
+				return { start: 108, end: 122 };
+		}
+	};
 
 	const close = () => {
 		setIsVisible(false);
@@ -38,7 +56,7 @@ export default function ColorPicker({ disabled, color, setColor }: Props) {
 					}
 				}}
 				disabled={disabled}
-				className={`w-full flex gap-1.5 mb-2 p-2 rounded-xl shadow ${disabled ? "bg-zinc-300 opacity-50 cursor-not-allowed" : "bg-zinc-100 cursor-pointer"}`}
+				className={`w-20 flex gap-1.5 mb-2 p-2 rounded-xl shadow ${disabled ? "bg-zinc-300 opacity-50 cursor-not-allowed" : "bg-zinc-100 cursor-pointer"}`}
 			>
 				<Icon icon={"material-symbols:palette"} className="text-xl" />
 				<div className="grow rounded" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
@@ -46,7 +64,7 @@ export default function ColorPicker({ disabled, color, setColor }: Props) {
 
 			{isOpen && (
 				<div
-					className={`absolute inset-0 w-122 p-4 bg-orange-100 rounded-lg transition-transform duration-500
+					className={`absolute inset-0 z-10 w-full p-4 bg-orange-100 rounded-lg transition-transform duration-500
 						flex items-center ${isVisible ? "opacity-100" : "opacity-0"}`}
 					style={{
 						transition: isVisible
@@ -55,25 +73,28 @@ export default function ColorPicker({ disabled, color, setColor }: Props) {
 					}}
 				>
 					<div className="mr-8 flex flex-col gap-0.5">
-						{COLORS.slice(0, 8).map((c, i) => (
-							<button
-								type="button"
-								key={i}
-								onClick={() => setColor(i)}
-								className={`size-7.5 cursor-pointer rounded-md ring-orange-500 ring-offset-2 ${color === i ? "ring-2 z-10" : ""}`}
-								style={{
-									backgroundColor: `#${c}`,
-									opacity: isVisible ? 1 : 0,
-									transform: isVisible ? "scale(1)" : "scale(0.7)",
-									transition: `opacity 250ms ease, transform 320ms cubic-bezier(0.34, 1.4, 0.64, 1)`,
-									// stagger by column then row for a wave effect
-									transitionDelay: isVisible ? `${120 + (i % 10) * 18 + Math.floor(i / 10) * 10}ms` : "0ms",
-								}}
-							></button>
-						))}
+						{COLORS.slice(getExtraSlice().start, getExtraSlice().end).map((c, i) => {
+							const actualIndex = i + getExtraSlice().start;
+							return (
+								<button
+									type="button"
+									key={actualIndex}
+									onClick={() => setColor(actualIndex)}
+									className={`size-7.5 cursor-pointer rounded-md ring-orange-500 ring-offset-2 ${color === actualIndex ? "ring-2 z-10" : ""}`}
+									style={{
+										backgroundColor: `#${c}`,
+										opacity: isVisible ? 1 : 0,
+										transform: isVisible ? "scale(1)" : "scale(0.7)",
+										transition: `opacity 250ms ease, transform 320ms cubic-bezier(0.34, 1.4, 0.64, 1)`,
+										// stagger by column then row for a wave effect
+										transitionDelay: isVisible ? `${120 + (i % 10) * 18 + Math.floor(i / 10) * 10}ms` : "0ms",
+									}}
+								></button>
+							);
+						})}
 					</div>
 
-					<div className="grid grid-cols-10 gap-0.5">
+					<div className="grid grid-cols-10 gap-0.5 overflow-x-auto">
 						{COLORS.slice(8, 108).map((c, i) => (
 							<button
 								type="button"

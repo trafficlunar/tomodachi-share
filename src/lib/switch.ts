@@ -118,7 +118,7 @@ export const COLORS: string[] = [
 	"2B1B3F",
 	"7B2D2D",
 	"8B3A0E",
-	// Head tab extra colors
+	// Hair tab extra colors
 	"FFD8BA",
 	"FFD5AC",
 	"FEC1A4",
@@ -133,4 +133,33 @@ export const COLORS: string[] = [
 	"59371F",
 	"662D16",
 	"392D1E",
+	// Eye tab extra colors
+	"000100",
+	"6B6F6E",
+	"663F2D",
+	"605F34",
+	"3B6F59",
+	"4856A6",
+	// Lips tab extra colors
+	"D65413",
+	"F21415",
+	"F54A4A",
+	"EE9670",
+	"8A4E40",
+	// Glasses tab extra colors
+	"000000",
+	"776F66",
+	"603915",
+	"A65F00",
+	"A61615",
+	"273465",
+	// Eye shade extra colors
+	"A54E21",
+	"653E2C",
+	"EC946F",
+	"FC9414",
+	"F97595",
+	"F54A4A",
+	"86E1B0",
+	"6E44B0",
 ];

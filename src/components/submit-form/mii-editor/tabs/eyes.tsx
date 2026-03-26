@@ -17,7 +17,7 @@ const TABS: { name: keyof SwitchMiiInstructions["eyes"]; length: number; colorsD
 	{ name: "pupil", length: 10, colorsDisabled: true },
 ];
 
-export default function OtherTab({ instructions }: Props) {
+export default function EyesTab({ instructions }: Props) {
 	const [tab, setTab] = useState(0);
 
 	// One type/color state per tab
@@ -36,36 +36,28 @@ export default function OtherTab({ instructions }: Props) {
 	};
 
 	return (
-		<div className="relative grow p-3 pb-0!">
-			<div className="flex h-full">
-				<div className="grow flex flex-col">
-					<div className="flex items-center h-8">
-						<h1 className="absolute font-bold text-xl">Eyes</h1>
+		<>
+			<h1 className="absolute font-bold text-xl">Eyes</h1>
 
-						<div className="flex justify-center grow">
-							<div className="rounded-2xl bg-orange-200">
-								{TABS.map((_, i) => (
-									<button
-										key={i}
-										type="button"
-										onClick={() => setTab(i)}
-										className={`px-3 py-1 rounded-2xl cursor-pointer hover:bg-orange-300/50 transition-colors duration-75 ${tab === i ? "bg-orange-300!" : "orange-200"}`}
-									>
-										{i}
-									</button>
-								))}
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div className="shrink-0 w-21 pb-3 flex flex-col items-center">
-					<div className={`${currentTab.colorsDisabled ? "hidden" : "w-full"}`}>
-						<ColorPicker color={colors[tab]} setColor={setColor} />
-					</div>
-					<NumberInputs target={instructions.current.eyes[currentTab.name]} />
+			<div className="absolute right-3 z-10 flex justify-end">
+				<div className="rounded-2xl bg-orange-200">
+					{TABS.map((_, i) => (
+						<button
+							key={i}
+							type="button"
+							onClick={() => setTab(i)}
+							className={`px-3 py-1 rounded-2xl cursor-pointer hover:bg-orange-300/50 transition-colors duration-75 ${tab === i ? "bg-orange-300!" : "orange-200"}`}
+						>
+							{i + 1}
+						</button>
+					))}
 				</div>
 			</div>
-		</div>
+
+			<div className="absolute inset-0 flex flex-col justify-center items-center">
+				<ColorPicker disabled={currentTab.colorsDisabled} color={colors[tab]} setColor={setColor} tab={tab === 5 ? "eyeliner" : "eyes"} />
+				<NumberInputs target={instructions.current.eyes[currentTab.name]} />
+			</div>
+		</>
 	);
 }
