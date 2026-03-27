@@ -118,7 +118,9 @@ export async function POST(request: NextRequest) {
 	});
 
 	if (!parsed.success) {
-		const error = parsed.error.issues[0].message;
+		const firstIssue = parsed.error.issues[0];
+		const path = firstIssue.path.length ? firstIssue.path.join(".") : "root";
+		const error = `${path}: ${firstIssue.message}`;
 		const issues = parsed.error.issues;
 		const hasInstructionsErrors = issues.some((issue) => issue.path[0] === "instructions");
 
@@ -159,7 +161,7 @@ export async function POST(request: NextRequest) {
 		if (imageValidation.valid) {
 			customImages.push(img);
 		} else {
-			return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
+			return rateLimit.sendResponse({ error: `Failed to verify custom image: ${imageValidation.error}` }, imageValidation.status ?? 400);
 		}
 	}
 
@@ -167,8 +169,10 @@ export async function POST(request: NextRequest) {
 	if (platform === "SWITCH") {
 		const portraitValidation = await validateImage(miiPortraitImage);
 		const featuresValidation = await validateImage(miiFeaturesImage);
-		if (!portraitValidation.valid) return rateLimit.sendResponse({ error: portraitValidation.error }, portraitValidation.status ?? 400);
-		if (!featuresValidation.valid) return rateLimit.sendResponse({ error: featuresValidation.error }, featuresValidation.status ?? 400);
+		if (!portraitValidation.valid)
+			return rateLimit.sendResponse({ error: `Failed to verify portrait: ${portraitValidation.error}` }, portraitValidation.status ?? 400);
+		if (!featuresValidation.valid)
+			return rateLimit.sendResponse({ error: `Failed to verify features: ${featuresValidation.error}` }, featuresValidation.status ?? 400);
 	}
 
 	const qrBytes = new Uint8Array(qrBytesRaw ?? []);
@@ -242,7 +246,6 @@ export async function POST(request: NextRequest) {
 		const fileLocation = path.join(miiUploadsDirectory, "mii.png");
 
 		await fs.writeFile(fileLocation, pngBuffer);
-		await generateMetadataImage(miiRecord, session.user?.name!);
 	} catch (error) {
 		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
@@ -250,6 +253,13 @@ export async function POST(request: NextRequest) {
 		console.error("Failed to download/store Mii portrait/features:", error);
 		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "studio-image-download" } });
 		return rateLimit.sendResponse({ error: "Failed to download/store Mii portrait/features" }, 500);
+	}
+
+	try {
+		await generateMetadataImage(miiRecord, session.user?.name!);
+	} catch (error) {
+		console.error("Failed to generate metadata image:", error);
+		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "metadata-image-generation" } });
 	}
 
 	if (platform === "THREE_DS") {

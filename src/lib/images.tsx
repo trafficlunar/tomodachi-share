@@ -17,7 +17,7 @@ import { Mii } from "@prisma/client";
 
 const MIN_IMAGE_DIMENSIONS = [128, 128];
 const MAX_IMAGE_DIMENSIONS = [2000, 2000];
-const MAX_IMAGE_SIZE = 4 * 1024 * 1024; // 4 MB
+const MAX_IMAGE_SIZE = 8 * 1024 * 1024; // 8 MB
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
 //#region Image validation
