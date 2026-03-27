@@ -64,8 +64,6 @@ export default function EditForm({ mii, likes }: Props) {
 		if (name != mii.name) formData.append("name", name);
 		if (tags != mii.tags) formData.append("tags", JSON.stringify(tags));
 		if (description && description != mii.description) formData.append("description", description);
-		console.log(minifyInstructions(structuredClone(instructions.current)));
-		console.log(mii.instructions);
 		if (minifyInstructions(structuredClone(instructions.current)) !== (mii.instructions as object))
 			formData.append("instructions", JSON.stringify(instructions.current));
 
