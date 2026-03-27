@@ -33,6 +33,7 @@ const submitSchema = z
 		// Switch
 		gender: z.enum(MiiGender).default("MALE"),
 		miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
+		miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
 		instructions: switchMiiInstructionsSchema,
 
 		// QR code
@@ -51,15 +52,15 @@ const submitSchema = z
 	// This refine function is probably useless
 	.refine(
 		(data) => {
-			// If platform is Switch, gender and miiPortraitImage must be present
+			// If platform is Switch, gender, miiPortraitImage, and miiFeaturesImage must be present
 			if (data.platform === "SWITCH") {
 				return data.gender !== undefined && data.miiPortraitImage !== undefined;
 			}
 			return true;
 		},
 		{
-			message: "Gender, Mii portrait image, and instructions are required for Switch platform",
-			path: ["gender", "miiPortraitImage", "instructions"],
+			message: "Gender, Mii portrait & features image, and instructions are required for Switch platform",
+			path: ["gender", "miiPortraitImage", "miiFeaturesImage", "instructions"],
 		},
 	);
 
@@ -129,6 +130,7 @@ export async function POST(request: NextRequest) {
 
 		gender: formData.get("gender") ?? undefined, // ZOD MOMENT
 		miiPortraitImage: formData.get("miiPortraitImage"),
+		miiFeaturesImage: formData.get("miiFeaturesImage"),
 		instructions: minifiedInstructions,
 
 		qrBytesRaw: rawQrBytesRaw,
@@ -159,6 +161,7 @@ export async function POST(request: NextRequest) {
 		qrBytesRaw,
 		gender,
 		miiPortraitImage,
+		miiFeaturesImage,
 		image1,
 		image2,
 		image3,
@@ -183,10 +186,12 @@ export async function POST(request: NextRequest) {
 		}
 	}
 
-	// Check Mii portrait image as well (Switch)
+	// Check Mii portrait & features image (Switch)
 	if (platform === "SWITCH") {
-		const imageValidation = await validateImage(miiPortraitImage);
-		if (!imageValidation.valid) return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
+		const portraitValidation = await validateImage(miiPortraitImage);
+		const featuresValidation = await validateImage(miiFeaturesImage);
+		if (!portraitValidation.valid) return rateLimit.sendResponse({ error: portraitValidation.error }, portraitValidation.status ?? 400);
+		if (!featuresValidation.valid) return rateLimit.sendResponse({ error: featuresValidation.error }, featuresValidation.status ?? 400);
 	}
 
 	const qrBytes = new Uint8Array(qrBytesRaw ?? []);
@@ -246,8 +251,15 @@ export async function POST(request: NextRequest) {
 			portraitBuffer = Buffer.from(await studioResponse.arrayBuffer());
 		} else if (platform === "SWITCH") {
 			portraitBuffer = Buffer.from(await miiPortraitImage.arrayBuffer());
+
+			// Save features image
+			const featuresBuffer = Buffer.from(await miiFeaturesImage.arrayBuffer());
+			const pngBuffer = await sharp(featuresBuffer).png({ quality: 85 }).toBuffer();
+			const fileLocation = path.join(miiUploadsDirectory, "features.png");
+			await fs.writeFile(fileLocation, pngBuffer);
 		}
 
+		// Save portrait image
 		if (!portraitBuffer) throw Error("Mii portrait buffer not initialised");
 		const pngBuffer = await sharp(portraitBuffer).png({ quality: 85 }).toBuffer();
 		const fileLocation = path.join(miiUploadsDirectory, "mii.png");
@@ -258,9 +270,9 @@ export async function POST(request: NextRequest) {
 		// Clean up if something went wrong
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
 
-		console.error("Failed to download/store Mii portrait:", error);
+		console.error("Failed to download/store Mii portrait/features:", error);
 		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "studio-image-download" } });
-		return rateLimit.sendResponse({ error: "Failed to download/store Mii portrait" }, 500);
+		return rateLimit.sendResponse({ error: "Failed to download/store Mii portrait/features" }, 500);
 	}
 
 	if (platform === "THREE_DS") {

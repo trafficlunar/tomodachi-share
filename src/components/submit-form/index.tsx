@@ -17,9 +17,9 @@ import { SwitchMiiInstructions } from "@/types";
 
 import TagSelector from "../tag-selector";
 import ImageList from "./image-list";
-import PortraitUpload from "./portrait-upload";
+import SwitchFileUpload from "./switch-file-upload";
 import QrUpload from "./qr-upload";
-import QrScanner from "./qr-scanner";
+import Camera from "./camera";
 import ThreeDsSubmitTutorialButton from "../tutorial/3ds-submit";
 import MiiEditor from "./mii-editor";
 import SwitchSubmitTutorialButton from "../tutorial/switch-submit";
@@ -41,6 +41,7 @@ export default function SubmitForm() {
 
 	const [isQrScannerOpen, setIsQrScannerOpen] = useState(false);
 	const [miiPortraitUri, setMiiPortraitUri] = useState<string | undefined>();
+	const [miiFeaturesUri, setMiiFeaturesUri] = useState<string | undefined>();
 	const [generatedQrCodeUri, setGeneratedQrCodeUri] = useState<string | undefined>();
 
 	const [name, setName] = useState("");
@@ -119,21 +120,24 @@ export default function SubmitForm() {
 		if (platform === "THREE_DS") {
 			formData.append("qrBytesRaw", JSON.stringify(qrBytesRaw));
 		} else if (platform === "SWITCH") {
-			const response = await fetch(miiPortraitUri!);
+			const portraitResponse = await fetch(miiPortraitUri!);
+			const featuresResponse = await fetch(miiFeaturesUri!);
 
-			if (!response.ok) {
-				setError("Failed to check Mii portrait. Did you upload one?");
+			if (!portraitResponse.ok || !featuresResponse.ok) {
+				setError("Failed to get Mii portrait/features screenshot. Did you upload one?");
 				return;
 			}
 
-			const blob = await response.blob();
-			if (!blob.type.startsWith("image/")) {
-				setError("Invalid image file returned");
+			const portraitBlob = await portraitResponse.blob();
+			const featuresBlob = await featuresResponse.blob();
+			if (!portraitBlob.type.startsWith("image/") || !featuresBlob.type.startsWith("image/")) {
+				setError("Invalid image file found");
 				return;
 			}
 
 			formData.append("gender", gender);
-			formData.append("miiPortraitImage", blob);
+			formData.append("miiPortraitImage", portraitBlob);
+			formData.append("miiFeaturesImage", featuresBlob);
 			formData.append("instructions", JSON.stringify(instructions.current));
 		}
 
@@ -197,7 +201,7 @@ export default function SubmitForm() {
 					<Carousel
 						images={[
 							miiPortraitUri ?? "/loading.svg",
-							...(platform === "THREE_DS" ? [generatedQrCodeUri ?? "/loading.svg"] : []),
+							...(platform === "THREE_DS" ? [generatedQrCodeUri ?? "/loading.svg"] : [miiFeaturesUri ?? "/loading.svg"]),
 							...files.map((file) => URL.createObjectURL(file)),
 						]}
 					/>
@@ -369,7 +373,8 @@ export default function SubmitForm() {
 					</div>
 
 					<div className="flex flex-col items-center gap-2">
-						<PortraitUpload setImage={setMiiPortraitUri} />
+						<SwitchFileUpload text="a screenshot of your Mii here" image={miiPortraitUri} setImage={setMiiPortraitUri} hasCrop />
+						<SwitchFileUpload text="a screenshot of your Mii's features here" setImage={setMiiFeaturesUri} />
 						<SwitchSubmitTutorialButton />
 					</div>
 
@@ -393,7 +398,7 @@ export default function SubmitForm() {
 							Use your camera
 						</button>
 
-						<QrScanner isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
+						<Camera isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
 						<ThreeDsSubmitTutorialButton />
 
 						<span className="text-xs text-zinc-400">For emulators, aes_keys.txt is required.</span>

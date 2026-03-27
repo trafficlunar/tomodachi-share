@@ -10,10 +10,11 @@ import { useSelect } from "downshift";
 interface Props {
 	isOpen: boolean;
 	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	setQrBytesRaw: React.Dispatch<React.SetStateAction<number[]>>;
+	setImage?: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setQrBytesRaw?: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
+export default function Camera({ isOpen, setIsOpen, setImage, setQrBytesRaw }: Props) {
 	const [isVisible, setIsVisible] = useState(false);
 
 	const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
@@ -45,11 +46,11 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		},
 	});
 
-	const scanQRCode = useCallback(() => {
+	const takePicture = useCallback(() => {
 		if (!isOpen) return;
 
 		// Continue scanning in a loop
-		requestRef.current = requestAnimationFrame(scanQRCode);
+		if (setQrBytesRaw) requestRef.current = requestAnimationFrame(takePicture);
 
 		const video = videoRef.current;
 		const canvas = canvasRef.current;
@@ -62,6 +63,13 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		canvas.height = video.videoHeight;
 		ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
 
+		if (setImage) {
+			setImage(canvas.toDataURL());
+			close();
+			return;
+		}
+		if (!setQrBytesRaw) return;
+
 		const imageData = ctx.getImageData(0, 0, video.videoWidth, video.videoHeight);
 		const code = jsQR(imageData.data, imageData.width, imageData.height);
 		if (!code || !code.binaryData) return;
@@ -73,7 +81,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 		}
 
 		setQrBytesRaw(code.binaryData);
-		setIsOpen(false);
+		close();
 	}, [isOpen, setIsOpen, setQrBytesRaw]);
 
 	const requestPermission = () => {
@@ -129,7 +137,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 			})
 			.catch((err) => console.error("Camera error", err));
 
-		requestRef.current = requestAnimationFrame(scanQRCode);
+		if (setQrBytesRaw) requestRef.current = requestAnimationFrame(takePicture);
 
 		// cleanup
 		return () => {
@@ -142,7 +150,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 				videoRef.current.srcObject = null;
 			}
 		};
-	}, [isOpen, permissionGranted, selectedDeviceId, scanQRCode]);
+	}, [isOpen, permissionGranted, selectedDeviceId, takePicture]);
 
 	return (
 		<div className={`fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40 ${!isOpen ? "hidden" : ""}`}>
@@ -157,7 +165,7 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 				}`}
 			>
 				<div className="flex justify-between items-center mb-2">
-					<h2 className="text-xl font-bold">Scan QR Code</h2>
+					<h2 className="text-xl font-bold">{setQrBytesRaw ? "Scan QR Code" : "Take Picture"}</h2>
 					<button type="button" aria-label="Close" onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 						<Icon icon="material-symbols:close-rounded" />
 					</button>
@@ -199,26 +207,31 @@ export default function QrScanner({ isOpen, setIsOpen, setQrBytesRaw }: Props) {
 					</div>
 				</div>
 
-				<div className="relative w-full aspect-square">
+				<div className={`relative w-full ${setQrBytesRaw ? "aspect-square" : ""}`}>
 					{!permissionGranted && (
 						<div className="absolute inset-0 z-20 flex flex-col items-center justify-center rounded-2xl bg-amber-50 border-2 border-amber-500 text-center p-8">
 							<p className="text-red-400 font-bold text-lg mb-2">Camera access denied</p>
-							<p className="text-gray-600">Please allow camera access in your browser settings to scan QR codes</p>
+							<p className="text-gray-600">Please allow camera access in your browser settings to {setQrBytesRaw ? "scan QR codes" : "take pictures"}</p>
 							<button type="button" onClick={requestPermission} className="pill button text-xs mt-2 py-0.5! px-2!">
 								Request Permission
 							</button>
 						</div>
 					)}
 
-					<video ref={videoRef} className="size-full object-cover rounded-2xl border-2 border-amber-500" />
-					<QrFinder />
+					<video ref={videoRef} className={`size-full rounded-2xl border-2 border-amber-500 max-h-96 ${setQrBytesRaw ? "object-cover" : ""}`} />
+					{setQrBytesRaw && <QrFinder />}
 					<canvas ref={canvasRef} className="hidden" />
 				</div>
 
-				<div className="mt-4 flex justify-center">
+				<div className="mt-4 flex justify-center gap-2">
 					<button type="button" onClick={close} className="pill button">
 						Cancel
 					</button>
+					{setImage && (
+						<button type="button" onClick={takePicture} className="pill button">
+							Take Picture
+						</button>
+					)}
 				</div>
 			</div>
 		</div>

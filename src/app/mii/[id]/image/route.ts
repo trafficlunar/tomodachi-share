@@ -12,8 +12,8 @@ import { prisma } from "@/lib/prisma";
 
 const searchParamsSchema = z.object({
 	type: z
-		.enum(["mii", "qr-code", "image0", "image1", "image2", "metadata"], {
-			message: "Image type must be either 'mii', 'qr-code', 'image[number from 0 to 2]' or 'metadata'",
+		.enum(["mii", "qr-code", "features", "image0", "image1", "image2", "metadata"], {
+			message: "Image type must be either 'mii', 'qr-code', 'features', 'image[number from 0 to 2]' or 'metadata'",
 		})
 		.default("mii"),
 });

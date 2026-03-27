@@ -5,6 +5,7 @@ import { Lexend } from "next/font/google";
 import { WebSite, WithContext } from "schema-dts";
 
 import "./globals.css";
+import "react-image-crop/dist/ReactCrop.css";
 
 import Providers from "./provider";
 import Header from "@/components/header";

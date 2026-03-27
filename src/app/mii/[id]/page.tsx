@@ -135,7 +135,7 @@ export default async function MiiPage({ params }: Props) {
 							/>
 						</div>
 						{/* QR Code */}
-						{mii.platform === "THREE_DS" && (
+						{mii.platform === "THREE_DS" ? (
 							<div className="bg-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center p-2">
 								<ImageViewer
 									src={`/mii/${mii.id}/image?type=qr-code`}
@@ -145,6 +145,14 @@ export default async function MiiPage({ params }: Props) {
 									className="border-2 border-amber-300 rounded-lg hover:brightness-90 transition-all"
 								/>
 							</div>
+						) : (
+							<ImageViewer
+								src={`/mii/${mii.id}/image?type=features`}
+								alt="mii features"
+								width={300}
+								height={300}
+								className="rounded-lg hover:brightness-90 mb-4 transition-all"
+							/>
 						)}
 						<hr className="w-full border-t-2 border-t-amber-400" />
 
