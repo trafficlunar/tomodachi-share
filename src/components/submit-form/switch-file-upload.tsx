@@ -9,12 +9,12 @@ import CropPortrait from "./crop-portrait";
 
 interface Props {
 	text: string;
-	hasCrop?: boolean;
+	forceCrop?: boolean;
 	image?: string | undefined;
 	setImage: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export default function SwitchFileUpload({ text, hasCrop = false, image, setImage }: Props) {
+export default function SwitchFileUpload({ text, forceCrop, image, setImage }: Props) {
 	const [isCameraOpen, setIsCameraOpen] = useState(false);
 	const [isCropOpen, setIsCropOpen] = useState(false);
 	const [hasImage, setHasImage] = useState(false);
@@ -27,7 +27,7 @@ export default function SwitchFileUpload({ text, hasCrop = false, image, setImag
 			reader.onload = async (event) => {
 				setImage(event.target!.result as string);
 				setHasImage(true);
-				if (hasCrop) setIsCropOpen(true);
+				if (forceCrop) setIsCropOpen(true);
 			};
 			reader.readAsDataURL(file);
 		},
@@ -36,7 +36,7 @@ export default function SwitchFileUpload({ text, hasCrop = false, image, setImag
 
 	useEffect(() => {
 		if (!isCameraOpen) return;
-		if (hasCrop) setIsCropOpen(true);
+		if (forceCrop) setIsCropOpen(true);
 	}, [isCameraOpen]);
 
 	return (
@@ -61,17 +61,13 @@ export default function SwitchFileUpload({ text, hasCrop = false, image, setImag
 				<Icon icon="mdi:camera" fontSize={20} />
 				Use your camera
 			</button>
-			{hasCrop && (
-				<>
-					<button type="button" aria-label="Crop image" onClick={() => setIsCropOpen(true)} className="pill button gap-2">
-						<Icon icon="material-symbols:crop" fontSize={20} />
-						Crop Image
-					</button>
-					<CropPortrait isOpen={isCropOpen} setIsOpen={setIsCropOpen} image={image} setImage={setImage} />
-				</>
-			)}
+			<button type="button" aria-label="Crop image" onClick={() => setIsCropOpen(true)} className="pill button gap-2">
+				<Icon icon="material-symbols:crop" fontSize={20} />
+				Crop Image
+			</button>
 
 			<Camera isOpen={isCameraOpen} setIsOpen={setIsCameraOpen} setImage={setImage} />
+			<CropPortrait isOpen={isCropOpen} setIsOpen={setIsCropOpen} image={image} setImage={setImage} />
 		</div>
 	);
 }
