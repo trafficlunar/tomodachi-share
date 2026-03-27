@@ -32,10 +32,10 @@ export default function CropPortrait({ isOpen, setIsOpen, image, setImage }: Pro
 		const scaleX = image.naturalWidth / image.width;
 		const scaleY = image.naturalHeight / image.height;
 
-		canvas.width = crop.width;
-		canvas.height = crop.height;
+		canvas.width = crop.width * scaleX;
+		canvas.height = crop.height * scaleY;
 
-		ctx.drawImage(image, crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY, 0, 0, crop.width, crop.height);
+		ctx.drawImage(image, crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY, 0, 0, crop.width * scaleX, crop.height * scaleY);
 
 		setImage(canvas.toDataURL());
 		close();

@@ -282,12 +282,14 @@ export const switchMiiInstructionsSchema = z
 		height: z.number().int().min(0).max(128).optional(),
 		weight: z.number().int().min(0).max(128).optional(),
 		datingPreferences: z.array(z.enum(MiiGender)).optional(),
-		birthday: z.object({
-			day: z.number().int().min(1).max(31).optional(),
-			month: z.number().int().min(1).max(12).optional(),
-			age: z.number().int().min(1).max(100).optional(),
-			dontAge: z.boolean().optional(),
-		}),
+		birthday: z
+			.object({
+				day: z.number().int().min(1).max(31).optional(),
+				month: z.number().int().min(1).max(12).optional(),
+				age: z.number().int().min(1).max(100).optional(),
+				dontAge: z.boolean().optional(),
+			})
+			.optional(),
 		voice: z
 			.object({
 				speed: z.number().int().min(0).max(50).optional(),
