@@ -337,7 +337,7 @@ export default function SubmitForm() {
 
 					<div className="flex flex-col items-center gap-2">
 						<SwitchFileUpload text="a screenshot of your Mii here" image={miiPortraitUri} setImage={setMiiPortraitUri} forceCrop />
-						<SwitchFileUpload text="a screenshot of your Mii's features here" setImage={setMiiFeaturesUri} />
+						<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={setMiiFeaturesUri} />
 						<SwitchSubmitTutorialButton />
 					</div>
 

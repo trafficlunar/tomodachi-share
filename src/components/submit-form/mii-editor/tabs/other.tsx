@@ -24,8 +24,8 @@ export default function OtherTab({ instructions }: Props) {
 
 	const [colors, setColors] = useState<number[]>(() =>
 		TABS.map((t) => {
-			const entry = instructions.current.other[t.name];
-			const color = "color" in entry ? entry.color : null;
+			const entry = instructions.current.other[t.name] ?? {};
+			const color = entry && "color" in entry ? entry.color : null;
 			return color ?? t.defaultColor ?? 0;
 		}),
 	);
