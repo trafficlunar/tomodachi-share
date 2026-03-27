@@ -150,13 +150,13 @@ export default function MiiInstructions({ instructions }: Props) {
 			{eyebrows && <Section name="Eyebrows" instructions={eyebrows}></Section>}
 			{eyes && (
 				<Section name="Eyes" instructions={eyes}>
-					<Section isSubSection name="Main" instructions={eyes.main} />
-					<Section isSubSection name="Eyelashes Top" instructions={eyes.eyelashesTop} />
-					<Section isSubSection name="Eyelashes Bottom" instructions={eyes.eyelashesBottom} />
-					<Section isSubSection name="Eyelid Top" instructions={eyes.eyelidTop} />
-					<Section isSubSection name="Eyelid Bottom" instructions={eyes.eyelidBottom} />
-					<Section isSubSection name="Eyeliner" instructions={eyes.eyeliner} />
-					<Section isSubSection name="Pupil" instructions={eyes.pupil} />
+					<Section isSubSection name="Tab 1" instructions={eyes.main} />
+					<Section isSubSection name="Tab 2" instructions={eyes.eyelashesTop} />
+					<Section isSubSection name="Tab 3" instructions={eyes.eyelashesBottom} />
+					<Section isSubSection name="Tab 4" instructions={eyes.eyelidTop} />
+					<Section isSubSection name="Tab 5" instructions={eyes.eyelidBottom} />
+					<Section isSubSection name="Tab 6" instructions={eyes.eyeliner} />
+					<Section isSubSection name="Tab 7" instructions={eyes.pupil} />
 				</Section>
 			)}
 			{nose && <Section name="Nose" instructions={nose}></Section>}
@@ -182,16 +182,16 @@ export default function MiiInstructions({ instructions }: Props) {
 			)}
 			{other && (
 				<Section name="Other" instructions={other}>
-					<Section isSubSection name="Wrinkles 1" instructions={other.wrinkles1} />
-					<Section isSubSection name="Wrinkles 2" instructions={other.wrinkles2} />
-					<Section isSubSection name="Beard" instructions={other.beard} />
-					<Section isSubSection name="Moustache" instructions={other.moustache}>
+					<Section isSubSection name="Tab 1" instructions={other.wrinkles1} />
+					<Section isSubSection name="Tab 2" instructions={other.wrinkles2} />
+					<Section isSubSection name="Tab 3" instructions={other.beard} />
+					<Section isSubSection name="Tab 4" instructions={other.moustache}>
 						{other.moustache && other.moustache.isFlipped && <TableCell label="Flipped">{other.moustache.isFlipped ? "Yes" : "No"}</TableCell>}
 					</Section>
-					<Section isSubSection name="Goatee" instructions={other.goatee} />
-					<Section isSubSection name="Mole" instructions={other.mole} />
-					<Section isSubSection name="Eye Shadow" instructions={other.eyeShadow} />
-					<Section isSubSection name="Blush" instructions={other.blush} />
+					<Section isSubSection name="Tab 5" instructions={other.goatee} />
+					<Section isSubSection name="Tab 6" instructions={other.mole} />
+					<Section isSubSection name="Tab 7" instructions={other.eyeShadow} />
+					<Section isSubSection name="Tab 8" instructions={other.blush} />
 				</Section>
 			)}
 

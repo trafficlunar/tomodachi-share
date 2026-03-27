@@ -84,7 +84,7 @@ export const userNameSchema = z
 	});
 
 const colorSchema = z.number().int().min(0).max(152).optional();
-const geometrySchema = z.number().int().min(-10).max(10).optional();
+const geometrySchema = z.number().int().min(-15).max(15).optional();
 
 export const switchMiiInstructionsSchema = z
 	.object({

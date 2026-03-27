@@ -23,8 +23,8 @@ export default function NumberInputs({ target }: Props) {
 					<input
 						type="number"
 						id="height"
-						min={-5}
-						max={5}
+						min={-15}
+						max={15}
 						value={height}
 						onChange={(e) => {
 							const value = Number(e.target.value);
@@ -44,8 +44,8 @@ export default function NumberInputs({ target }: Props) {
 					<input
 						type="number"
 						id="distance"
-						min={-5}
-						max={5}
+						min={-15}
+						max={15}
 						value={distance}
 						onChange={(e) => {
 							const value = Number(e.target.value);
@@ -65,8 +65,8 @@ export default function NumberInputs({ target }: Props) {
 					<input
 						type="number"
 						id="rotation"
-						min={-5}
-						max={5}
+						min={-15}
+						max={15}
 						value={rotation}
 						onChange={(e) => {
 							const value = Number(e.target.value);
@@ -86,8 +86,8 @@ export default function NumberInputs({ target }: Props) {
 					<input
 						type="number"
 						id="size"
-						min={-5}
-						max={5}
+						min={-15}
+						max={15}
 						value={size}
 						onChange={(e) => {
 							const value = Number(e.target.value);
@@ -107,8 +107,8 @@ export default function NumberInputs({ target }: Props) {
 					<input
 						type="number"
 						id="stretch"
-						min={-5}
-						max={5}
+						min={-15}
+						max={15}
 						value={stretch}
 						onChange={(e) => {
 							const value = Number(e.target.value);
