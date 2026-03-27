@@ -113,7 +113,7 @@ function Section({ name, instructions, children, isSubSection }: SectionProps) {
 
 export default function MiiInstructions({ instructions }: Props) {
 	if (Object.keys(instructions).length === 0) return null;
-	const { head, hair, eyebrows, eyes, nose, lips, ears, glasses, other, height, weight, datingPreferences, voice, personality } = instructions;
+	const { head, hair, eyebrows, eyes, nose, lips, ears, glasses, other, height, weight, birthday, datingPreferences, voice, personality } = instructions;
 
 	return (
 		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-3 max-h-96 overflow-y-auto">
@@ -122,7 +122,15 @@ export default function MiiInstructions({ instructions }: Props) {
 				Instructions
 			</h2>
 
-			{head && <Section name="Head" instructions={head}></Section>}
+			{head && (
+				<Section name="Head" instructions={head}>
+					{head.skinColor && (
+						<TableCell label="Skin Color">
+							<ColorPosition color={head.skinColor} />
+						</TableCell>
+					)}
+				</Section>
+			)}
 			{hair && (
 				<Section name="Hair" instructions={hair}>
 					{hair.subColor && (
@@ -196,7 +204,10 @@ export default function MiiInstructions({ instructions }: Props) {
 							<label htmlFor="height" className="w-16">
 								Height
 							</label>
-							<input id="height" type="range" min={0} max={100} step={1} disabled value={height} />
+							<div className="relative h-5 flex justify-center items-center">
+								<input id="height" type="range" min={0} max={128} step={1} disabled value={height} />
+								<div className="absolute h-4 w-1.5 rounded bg-orange-400 z-0"></div>
+							</div>
 						</div>
 					)}
 					{weight && (
@@ -204,7 +215,23 @@ export default function MiiInstructions({ instructions }: Props) {
 							<label htmlFor="weight" className="w-16">
 								Weight
 							</label>
-							<input id="weight" type="range" min={0} max={100} step={1} disabled value={weight} />
+							<div className="relative h-5 flex justify-center items-center">
+								<input id="weight" type="range" min={0} max={128} step={1} disabled value={weight} />
+								<div className="absolute h-4 w-1.5 rounded bg-orange-400 z-0"></div>
+							</div>
+						</div>
+					)}
+					{birthday && (
+						<div className="pl-2 not-nth-2:mt-4">
+							<h4 className="font-semibold text-xl text-amber-800 mb-1">Birthday</h4>
+							<table className="w-full">
+								<tbody>
+									{birthday.day && <TableCell label="Day">{birthday.day}</TableCell>}
+									{birthday.month && <TableCell label="Month">{birthday.month}</TableCell>}
+									{birthday.age && <TableCell label="Age">{birthday.age}</TableCell>}
+									{birthday.dontAge && <TableCell label="Don't Age">{birthday.dontAge ? "Yes" : "No"}</TableCell>}
+								</tbody>
+							</table>
 						</div>
 					)}
 					{datingPreferences && (

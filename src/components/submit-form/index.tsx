@@ -13,6 +13,7 @@ import { nameSchema, tagsSchema } from "@/lib/schemas";
 import { convertQrCode } from "@/lib/qr-codes";
 import Mii from "@/lib/mii.js/mii";
 import { ThreeDsTomodachiLifeMii } from "@/lib/three-ds-tomodachi-life-mii";
+import { defaultInstructions } from "@/lib/switch";
 import { SwitchMiiInstructions } from "@/types";
 
 import TagSelector from "../tag-selector";
@@ -51,45 +52,7 @@ export default function SubmitForm() {
 
 	const [platform, setPlatform] = useState<MiiPlatform>("SWITCH");
 	const [gender, setGender] = useState<MiiGender>("MALE");
-	const instructions = useRef<SwitchMiiInstructions>({
-		head: { skinColor: null },
-		hair: {
-			color: null,
-			subColor: null,
-			subColor2: null,
-			style: null,
-			isFlipped: false,
-		},
-		eyebrows: { color: null, height: null, distance: null, rotation: null, size: null, stretch: null },
-		eyes: {
-			main: { color: null, height: null, distance: null, rotation: null, size: null, stretch: null },
-			eyelashesTop: { height: null, distance: null, rotation: null, size: null, stretch: null },
-			eyelashesBottom: { height: null, distance: null, rotation: null, size: null, stretch: null },
-			eyelidTop: { height: null, distance: null, rotation: null, size: null, stretch: null },
-			eyelidBottom: { height: null, distance: null, rotation: null, size: null, stretch: null },
-			eyeliner: { color: null },
-			pupil: { height: null, distance: null, rotation: null, size: null, stretch: null },
-		},
-		nose: { height: null, size: null },
-		lips: { color: null, height: null, rotation: null, size: null, stretch: null, hasLipstick: false },
-		ears: { height: null, size: null },
-		glasses: { ringColor: null, shadesColor: null, height: null, size: null, stretch: null },
-		other: {
-			wrinkles1: { height: null, distance: null, size: null, stretch: null },
-			wrinkles2: { height: null, distance: null, size: null, stretch: null },
-			beard: { color: null },
-			moustache: { color: null, height: null, isFlipped: false, size: null, stretch: null },
-			goatee: { color: null },
-			mole: { color: null, height: null, distance: null, size: null },
-			eyeShadow: { color: null, height: null, distance: null, size: null, stretch: null },
-			blush: { color: null, height: null, distance: null, size: null, stretch: null },
-		},
-		height: null,
-		weight: null,
-		datingPreferences: [],
-		voice: { speed: null, pitch: null, depth: null, delivery: null, tone: null },
-		personality: { movement: null, speech: null, energy: null, thinking: null, overall: null },
-	});
+	const instructions = useRef<SwitchMiiInstructions>(defaultInstructions);
 
 	const [error, setError] = useState<string | undefined>(undefined);
 

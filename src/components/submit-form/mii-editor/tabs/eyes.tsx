@@ -19,9 +19,13 @@ const TABS: { name: keyof SwitchMiiInstructions["eyes"]; length: number; colorsD
 
 export default function EyesTab({ instructions }: Props) {
 	const [tab, setTab] = useState(0);
-
-	// One type/color state per tab
-	const [colors, setColors] = useState<number[]>(Array(TABS.length).fill(122));
+	const [colors, setColors] = useState<number[]>(() =>
+		TABS.map((t) => {
+			const entry = instructions.current.eyes[t.name];
+			const color = "color" in entry ? entry.color : null;
+			return color ?? 122;
+		}),
+	);
 
 	const currentTab = TABS[tab];
 

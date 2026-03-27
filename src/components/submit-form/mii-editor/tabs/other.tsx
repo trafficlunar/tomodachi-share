@@ -7,14 +7,14 @@ interface Props {
 	instructions: React.RefObject<SwitchMiiInstructions>;
 }
 
-const TABS: { name: keyof SwitchMiiInstructions["other"]; length: number }[] = [
+const TABS: { name: keyof SwitchMiiInstructions["other"]; length: number; defaultColor?: number }[] = [
 	{ name: "wrinkles1", length: 9 },
 	{ name: "wrinkles2", length: 15 },
 	{ name: "beard", length: 15 },
 	{ name: "moustache", length: 16 },
 	{ name: "goatee", length: 14 },
 	{ name: "mole", length: 2 },
-	{ name: "eyeShadow", length: 4 },
+	{ name: "eyeShadow", length: 4, defaultColor: 139 },
 	{ name: "blush", length: 8 },
 ];
 
@@ -22,8 +22,13 @@ export default function OtherTab({ instructions }: Props) {
 	const [tab, setTab] = useState(0);
 	const [isFlipped, setIsFlipped] = useState(false);
 
-	// One type/color state per tab
-	const [colors, setColors] = useState<number[]>([0, 0, 0, 0, 0, 0, 139, 0]);
+	const [colors, setColors] = useState<number[]>(() =>
+		TABS.map((t) => {
+			const entry = instructions.current.other[t.name];
+			const color = "color" in entry ? entry.color : null;
+			return color ?? t.defaultColor ?? 0;
+		}),
+	);
 
 	const currentTab = TABS[tab];
 

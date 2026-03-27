@@ -126,7 +126,7 @@ input[type="range"] {
 
 /* Track */
 input[type="range"]::-webkit-slider-runnable-track {
-	@apply h-2 bg-orange-200 border-2 border-orange-400 rounded-full;
+	@apply h-1 bg-orange-200 border-2 border-orange-400 rounded-full;
 }
 
 input[type="range"]::-moz-range-track {

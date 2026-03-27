@@ -8,8 +8,8 @@ interface Props {
 }
 
 export default function GlassesTab({ instructions }: Props) {
-	const [ringColor, setRingColor] = useState(133);
-	const [shadesColor, setShadesColor] = useState(133);
+	const [ringColor, setRingColor] = useState(instructions.current.glasses.ringColor ?? 133);
+	const [shadesColor, setShadesColor] = useState(instructions.current.glasses.shadesColor ?? 133);
 
 	return (
 		<>

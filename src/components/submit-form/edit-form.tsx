@@ -7,6 +7,8 @@ import { FileWithPath } from "react-dropzone";
 import { Mii } from "@prisma/client";
 
 import { nameSchema, tagsSchema } from "@/lib/schemas";
+import { defaultInstructions, minifyInstructions } from "@/lib/switch";
+import { SwitchMiiInstructions } from "@/types";
 
 import TagSelector from "../tag-selector";
 import ImageList from "./image-list";
@@ -14,6 +16,8 @@ import LikeButton from "../like-button";
 import Carousel from "../carousel";
 import SubmitButton from "../submit-button";
 import Dropzone from "../dropzone";
+import MiiEditor from "./mii-editor";
+import SwitchSubmitTutorialButton from "../tutorial/switch-submit";
 
 interface Props {
 	mii: Mii;
@@ -40,6 +44,8 @@ export default function EditForm({ mii, likes }: Props) {
 	const [description, setDescription] = useState(mii.description);
 	const hasFilesChanged = useRef(false);
 
+	const instructions = useRef<SwitchMiiInstructions>({ ...defaultInstructions, ...(mii.instructions as object as Partial<SwitchMiiInstructions>) });
+
 	const handleSubmit = async () => {
 		// Validate before sending request
 		const nameValidation = nameSchema.safeParse(name);
@@ -58,6 +64,10 @@ export default function EditForm({ mii, likes }: Props) {
 		if (name != mii.name) formData.append("name", name);
 		if (tags != mii.tags) formData.append("tags", JSON.stringify(tags));
 		if (description && description != mii.description) formData.append("description", description);
+		console.log(minifyInstructions(structuredClone(instructions.current)));
+		console.log(mii.instructions);
+		if (minifyInstructions(structuredClone(instructions.current)) !== (mii.instructions as object))
+			formData.append("instructions", JSON.stringify(instructions.current));
 
 		if (hasFilesChanged.current) {
 			files.forEach((file, index) => {
@@ -179,8 +189,22 @@ export default function EditForm({ mii, likes }: Props) {
 					/>
 				</div>
 
+				{/* Instructions (Switch only) */}
+				{mii.platform === "SWITCH" && (
+					<>
+						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8">
+							<hr className="grow border-zinc-300" />
+							<span>Instructions</span>
+							<hr className="grow border-zinc-300" />
+						</div>
+
+						<MiiEditor instructions={instructions} />
+						<SwitchSubmitTutorialButton />
+					</>
+				)}
+
 				{/* Separator */}
-				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8">
 					<hr className="grow border-zinc-300" />
 					<span>Custom images</span>
 					<hr className="grow border-zinc-300" />

@@ -1,3 +1,78 @@
+import { SwitchMiiInstructions } from "@/types";
+
+export function minifyInstructions(instructions: Partial<SwitchMiiInstructions>) {
+	const DEFAULT_ZERO_FIELDS = new Set(["height", "distance", "rotation", "size", "stretch"]);
+
+	function minify(object: Partial<SwitchMiiInstructions>): Partial<SwitchMiiInstructions> {
+		for (const key in object) {
+			const value = object[key as keyof SwitchMiiInstructions];
+
+			if (!value || (DEFAULT_ZERO_FIELDS.has(key) && value === 0)) {
+				delete object[key as keyof SwitchMiiInstructions];
+				continue;
+			}
+
+			if (typeof value === "object" && !Array.isArray(value)) {
+				minify(value as Partial<SwitchMiiInstructions>);
+
+				if (Object.keys(value).length === 0) {
+					delete object[key as keyof SwitchMiiInstructions];
+				}
+			}
+		}
+
+		return object;
+	}
+
+	return minify(instructions);
+}
+
+export const defaultInstructions: SwitchMiiInstructions = {
+	head: { skinColor: null },
+	hair: {
+		color: null,
+		subColor: null,
+		subColor2: null,
+		style: null,
+		isFlipped: false,
+	},
+	eyebrows: { color: null, height: null, distance: null, rotation: null, size: null, stretch: null },
+	eyes: {
+		main: { color: null, height: null, distance: null, rotation: null, size: null, stretch: null },
+		eyelashesTop: { height: null, distance: null, rotation: null, size: null, stretch: null },
+		eyelashesBottom: { height: null, distance: null, rotation: null, size: null, stretch: null },
+		eyelidTop: { height: null, distance: null, rotation: null, size: null, stretch: null },
+		eyelidBottom: { height: null, distance: null, rotation: null, size: null, stretch: null },
+		eyeliner: { color: null },
+		pupil: { height: null, distance: null, rotation: null, size: null, stretch: null },
+	},
+	nose: { height: null, size: null },
+	lips: { color: null, height: null, rotation: null, size: null, stretch: null, hasLipstick: false },
+	ears: { height: null, size: null },
+	glasses: { ringColor: null, shadesColor: null, height: null, size: null, stretch: null },
+	other: {
+		wrinkles1: { height: null, distance: null, size: null, stretch: null },
+		wrinkles2: { height: null, distance: null, size: null, stretch: null },
+		beard: { color: null },
+		moustache: { color: null, height: null, isFlipped: false, size: null, stretch: null },
+		goatee: { color: null },
+		mole: { color: null, height: null, distance: null, size: null },
+		eyeShadow: { color: null, height: null, distance: null, size: null, stretch: null },
+		blush: { color: null, height: null, distance: null, size: null, stretch: null },
+	},
+	height: null,
+	weight: null,
+	datingPreferences: [],
+	birthday: {
+		day: null,
+		month: null,
+		age: null,
+		dontAge: false,
+	},
+	voice: { speed: null, pitch: null, depth: null, delivery: null, tone: null },
+	personality: { movement: null, speech: null, energy: null, thinking: null, overall: null },
+};
+
 export const COLORS: string[] = [
 	// Outside
 	"000000",

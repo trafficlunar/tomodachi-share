@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import Tutorial from ".";
 
-export default function SubmitTutorialButton() {
+export default function SwitchSubmitTutorialButton() {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (

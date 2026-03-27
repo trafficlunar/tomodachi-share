@@ -11,9 +11,11 @@ import { profanity } from "@2toad/profanity";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { idSchema, nameSchema, tagsSchema } from "@/lib/schemas";
+import { idSchema, nameSchema, switchMiiInstructionsSchema, tagsSchema } from "@/lib/schemas";
 import { generateMetadataImage, validateImage } from "@/lib/images";
 import { RateLimit } from "@/lib/rate-limit";
+import { SwitchMiiInstructions } from "@/types";
+import { minifyInstructions } from "@/lib/switch";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
@@ -21,6 +23,7 @@ const editSchema = z.object({
 	name: nameSchema.optional(),
 	tags: tagsSchema.optional(),
 	description: z.string().trim().max(256).optional(),
+	instructions: switchMiiInstructionsSchema,
 	image1: z.union([z.instanceof(File), z.any()]).optional(),
 	image2: z.union([z.instanceof(File), z.any()]).optional(),
 	image3: z.union([z.instanceof(File), z.any()]).optional(),
@@ -31,7 +34,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
-	const rateLimit = new RateLimit(request, 1); // no grouped pathname; edit each mii 1 time a minute
+	const rateLimit = new RateLimit(request, 3); // no grouped pathname; edit each mii 1 time a minute
 	const check = await rateLimit.handle();
 	if (check) return check;
 
@@ -63,17 +66,22 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		return rateLimit.sendResponse({ error: "Invalid JSON in tags" }, 400);
 	}
 
+	let minifiedInstructions: Partial<SwitchMiiInstructions> | undefined;
+	if (mii.platform === "SWITCH")
+		minifiedInstructions = minifyInstructions(JSON.parse((formData.get("instructions") as string) ?? "{}") as SwitchMiiInstructions);
+
 	const parsed = editSchema.safeParse({
 		name: formData.get("name") ?? undefined,
 		tags: rawTags,
 		description: formData.get("description") ?? undefined,
+		instructions: minifiedInstructions,
 		image1: formData.get("image1"),
 		image2: formData.get("image2"),
 		image3: formData.get("image3"),
 	});
 
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
-	const { name, tags, description, image1, image2, image3 } = parsed.data;
+	const { name, tags, description, instructions, image1, image2, image3 } = parsed.data;
 
 	// Validate image files
 	const images: File[] = [];
@@ -91,9 +99,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
 	// Edit Mii in database
 	const updateData: Prisma.MiiUpdateInput = {};
-	if (name !== undefined) updateData.name = profanity.censor(name); // Censor potential inappropriate words
-	if (tags !== undefined) updateData.tags = tags.map((t) => profanity.censor(t)); // Same here
+	if (name !== undefined) updateData.name = profanity.censor(name); // Censor potentially inappropriate words
+	if (tags !== undefined) updateData.tags = tags.map((t) => profanity.censor(t));
 	if (description !== undefined) updateData.description = profanity.censor(description);
+	if (instructions !== undefined) updateData.instructions = instructions;
 	if (images.length > 0) updateData.imageCount = images.length;
 
 	if (Object.keys(updateData).length == 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);

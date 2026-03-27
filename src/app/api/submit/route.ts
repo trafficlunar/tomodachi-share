@@ -20,6 +20,7 @@ import Mii from "@/lib/mii.js/mii";
 import { ThreeDsTomodachiLifeMii } from "@/lib/three-ds-tomodachi-life-mii";
 
 import { SwitchMiiInstructions } from "@/types";
+import { minifyInstructions } from "@/lib/switch";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
@@ -94,32 +95,8 @@ export async function POST(request: NextRequest) {
 
 	// Minify instructions to save space and improve user experience
 	let minifiedInstructions: Partial<SwitchMiiInstructions> | undefined;
-	if (formData.get("platform") === "SWITCH") {
-		const DEFAULT_ZERO_FIELDS = new Set(["height", "distance", "rotation", "size", "stretch"]);
-
-		function minify(object: Partial<SwitchMiiInstructions>): Partial<SwitchMiiInstructions> {
-			for (const key in object) {
-				const value = object[key as keyof SwitchMiiInstructions];
-
-				if (!value || (DEFAULT_ZERO_FIELDS.has(key) && value === 0)) {
-					delete object[key as keyof SwitchMiiInstructions];
-					continue;
-				}
-
-				if (typeof value === "object" && !Array.isArray(value)) {
-					minify(value as Partial<SwitchMiiInstructions>);
-
-					if (Object.keys(value).length === 0) {
-						delete object[key as keyof SwitchMiiInstructions];
-					}
-				}
-			}
-
-			return object;
-		}
-
-		minifiedInstructions = minify(JSON.parse((formData.get("instructions") as string) ?? "{}") as SwitchMiiInstructions);
-	}
+	if (formData.get("platform") === "SWITCH")
+		minifiedInstructions = minifyInstructions(JSON.parse((formData.get("instructions") as string) ?? "{}") as SwitchMiiInstructions);
 
 	// Parse and check all submission info
 	const parsed = submitSchema.safeParse({

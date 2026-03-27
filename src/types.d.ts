@@ -143,6 +143,12 @@ interface SwitchMiiInstructions {
 	height: number | null;
 	weight: number | null;
 	datingPreferences: MiiGender[];
+	birthday: {
+		day: number | null;
+		month: number | null;
+		age: number | null; // TODO: update accordingly with mii creation date
+		dontAge: boolean;
+	};
 	voice: {
 		speed: number | null;
 		pitch: number | null;

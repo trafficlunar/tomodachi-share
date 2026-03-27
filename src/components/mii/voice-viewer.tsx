@@ -15,23 +15,26 @@ export default function VoiceViewer({ data, onClick, onClickTone }: Props) {
 	return (
 		<div className="flex flex-col gap-1">
 			{VOICE_SETTINGS.map((label) => (
-				<div key={label} className="flex gap-3">
+				<div key={label} className="relative flex gap-3">
 					<label htmlFor={label} className="text-sm w-14">
 						{label}
 					</label>
-					<input
-						type="range"
-						name={label}
-						className="grow"
-						min={0}
-						max={100}
-						step={1}
-						value={data[label as keyof typeof data] ?? 50}
-						disabled={!onClick}
-						onChange={(e) => {
-							if (onClick) onClick(e, label);
-						}}
-					/>
+					<div className="relative h-5 flex justify-center items-center">
+						<input
+							type="range"
+							name={label}
+							className="grow z-10"
+							min={0}
+							max={50}
+							step={1}
+							value={data[label as keyof typeof data] ?? 25}
+							disabled={!onClick}
+							onChange={(e) => {
+								if (onClick) onClick(e, label);
+							}}
+						/>
+						<div className="absolute h-4 w-1.5 rounded bg-orange-400 z-0"></div>
+					</div>
 				</div>
 			))}
 
