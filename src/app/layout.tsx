@@ -93,14 +93,14 @@ export default function RootLayout({
 				)}
 
 				<Providers>
-					<Suspense fallback={<div>Loading header...</div>}>
-						<SessionProvider>
+					<SessionProvider>
+						<Suspense fallback={<div>Loading header...</div>}>
 							<Header />
-						</SessionProvider>
-					</Suspense>
-					<AdminBanner />
-					<main className="px-4 py-8 max-w-7xl w-full grow flex flex-col">{children}</main>
-					<Footer />
+						</Suspense>
+						<AdminBanner />
+						<main className="px-4 py-8 max-w-7xl w-full grow flex flex-col">{children}</main>
+						<Footer />
+					</SessionProvider>
 				</Providers>
 			</body>
 		</html>

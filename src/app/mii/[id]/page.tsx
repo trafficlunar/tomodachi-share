@@ -316,7 +316,7 @@ export default async function MiiPage({ params }: Props) {
 								{/* Submission name */}
 								<h1 className="text-4xl font-extrabold wrap-break-word text-amber-700">{mii.name}</h1>
 								{/* Like button */}
-								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={(mii.likedBy ?? []).length > 0} isLoggedIn={session?.user != null} big />
+								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={(mii.likedBy ?? []).length > 0} big />
 							</div>
 							{/* Tags */}
 							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">

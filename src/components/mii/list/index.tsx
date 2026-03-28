@@ -224,7 +224,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 							</div>
 
 							<div className="mt-auto grid grid-cols-2 items-center">
-								<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} isLoggedIn={session?.user != null} abbreviate />
+								<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} abbreviate />
 
 								{!userId && (
 									<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis">
