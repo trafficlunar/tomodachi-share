@@ -25,6 +25,25 @@ interface Props {
 	likes: number;
 }
 
+function deepMerge<T>(target: T, source: Partial<T>): T {
+	const output = structuredClone(target);
+
+	if (typeof source !== "object" || source === null) return output;
+
+	for (const key in source) {
+		const sourceValue = source[key];
+		const targetValue = (output as any)[key];
+
+		if (typeof sourceValue === "object" && sourceValue !== null && !Array.isArray(sourceValue)) {
+			(output as any)[key] = deepMerge(targetValue, sourceValue);
+		} else {
+			(output as any)[key] = sourceValue;
+		}
+	}
+
+	return output;
+}
+
 export default function EditForm({ mii, likes }: Props) {
 	const [files, setFiles] = useState<FileWithPath[]>([]);
 
@@ -46,7 +65,7 @@ export default function EditForm({ mii, likes }: Props) {
 	const [makeup, setMakeup] = useState<MiiMakeup>(mii.makeup ?? "PARTIAL");
 	const hasFilesChanged = useRef(false);
 
-	const instructions = useRef<SwitchMiiInstructions>({ ...defaultInstructions, ...(mii.instructions as object as Partial<SwitchMiiInstructions>) });
+	const instructions = useRef<SwitchMiiInstructions>(deepMerge(defaultInstructions, (mii.instructions as object) ?? {}));
 
 	const handleSubmit = async () => {
 		// Validate before sending request
