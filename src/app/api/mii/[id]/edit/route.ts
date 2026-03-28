@@ -22,7 +22,7 @@ const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 const editSchema = z.object({
 	name: nameSchema.optional(),
 	tags: tagsSchema.optional(),
-	description: z.string().trim().max(256).optional(),
+	description: z.string().trim().max(512).optional(),
 	makeup: z.enum(MiiMakeup).optional(),
 	instructions: switchMiiInstructionsSchema,
 	image1: z.union([z.instanceof(File), z.any()]).optional(),

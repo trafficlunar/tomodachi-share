@@ -13,7 +13,7 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
-  description   String?   @db.VarChar(256)
+  description   String?   @db.VarChar(512)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -73,7 +73,7 @@ model Mii {
   name        String      @db.VarChar(64)
   imageCount  Int         @default(0)
   tags        String[]
-  description String?     @db.VarChar(256)
+  description String?     @db.VarChar(512)
   platform    MiiPlatform @default(THREE_DS)
 
   instructions Json?

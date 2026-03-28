@@ -182,7 +182,7 @@ export default function EditForm({ mii, likes }: Props) {
 					</label>
 					<textarea
 						rows={5}
-						maxLength={256}
+						maxLength={512}
 						placeholder="(optional) Type a description..."
 						className="pill input rounded-xl! resize-none col-span-2 text-sm"
 						value={description ?? ""}

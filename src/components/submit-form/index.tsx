@@ -276,7 +276,7 @@ export default function SubmitForm() {
 					<textarea
 						id="description"
 						rows={5}
-						maxLength={256}
+						maxLength={512}
 						placeholder="(optional) Type a description..."
 						className="pill input rounded-xl! resize-none col-span-2 text-sm"
 						value={description}
@@ -285,7 +285,7 @@ export default function SubmitForm() {
 				</div>
 
 				{/* Gender (switch only) */}
-				<div className={`w-full grid grid-cols-3 items-start ${platform === "SWITCH" ? "" : "hidden"}`}>
+				<div className={`w-full grid grid-cols-3 items-start z-10 ${platform === "SWITCH" ? "" : "hidden"}`}>
 					<label htmlFor="gender" className="font-semibold py-2">
 						Gender
 					</label>
@@ -429,7 +429,7 @@ export default function SubmitForm() {
 					<div className="flex flex-col items-center gap-2">
 						<MiiEditor instructions={instructions} />
 						<SwitchSubmitTutorialButton />
-						<span className="text-xs text-zinc-400 text-center px-32">
+						<span className="text-xs text-zinc-400 text-center px-32 max-sm:px-8">
 							Mii editor may be inaccurate. Instructions are recommended, but not required - you do not have to add every instruction.
 						</span>
 					</div>

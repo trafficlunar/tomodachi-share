@@ -29,7 +29,7 @@ const submitSchema = z
 		platform: z.enum(MiiPlatform).default("THREE_DS"),
 		name: nameSchema,
 		tags: tagsSchema,
-		description: z.string().trim().max(256).optional(),
+		description: z.string().trim().max(512).optional(),
 
 		// Switch
 		gender: z.enum(MiiGender).default("MALE"),
