@@ -1,3 +1,4 @@
+import { Icon } from "@iconify/react";
 import { useState } from "react";
 
 interface Props {
@@ -5,120 +6,87 @@ interface Props {
 }
 
 export default function NumberInputs({ target }: Props) {
-	const [height, setHeight] = useState(0);
-	const [distance, setDistance] = useState(0);
-	const [rotation, setRotation] = useState(0);
-	const [size, setSize] = useState(0);
-	const [stretch, setStretch] = useState(0);
+	const [values, setValues] = useState<Record<string, number>>({
+		height: 0,
+		distance: 0,
+		rotation: 0,
+		size: 0,
+		stretch: 0,
+	});
 
 	if (!target) return null;
 
 	return (
 		<div className="grid grid-cols-2 gap-x-4 h-min w-fit">
-			{target.height !== undefined && (
-				<div>
-					<label htmlFor="height" className="text-xs">
-						Height
-					</label>
-					<input
-						type="number"
-						id="height"
-						min={-15}
-						max={15}
-						value={height}
-						onChange={(e) => {
-							const value = Number(e.target.value);
-							setHeight(value);
-							target.height = value;
-						}}
-						className="pill input text-sm py-1! px-3! w-full"
-					/>
-				</div>
+			{["Height", "Distance", "Rotation", "Size", "Stretch"].map(
+				(label) =>
+					target[label.toLowerCase()] !== undefined && (
+						<NumberField
+							key={label}
+							label={label}
+							value={values[label.toLowerCase()]}
+							onChange={(value) => {
+								const field = label.toLowerCase();
+								setValues((prev) => ({ ...prev, [field]: value }));
+								target[field] = value;
+							}}
+						/>
+					),
 			)}
+		</div>
+	);
+}
 
-			{target.distance !== undefined && (
-				<div>
-					<label htmlFor="distance" className="text-xs">
-						Distance
-					</label>
-					<input
-						type="number"
-						id="distance"
-						min={-15}
-						max={15}
-						value={distance}
-						onChange={(e) => {
-							const value = Number(e.target.value);
-							setDistance(value);
-							target.distance = value;
-						}}
-						className="pill input text-sm py-1! px-3! w-full"
-					/>
-				</div>
-			)}
+interface NumberFieldProps {
+	label: string;
+	value: number;
+	onChange: (value: number) => void;
+}
 
-			{target.rotation !== undefined && (
-				<div>
-					<label htmlFor="rotation" className="text-xs">
-						Rotation
-					</label>
-					<input
-						type="number"
-						id="rotation"
-						min={-15}
-						max={15}
-						value={rotation}
-						onChange={(e) => {
-							const value = Number(e.target.value);
-							setRotation(value);
-							target.rotation = value;
-						}}
-						className="pill input text-sm py-1! px-3! w-full"
-					/>
-				</div>
-			)}
+function NumberField({ label, value, onChange }: NumberFieldProps) {
+	const MIN = -15;
+	const MAX = 15;
 
-			{target.size !== undefined && (
-				<div>
-					<label htmlFor="size" className="text-xs">
-						Size
-					</label>
-					<input
-						type="number"
-						id="size"
-						min={-15}
-						max={15}
-						value={size}
-						onChange={(e) => {
-							const value = Number(e.target.value);
-							setSize(value);
-							target.size = value;
-						}}
-						className="pill input text-sm py-1! px-3! w-full"
-					/>
-				</div>
-			)}
+	const decrement = () => onChange(Math.max(MIN, value - 1));
+	const increment = () => onChange(Math.min(MAX, value + 1));
 
-			{target.stretch !== undefined && (
-				<div>
-					<label htmlFor="stretch" className="text-xs">
-						Stretch
-					</label>
-					<input
-						type="number"
-						id="stretch"
-						min={-15}
-						max={15}
-						value={stretch}
-						onChange={(e) => {
-							const value = Number(e.target.value);
-							setStretch(value);
-							target.stretch = value;
-						}}
-						className="pill input text-sm py-1! px-3! w-full"
-					/>
-				</div>
-			)}
+	return (
+		<div>
+			<label htmlFor={label} className="text-xs">
+				{label}
+			</label>
+			<div className="pill input text-sm py-1! px-2! w-full flex items-center gap-1">
+				<button
+					type="button"
+					onClick={decrement}
+					disabled={value <= MIN}
+					className="cursor-pointer flex items-center justify-center shrink-0 disabled:opacity-30"
+					aria-label={`Decrease ${label}`}
+				>
+					<Icon icon="mdi:minus" width="16" height="16" />
+				</button>
+				<input
+					type="number"
+					id={label}
+					min={MIN}
+					max={MAX}
+					value={value}
+					onChange={(e) => {
+						const val = Math.min(MAX, Math.max(MIN, Number(e.target.value)));
+						onChange(val);
+					}}
+					className="w-full text-center bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+				/>
+				<button
+					type="button"
+					onClick={increment}
+					disabled={value >= MAX}
+					className="cursor-pointer flex items-center justify-center shrink-0 disabled:opacity-30"
+					aria-label={`Increase ${label}`}
+				>
+					<Icon icon="mdi:plus" width="16" height="16" />
+				</button>
+			</div>
 		</div>
 	);
 }
