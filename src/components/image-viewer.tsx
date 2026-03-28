@@ -12,11 +12,12 @@ interface Props {
 	alt: string;
 	width: number;
 	height: number;
+	unoptimized?: boolean;
 	className?: string;
 	images?: string[];
 }
 
-export default function ImageViewer({ src, alt, width, height, className, images = [] }: Props) {
+export default function ImageViewer({ src, alt, width, height, unoptimized = false, className, images = [] }: Props) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -73,7 +74,16 @@ export default function ImageViewer({ src, alt, width, height, className, images
 	return (
 		<>
 			{/* not inserting pixelated image-rendering here because i thought it looked a bit weird */}
-			<Image src={src} alt={alt} width={width} height={height} onClick={() => setIsOpen(true)} className={`cursor-pointer ${className}`} />
+			<Image
+				src={src}
+				alt={alt}
+				width={width}
+				height={height}
+				unoptimized={unoptimized}
+				loading="lazy"
+				onClick={() => setIsOpen(true)}
+				className={`cursor-pointer ${className}`}
+			/>
 
 			{isOpen &&
 				createPortal(
@@ -104,6 +114,7 @@ export default function ImageViewer({ src, alt, width, height, className, images
 											alt={alt}
 											width={896}
 											height={896}
+											unoptimized
 											priority={index === selectedIndex}
 											loading={Math.abs(index - selectedIndex) <= 1 ? "eager" : "lazy"}
 											className="max-w-full max-h-full object-contain drop-shadow-lg"

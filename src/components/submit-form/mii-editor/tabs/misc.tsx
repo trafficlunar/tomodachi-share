@@ -122,7 +122,7 @@ export default function HeadTab({ instructions }: Props) {
 
 						<VoiceViewer
 							data={voice}
-							onClick={(e, label) => {
+							onChange={(e, label) => {
 								setVoice((p) => ({ ...p, [label]: e.target.valueAsNumber }));
 								instructions.current.voice[label as keyof typeof voice] = e.target.valueAsNumber;
 							}}

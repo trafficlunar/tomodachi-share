@@ -5,13 +5,13 @@ import { ChangeEvent } from "react";
 
 interface Props {
 	data: SwitchMiiInstructions["voice"];
-	onClick?: (e: ChangeEvent<HTMLInputElement, HTMLInputElement>, label: string) => void;
+	onChange?: (e: ChangeEvent<HTMLInputElement, HTMLInputElement>, label: string) => void;
 	onClickTone?: (i: number) => void;
 }
 
 const VOICE_SETTINGS: string[] = ["Speed", "Pitch", "Depth", "Delivery"];
 
-export default function VoiceViewer({ data, onClick, onClickTone }: Props) {
+export default function VoiceViewer({ data, onChange, onClickTone }: Props) {
 	return (
 		<div className="flex flex-col gap-1">
 			{VOICE_SETTINGS.map((label) => (
@@ -28,9 +28,9 @@ export default function VoiceViewer({ data, onClick, onClickTone }: Props) {
 							max={50}
 							step={1}
 							value={data[label as keyof typeof data] ?? 25}
-							disabled={!onClick}
+							disabled={!onChange}
 							onChange={(e) => {
-								if (onClick) onClick(e, label);
+								if (onChange) onChange(e, label);
 							}}
 						/>
 						<div className="absolute h-4 w-1.5 rounded bg-orange-400 z-0"></div>
@@ -50,7 +50,7 @@ export default function VoiceViewer({ data, onClick, onClickTone }: Props) {
 							onClick={() => {
 								if (onClickTone) onClickTone(i);
 							}}
-							className={`transition-colors duration-100 rounded-xl ${data.tone === i ? "bg-orange-400!" : ""} ${onClick ? "hover:bg-orange-300 cursor-pointer" : ""}`}
+							className={`transition-colors duration-100 rounded-xl ${data.tone === i ? "bg-orange-400!" : ""} ${onClickTone ? "hover:bg-orange-300 cursor-pointer" : ""}`}
 						>
 							{i + 1}
 						</button>

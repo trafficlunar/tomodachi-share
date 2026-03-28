@@ -4,7 +4,34 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
 	output: "standalone",
 	images: {
-		unoptimized: true,
+		localPatterns: [
+			{
+				pathname: "/mii/*/image",
+			},
+			{
+				pathname: "/profile/*/picture",
+			},
+			{
+				pathname: "/tutorial/**",
+			},
+			{
+				pathname: "/guest.webp",
+			},
+		],
+		remotePatterns: [
+			{
+				hostname: "avatars.githubusercontent.com",
+			},
+			{
+				hostname: "cdn.discordapp.com",
+			},
+			{
+				hostname: "studio.mii.nintendo.com",
+			},
+			{
+				hostname: "*.googleusercontent.com",
+			},
+		],
 	},
 };
 
