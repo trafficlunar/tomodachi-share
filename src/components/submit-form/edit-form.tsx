@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FileWithPath } from "react-dropzone";
-import { Mii } from "@prisma/client";
+import { Mii, MiiMakeup } from "@prisma/client";
 
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 import { defaultInstructions, minifyInstructions } from "@/lib/switch";
@@ -18,6 +18,7 @@ import SubmitButton from "../submit-button";
 import Dropzone from "../dropzone";
 import MiiEditor from "./mii-editor";
 import SwitchSubmitTutorialButton from "../tutorial/switch-submit";
+import { Icon } from "@iconify/react";
 
 interface Props {
 	mii: Mii;
@@ -42,6 +43,7 @@ export default function EditForm({ mii, likes }: Props) {
 	const [name, setName] = useState(mii.name);
 	const [tags, setTags] = useState(mii.tags);
 	const [description, setDescription] = useState(mii.description);
+	const [makeup, setMakeup] = useState<MiiMakeup>(mii.makeup ?? "NONE");
 	const hasFilesChanged = useRef(false);
 
 	const instructions = useRef<SwitchMiiInstructions>({ ...defaultInstructions, ...(mii.instructions as object as Partial<SwitchMiiInstructions>) });
@@ -64,6 +66,7 @@ export default function EditForm({ mii, likes }: Props) {
 		if (name != mii.name) formData.append("name", name);
 		if (tags != mii.tags) formData.append("tags", JSON.stringify(tags));
 		if (description && description != mii.description) formData.append("description", description);
+		if (makeup != mii.makeup) formData.append("makeup", makeup);
 		if (minifyInstructions(structuredClone(instructions.current)) !== (mii.instructions as object))
 			formData.append("instructions", JSON.stringify(instructions.current));
 
@@ -190,6 +193,53 @@ export default function EditForm({ mii, likes }: Props) {
 				{/* Instructions (Switch only) */}
 				{mii.platform === "SWITCH" && (
 					<>
+						<div className="w-full grid grid-cols-3 items-start">
+							<label htmlFor="makeup" className="font-semibold py-2">
+								Makeup
+							</label>
+
+							<div className="col-span-2 flex gap-1">
+								{/* Full Makeup */}
+								<button
+									type="button"
+									onClick={() => setMakeup("FULL")}
+									aria-label="Full makeup"
+									data-tooltip="Full Makeup"
+									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${
+										makeup === "FULL" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+									}`}
+								>
+									<Icon icon="mdi:palette" className="text-pink-400" />
+								</button>
+
+								{/* Partial Makeup */}
+								<button
+									type="button"
+									onClick={() => setMakeup("PARTIAL")}
+									aria-label="Partial makeup"
+									data-tooltip="Partial Makeup"
+									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400! ${
+										makeup === "PARTIAL" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+									}`}
+								>
+									<Icon icon="mdi:lipstick" className="text-purple-400" />
+								</button>
+
+								{/* No Makeup */}
+								<button
+									type="button"
+									onClick={() => setMakeup("NONE")}
+									aria-label="No makeup"
+									data-tooltip="No Makeup"
+									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-gray-400! after:border-gray-400! before:border-b-gray-400! ${
+										makeup === "NONE" ? "bg-gray-200 border-gray-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+									}`}
+								>
+									<Icon icon="codex:cross" className="text-gray-400" />
+								</button>
+							</div>
+						</div>
+
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8">
 							<hr className="grow border-zinc-300" />
 							<span>Instructions</span>
