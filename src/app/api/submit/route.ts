@@ -8,7 +8,7 @@ import sharp from "sharp";
 
 import qrcode from "qrcode-generator";
 import { profanity } from "@2toad/profanity";
-import { MiiGender, MiiPlatform } from "@prisma/client";
+import { MiiGender, MiiMakeup, MiiPlatform } from "@prisma/client";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -33,6 +33,7 @@ const submitSchema = z
 
 		// Switch
 		gender: z.enum(MiiGender).default("MALE"),
+		makeup: z.enum(MiiMakeup).default("NONE"),
 		miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
 		miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
 		instructions: switchMiiInstructionsSchema,
@@ -106,6 +107,7 @@ export async function POST(request: NextRequest) {
 		description: formData.get("description"),
 
 		gender: formData.get("gender") ?? undefined, // ZOD MOMENT
+		makeup: formData.get("makeup") ?? undefined,
 		miiPortraitImage: formData.get("miiPortraitImage"),
 		miiFeaturesImage: formData.get("miiFeaturesImage"),
 		instructions: minifiedInstructions,
@@ -139,6 +141,7 @@ export async function POST(request: NextRequest) {
 		description: uncensoredDescription,
 		qrBytesRaw,
 		gender,
+		makeup,
 		miiPortraitImage,
 		miiFeaturesImage,
 		image1,
@@ -209,6 +212,7 @@ export async function POST(request: NextRequest) {
 					}
 				: {
 						instructions: minifiedInstructions,
+						makeup: makeup ?? "NONE",
 					}),
 		},
 	});

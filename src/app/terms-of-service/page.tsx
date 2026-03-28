@@ -10,7 +10,7 @@ export default function PrivacyPage() {
 		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl p-6">
 			<h1 className="text-2xl font-bold">Terms of Service</h1>
 			<h2 className="font-light">
-				<strong className="font-medium">Effective Date:</strong> May 02, 2025
+				<strong className="font-medium">Effective Date:</strong> March 26, 2026
 			</h2>
 
 			<hr className="border-black/20 mt-1 mb-4" />
@@ -41,6 +41,7 @@ export default function PrivacyPage() {
 							<li>No impersonation of others.</li>
 							<li>No malware, malicious links, or phishing content.</li>
 							<li>No harassment, hate speech, threats, or bullying towards others.</li>
+							<li>Miis must be high quality: for example, not following all instructions on the submit form correctly.</li>
 							<li>Avoid using inappropriate language. Profanity may be automatically censored.</li>
 							<li>No use of automated scripts, bots, or scrapers to access or interact with the site.</li>
 						</ul>

@@ -7,7 +7,7 @@ import { FileWithPath } from "react-dropzone";
 import { Icon } from "@iconify/react";
 
 import qrcode from "qrcode-generator";
-import { MiiGender, MiiPlatform } from "@prisma/client";
+import { MiiGender, MiiMakeup, MiiPlatform } from "@prisma/client";
 
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 import { convertQrCode } from "@/lib/qr-codes";
@@ -52,6 +52,7 @@ export default function SubmitForm() {
 
 	const [platform, setPlatform] = useState<MiiPlatform>("SWITCH");
 	const [gender, setGender] = useState<MiiGender>("MALE");
+	const [makeup, setMakeup] = useState<MiiMakeup>("NONE");
 	const instructions = useRef<SwitchMiiInstructions>(defaultInstructions);
 
 	const [error, setError] = useState<string | undefined>(undefined);
@@ -99,6 +100,7 @@ export default function SubmitForm() {
 			}
 
 			formData.append("gender", gender);
+			formData.append("makeup", makeup);
 			formData.append("miiPortraitImage", portraitBlob);
 			formData.append("miiFeaturesImage", featuresBlob);
 			formData.append("instructions", JSON.stringify(instructions.current));
@@ -322,6 +324,54 @@ export default function SubmitForm() {
 							}`}
 						>
 							<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
+						</button>
+					</div>
+				</div>
+
+				{/* Makeup (switch only) */}
+				<div className={`w-full grid grid-cols-3 items-start ${platform === "SWITCH" ? "" : "hidden"}`}>
+					<label htmlFor="makeup" className="font-semibold py-2">
+						Makeup
+					</label>
+
+					<div className="col-span-2 flex gap-1">
+						{/* Full Makeup */}
+						<button
+							type="button"
+							onClick={() => setMakeup("FULL")}
+							aria-label="Full makeup"
+							data-tooltip="Full Makeup"
+							className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${
+								makeup === "FULL" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+							}`}
+						>
+							<Icon icon="mdi:palette" className="text-pink-400" />
+						</button>
+
+						{/* Partial Makeup */}
+						<button
+							type="button"
+							onClick={() => setMakeup("PARTIAL")}
+							aria-label="Partial makeup"
+							data-tooltip="Partial Makeup"
+							className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400! ${
+								makeup === "PARTIAL" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+							}`}
+						>
+							<Icon icon="mdi:lipstick" className="text-purple-400" />
+						</button>
+
+						{/* No Makeup */}
+						<button
+							type="button"
+							onClick={() => setMakeup("NONE")}
+							aria-label="No makeup"
+							data-tooltip="No Makeup"
+							className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-gray-400! after:border-gray-400! before:border-b-gray-400! ${
+								makeup === "NONE" ? "bg-gray-200 border-gray-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+							}`}
+						>
+							<Icon icon="codex:cross" className="text-gray-400" />
 						</button>
 					</div>
 				</div>

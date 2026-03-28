@@ -16,7 +16,7 @@ import satori, { Font } from "satori";
 import { Mii } from "@prisma/client";
 
 const MIN_IMAGE_DIMENSIONS = [128, 128];
-const MAX_IMAGE_DIMENSIONS = [2000, 2000];
+const MAX_IMAGE_DIMENSIONS = [8000, 8000];
 const MAX_IMAGE_SIZE = 8 * 1024 * 1024; // 8 MB
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
@@ -49,7 +49,7 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 			metadata.height < MIN_IMAGE_DIMENSIONS[1] ||
 			metadata.height > MAX_IMAGE_DIMENSIONS[1]
 		) {
-			return { valid: false, error: "Image dimensions are invalid. Resolution must be between 128x128 and 2000x2000" };
+			return { valid: false, error: "Image dimensions are invalid. Resolution must be between 128x128 and 8000x8000" };
 		}
 
 		// Check for inappropriate content

@@ -1,7 +1,6 @@
-import { headers } from "next/headers";
 import Link from "next/link";
 
-import { MiiGender, MiiPlatform, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { Icon } from "@iconify/react";
 
 import crypto from "crypto";
@@ -29,7 +28,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { q: query, sort, tags, exclude, platform, gender, allowCopying, page = 1, limit = 24, seed } = parsed.data;
+	const { q: query, sort, tags, exclude, platform, gender, makeup, allowCopying, page = 1, limit = 24, seed } = parsed.data;
 
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
@@ -58,6 +57,8 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		...(gender && { gender: { equals: gender } }),
 		// Allow Copying
 		...(allowCopying && { allowedCopying: true }),
+		// Makeup
+		...(makeup && { makeup: { equals: makeup } }),
 		// Profiles
 		...(userId && { userId }),
 	};
@@ -79,6 +80,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		tags: true,
 		createdAt: true,
 		gender: true,
+		makeup: true,
 		allowedCopying: true,
 		// Mii liked check
 		...(session?.user?.id && {

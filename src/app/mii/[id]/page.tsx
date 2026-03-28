@@ -253,6 +253,59 @@ export default async function MiiPage({ params }: Props) {
 								</div>
 							)}
 						</div>
+
+						{/* Makeup */}
+						{mii.platform === "SWITCH" && (
+							<>
+								<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-2 mt-2 w-full">
+									<hr className="grow border-zinc-300" />
+									<span>Makeup</span>
+									<hr className="grow border-zinc-300" />
+								</div>
+
+								<div data-tooltip-span title={mii.makeup ?? "NULL"} className="flex gap-1">
+									{/* Tooltip */}
+									<div
+										className={`tooltip mt-1! ${
+											mii.makeup === "FULL"
+												? "bg-pink-400! border-pink-400! before:border-b-pink-400!"
+												: mii.makeup === "PARTIAL"
+													? "bg-purple-400! border-purple-400! before:border-b-purple-400!"
+													: "bg-gray-400! border-gray-400! before:border-b-gray-400!"
+										}`}
+									>
+										{mii.makeup === "FULL" ? "Full Makeup" : mii.makeup === "PARTIAL" ? "Partial Makeup" : "No Makeup"}
+									</div>
+
+									{/* Full Makeup */}
+									<div
+										className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
+											mii.makeup === "FULL" ? "bg-pink-100 border-pink-400" : "bg-white border-gray-300"
+										}`}
+									>
+										<Icon icon="mdi:palette" className="text-pink-400" />
+									</div>
+
+									{/* Partial Makeup */}
+									<div
+										className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
+											mii.makeup === "PARTIAL" ? "bg-purple-100 border-purple-400" : "bg-white border-gray-300"
+										}`}
+									>
+										<Icon icon="mdi:lipstick" className="text-purple-400" />
+									</div>
+
+									{/* No Makeup */}
+									<div
+										className={`rounded-xl flex justify-center items-center size-13 text-5xl border-2 shadow-sm ${
+											mii.makeup === "NONE" ? "bg-gray-200 border-gray-400" : "bg-white border-gray-300"
+										}`}
+									>
+										<Icon icon="codex:cross" className="text-gray-400" />
+									</div>
+								</div>
+							</>
+						)}
 					</div>
 
 					<div className="col-span-2 flex flex-col gap-4 max-md:col-span-1">

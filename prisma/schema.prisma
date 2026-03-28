@@ -76,10 +76,12 @@ model Mii {
   description String?     @db.VarChar(256)
   platform    MiiPlatform @default(THREE_DS)
 
-  instructions   Json?
+  instructions Json?
+  gender       MiiGender?
+  makeup       MiiMakeup?
+
   firstName      String?
   lastName       String?
-  gender         MiiGender?
   islandName     String?
   allowedCopying Boolean?
 
@@ -166,6 +168,12 @@ enum MiiGender {
   NONBINARY
 }
 
+enum MiiMakeup {
+  FULL
+  PARTIAL
+  NONE
+}
+
 enum ReportType {
   MII
   USER
@@ -175,6 +183,7 @@ enum ReportReason {
   INAPPROPRIATE
   SPAM
   COPYRIGHT
+  BAD_QUALITY
   OTHER
 }
 

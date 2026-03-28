@@ -4,12 +4,13 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 
-import { MiiGender, MiiPlatform } from "@prisma/client";
+import { MiiGender, MiiMakeup, MiiPlatform } from "@prisma/client";
 
 import PlatformSelect from "./platform-select";
 import TagFilter from "./tag-filter";
 import GenderSelect from "./gender-select";
 import OtherFilters from "./other-filters";
+import MakeupSelect from "./makeup-select";
 
 export default function FilterMenu() {
 	const searchParams = useSearchParams();
@@ -19,6 +20,7 @@ export default function FilterMenu() {
 
 	const platform = (searchParams.get("platform") as MiiPlatform) || undefined;
 	const gender = (searchParams.get("gender") as MiiGender) || undefined;
+	const makeup = (searchParams.get("makeup") as MiiMakeup) || undefined;
 	const rawTags = searchParams.get("tags") || "";
 	const rawExclude = searchParams.get("exclude") || "";
 	const allowCopying = (searchParams.get("allowCopying") as unknown as boolean) || false;
@@ -66,9 +68,10 @@ export default function FilterMenu() {
 		if (platform) count++;
 		if (gender) count++;
 		if (allowCopying) count++;
+		if (makeup) count++;
 
 		setFilterCount(count);
-	}, [tags, exclude, platform, gender, allowCopying]);
+	}, [tags, exclude, platform, gender, allowCopying, makeup]);
 
 	return (
 		<div className="relative">
@@ -114,6 +117,16 @@ export default function FilterMenu() {
 					</div>
 					<TagFilter isExclude />
 
+					{platform !== "THREE_DS" && (
+						<>
+							<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium w-full mt-2 mb-1">
+								<hr className="grow border-zinc-300" />
+								<span>Makeup</span>
+								<hr className="grow border-zinc-300" />
+							</div>
+							<MakeupSelect />
+						</>
+					)}
 					{platform !== "SWITCH" && (
 						<>
 							<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium w-full mt-2 mb-1">

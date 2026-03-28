@@ -10,6 +10,8 @@ import Countdown from "@/components/countdown";
 import MiiList from "@/components/mii/list";
 import Skeleton from "@/components/mii/list/skeleton";
 
+export const revalidate = 60;
+
 interface Props {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
