@@ -235,14 +235,28 @@ export async function POST(request: NextRequest) {
 
 			// Save features image
 			const featuresBuffer = Buffer.from(await miiFeaturesImage.arrayBuffer());
-			const pngBuffer = await sharp(featuresBuffer).png({ quality: 85 }).toBuffer();
+			const pngBuffer = await sharp(featuresBuffer)
+				.resize({
+					height: 800,
+					fit: "inside",
+					withoutEnlargement: true,
+				})
+				.png({ quality: 85 })
+				.toBuffer();
 			const fileLocation = path.join(miiUploadsDirectory, "features.png");
 			await fs.writeFile(fileLocation, pngBuffer);
 		}
 
 		// Save portrait image
 		if (!portraitBuffer) throw Error("Mii portrait buffer not initialised");
-		const pngBuffer = await sharp(portraitBuffer).png({ quality: 85 }).toBuffer();
+		const pngBuffer = await sharp(portraitBuffer)
+			.resize({
+				height: 500,
+				fit: "inside",
+				withoutEnlargement: true,
+			})
+			.png({ quality: 85 })
+			.toBuffer();
 		const fileLocation = path.join(miiUploadsDirectory, "mii.png");
 
 		await fs.writeFile(fileLocation, pngBuffer);
