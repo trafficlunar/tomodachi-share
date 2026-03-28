@@ -52,7 +52,7 @@ export default function SubmitForm() {
 
 	const [platform, setPlatform] = useState<MiiPlatform>("SWITCH");
 	const [gender, setGender] = useState<MiiGender>("MALE");
-	const [makeup, setMakeup] = useState<MiiMakeup>("NONE");
+	const [makeup, setMakeup] = useState<MiiMakeup>("PARTIAL");
 	const instructions = useRef<SwitchMiiInstructions>(defaultInstructions);
 
 	const [error, setError] = useState<string | undefined>(undefined);

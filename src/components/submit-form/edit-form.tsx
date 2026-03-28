@@ -43,7 +43,7 @@ export default function EditForm({ mii, likes }: Props) {
 	const [name, setName] = useState(mii.name);
 	const [tags, setTags] = useState(mii.tags);
 	const [description, setDescription] = useState(mii.description);
-	const [makeup, setMakeup] = useState<MiiMakeup>(mii.makeup ?? "NONE");
+	const [makeup, setMakeup] = useState<MiiMakeup>(mii.makeup ?? "PARTIAL");
 	const hasFilesChanged = useRef(false);
 
 	const instructions = useRef<SwitchMiiInstructions>({ ...defaultInstructions, ...(mii.instructions as object as Partial<SwitchMiiInstructions>) });

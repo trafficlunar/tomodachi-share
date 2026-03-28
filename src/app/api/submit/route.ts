@@ -33,7 +33,7 @@ const submitSchema = z
 
 		// Switch
 		gender: z.enum(MiiGender).default("MALE"),
-		makeup: z.enum(MiiMakeup).default("NONE"),
+		makeup: z.enum(MiiMakeup).default("PARTIAL"),
 		miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
 		miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
 		instructions: switchMiiInstructionsSchema,
@@ -212,7 +212,7 @@ export async function POST(request: NextRequest) {
 					}
 				: {
 						instructions: minifiedInstructions,
-						makeup: makeup ?? "NONE",
+						makeup: makeup ?? "PARTIAL",
 					}),
 		},
 	});
