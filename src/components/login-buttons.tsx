@@ -22,6 +22,14 @@ export default function LoginButtons() {
 				<Icon icon="mdi:github" fontSize={32} />
 				Login with GitHub
 			</button>
+			<button
+				onClick={() => signIn("google", { redirectTo: "/" })}
+				aria-label="Login with Google"
+				className="pill button gap-2 px-3! bg-white! border-gray-300! hover:bg-gray-100! text-black! flex items-center"
+			>
+				<Icon icon="material-icon-theme:google" fontSize={32} />
+				Login with Google
+			</button>
 		</div>
 	);
 }
