@@ -11,6 +11,7 @@ import Providers from "./provider";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import AdminBanner from "@/components/admin/banner";
+import { SessionProvider } from "next-auth/react";
 
 const lexend = Lexend({
 	subsets: ["latin"],
@@ -91,7 +92,9 @@ export default function RootLayout({
 				)}
 
 				<Providers>
-					<Header />
+					<SessionProvider>
+						<Header />
+					</SessionProvider>
 					<AdminBanner />
 					<main className="px-4 py-8 max-w-7xl w-full grow flex flex-col">{children}</main>
 					<Footer />
