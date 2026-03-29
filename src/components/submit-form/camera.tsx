@@ -10,11 +10,12 @@ import { useSelect } from "downshift";
 interface Props {
 	isOpen: boolean;
 	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	onCapture?: () => void;
 	setImage?: React.Dispatch<React.SetStateAction<string | undefined>>;
 	setQrBytesRaw?: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export default function Camera({ isOpen, setIsOpen, setImage, setQrBytesRaw }: Props) {
+export default function Camera({ isOpen, setIsOpen, onCapture, setImage, setQrBytesRaw }: Props) {
 	const [isVisible, setIsVisible] = useState(false);
 
 	const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
@@ -23,6 +24,7 @@ export default function Camera({ isOpen, setIsOpen, setImage, setQrBytesRaw }: P
 	const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
 
 	const videoRef = useRef<HTMLVideoElement>(null);
+	const streamRef = useRef<MediaStream | null>(null);
 	const requestRef = useRef<number>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -65,6 +67,7 @@ export default function Camera({ isOpen, setIsOpen, setImage, setQrBytesRaw }: P
 
 		if (setImage) {
 			setImage(canvas.toDataURL());
+			if (onCapture) onCapture();
 			close();
 			return;
 		}
@@ -89,14 +92,34 @@ export default function Camera({ isOpen, setIsOpen, setImage, setQrBytesRaw }: P
 
 		navigator.mediaDevices
 			.getUserMedia({ video: true, audio: false })
-			.then(() => setPermissionGranted(true))
+			.then((stream) => {
+				// immediately stop this temp stream
+				stream.getTracks().forEach((track) => track.stop());
+				setPermissionGranted(true);
+			})
 			.catch((err) => {
 				setPermissionGranted(false);
 				console.error("An error occurred trying to access the camera", err);
 			});
 	};
 
+	const stopCamera = () => {
+		if (requestRef.current) {
+			cancelAnimationFrame(requestRef.current);
+			requestRef.current = null;
+		}
+		if (videoRef.current) {
+			videoRef.current.pause();
+			videoRef.current.srcObject = null;
+		}
+		if (streamRef.current) {
+			streamRef.current.getTracks().forEach((track) => track.stop());
+			streamRef.current = null;
+		}
+	};
+
 	const close = () => {
+		stopCamera();
 		setIsVisible(false);
 		setTimeout(() => {
 			setIsOpen(false);
@@ -132,6 +155,7 @@ export default function Camera({ isOpen, setIsOpen, setImage, setQrBytesRaw }: P
 			})
 			.then((stream) => {
 				if (!stream || !videoRef.current) return;
+				streamRef.current = stream;
 				videoRef.current.srcObject = stream;
 				videoRef.current.play();
 			})
@@ -141,16 +165,9 @@ export default function Camera({ isOpen, setIsOpen, setImage, setQrBytesRaw }: P
 
 		// cleanup
 		return () => {
-			if (requestRef.current) {
-				cancelAnimationFrame(requestRef.current);
-			}
-			if (videoRef.current?.srcObject) {
-				const stream = videoRef.current.srcObject as MediaStream;
-				stream.getTracks().forEach((track) => track.stop());
-				videoRef.current.srcObject = null;
-			}
+			stopCamera();
 		};
-	}, [isOpen, permissionGranted, selectedDeviceId, takePicture]);
+	}, [isOpen, permissionGranted, selectedDeviceId]);
 
 	return (
 		<div className={`fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40 ${!isOpen ? "hidden" : ""}`}>
@@ -218,7 +235,10 @@ export default function Camera({ isOpen, setIsOpen, setImage, setQrBytesRaw }: P
 						</div>
 					)}
 
-					<video ref={videoRef} className={`size-full rounded-2xl border-2 border-amber-500 max-h-96 ${setQrBytesRaw ? "object-cover" : ""}`} />
+					<div className="rounded-2xl border-2 border-amber-500 max-h-96 flex justify-center items-center overflow-hidden">
+						<img src="/loading.svg" alt="loading indicator" width={256} height={256} className="absolute" />
+						<video ref={videoRef} className={`size-full z-10 ${setQrBytesRaw ? "object-cover" : ""}`} />
+					</div>
 					{setQrBytesRaw && <QrFinder />}
 					<canvas ref={canvasRef} className="hidden" />
 				</div>

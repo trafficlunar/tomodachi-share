@@ -17,7 +17,6 @@ interface Props {
 export default function SwitchFileUpload({ text, forceCrop, image, setImage }: Props) {
 	const [isCameraOpen, setIsCameraOpen] = useState(false);
 	const [isCropOpen, setIsCropOpen] = useState(false);
-	const [hasImage, setHasImage] = useState(false);
 
 	const handleDrop = useCallback(
 		(acceptedFiles: FileWithPath[]) => {
@@ -26,7 +25,6 @@ export default function SwitchFileUpload({ text, forceCrop, image, setImage }: P
 			const reader = new FileReader();
 			reader.onload = async (event) => {
 				setImage(event.target!.result as string);
-				setHasImage(true);
 				if (forceCrop) setIsCropOpen(true);
 			};
 			reader.readAsDataURL(file);
@@ -34,16 +32,11 @@ export default function SwitchFileUpload({ text, forceCrop, image, setImage }: P
 		[setImage],
 	);
 
-	useEffect(() => {
-		if (!isCameraOpen) return;
-		if (forceCrop) setIsCropOpen(true);
-	}, [isCameraOpen]);
-
 	return (
 		<div className="max-w-md w-full flex flex-col items-center gap-2">
 			<Dropzone onDrop={handleDrop} options={{ maxFiles: 1 }}>
 				<p className="text-center text-sm">
-					{!hasImage ? (
+					{!image ? (
 						<>
 							Drag and drop {text}
 							<br />
@@ -66,7 +59,14 @@ export default function SwitchFileUpload({ text, forceCrop, image, setImage }: P
 				Crop Image
 			</button>
 
-			<Camera isOpen={isCameraOpen} setIsOpen={setIsCameraOpen} setImage={setImage} />
+			<Camera
+				isOpen={isCameraOpen}
+				setIsOpen={setIsCameraOpen}
+				setImage={setImage}
+				onCapture={() => {
+					if (forceCrop) setIsCropOpen(true);
+				}}
+			/>
 			<CropPortrait isOpen={isCropOpen} setIsOpen={setIsCropOpen} image={image} setImage={setImage} />
 		</div>
 	);
