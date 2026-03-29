@@ -50,14 +50,16 @@ export default function SwitchFileUpload({ text, forceCrop, image, setImage }: P
 
 			<span>or</span>
 
-			<button type="button" aria-label="Use your camera" onClick={() => setIsCameraOpen(true)} className="pill button gap-2">
-				<Icon icon="mdi:camera" fontSize={20} />
-				Use your camera
-			</button>
-			<button type="button" aria-label="Crop image" onClick={() => setIsCropOpen(true)} className="pill button gap-2">
-				<Icon icon="mdi:image-edit" fontSize={20} />
-				Edit Image
-			</button>
+			<div className="flex gap-2 max-sm:flex-col">
+				<button type="button" aria-label="Use your camera" onClick={() => setIsCameraOpen(true)} className="pill button gap-2">
+					<Icon icon="mdi:camera" fontSize={20} />
+					Use your camera
+				</button>
+				<button type="button" aria-label="Crop image" onClick={() => setIsCropOpen(true)} className="pill button gap-2">
+					<Icon icon="mdi:image-edit" fontSize={20} />
+					Edit Image
+				</button>
+			</div>
 
 			<Camera
 				isOpen={isCameraOpen}

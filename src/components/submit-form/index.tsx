@@ -28,6 +28,7 @@ import LikeButton from "../like-button";
 import Carousel from "../carousel";
 import SubmitButton from "../submit-button";
 import Dropzone from "../dropzone";
+import Image from "next/image";
 
 export default function SubmitForm() {
 	const [files, setFiles] = useState<FileWithPath[]>([]);
@@ -376,22 +377,62 @@ export default function SubmitForm() {
 					</div>
 				</div>
 
-				{/* (Switch Only) Mii Portrait */}
+				{/* (Switch Only) Mii Screenshots */}
 				<div className={`${platform === "SWITCH" ? "" : "hidden"}`}>
 					{/* Separator */}
 					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
 						<hr className="grow border-zinc-300" />
-						<span>Mii Portrait</span>
+						<span>Mii Screenshots</span>
 						<hr className="grow border-zinc-300" />
 					</div>
 
-					<div className="flex flex-col items-center gap-2">
-						<SwitchFileUpload text="a screenshot of your Mii here" image={miiPortraitUri} setImage={setMiiPortraitUri} forceCrop />
-						<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={setMiiFeaturesUri} />
+					<div className="flex flex-col items-center gap-4 w-full">
+						{/* Step 1 - Portrait */}
+						<div className="flex flex-col items-center gap-2 w-full">
+							<div className="flex items-center gap-2 self-start">
+								<span className="bg-orange-400 text-white text-xs font-bold rounded-full size-5 flex items-center justify-center shrink-0">1</span>
+								<span className="text-sm font-semibold text-zinc-600">Portrait screenshot</span>
+							</div>
+							<div className="flex gap-3 w-full items-start max-sm:flex-col max-sm:items-center">
+								<div data-tooltip="Your screenshot should look like this">
+									<Image
+										src="/tutorial/switch/portrait.png"
+										alt="Example portrait screenshot"
+										width={80}
+										height={80}
+										className="size-20 object-cover rounded-xl border-2 border-orange-300 shrink-0 opacity-70"
+									/>
+								</div>
+								<SwitchFileUpload text="a screenshot of your Mii here" image={miiPortraitUri} setImage={setMiiPortraitUri} forceCrop />
+							</div>
+						</div>
+
+						{/* Step 2 - Features */}
+						<div className="flex flex-col items-center gap-2 w-full">
+							<div className="flex items-center gap-2 self-start">
+								<span className="bg-orange-400 text-white text-xs font-bold rounded-full size-5 flex items-center justify-center shrink-0">2</span>
+								<span className="text-sm font-semibold text-zinc-600">
+									Features screenshot <span className="text-orange-500">(the features panel - see example)</span>
+								</span>
+							</div>
+							<div className="flex gap-3 w-full items-start max-sm:flex-col max-sm:items-center">
+								<div data-tooltip="Your features screenshot should show this">
+									<Image
+										src="/tutorial/switch/features.png"
+										alt="Example features screenshot showing the parts panel"
+										width={80}
+										height={80}
+										className="size-20 object-cover rounded-xl border-2 border-orange-300 shrink-0 opacity-70"
+									/>
+								</div>
+								<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={setMiiFeaturesUri} />
+							</div>
+						</div>
+
 						<SwitchSubmitTutorialButton />
 					</div>
 
-					<p className="text-xs text-zinc-400 text-center mt-2">You must upload a screenshot of the features, check tutorial on how.</p>
+					<p className="text-xs text-zinc-400 text-center mt-2">A tutorial on how to screenshot the features is above.</p>
 				</div>
 
 				{/* (3DS only) QR code scanning */}
