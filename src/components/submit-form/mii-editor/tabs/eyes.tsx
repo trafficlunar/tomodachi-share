@@ -60,7 +60,7 @@ export default function EyesTab({ instructions }: Props) {
 
 			<div className="absolute inset-0 flex flex-col justify-center items-center">
 				<ColorPicker disabled={currentTab.colorsDisabled} color={colors[tab]} setColor={setColor} tab={tab === 5 ? "eyeliner" : "eyes"} />
-				<NumberInputs target={instructions.current.eyes[currentTab.name]} />
+				<NumberInputs key={tab} target={instructions.current.eyes[currentTab.name]} />
 			</div>
 		</>
 	);

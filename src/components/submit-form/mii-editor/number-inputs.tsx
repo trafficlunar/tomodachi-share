@@ -7,11 +7,11 @@ interface Props {
 
 export default function NumberInputs({ target }: Props) {
 	const [values, setValues] = useState<Record<string, number>>({
-		height: 0,
-		distance: 0,
-		rotation: 0,
-		size: 0,
-		stretch: 0,
+		height: target?.height ?? 0,
+		distance: target?.distance ?? 0,
+		rotation: target?.rotation ?? 0,
+		size: target?.size ?? 0,
+		stretch: target?.stretch ?? 0,
 	});
 
 	if (!target) return null;

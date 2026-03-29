@@ -7,7 +7,8 @@ import { ReportStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export default async function Reports() {
-	const reports = await prisma.report.findMany();
+	const reports = await prisma.report.findMany({ orderBy: { createdAt: "desc" } });
+	// TODO: add pagination
 
 	const updateStatus = async (formData: FormData) => {
 		"use server";
