@@ -206,7 +206,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 						<div className="p-4 flex flex-col gap-1 h-full">
 							<div className="flex justify-between items-center">
-								<Link href={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1 w-full" title={mii.name}>
+								<Link href={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1 w-full text-ellipsis wrap-break-word" title={mii.name}>
 									{mii.name}
 								</Link>
 								<div title={mii.platform === "SWITCH" ? "Switch" : "3DS"} className="-mr-3 text-[1.25rem] opacity-25">
