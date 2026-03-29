@@ -24,6 +24,8 @@ const editSchema = z.object({
 	tags: tagsSchema.optional(),
 	description: z.string().trim().max(512).optional(),
 	makeup: z.enum(MiiMakeup).optional(),
+	miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
+	miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
 	instructions: switchMiiInstructionsSchema,
 	image1: z.union([z.instanceof(File), z.any()]).optional(),
 	image2: z.union([z.instanceof(File), z.any()]).optional(),
@@ -76,6 +78,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		tags: rawTags,
 		description: formData.get("description") ?? undefined,
 		makeup: formData.get("makeup") ?? undefined,
+		miiPortraitImage: formData.get("miiPortraitImage"),
+		miiFeaturesImage: formData.get("miiFeaturesImage"),
 		instructions: minifiedInstructions,
 		image1: formData.get("image1"),
 		image2: formData.get("image2"),
@@ -83,7 +87,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	});
 
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
-	const { name, tags, description, makeup, instructions, image1, image2, image3 } = parsed.data;
+	const { name, tags, description, makeup, miiPortraitImage, miiFeaturesImage, instructions, image1, image2, image3 } = parsed.data;
 
 	// Validate image files
 	const images: File[] = [];
@@ -96,6 +100,18 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 			images.push(img);
 		} else {
 			return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
+		}
+	}
+
+	// Check Mii portrait & features image (Switch)
+	if (mii.platform === "SWITCH") {
+		if (miiPortraitImage) {
+			const validation = await validateImage(miiPortraitImage);
+			if (!validation.valid) return rateLimit.sendResponse({ error: `Failed to verify portrait: ${validation.error}` }, validation.status ?? 400);
+		}
+		if (miiFeaturesImage) {
+			const validation = await validateImage(miiFeaturesImage);
+			if (!validation.valid) return rateLimit.sendResponse({ error: `Failed to verify features: ${validation.error}` }, validation.status ?? 400);
 		}
 	}
 
@@ -123,12 +139,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		},
 	});
 
+	// Ensure directories exist
+	const miiUploadsDirectory = path.join(uploadsDirectory, miiId.toString());
+	await fs.mkdir(miiUploadsDirectory, { recursive: true });
+
 	// Only touch files if new images were uploaded
 	if (images.length > 0) {
-		// Ensure directories exist
-		const miiUploadsDirectory = path.join(uploadsDirectory, miiId.toString());
-		await fs.mkdir(miiUploadsDirectory, { recursive: true });
-
 		// Delete all custom images
 		const files = await fs.readdir(miiUploadsDirectory);
 		await Promise.all(files.filter((file) => file.startsWith("image")).map((file) => fs.unlink(path.join(miiUploadsDirectory, file))));
@@ -149,7 +165,60 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 			Sentry.captureException(error, { extra: { stage: "edit-custom-images" } });
 			return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
 		}
-	} else if (description === undefined) {
+	}
+
+	// Only save portrait & features for Switch Miis when they are provided
+	if (mii.platform === "SWITCH" && (miiPortraitImage || miiFeaturesImage)) {
+		try {
+			// Delete existing portrait/features if they're being replaced
+			await Promise.all(
+				["mii.png", "features.png"]
+					.filter((file) => {
+						if (file === "mii.png") return miiPortraitImage;
+						if (file === "features.png") return miiFeaturesImage;
+						return false;
+					})
+					.map((file) => fs.unlink(path.join(miiUploadsDirectory, file))),
+			);
+
+			await Promise.all(
+				[
+					miiPortraitImage &&
+						(async () => {
+							const portraitBuffer = Buffer.from(await miiPortraitImage.arrayBuffer());
+							const pngBuffer = await sharp(portraitBuffer)
+								.resize({
+									height: 500,
+									fit: "inside",
+									withoutEnlargement: true,
+								})
+								.png({ quality: 85 })
+								.toBuffer();
+							await fs.writeFile(path.join(miiUploadsDirectory, "mii.png"), pngBuffer);
+						})(),
+					miiFeaturesImage &&
+						(async () => {
+							const featuresBuffer = Buffer.from(await miiFeaturesImage.arrayBuffer());
+							const pngBuffer = await sharp(featuresBuffer)
+								.resize({
+									height: 800,
+									fit: "inside",
+									withoutEnlargement: true,
+								})
+								.png({ quality: 85 })
+								.toBuffer();
+							await fs.writeFile(path.join(miiUploadsDirectory, "features.png"), pngBuffer);
+						})(),
+				].filter(Boolean),
+			);
+		} catch (error) {
+			console.error("Error uploading portrait/features images:", error);
+			Sentry.captureException(error, { extra: { stage: "edit-portrait-features" } });
+			return rateLimit.sendResponse({ error: "Failed to store portrait/features images" }, 500);
+		}
+	}
+
+	if (description === undefined) {
 		// If images or description were not changed, regenerate the metadata image
 		try {
 			await generateMetadataImage(updatedMii, updatedMii.user.name!);

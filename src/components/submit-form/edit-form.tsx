@@ -19,6 +19,7 @@ import Dropzone from "../dropzone";
 import MiiEditor from "./mii-editor";
 import SwitchSubmitTutorialButton from "../tutorial/switch-submit";
 import { Icon } from "@iconify/react";
+import SwitchFileUpload from "./switch-file-upload";
 
 interface Props {
 	mii: Mii;
@@ -63,6 +64,8 @@ export default function EditForm({ mii, likes }: Props) {
 	const [tags, setTags] = useState(mii.tags);
 	const [description, setDescription] = useState(mii.description);
 	const [makeup, setMakeup] = useState<MiiMakeup>(mii.makeup ?? "PARTIAL");
+	const [miiPortraitUri, setMiiPortraitUri] = useState<string | undefined>(`/mii/${mii.id}/image?type=mii`);
+	const [miiFeaturesUri, setMiiFeaturesUri] = useState<string | undefined>(`/mii/${mii.id}/image?type=features`);
 	const hasFilesChanged = useRef(false);
 
 	const instructions = useRef<SwitchMiiInstructions>(deepMerge(defaultInstructions, (mii.instructions as object) ?? {}));
@@ -86,6 +89,7 @@ export default function EditForm({ mii, likes }: Props) {
 		if (tags != mii.tags) formData.append("tags", JSON.stringify(tags));
 		if (description && description != mii.description) formData.append("description", description);
 		if (makeup != mii.makeup) formData.append("makeup", makeup);
+		if (miiPortraitUri) formData.append("miiPortraitUri", miiPortraitUri);
 		if (minifyInstructions(structuredClone(instructions.current)) !== (mii.instructions as object))
 			formData.append("instructions", JSON.stringify(instructions.current));
 
@@ -94,6 +98,32 @@ export default function EditForm({ mii, likes }: Props) {
 				// image1, image2, etc.
 				formData.append(`image${index + 1}`, file);
 			});
+		}
+
+		// Switch pictures
+		async function getBlob(uri: string): Promise<Blob | null> {
+			const response = await fetch(uri);
+			if (!response.ok) {
+				setError("Failed to get Mii portrait/features screenshot. Did you upload one?");
+				return null;
+			}
+
+			const blob = await response.blob();
+			if (!blob.type.startsWith("image/")) {
+				setError("Invalid image file found");
+				return null;
+			}
+
+			return blob;
+		}
+
+		if (miiPortraitUri) {
+			const blob = await getBlob(miiPortraitUri);
+			if (blob) formData.append("miiPortraitImage", blob);
+		}
+		if (miiFeaturesUri) {
+			const blob = await getBlob(miiFeaturesUri);
+			if (blob) formData.append("miiFeaturesImage", blob);
 		}
 
 		const response = await fetch(`/api/mii/${mii.id}/edit`, {
@@ -137,7 +167,13 @@ export default function EditForm({ mii, likes }: Props) {
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
 				<div className="w-75 h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
-					<Carousel images={[`/mii/${mii.id}/image?type=mii`, `/mii/${mii.id}/image?type=qr-code`, ...files.map((file) => URL.createObjectURL(file))]} />
+					<Carousel
+						images={[
+							miiPortraitUri ?? `/mii/${mii.id}/image?type=mii`,
+							...(mii.platform === "THREE_DS" ? [`/mii/${mii.id}/image?type=qr-code`] : [miiFeaturesUri ?? `/mii/${mii.id}/image?type=features`]),
+							...files.map((file) => URL.createObjectURL(file)),
+						]}
+					/>
 
 					<div className="p-4 flex flex-col gap-1 h-full">
 						<h1 className="font-bold text-2xl line-clamp-1" title={name}>
@@ -209,7 +245,7 @@ export default function EditForm({ mii, likes }: Props) {
 					/>
 				</div>
 
-				{/* Instructions (Switch only) */}
+				{/* Makeup/Images/Instructions (Switch only) */}
 				{mii.platform === "SWITCH" && (
 					<>
 						<div className="w-full grid grid-cols-3 items-start">
@@ -257,6 +293,24 @@ export default function EditForm({ mii, likes }: Props) {
 									<Icon icon="codex:cross" className="text-gray-400" />
 								</button>
 							</div>
+						</div>
+
+						{/* (Switch Only) Mii Portrait */}
+						<div>
+							{/* Separator */}
+							<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+								<hr className="grow border-zinc-300" />
+								<span>Mii Portrait</span>
+								<hr className="grow border-zinc-300" />
+							</div>
+
+							<div className="flex flex-col items-center gap-2">
+								<SwitchFileUpload text="a screenshot of your Mii here" image={miiPortraitUri} setImage={setMiiPortraitUri} forceCrop />
+								<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={setMiiFeaturesUri} />
+								<SwitchSubmitTutorialButton />
+							</div>
+
+							<p className="text-xs text-zinc-400 text-center mt-2">You must upload a screenshot of the features, check tutorial on how.</p>
 						</div>
 
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8">

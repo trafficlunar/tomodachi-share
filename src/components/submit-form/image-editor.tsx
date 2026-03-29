@@ -101,7 +101,7 @@ export default function ImageEditorPortrait({ isOpen, setIsOpen, image, setImage
 
 				<div className="mt-4 flex justify-center gap-2">
 					<button type="button" onClick={close} className="pill button">
-						Cancel
+						Done
 					</button>
 					<button type="button" onClick={applyCrop} className="pill button">
 						Crop
