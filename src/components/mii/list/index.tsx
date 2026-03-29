@@ -205,16 +205,18 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 						/>
 
 						<div className="p-4 flex flex-col gap-1 h-full">
-							<Link href={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1" title={mii.name}>
-								{mii.name}
-								<div className="absolute right-0 top-1/2 -translate-y-1/2 text-[1.25rem] opacity-25">
+							<div className="flex justify-between items-center">
+								<Link href={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1 w-full" title={mii.name}>
+									{mii.name}
+								</Link>
+								<div title={mii.platform === "SWITCH" ? "Switch" : "3DS"} className="-mr-3 text-[1.25rem] opacity-25">
 									{mii.platform === "SWITCH" ? (
 										<Icon icon="cib:nintendo-switch" className="text-red-400" />
 									) : (
 										<Icon icon="cib:nintendo-3ds" className="text-sky-400" />
 									)}
 								</div>
-							</Link>
+							</div>
 							<div id="tags" className="flex flex-wrap gap-1">
 								{mii.tags.map((tag) => (
 									<Link href={{ query: { tags: tag } }} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
@@ -227,7 +229,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 								<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} abbreviate />
 
 								{!userId && (
-									<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis">
+									<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis whitespace-nowrap">
 										@{mii.user?.name}
 									</Link>
 								)}

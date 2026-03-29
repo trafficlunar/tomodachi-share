@@ -123,7 +123,7 @@ export default function ProfileSettings({ currentDescription }: Props) {
 				</div>
 
 				<div className="flex justify-end gap-1 h-min col-span-2">
-					<input type="text" className="pill input flex-1" placeholder="Type here..." value={name} onChange={(e) => setName(e.target.value)} />
+					<input type="text" className="pill input flex-1" placeholder="Type here..." maxLength={64} value={name} onChange={(e) => setName(e.target.value)} />
 					<SubmitDialogButton
 						title="Confirm Name Change"
 						description="Are you sure? You can change it again later."

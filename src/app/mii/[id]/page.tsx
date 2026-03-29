@@ -314,7 +314,7 @@ export default async function MiiPage({ params }: Props) {
 						<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-1">
 							<div className="flex justify-between items-start">
 								{/* Submission name */}
-								<h1 className="text-4xl font-extrabold wrap-break-word text-amber-700">{mii.name}</h1>
+								<h1 className="text-4xl font-extrabold wrap-break-word whitespace-break-spaces text-amber-700 flex-1 min-w-0">{mii.name}</h1>
 								{/* Like button */}
 								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={(mii.likedBy ?? []).length > 0} big />
 							</div>

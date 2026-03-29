@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
 				pathname: "/tutorial/**",
 			},
 			{
-				pathname: "/guest.webp",
+				pathname: "/guest.png",
 			},
 		],
 		remotePatterns: [
