@@ -11,7 +11,7 @@ interface Props {
 	setImage: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export default function CropPortrait({ isOpen, setIsOpen, image, setImage }: Props) {
+export default function ImageEditorPortrait({ isOpen, setIsOpen, image, setImage }: Props) {
 	const [isVisible, setIsVisible] = useState(false);
 	const [crop, setCrop] = useState<Crop>();
 
@@ -38,8 +38,26 @@ export default function CropPortrait({ isOpen, setIsOpen, image, setImage }: Pro
 		ctx.drawImage(image, crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY, 0, 0, crop.width * scaleX, crop.height * scaleY);
 
 		setImage(canvas.toDataURL());
-		close();
+		setCrop(undefined);
 	}, [crop, setImage]);
+
+	const rotate = () => {
+		if (!imageRef.current || !canvasRef.current) return;
+
+		const image = imageRef.current;
+		const canvas = canvasRef.current;
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+
+		canvas.width = image.naturalHeight;
+		canvas.height = image.naturalWidth;
+
+		ctx.translate(canvas.width / 2, canvas.height / 2);
+		ctx.rotate(Math.PI / 2);
+		ctx.drawImage(image, -image.naturalWidth / 2, -image.naturalHeight / 2);
+
+		setImage(canvas.toDataURL());
+	};
 
 	const close = () => {
 		setIsVisible(false);
@@ -68,7 +86,7 @@ export default function CropPortrait({ isOpen, setIsOpen, image, setImage }: Pro
 				}`}
 			>
 				<div className="flex justify-between items-center mb-2">
-					<h2 className="text-xl font-bold">Crop Portrait</h2>
+					<h2 className="text-xl font-bold">Edit Image</h2>
 					<button type="button" aria-label="Close" onClick={close} className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 						<Icon icon="material-symbols:close-rounded" />
 					</button>
@@ -87,6 +105,9 @@ export default function CropPortrait({ isOpen, setIsOpen, image, setImage }: Pro
 					</button>
 					<button type="button" onClick={applyCrop} className="pill button">
 						Crop
+					</button>
+					<button type="button" onClick={rotate} className="pill button">
+						Rotate
 					</button>
 				</div>
 			</div>

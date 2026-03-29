@@ -5,7 +5,7 @@ import { FileWithPath } from "react-dropzone";
 import { Icon } from "@iconify/react";
 import Dropzone from "../dropzone";
 import Camera from "./camera";
-import CropPortrait from "./crop-portrait";
+import ImageEditorPortrait from "./image-editor";
 
 interface Props {
 	text: string;
@@ -55,8 +55,8 @@ export default function SwitchFileUpload({ text, forceCrop, image, setImage }: P
 				Use your camera
 			</button>
 			<button type="button" aria-label="Crop image" onClick={() => setIsCropOpen(true)} className="pill button gap-2">
-				<Icon icon="material-symbols:crop" fontSize={20} />
-				Crop Image
+				<Icon icon="mdi:image-edit" fontSize={20} />
+				Edit Image
 			</button>
 
 			<Camera
@@ -67,7 +67,7 @@ export default function SwitchFileUpload({ text, forceCrop, image, setImage }: P
 					if (forceCrop) setIsCropOpen(true);
 				}}
 			/>
-			<CropPortrait isOpen={isCropOpen} setIsOpen={setIsCropOpen} image={image} setImage={setImage} />
+			<ImageEditorPortrait isOpen={isCropOpen} setIsOpen={setIsCropOpen} image={image} setImage={setImage} />
 		</div>
 	);
 }
