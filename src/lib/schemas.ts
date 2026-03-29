@@ -62,6 +62,7 @@ export const searchSchema = z.object({
 	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', 'FEMALE', or 'NONBINARY' if on Switch platform" }).optional(),
 	makeup: z.enum(MiiMakeup, { error: "Makeup must be either 'FULL', 'PARTIAL', or 'NONE'" }).optional(),
 	allowCopying: z.coerce.boolean({ error: "Allow Copying must be either true or false" }).optional(),
+	quarantined: z.coerce.boolean({ error: "Quarantined must be either true or false" }).optional(),
 	// todo: incorporate tagsSchema
 	// Pages
 	limit: z.coerce
@@ -85,7 +86,7 @@ export const userNameSchema = z
 	});
 
 const colorSchema = z.number().int().min(0).max(152).optional();
-const geometrySchema = z.number().int().min(-15).max(15).optional();
+const geometrySchema = z.number().int().min(-100).max(100).optional();
 
 export const switchMiiInstructionsSchema = z
 	.object({

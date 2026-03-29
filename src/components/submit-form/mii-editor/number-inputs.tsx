@@ -44,8 +44,8 @@ interface NumberFieldProps {
 }
 
 function NumberField({ label, value, onChange }: NumberFieldProps) {
-	const MIN = -15;
-	const MAX = 15;
+	const MIN = -100;
+	const MAX = 100;
 
 	const decrement = () => onChange(Math.max(MIN, value - 1));
 	const increment = () => onChange(Math.min(MAX, value + 1));

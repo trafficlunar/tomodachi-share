@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FileWithPath } from "react-dropzone";
 import { Mii, MiiMakeup } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 import { nameSchema, tagsSchema } from "@/lib/schemas";
 import { defaultInstructions, minifyInstructions } from "@/lib/switch";
@@ -46,6 +47,7 @@ function deepMerge<T>(target: T, source: Partial<T>): T {
 }
 
 export default function EditForm({ mii, likes }: Props) {
+	const session = useSession();
 	const [files, setFiles] = useState<FileWithPath[]>([]);
 
 	const handleDrop = useCallback(
@@ -67,8 +69,9 @@ export default function EditForm({ mii, likes }: Props) {
 	const [miiPortraitUri, setMiiPortraitUri] = useState<string | undefined>(`/mii/${mii.id}/image?type=mii`);
 	const [miiFeaturesUri, setMiiFeaturesUri] = useState<string | undefined>(`/mii/${mii.id}/image?type=features`);
 	const hasFilesChanged = useRef(false);
-
 	const instructions = useRef<SwitchMiiInstructions>(deepMerge(defaultInstructions, (mii.instructions as object) ?? {}));
+
+	const [quarantined, setQuarantined] = useState(mii.quarantined);
 
 	const handleSubmit = async () => {
 		// Validate before sending request
@@ -90,6 +93,7 @@ export default function EditForm({ mii, likes }: Props) {
 		if (description && description != mii.description) formData.append("description", description);
 		if (makeup != mii.makeup) formData.append("makeup", makeup);
 		if (miiPortraitUri) formData.append("miiPortraitUri", miiPortraitUri);
+		if (quarantined != mii.quarantined) formData.append("quarantined", JSON.stringify(quarantined));
 		if (minifyInstructions(structuredClone(instructions.current)) !== (mii.instructions as object))
 			formData.append("instructions", JSON.stringify(instructions.current));
 
@@ -244,6 +248,20 @@ export default function EditForm({ mii, likes }: Props) {
 						onChange={(e) => setDescription(e.target.value)}
 					/>
 				</div>
+
+				{session.data?.user?.id == process.env.NEXT_PUBLIC_ADMIN_USER_ID && (
+					<>
+						<div className="w-full grid grid-cols-3 items-center">
+							<label htmlFor="quarantined" className="font-semibold py-2">
+								Quarantined
+							</label>
+
+							<div className="col-span-2 flex gap-1">
+								<input type="checkbox" id="quarantined" className="checkbox-alt" checked={quarantined} onChange={(e) => setQuarantined(e.target.checked)} />
+							</div>
+						</div>
+					</>
+				)}
 
 				{/* Makeup/Images/Instructions (Switch only) */}
 				{mii.platform === "SWITCH" && (

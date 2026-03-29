@@ -7,15 +7,15 @@ interface Props {
 	instructions: React.RefObject<SwitchMiiInstructions>;
 }
 
-const TABS: { name: keyof SwitchMiiInstructions["other"]; length: number; defaultColor?: number }[] = [
-	{ name: "wrinkles1", length: 9 },
-	{ name: "wrinkles2", length: 15 },
-	{ name: "beard", length: 15 },
-	{ name: "moustache", length: 16 },
-	{ name: "goatee", length: 14 },
-	{ name: "mole", length: 2 },
-	{ name: "eyeShadow", length: 4, defaultColor: 139 },
-	{ name: "blush", length: 8 },
+const TABS: { name: keyof SwitchMiiInstructions["other"]; defaultColor?: number }[] = [
+	{ name: "wrinkles1" },
+	{ name: "wrinkles2" },
+	{ name: "beard" },
+	{ name: "moustache" },
+	{ name: "goatee" },
+	{ name: "mole" },
+	{ name: "eyeShadow", defaultColor: 139 },
+	{ name: "blush" },
 ];
 
 export default function OtherTab({ instructions }: Props) {

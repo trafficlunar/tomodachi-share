@@ -122,6 +122,12 @@ export default async function MiiPage({ params }: Props) {
 	return (
 		<div className="flex flex-col items-center">
 			<div className="max-w-5xl w-full flex flex-col gap-4">
+				{mii.quarantined && (
+					<div className="bg-red-100 border-2 border-red-400 rounded-2xl shadow-lg p-4 flex items-center gap-3 text-red-700">
+						<Icon icon="material-symbols:warning-rounded" className="text-2xl shrink-0" />
+						<p className="font-medium">This Mii is flagged as controversial and only appears when the filter is enabled</p>
+					</div>
+				)}
 				<div className="relative grid grid-cols-3 gap-4 max-md:grid-cols-1">
 					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 h-min flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
 						{/* Mii Image */}
@@ -414,17 +420,6 @@ export default async function MiiPage({ params }: Props) {
 					)}
 				</div>
 			</div>
-
-			{/* Offscreen metadata image for search engines; hidden from users */}
-			<Image
-				src={`/mii/${mii.id}/image?type=metadata`}
-				alt={`${mii.name}, a ${mii.gender ? mii.gender.toLowerCase() : ""} Mii ${mii.tags.length ? ` with tags: ${mii.tags.join(", ")}` : ""}`}
-				loading="lazy"
-				unoptimized
-				width={1}
-				height={1}
-				className="absolute left-[-999999]"
-			/>
 		</div>
 	);
 }

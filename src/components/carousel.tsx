@@ -46,7 +46,7 @@ export default function Carousel({ images, className }: Props) {
 				<div className="flex">
 					{images.map((src, index) => (
 						<div key={index} className="shrink-0 w-full">
-							<ImageViewer src={src} alt="mii image" width={480} height={320} className="w-full h-auto aspect-3/2 object-contain" images={images} />
+							<ImageViewer src={src} alt="mii image" width={240} height={160} className="w-full h-auto aspect-3/2 object-contain" images={images} />
 						</div>
 					))}
 				</div>

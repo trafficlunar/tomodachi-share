@@ -28,7 +28,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { q: query, sort, tags, exclude, platform, gender, makeup, allowCopying, page = 1, limit = 24, seed } = parsed.data;
+	const { q: query, sort, tags, exclude, platform, gender, makeup, allowCopying, quarantined, page = 1, limit = 24, seed } = parsed.data;
 
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
@@ -59,6 +59,8 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		...(allowCopying && { allowedCopying: true }),
 		// Makeup
 		...(makeup && { makeup: { equals: makeup } }),
+		// Quarantined
+		...(!quarantined && { quarantined: false }),
 		// Profiles
 		...(userId && { userId }),
 	};
@@ -82,6 +84,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		gender: true,
 		makeup: true,
 		allowedCopying: true,
+		quarantined: true,
 		// Mii liked check
 		...(session?.user?.id && {
 			likedBy: {
@@ -194,7 +197,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 				{miis.map((mii) => (
 					<div
 						key={mii.id}
-						className="flex flex-col relative bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600"
+						className={`flex flex-col relative bg-zinc-50 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300" : "border-zinc-300"}`}
 					>
 						<Carousel
 							images={[

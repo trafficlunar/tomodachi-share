@@ -31,7 +31,7 @@ export default async function Reports() {
 							<div className="flex gap-1 w-max">
 								<span
 									className={`text-xs font-semibold px-2 py-1 rounded-full border ${
-										report.reportType == "USER" ? "bg-red-200 text-red-800 border-orange-400" : "bg-cyan-200 text-cyan-800 border-cyan-400"
+										report.reportType == "USER" ? "bg-red-200 text-red-800 border-red-400" : "bg-cyan-200 text-cyan-800 border-cyan-400"
 									}`}
 								>
 									{report.reportType}

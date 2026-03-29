@@ -23,6 +23,10 @@ const editSchema = z.object({
 	name: nameSchema.optional(),
 	tags: tagsSchema.optional(),
 	description: z.string().trim().max(512).optional(),
+	quarantined: z
+		.enum(["true", "false"])
+		.transform((v) => v === "true")
+		.optional(),
 	makeup: z.enum(MiiMakeup).optional(),
 	miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
 	miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
@@ -77,6 +81,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		name: formData.get("name") ?? undefined,
 		tags: rawTags,
 		description: formData.get("description") ?? undefined,
+		quarantined: formData.get("quarantined") ?? undefined,
 		makeup: formData.get("makeup") ?? undefined,
 		miiPortraitImage: formData.get("miiPortraitImage"),
 		miiFeaturesImage: formData.get("miiFeaturesImage"),
@@ -87,7 +92,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	});
 
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
-	const { name, tags, description, makeup, miiPortraitImage, miiFeaturesImage, instructions, image1, image2, image3 } = parsed.data;
+	const { name, tags, description, quarantined, makeup, miiPortraitImage, miiFeaturesImage, instructions, image1, image2, image3 } = parsed.data;
 
 	// Validate image files
 	const images: File[] = [];
@@ -115,11 +120,15 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		}
 	}
 
+	// Prevent non-admins from quarantining Miis
+	if (quarantined && session.user?.id != process.env.NEXT_PUBLIC_ADMIN_USER_ID) return rateLimit.sendResponse({ error: `You're not an admin!` }, 401);
+
 	// Edit Mii in database
 	const updateData: Prisma.MiiUpdateInput = {};
 	if (name !== undefined) updateData.name = profanity.censor(name); // Censor potentially inappropriate words
 	if (tags !== undefined) updateData.tags = tags.map((t) => profanity.censor(t));
 	if (description !== undefined) updateData.description = profanity.censor(description);
+	if (quarantined !== undefined) updateData.quarantined = quarantined;
 	if (makeup !== undefined) updateData.makeup = makeup;
 	if (instructions !== undefined) updateData.instructions = instructions;
 	if (images.length > 0) updateData.imageCount = images.length;

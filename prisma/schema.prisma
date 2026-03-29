@@ -75,6 +75,7 @@ model Mii {
   tags        String[]
   description String?     @db.VarChar(512)
   platform    MiiPlatform @default(THREE_DS)
+  quarantined Boolean     @default(false)
 
   instructions Json?
   gender       MiiGender?

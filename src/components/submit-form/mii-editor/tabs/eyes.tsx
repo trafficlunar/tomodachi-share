@@ -7,14 +7,14 @@ interface Props {
 	instructions: React.RefObject<SwitchMiiInstructions>;
 }
 
-const TABS: { name: keyof SwitchMiiInstructions["eyes"]; length: number; colorsDisabled?: boolean }[] = [
-	{ name: "main", length: 76 },
-	{ name: "eyelashesTop", length: 6, colorsDisabled: true },
-	{ name: "eyelashesBottom", length: 2, colorsDisabled: true },
-	{ name: "eyelidTop", length: 3, colorsDisabled: true },
-	{ name: "eyelidBottom", length: 3, colorsDisabled: true },
-	{ name: "eyeliner", length: 2 },
-	{ name: "pupil", length: 10, colorsDisabled: true },
+const TABS: { name: keyof SwitchMiiInstructions["eyes"]; colorsDisabled?: boolean }[] = [
+	{ name: "main" },
+	{ name: "eyelashesTop", colorsDisabled: true },
+	{ name: "eyelashesBottom", colorsDisabled: true },
+	{ name: "eyelidTop", colorsDisabled: true },
+	{ name: "eyelidBottom", colorsDisabled: true },
+	{ name: "eyeliner" },
+	{ name: "pupil", colorsDisabled: true },
 ];
 
 export default function EyesTab({ instructions }: Props) {
