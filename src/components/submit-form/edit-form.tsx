@@ -268,7 +268,7 @@ export default function EditForm({ mii, likes }: Props) {
 					<>
 						<div className="w-full grid grid-cols-3 items-start">
 							<label htmlFor="makeup" className="font-semibold py-2">
-								Makeup
+								Face Paint
 							</label>
 
 							<div className="col-span-2 flex gap-1">
@@ -276,8 +276,8 @@ export default function EditForm({ mii, likes }: Props) {
 								<button
 									type="button"
 									onClick={() => setMakeup("FULL")}
-									aria-label="Full makeup"
-									data-tooltip="Full Makeup"
+									aria-label="Full Face Paint"
+									data-tooltip="Full Face Paint"
 									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${
 										makeup === "FULL" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 									}`}
@@ -289,8 +289,8 @@ export default function EditForm({ mii, likes }: Props) {
 								<button
 									type="button"
 									onClick={() => setMakeup("PARTIAL")}
-									aria-label="Partial makeup"
-									data-tooltip="Partial Makeup"
+									aria-label="Partial Face Paint"
+									data-tooltip="Partial Face Paint"
 									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400! ${
 										makeup === "PARTIAL" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 									}`}
@@ -302,8 +302,8 @@ export default function EditForm({ mii, likes }: Props) {
 								<button
 									type="button"
 									onClick={() => setMakeup("NONE")}
-									aria-label="No makeup"
-									data-tooltip="No Makeup"
+									aria-label="No Face Paint"
+									data-tooltip="No Face Paint"
 									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-gray-400! after:border-gray-400! before:border-b-gray-400! ${
 										makeup === "NONE" ? "bg-gray-200 border-gray-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 									}`}
