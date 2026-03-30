@@ -22,7 +22,7 @@ interface Props {
 export default function AuthorButtons({ mii }: Props) {
 	const session = useSession();
 
-	if (!session.data || Number(session.data.user?.id) !== mii.userId || Number(session.data.user?.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID))
+	if (!session.data || (Number(session.data.user?.id) !== mii.userId && Number(session.data.user?.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)))
 		return null;
 
 	return (
