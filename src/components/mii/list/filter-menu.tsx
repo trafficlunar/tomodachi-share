@@ -128,11 +128,6 @@ export default function FilterMenu() {
 						</>
 					)}
 
-					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium w-full mt-2 mb-1">
-						<hr className="grow border-zinc-300" />
-						<span>Other</span>
-						<hr className="grow border-zinc-300" />
-					</div>
 					<OtherFilters />
 				</div>
 			)}

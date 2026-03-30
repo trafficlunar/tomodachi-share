@@ -181,7 +181,7 @@ export default function HeadTab({ instructions }: Props) {
 									type="number"
 									id="age"
 									min={1}
-									max={100}
+									max={1000}
 									className="pill input text-sm py-1! px-3! w-full"
 									value={birthday.age ?? undefined}
 									onChange={(e) => {

@@ -1,13 +1,13 @@
 "use client";
 
-import { Icon } from "@iconify/react";
 import { MiiPlatform } from "@prisma/client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useState, useTransition } from "react";
 
 export default function OtherFilters() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const pathname = usePathname();
 	const [, startTransition] = useTransition();
 
 	const platform = (searchParams.get("platform") as MiiPlatform) || undefined;
@@ -48,22 +48,35 @@ export default function OtherFilters() {
 		});
 	};
 
+	const showAllowCopying = platform !== "SWITCH";
+	const showQuarantined = !pathname.startsWith("/profile");
+
+	if (!showAllowCopying && !showQuarantined) return null;
+
 	return (
 		<>
-			{platform === "THREE_DS" && (
-				<div className="flex justify-between items-center w-full">
+			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium w-full mt-2 mb-1">
+				<hr className="grow border-zinc-300" />
+				<span>Other</span>
+				<hr className="grow border-zinc-300" />
+			</div>
+
+			{showAllowCopying && (
+				<div className="flex justify-between items-center w-full mb-1">
 					<label htmlFor="allowCopying" className="text-sm">
 						Allow Copying
 					</label>
 					<input type="checkbox" id="allowCopying" className="checkbox-alt" checked={allowCopying} onChange={handleChangeAllowCopying} />
 				</div>
 			)}
-			<div className="flex justify-between items-center w-full">
-				<label htmlFor="quarantined" className="text-sm">
-					Show Controversial Miis
-				</label>
-				<input type="checkbox" id="quarantined" className="checkbox-alt" checked={quarantined} onChange={handleChangeQuarantined} />
-			</div>
+			{showQuarantined && (
+				<div className="flex justify-between items-center w-full">
+					<label htmlFor="quarantined" className="text-sm">
+						Show Controversial Miis
+					</label>
+					<input type="checkbox" id="quarantined" className="checkbox-alt" checked={quarantined} onChange={handleChangeQuarantined} />
+				</div>
+			)}
 		</>
 	);
 }

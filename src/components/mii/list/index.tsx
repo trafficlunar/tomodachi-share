@@ -1,7 +1,4 @@
-import Link from "next/link";
-
 import { Prisma } from "@prisma/client";
-import { Icon } from "@iconify/react";
 
 import crypto from "crypto";
 import seedrandom from "seedrandom";
@@ -11,9 +8,6 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 import SortSelect from "./sort-select";
-import Carousel from "../../carousel";
-import LikeButton from "../../like-button";
-import DeleteMiiButton from "../delete-mii-button";
 import Pagination from "./pagination";
 import FilterMenu from "./filter-menu";
 import MiiGrid from "./mii-grid";
@@ -61,7 +55,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		// Makeup
 		...(makeup && { makeup: { equals: makeup } }),
 		// Quarantined
-		...(!quarantined && { quarantined: false }),
+		...(!quarantined && !userId && { quarantined: false }),
 		// Profiles
 		...(userId && { userId }),
 	};

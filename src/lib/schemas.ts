@@ -288,7 +288,7 @@ export const switchMiiInstructionsSchema = z
 			.object({
 				day: z.number().int().min(1).max(31).optional(),
 				month: z.number().int().min(1).max(12).optional(),
-				age: z.number().int().min(1).max(100).optional(),
+				age: z.number().int().min(1).max(1000).optional(),
 				dontAge: z.boolean().optional(),
 			})
 			.optional(),
