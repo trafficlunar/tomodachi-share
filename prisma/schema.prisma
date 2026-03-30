@@ -94,6 +94,14 @@ model Mii {
   punishmentId Int?
   punishments  MiiPunishment[]
 
+  @@index([tags], type: Gin)
+  @@index([createdAt])
+  @@index([quarantined, createdAt(sort: Desc)])
+  @@index([platform, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([gender])
+  @@index([makeup])
+  @@index([quarantined, id])
   @@map("miis")
 }
 
@@ -105,6 +113,7 @@ model Like {
   mii  Mii  @relation(fields: [miiId], references: [id], onDelete: Cascade)
 
   @@id([userId, miiId])
+  @@index([miiId])
   @@map("likes")
 }
 
