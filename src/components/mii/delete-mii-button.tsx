@@ -21,6 +21,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 	const [isVisible, setIsVisible] = useState(false);
 
 	const [error, setError] = useState<string | undefined>(undefined);
+	const [inputMiiName, setInputMiiName] = useState("");
 
 	const handleSubmit = async () => {
 		const response = await fetch(`/api/mii/${miiId}/delete`, { method: "DELETE" });
@@ -85,7 +86,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 
 							<p className="text-sm text-zinc-500">Are you sure? This will delete your Mii permanently. This action cannot be undone.</p>
 
-							<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 flex">
+							<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 flex overflow-hidden">
 								<Image src={`/mii/${miiId}/image?type=mii`} alt="mii image" width={128} height={128} />
 								<div className="p-4">
 									<p className="text-xl font-bold line-clamp-1" title={miiName}>
@@ -95,13 +96,21 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 								</div>
 							</div>
 
+							<p className="text-sm text-zinc-500 my-2">Type the Mii's name below to delete:</p>
+							<input type="text" className="pill input" value={inputMiiName} onChange={(e) => setInputMiiName(e.target.value)} />
+
 							{error && <span className="text-red-400 font-bold mt-2">Error: {error}</span>}
 
 							<div className="flex justify-end gap-2 mt-4">
 								<button onClick={close} className="pill button">
 									Cancel
 								</button>
-								<SubmitButton onClick={handleSubmit} text="Delete" className="bg-red-400! border-red-500! hover:bg-red-500!" />
+								<SubmitButton
+									onClick={handleSubmit}
+									text="Delete"
+									disabled={inputMiiName != miiName}
+									className="bg-red-400! border-red-500! hover:bg-red-500! disabled:bg-red-200! disabled:border-red-300!"
+								/>
 							</div>
 						</div>
 					</div>,
