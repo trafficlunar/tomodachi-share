@@ -97,7 +97,7 @@ export default function ImageViewer({ src, alt, width, height, unoptimized = fal
 							type="button"
 							aria-label="Close"
 							onClick={close}
-							className={`pill button p-2! aspect-square text-2xl absolute top-4 right-4 ${isVisible ? "opacity-100" : "opacity-0"}`}
+							className={`pill button p-2! size-11 aspect-square text-2xl absolute top-4 right-4 shrink-0 ${isVisible ? "opacity-100" : "opacity-0"}`}
 						>
 							<Icon icon="material-symbols:close-rounded" />
 						</button>
