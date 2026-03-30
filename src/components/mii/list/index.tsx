@@ -189,7 +189,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 				</div>
 			</div>
 
-			<MiiGrid miis={miis} />
+			<MiiGrid miis={miis} userId={userId} />
 			<Pagination lastPage={lastPage} />
 		</div>
 	);

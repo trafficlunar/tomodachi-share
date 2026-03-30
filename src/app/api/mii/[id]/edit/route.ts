@@ -163,7 +163,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 			await Promise.all(
 				images.map(async (image, index) => {
 					const buffer = Buffer.from(await image.arrayBuffer());
-					const pngBuffer = await sharp(buffer).png({ quality: 85 }).toBuffer();
+					const pngBuffer = await sharp(buffer).resize({ height: 800, fit: "inside", withoutEnlargement: true }).png({ quality: 85 }).toBuffer();
 					const fileLocation = path.join(miiUploadsDirectory, `image${index}.png`);
 
 					await fs.writeFile(fileLocation, pngBuffer);
