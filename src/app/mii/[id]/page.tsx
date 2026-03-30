@@ -11,7 +11,7 @@ import { MiiPlatform } from "@prisma/client";
 
 import LikeButton from "@/components/like-button";
 import ImageViewer from "@/components/image-viewer";
-import DeleteMiiButton from "@/components/mii/delete-mii-button";
+import AuthorButtons from "@/components/mii/author-buttons";
 import ShareMiiButton from "@/components/mii/share-mii-button";
 import ThreeDsScanTutorialButton from "@/components/tutorial/3ds-scan";
 import SwitchScanTutorialButton from "@/components/tutorial/switch-add-mii";
@@ -359,15 +359,7 @@ export default async function MiiPage({ params }: Props) {
 
 						{/* Buttons */}
 						<div className="flex gap-3 w-fit bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 text-3xl text-orange-400 max-md:place-self-center *:size-12 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-xs">
-							{session && (Number(session.user?.id) === mii.userId || Number(session.user?.id) === Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) && (
-								<>
-									<Link aria-label="Edit Mii" href={`/edit/${mii.id}`}>
-										<Icon icon="mdi:pencil" />
-										<span>Edit</span>
-									</Link>
-									<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy ?? 0} inMiiPage />
-								</>
-							)}
+							<AuthorButtons mii={mii} />
 
 							<ShareMiiButton miiId={mii.id} />
 							<Link aria-label="Report Mii" href={`/report/mii/${mii.id}`}>

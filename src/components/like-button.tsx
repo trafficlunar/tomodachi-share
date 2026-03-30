@@ -56,6 +56,10 @@ export default function LikeButton({ likes, isLiked, miiId, disabled, abbreviate
 		loadIcons(["icon-park-solid:like", "icon-park-outline:like"]);
 	}, []);
 
+	useEffect(() => {
+		setIsLikedState(isLiked);
+	}, [isLiked]);
+
 	return (
 		<button
 			onClick={onClick}

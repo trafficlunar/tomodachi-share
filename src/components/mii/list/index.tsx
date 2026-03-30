@@ -16,6 +16,7 @@ import LikeButton from "../../like-button";
 import DeleteMiiButton from "../delete-mii-button";
 import Pagination from "./pagination";
 import FilterMenu from "./filter-menu";
+import MiiGrid from "./mii-grid";
 
 interface Props {
 	searchParams: { [key: string]: string | string[] | undefined };
@@ -102,7 +103,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 
 	let totalCount: number;
 	let filteredCount: number;
-	let list: Prisma.MiiGetPayload<{ select: typeof select }>[];
+	let miis: Prisma.MiiGetPayload<{ select: typeof select }>[];
 
 	if (sort === "random") {
 		// Get all IDs that match the where conditions
@@ -129,7 +130,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		// Convert to number[] array
 		const selectedIds = matchingIds.slice(skip, skip + limit).map((i) => i.id);
 
-		list = await prisma.mii.findMany({
+		miis = await prisma.mii.findMany({
 			where: {
 				id: { in: selectedIds },
 			},
@@ -148,7 +149,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 			orderBy = [{ createdAt: "desc" }, { name: "asc" }];
 		}
 
-		[totalCount, filteredCount, list] = await Promise.all([
+		[totalCount, filteredCount, miis] = await Promise.all([
 			prisma.mii.count({ where: { ...where, userId } }),
 			prisma.mii.count({ where, skip, take: limit }),
 			prisma.mii.findMany({
@@ -162,11 +163,6 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	}
 
 	const lastPage = Math.ceil(totalCount / limit);
-	const miis = list.map(({ _count, likedBy, ...rest }) => ({
-		...rest,
-		likes: _count.likedBy,
-		isLiked: session?.user?.id ? likedBy.length > 0 : false,
-	}));
 
 	return (
 		<div className="w-full">
@@ -193,64 +189,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 				</div>
 			</div>
 
-			<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[30rem]:grid-cols-1">
-				{miis.map((mii) => (
-					<div
-						key={mii.id}
-						className={`flex flex-col relative bg-zinc-50 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300" : "border-zinc-300"}`}
-					>
-						<Carousel
-							images={[
-								`/mii/${mii.id}/image?type=mii`,
-								...(mii.platform === "THREE_DS" ? [`/mii/${mii.id}/image?type=qr-code`] : [`/mii/${mii.id}/image?type=features`]),
-								...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`),
-							]}
-						/>
-
-						<div className="p-4 flex flex-col gap-1 h-full">
-							<div className="flex justify-between items-center">
-								<Link href={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1 w-full text-ellipsis wrap-break-word" title={mii.name}>
-									{mii.name}
-								</Link>
-								<div title={mii.platform === "SWITCH" ? "Switch" : "3DS"} className="-mr-3 text-[1.25rem] opacity-25">
-									{mii.platform === "SWITCH" ? (
-										<Icon icon="cib:nintendo-switch" className="text-red-400" />
-									) : (
-										<Icon icon="cib:nintendo-3ds" className="text-sky-400" />
-									)}
-								</div>
-							</div>
-							<div id="tags" className="flex flex-wrap gap-1">
-								{mii.tags.map((tag) => (
-									<Link href={{ query: { tags: tag } }} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
-										{tag}
-									</Link>
-								))}
-							</div>
-
-							<div className="mt-auto grid grid-cols-2 items-center">
-								<LikeButton likes={mii.likes} miiId={mii.id} isLiked={mii.isLiked} abbreviate />
-
-								{!userId && (
-									<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis whitespace-nowrap">
-										@{mii.user?.name}
-									</Link>
-								)}
-
-								{userId && Number(session?.user?.id) == userId && (
-									<div className="flex gap-1 text-2xl justify-end text-zinc-400">
-										<Link href={`/edit/${mii.id}`} title="Edit Mii" aria-label="Edit Mii" data-tooltip="Edit">
-											<Icon icon="mdi:pencil" />
-										</Link>
-										<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likes} />
-									</div>
-								)}
-							</div>
-						</div>
-					</div>
-				))}
-			</div>
-
+			<MiiGrid miis={miis} />
 			<Pagination lastPage={lastPage} />
 		</div>
 	);
