@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FileWithPath } from "react-dropzone";
-import { Mii, MiiMakeup } from "@prisma/client";
+import { Mii, MiiGender, MiiMakeup } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 import { nameSchema, tagsSchema } from "@/lib/schemas";
@@ -65,6 +65,7 @@ export default function EditForm({ mii, likes }: Props) {
 	const [name, setName] = useState(mii.name);
 	const [tags, setTags] = useState(mii.tags);
 	const [description, setDescription] = useState(mii.description);
+	const [gender, setGender] = useState<MiiGender>(mii.gender ?? "MALE");
 	const [makeup, setMakeup] = useState<MiiMakeup>(mii.makeup ?? "PARTIAL");
 	const [miiPortraitUri, setMiiPortraitUri] = useState<string | undefined>(`/mii/${mii.id}/image?type=mii`);
 	const [miiFeaturesUri, setMiiFeaturesUri] = useState<string | undefined>(`/mii/${mii.id}/image?type=features`);
@@ -91,6 +92,7 @@ export default function EditForm({ mii, likes }: Props) {
 		if (name != mii.name) formData.append("name", name);
 		if (tags != mii.tags) formData.append("tags", JSON.stringify(tags));
 		if (description && description != mii.description) formData.append("description", description);
+		if (gender != mii.gender) formData.append("gender", gender);
 		if (makeup != mii.makeup) formData.append("makeup", makeup);
 		if (miiPortraitUri) formData.append("miiPortraitUri", miiPortraitUri);
 		if (quarantined != mii.quarantined) formData.append("quarantined", JSON.stringify(quarantined));
@@ -266,6 +268,49 @@ export default function EditForm({ mii, likes }: Props) {
 				{/* Makeup/Images/Instructions (Switch only) */}
 				{mii.platform === "SWITCH" && (
 					<>
+						<div className="w-full grid grid-cols-3 items-start z-20">
+							<label htmlFor="gender" className="font-semibold py-2">
+								Gender
+							</label>
+							<div className="col-span-2 flex gap-1">
+								<button
+									type="button"
+									onClick={() => setGender("MALE")}
+									aria-label="Filter for Male Miis"
+									data-tooltip="Male"
+									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-blue-400! after:border-blue-400! before:border-b-blue-400!  ${
+										gender === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+									}`}
+								>
+									<Icon icon="foundation:male" className="text-blue-400" />
+								</button>
+
+								<button
+									type="button"
+									onClick={() => setGender("FEMALE")}
+									aria-label="Filter for Female Miis"
+									data-tooltip="Female"
+									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${
+										gender === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+									}`}
+								>
+									<Icon icon="foundation:female" className="text-pink-400" />
+								</button>
+
+								<button
+									type="button"
+									onClick={() => setGender("NONBINARY")}
+									aria-label="Filter for Nonbinary Miis"
+									data-tooltip="Nonbinary"
+									className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400!  ${
+										gender === "NONBINARY" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
+									}`}
+								>
+									<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
+								</button>
+							</div>
+						</div>
+
 						<div className="w-full grid grid-cols-3 items-start">
 							<label htmlFor="makeup" className="font-semibold py-2">
 								Face Paint

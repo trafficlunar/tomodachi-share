@@ -8,7 +8,7 @@ export default function Countdown() {
 	const [minutes, setMinutes] = useState(59);
 	const [seconds, setSeconds] = useState(59);
 
-	const targetDate = new Date("2026-04-16T00:00:00Z").getTime();
+	const targetDate = new Date("2026-04-16T12:00:00Z").getTime();
 
 	useEffect(() => {
 		const interval = setInterval(() => {

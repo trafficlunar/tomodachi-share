@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
-import { Mii, MiiMakeup, Prisma } from "@prisma/client";
+import { Mii, MiiGender, MiiMakeup, Prisma } from "@prisma/client";
 
 import fs from "fs/promises";
 import path from "path";
@@ -27,6 +27,7 @@ const editSchema = z.object({
 		.enum(["true", "false"])
 		.transform((v) => v === "true")
 		.optional(),
+	gender: z.enum(MiiGender).optional(),
 	makeup: z.enum(MiiMakeup).optional(),
 	miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
 	miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
@@ -41,7 +42,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
-	const rateLimit = new RateLimit(request, 3); // no grouped pathname; edit each mii 1 time a minute
+	const rateLimit = new RateLimit(request, 2); // no grouped pathname; edit each mii 2 times a minute
 	const check = await rateLimit.handle();
 	if (check) return check;
 
@@ -82,6 +83,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		tags: rawTags,
 		description: formData.get("description") ?? undefined,
 		quarantined: formData.get("quarantined") ?? undefined,
+		gender: formData.get("gender") ?? undefined,
 		makeup: formData.get("makeup") ?? undefined,
 		miiPortraitImage: formData.get("miiPortraitImage"),
 		miiFeaturesImage: formData.get("miiFeaturesImage"),
@@ -92,7 +94,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	});
 
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
-	const { name, tags, description, quarantined, makeup, miiPortraitImage, miiFeaturesImage, instructions, image1, image2, image3 } = parsed.data;
+	const { name, tags, description, quarantined, gender, makeup, miiPortraitImage, miiFeaturesImage, instructions, image1, image2, image3 } = parsed.data;
 
 	// Validate image files
 	const images: File[] = [];
@@ -129,6 +131,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (tags !== undefined) updateData.tags = tags.map((t) => profanity.censor(t));
 	if (description !== undefined) updateData.description = profanity.censor(description);
 	if (quarantined !== undefined) updateData.quarantined = quarantined;
+	if (mii.platform === "SWITCH" && gender !== undefined) updateData.gender = gender;
 	if (makeup !== undefined) updateData.makeup = makeup;
 	if (instructions !== undefined) updateData.instructions = instructions;
 	if (images.length > 0) updateData.imageCount = images.length;
