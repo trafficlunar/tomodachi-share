@@ -123,7 +123,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	}
 
 	// Prevent non-admins from quarantining Miis
-	if (quarantined && session.user?.id != process.env.NEXT_PUBLIC_ADMIN_USER_ID) return rateLimit.sendResponse({ error: `You're not an admin!` }, 401);
+	if (quarantined && session.user?.id?.toString() !== process.env.NEXT_PUBLIC_ADMIN_USER_ID)
+		return rateLimit.sendResponse({ error: `You're not an admin!` }, 401);
 
 	// Edit Mii in database
 	const updateData: Prisma.MiiUpdateInput = {};
@@ -136,7 +137,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (instructions !== undefined) updateData.instructions = instructions;
 	if (images.length > 0) updateData.imageCount = images.length;
 
-	if (Object.keys(updateData).length == 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);
+	if (Object.keys(updateData).length === 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);
 	const updatedMii = await prisma.mii.update({
 		where: {
 			id: miiId,
@@ -230,15 +231,28 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		}
 	}
 
-	if (description === undefined) {
-		// If images or description were not changed, regenerate the metadata image
-		try {
-			await generateMetadataImage(updatedMii, updatedMii.user.name!);
-		} catch (error) {
-			console.error(error);
-			return rateLimit.sendResponse({ error: `Failed to generate 'metadata' type image for mii ${miiId}` }, 500);
-		}
+	try {
+		await generateMetadataImage(updatedMii, updatedMii.user.name!);
+	} catch (error) {
+		console.error(error);
+		return rateLimit.sendResponse({ error: `Failed to generate 'metadata' type image for mii ${miiId}` }, 500);
 	}
+
+	// Tell Cloudflare to purge cache for the changed pages
+	fetch(`https://api.cloudflare.com/client/v4/zones/${process.env.CLOUDFLARE_ZONE_ID}/purge_cache`, {
+		method: "POST",
+		headers: { Authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`, "Content-Type": "application/json" },
+		body: JSON.stringify({
+			files: [
+				`${process.env.NEXT_PUBLIC_BASE_URL}/mii/${miiId}`,
+				`${process.env.NEXT_PUBLIC_BASE_URL}/mii/${miiId}/image?type=mii`,
+				`${process.env.NEXT_PUBLIC_BASE_URL}/mii/${miiId}/image?type=features`,
+			],
+		}),
+	}).catch((err) => {
+		console.error("Cloudflare cache purge failed:", err);
+		Sentry.captureException(err, { extra: { stage: "cloudflare-purge", miiId } });
+	});
 
 	return rateLimit.sendResponse({ success: true });
 }
