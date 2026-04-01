@@ -37,7 +37,7 @@ export default async function ProfileSettingsPage({ searchParams }: Props) {
 			</div>
 
 			<Suspense fallback={<Skeleton />}>
-				<MiiList inLikesPage searchParams={await searchParams} />
+				<MiiList parentPage="likes" searchParams={await searchParams} />
 			</Suspense>
 		</div>
 	);

@@ -8,6 +8,7 @@ import ControlCenter from "@/components/admin/control-center";
 import RegenerateImagesButton from "@/components/admin/regenerate-images";
 import UserManagement from "@/components/admin/user-management";
 import Reports from "@/components/admin/reports";
+import MiiList from "@/components/mii/list";
 
 export const metadata: Metadata = {
 	title: "Admin - TomodachiShare",
@@ -18,7 +19,11 @@ export const metadata: Metadata = {
 	},
 };
 
-export default async function AdminPage() {
+interface Props {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function AdminPage({ searchParams }: Props) {
 	const session = await auth();
 
 	if (!session || Number(session.user?.id) !== Number(process.env.NEXT_PUBLIC_ADMIN_USER_ID)) redirect("/404");
@@ -66,6 +71,14 @@ export default async function AdminPage() {
 			</div>
 
 			<Reports />
+
+			{/* Queue */}
+			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
+				<hr className="grow border-zinc-300" />
+				<span>Reports</span>
+				<hr className="grow border-zinc-300" />
+			</div>
+			<MiiList parentPage="admin" searchParams={await searchParams} />
 		</div>
 	);
 }

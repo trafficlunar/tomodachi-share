@@ -13,11 +13,12 @@ import Carousel from "@/components/carousel";
 interface Props {
 	miis: Prisma.MiiGetPayload<{ include: { user: { select: { id: true; name: true } }; _count: { select: { likedBy: true } } } }>[];
 	userId?: number;
+	parentPage?: string;
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function MiiGrid({ miis, userId }: Props) {
+export default function MiiGrid({ miis, userId, parentPage }: Props) {
 	const session = useSession();
 	const ids = miis.map((m) => m.id).join(",");
 	const { data } = useSWR<number[]>(session.data?.user && miis.length > 0 ? `/api/mii/has-liked?ids=${ids}` : null, fetcher, {
@@ -77,6 +78,13 @@ export default function MiiGrid({ miis, userId }: Props) {
 										<Icon icon="mdi:pencil" />
 									</Link>
 									<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy} />
+								</div>
+							)}
+							{parentPage === "admin" && (
+								<div className="flex gap-1 text-2xl justify-end text-zinc-400">
+									<button onClick={() => fetch(`/api/admin/accept-mii?id=${mii.id}`, { method: "PATCH" })} className="cursor-pointer">
+										<Icon icon="material-symbols:check-rounded" />
+									</button>
 								</div>
 							)}
 						</div>

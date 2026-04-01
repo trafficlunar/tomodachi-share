@@ -15,10 +15,10 @@ import MiiGrid from "./mii-grid";
 interface Props {
 	searchParams: { [key: string]: string | string[] | undefined };
 	userId?: number; // Profiles
-	inLikesPage?: boolean; // Self-explanatory
+	parentPage?: "likes" | "admin";
 }
 
-export default async function MiiList({ searchParams, userId, inLikesPage }: Props) {
+export default async function MiiList({ searchParams, userId, parentPage }: Props) {
 	const session = await auth();
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
@@ -28,7 +28,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
 
-	if (inLikesPage && session?.user?.id) {
+	if (parentPage === "likes" && session?.user?.id) {
 		const likedMiis = await prisma.like.findMany({
 			where: { userId: Number(session.user.id) },
 			select: { miiId: true },
@@ -36,10 +36,10 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		miiIdsLiked = likedMiis.map((like) => like.miiId);
 	}
 
-  const where: Prisma.MiiWhereInput = {
-    in_queue: false,
+	const where: Prisma.MiiWhereInput = {
+		in_queue: parentPage === "admin",
 		// Only show liked miis on likes page
-		...(inLikesPage && miiIdsLiked && { id: { in: miiIdsLiked } }),
+		...(parentPage === "likes" && miiIdsLiked && { id: { in: miiIdsLiked } }),
 		// Searching
 		...(query && {
 			OR: [{ name: { contains: query, mode: "insensitive" } }, { tags: { has: query } }, { description: { contains: query, mode: "insensitive" } }],
@@ -184,7 +184,7 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 				</div>
 			</div>
 
-			<MiiGrid miis={miis} userId={userId} />
+			<MiiGrid miis={miis} userId={userId} parentPage={parentPage} />
 			<Pagination lastPage={lastPage} />
 		</div>
 	);
