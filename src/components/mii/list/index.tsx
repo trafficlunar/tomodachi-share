@@ -36,7 +36,8 @@ export default async function MiiList({ searchParams, userId, inLikesPage }: Pro
 		miiIdsLiked = likedMiis.map((like) => like.miiId);
 	}
 
-	const where: Prisma.MiiWhereInput = {
+  const where: Prisma.MiiWhereInput = {
+    in_queue: false,
 		// Only show liked miis on likes page
 		...(inLikesPage && miiIdsLiked && { id: { in: miiIdsLiked } }),
 		// Searching

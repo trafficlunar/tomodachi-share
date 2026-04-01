@@ -75,267 +75,267 @@ export async function POST(request: NextRequest) {
 	const check = await rateLimit.handle();
 	if (check) return check;
 
-	return rateLimit.sendResponse({ error: "Submissions are temporarily disabled" }, 503);
-	// const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
-	// const { value } = await response.json();
-	// if (!value) return rateLimit.sendResponse({ error: "Submissions are temporarily disabled" }, 503);
+	const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
+	const { value } = await response.json();
+	if (!value) return rateLimit.sendResponse({ error: "Submissions are temporarily disabled" }, 503);
 
-	// // Parse tags and QR code as JSON
-	// const formData = await request.formData();
+	// Parse tags and QR code as JSON
+	const formData = await request.formData();
 
-	// let rawTags: string[];
-	// let rawQrBytesRaw: string[]; // raw raw
-	// try {
-	// 	rawTags = JSON.parse(formData.get("tags") as string);
-	// 	rawQrBytesRaw = JSON.parse(formData.get("qrBytesRaw") as string);
-	// } catch (error) {
-	// 	Sentry.captureException(error, {
-	// 		extra: { stage: "submit-json-parse" },
-	// 	});
-	// 	return rateLimit.sendResponse({ error: "Invalid JSON in tags or QR code data" }, 400);
-	// }
+	let rawTags: string[];
+	let rawQrBytesRaw: string[]; // raw raw
+	try {
+		rawTags = JSON.parse(formData.get("tags") as string);
+		rawQrBytesRaw = JSON.parse(formData.get("qrBytesRaw") as string);
+	} catch (error) {
+		Sentry.captureException(error, {
+			extra: { stage: "submit-json-parse" },
+		});
+		return rateLimit.sendResponse({ error: "Invalid JSON in tags or QR code data" }, 400);
+	}
 
-	// // Minify instructions to save space and improve user experience
-	// let minifiedInstructions: Partial<SwitchMiiInstructions> | undefined;
-	// if (formData.get("platform") === "SWITCH")
-	// 	minifiedInstructions = minifyInstructions(JSON.parse((formData.get("instructions") as string) ?? "{}") as SwitchMiiInstructions);
+	// Minify instructions to save space and improve user experience
+	let minifiedInstructions: Partial<SwitchMiiInstructions> | undefined;
+	if (formData.get("platform") === "SWITCH")
+		minifiedInstructions = minifyInstructions(JSON.parse((formData.get("instructions") as string) ?? "{}") as SwitchMiiInstructions);
 
-	// // Parse and check all submission info
-	// const parsed = submitSchema.safeParse({
-	// 	platform: formData.get("platform"),
-	// 	name: formData.get("name"),
-	// 	tags: rawTags,
-	// 	description: formData.get("description"),
+	// Parse and check all submission info
+	const parsed = submitSchema.safeParse({
+		platform: formData.get("platform"),
+		name: formData.get("name"),
+		tags: rawTags,
+		description: formData.get("description"),
 
-	// 	gender: formData.get("gender") ?? undefined, // ZOD MOMENT
-	// 	makeup: formData.get("makeup") ?? undefined,
-	// 	miiPortraitImage: formData.get("miiPortraitImage"),
-	// 	miiFeaturesImage: formData.get("miiFeaturesImage"),
-	// 	instructions: minifiedInstructions,
+		gender: formData.get("gender") ?? undefined, // ZOD MOMENT
+		makeup: formData.get("makeup") ?? undefined,
+		miiPortraitImage: formData.get("miiPortraitImage"),
+		miiFeaturesImage: formData.get("miiFeaturesImage"),
+		instructions: minifiedInstructions,
 
-	// 	qrBytesRaw: rawQrBytesRaw,
+		qrBytesRaw: rawQrBytesRaw,
 
-	// 	image1: formData.get("image1"),
-	// 	image2: formData.get("image2"),
-	// 	image3: formData.get("image3"),
-	// });
+		image1: formData.get("image1"),
+		image2: formData.get("image2"),
+		image3: formData.get("image3"),
+	});
 
-	// if (!parsed.success) {
-	// 	const firstIssue = parsed.error.issues[0];
-	// 	const path = firstIssue.path.length ? firstIssue.path.join(".") : "root";
-	// 	const error = `${path}: ${firstIssue.message}`;
-	// 	const issues = parsed.error.issues;
-	// 	const hasInstructionsErrors = issues.some((issue) => issue.path[0] === "instructions");
+	if (!parsed.success) {
+		const firstIssue = parsed.error.issues[0];
+		const path = firstIssue.path.length ? firstIssue.path.join(".") : "root";
+		const error = `${path}: ${firstIssue.message}`;
+		const issues = parsed.error.issues;
+		const hasInstructionsErrors = issues.some((issue) => issue.path[0] === "instructions");
 
-	// 	if (hasInstructionsErrors) {
-	// 		Sentry.captureException(error, {
-	// 			extra: { issues, rawInstructions: formData.get("instructions"), stage: "submit-instructions" },
-	// 		});
-	// 	}
+		if (hasInstructionsErrors) {
+			Sentry.captureException(error, {
+				extra: { issues, rawInstructions: formData.get("instructions"), stage: "submit-instructions" },
+			});
+		}
 
-	// 	return rateLimit.sendResponse({ error }, 400);
-	// }
-	// const {
-	// 	platform,
-	// 	name: uncensoredName,
-	// 	tags: uncensoredTags,
-	// 	description: uncensoredDescription,
-	// 	qrBytesRaw,
-	// 	gender,
-	// 	makeup,
-	// 	miiPortraitImage,
-	// 	miiFeaturesImage,
-	// 	image1,
-	// 	image2,
-	// 	image3,
-	// } = parsed.data;
+		return rateLimit.sendResponse({ error }, 400);
+	}
+	const {
+		platform,
+		name: uncensoredName,
+		tags: uncensoredTags,
+		description: uncensoredDescription,
+		qrBytesRaw,
+		gender,
+		makeup,
+		miiPortraitImage,
+		miiFeaturesImage,
+		image1,
+		image2,
+		image3,
+	} = parsed.data;
 
-	// // Censor potential inappropriate words
-	// const name = profanity.censor(uncensoredName);
-	// const tags = uncensoredTags.map((t) => profanity.censor(t));
-	// const description = uncensoredDescription && profanity.censor(uncensoredDescription);
+	// Censor potential inappropriate words
+	const name = profanity.censor(uncensoredName);
+	const tags = uncensoredTags.map((t) => profanity.censor(t));
+	const description = uncensoredDescription && profanity.censor(uncensoredDescription);
 
-	// // Validate image files
-	// const customImages: File[] = [];
+	// Validate image files
+	const customImages: File[] = [];
 
-	// for (const img of [image1, image2, image3]) {
-	// 	if (!img) continue;
+	for (const img of [image1, image2, image3]) {
+		if (!img) continue;
 
-	// 	const imageValidation = await validateImage(img);
-	// 	if (imageValidation.valid) {
-	// 		customImages.push(img);
-	// 	} else {
-	// 		return rateLimit.sendResponse({ error: `Failed to verify custom image: ${imageValidation.error}` }, imageValidation.status ?? 400);
-	// 	}
-	// }
+		const imageValidation = await validateImage(img);
+		if (imageValidation.valid) {
+			customImages.push(img);
+		} else {
+			return rateLimit.sendResponse({ error: `Failed to verify custom image: ${imageValidation.error}` }, imageValidation.status ?? 400);
+		}
+	}
 
-	// // Check Mii portrait & features image (Switch)
-	// if (platform === "SWITCH") {
-	// 	const portraitValidation = await validateImage(miiPortraitImage);
-	// 	const featuresValidation = await validateImage(miiFeaturesImage);
-	// 	if (!portraitValidation.valid)
-	// 		return rateLimit.sendResponse({ error: `Failed to verify portrait: ${portraitValidation.error}` }, portraitValidation.status ?? 400);
-	// 	if (!featuresValidation.valid)
-	// 		return rateLimit.sendResponse({ error: `Failed to verify features: ${featuresValidation.error}` }, featuresValidation.status ?? 400);
-	// }
+	// Check Mii portrait & features image (Switch)
+	if (platform === "SWITCH") {
+		const portraitValidation = await validateImage(miiPortraitImage);
+		const featuresValidation = await validateImage(miiFeaturesImage);
+		if (!portraitValidation.valid)
+			return rateLimit.sendResponse({ error: `Failed to verify portrait: ${portraitValidation.error}` }, portraitValidation.status ?? 400);
+		if (!featuresValidation.valid)
+			return rateLimit.sendResponse({ error: `Failed to verify features: ${featuresValidation.error}` }, featuresValidation.status ?? 400);
+	}
 
-	// const qrBytes = new Uint8Array(qrBytesRaw ?? []);
+	const qrBytes = new Uint8Array(qrBytesRaw ?? []);
 
-	// // Convert QR code to JS (3DS)
-	// let conversion: { mii: Mii; tomodachiLifeMii: ThreeDsTomodachiLifeMii } | undefined;
-	// if (platform === "THREE_DS") {
-	// 	try {
-	// 		conversion = convertQrCode(qrBytes);
-	// 	} catch (error) {
-	// 		Sentry.captureException(error, { extra: { stage: "qr-conversion" } });
-	// 		return rateLimit.sendResponse({ error: error instanceof Error ? error.message : String(error) }, 400);
-	// 	}
-	// }
+	// Convert QR code to JS (3DS)
+	let conversion: { mii: Mii; tomodachiLifeMii: ThreeDsTomodachiLifeMii } | undefined;
+	if (platform === "THREE_DS") {
+		try {
+			conversion = convertQrCode(qrBytes);
+		} catch (error) {
+			Sentry.captureException(error, { extra: { stage: "qr-conversion" } });
+			return rateLimit.sendResponse({ error: error instanceof Error ? error.message : String(error) }, 400);
+		}
+	}
 
-	// // Create Mii in database
-	// const miiRecord = await prisma.mii.create({
-	// 	data: {
-	// 		userId: Number(session.user?.id),
-	// 		platform,
-	// 		name,
-	// 		tags,
-	// 		description,
-	// 		gender: gender ?? "MALE",
+	// Create Mii in database
+	const miiRecord = await prisma.mii.create({
+		data: {
+			userId: Number(session.user?.id),
+			platform,
+			name,
+			tags,
+			description,
+      gender: gender ?? "MALE",
+			in_queue: true,
 
-	// 		// Automatically detect certain information if on 3DS
-	// 		...(platform === "THREE_DS"
-	// 			? conversion && {
-	// 					firstName: conversion.tomodachiLifeMii.firstName,
-	// 					lastName: conversion.tomodachiLifeMii.lastName,
-	// 					gender: conversion.mii.gender == 0 ? MiiGender.MALE : MiiGender.FEMALE,
-	// 					islandName: conversion.tomodachiLifeMii.islandName,
-	// 					allowedCopying: conversion.mii.allowCopying,
-	// 				}
-	// 			: {
-	// 					instructions: minifiedInstructions,
-	// 					makeup: makeup ?? "PARTIAL",
-	// 				}),
-	// 	},
-	// });
+			// Automatically detect certain information if on 3DS
+			...(platform === "THREE_DS"
+				? conversion && {
+						firstName: conversion.tomodachiLifeMii.firstName,
+						lastName: conversion.tomodachiLifeMii.lastName,
+						gender: conversion.mii.gender == 0 ? MiiGender.MALE : MiiGender.FEMALE,
+						islandName: conversion.tomodachiLifeMii.islandName,
+						allowedCopying: conversion.mii.allowCopying,
+					}
+				: {
+						instructions: minifiedInstructions,
+						makeup: makeup ?? "PARTIAL",
+					}),
+		},
+	});
 
-	// // Ensure directories exist
-	// const miiUploadsDirectory = path.join(uploadsDirectory, miiRecord.id.toString());
-	// await fs.mkdir(miiUploadsDirectory, { recursive: true });
+	// Ensure directories exist
+	const miiUploadsDirectory = path.join(uploadsDirectory, miiRecord.id.toString());
+	await fs.mkdir(miiUploadsDirectory, { recursive: true });
 
-	// try {
-	// 	let portraitBuffer: Buffer | undefined;
+	try {
+		let portraitBuffer: Buffer | undefined;
 
-	// 	// Download the image of the Mii (3DS)
-	// 	if (platform === "THREE_DS") {
-	// 		const studioUrl = conversion?.mii.studioUrl({ width: 512 });
-	// 		const studioResponse = await fetch(studioUrl!);
+		// Download the image of the Mii (3DS)
+		if (platform === "THREE_DS") {
+			const studioUrl = conversion?.mii.studioUrl({ width: 512 });
+			const studioResponse = await fetch(studioUrl!);
 
-	// 		if (!studioResponse.ok) {
-	// 			throw new Error(`Failed to fetch Mii image ${studioResponse.status}`);
-	// 		}
+			if (!studioResponse.ok) {
+				throw new Error(`Failed to fetch Mii image ${studioResponse.status}`);
+			}
 
-	// 		portraitBuffer = Buffer.from(await studioResponse.arrayBuffer());
-	// 	} else if (platform === "SWITCH") {
-	// 		portraitBuffer = Buffer.from(await miiPortraitImage.arrayBuffer());
+			portraitBuffer = Buffer.from(await studioResponse.arrayBuffer());
+		} else if (platform === "SWITCH") {
+			portraitBuffer = Buffer.from(await miiPortraitImage.arrayBuffer());
 
-	// 		// Save features image
-	// 		const featuresBuffer = Buffer.from(await miiFeaturesImage.arrayBuffer());
-	// 		const pngBuffer = await sharp(featuresBuffer)
-	// 			.resize({
-	// 				height: 800,
-	// 				fit: "inside",
-	// 				withoutEnlargement: true,
-	// 			})
-	// 			.png({ quality: 85 })
-	// 			.toBuffer();
-	// 		const fileLocation = path.join(miiUploadsDirectory, "features.png");
-	// 		await fs.writeFile(fileLocation, pngBuffer);
-	// 	}
+			// Save features image
+			const featuresBuffer = Buffer.from(await miiFeaturesImage.arrayBuffer());
+			const pngBuffer = await sharp(featuresBuffer)
+				.resize({
+					height: 800,
+					fit: "inside",
+					withoutEnlargement: true,
+				})
+				.png({ quality: 85 })
+				.toBuffer();
+			const fileLocation = path.join(miiUploadsDirectory, "features.png");
+			await fs.writeFile(fileLocation, pngBuffer);
+		}
 
-	// 	// Save portrait image
-	// 	if (!portraitBuffer) throw Error("Mii portrait buffer not initialised");
-	// 	const pngBuffer = await sharp(portraitBuffer)
-	// 		.resize({
-	// 			height: 500,
-	// 			fit: "inside",
-	// 			withoutEnlargement: true,
-	// 		})
-	// 		.png({ quality: 85 })
-	// 		.toBuffer();
-	// 	const fileLocation = path.join(miiUploadsDirectory, "mii.png");
+		// Save portrait image
+		if (!portraitBuffer) throw Error("Mii portrait buffer not initialised");
+		const pngBuffer = await sharp(portraitBuffer)
+			.resize({
+				height: 500,
+				fit: "inside",
+				withoutEnlargement: true,
+			})
+			.png({ quality: 85 })
+			.toBuffer();
+		const fileLocation = path.join(miiUploadsDirectory, "mii.png");
 
-	// 	await fs.writeFile(fileLocation, pngBuffer);
-	// } catch (error) {
-	// 	// Clean up if something went wrong
-	// 	await prisma.mii.delete({ where: { id: miiRecord.id } });
+		await fs.writeFile(fileLocation, pngBuffer);
+	} catch (error) {
+		// Clean up if something went wrong
+		await prisma.mii.delete({ where: { id: miiRecord.id } });
 
-	// 	console.error("Failed to download/store Mii portrait/features:", error);
-	// 	Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "studio-image-download" } });
-	// 	return rateLimit.sendResponse({ error: "Failed to download/store Mii portrait/features" }, 500);
-	// }
+		console.error("Failed to download/store Mii portrait/features:", error);
+		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "studio-image-download" } });
+		return rateLimit.sendResponse({ error: "Failed to download/store Mii portrait/features" }, 500);
+	}
 
-	// try {
-	// 	await generateMetadataImage(miiRecord, session.user?.name!);
-	// } catch (error) {
-	// 	console.error("Failed to generate metadata image:", error);
-	// 	Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "metadata-image-generation" } });
-	// }
+	try {
+		await generateMetadataImage(miiRecord, session.user?.name!);
+	} catch (error) {
+		console.error("Failed to generate metadata image:", error);
+		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "metadata-image-generation" } });
+	}
 
-	// if (platform === "THREE_DS") {
-	// 	try {
-	// 		// Generate a new QR code for aesthetic reasons
-	// 		const byteString = String.fromCharCode(...qrBytes);
-	// 		const generatedCode = qrcode(0, "L");
-	// 		generatedCode.addData(byteString, "Byte");
-	// 		generatedCode.make();
+	if (platform === "THREE_DS") {
+		try {
+			// Generate a new QR code for aesthetic reasons
+			const byteString = String.fromCharCode(...qrBytes);
+			const generatedCode = qrcode(0, "L");
+			generatedCode.addData(byteString, "Byte");
+			generatedCode.make();
 
-	// 		// Store QR code
-	// 		const codeDataUrl = generatedCode.createDataURL();
-	// 		const codeBase64 = codeDataUrl.replace(/^data:image\/gif;base64,/, "");
-	// 		const codeBuffer = Buffer.from(codeBase64, "base64");
+			// Store QR code
+			const codeDataUrl = generatedCode.createDataURL();
+			const codeBase64 = codeDataUrl.replace(/^data:image\/gif;base64,/, "");
+			const codeBuffer = Buffer.from(codeBase64, "base64");
 
-	// 		// Compress and store
-	// 		const codePngBuffer = await sharp(codeBuffer).png({ quality: 85 }).toBuffer();
-	// 		const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.png");
+			// Compress and store
+			const codePngBuffer = await sharp(codeBuffer).png({ quality: 85 }).toBuffer();
+			const codeFileLocation = path.join(miiUploadsDirectory, "qr-code.png");
 
-	// 		await fs.writeFile(codeFileLocation, codePngBuffer);
-	// 	} catch (error) {
-	// 		// Clean up if something went wrong
-	// 		await prisma.mii.delete({ where: { id: miiRecord.id } });
+			await fs.writeFile(codeFileLocation, codePngBuffer);
+		} catch (error) {
+			// Clean up if something went wrong
+			await prisma.mii.delete({ where: { id: miiRecord.id } });
 
-	// 		console.error("Error processing Mii files:", error);
-	// 		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "file-processing" } });
-	// 		return rateLimit.sendResponse({ error: "Failed to process and store Mii files" }, 500);
-	// 	}
-	// }
+			console.error("Error processing Mii files:", error);
+			Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "file-processing" } });
+			return rateLimit.sendResponse({ error: "Failed to process and store Mii files" }, 500);
+		}
+	}
 
-	// // Compress and store user images
-	// try {
-	// 	await Promise.all(
-	// 		customImages.map(async (image, index) => {
-	// 			const buffer = Buffer.from(await image.arrayBuffer());
-	// 			const pngBuffer = await sharp(buffer).resize({ height: 800, fit: "inside", withoutEnlargement: true }).png({ quality: 85 }).toBuffer();
-	// 			const fileLocation = path.join(miiUploadsDirectory, `image${index}.png`);
+	// Compress and store user images
+	try {
+		await Promise.all(
+			customImages.map(async (image, index) => {
+				const buffer = Buffer.from(await image.arrayBuffer());
+				const pngBuffer = await sharp(buffer).resize({ height: 800, fit: "inside", withoutEnlargement: true }).png({ quality: 85 }).toBuffer();
+				const fileLocation = path.join(miiUploadsDirectory, `image${index}.png`);
 
-	// 			await fs.writeFile(fileLocation, pngBuffer);
-	// 		}),
-	// 	);
+				await fs.writeFile(fileLocation, pngBuffer);
+			}),
+		);
 
-	// 	// Update database to tell it how many images exist
-	// 	await prisma.mii.update({
-	// 		where: {
-	// 			id: miiRecord.id,
-	// 		},
-	// 		data: {
-	// 			imageCount: customImages.length,
-	// 		},
-	// 	});
-	// } catch (error) {
-	// 	console.error("Error storing user images:", error);
+		// Update database to tell it how many images exist
+		await prisma.mii.update({
+			where: {
+				id: miiRecord.id,
+			},
+			data: {
+				imageCount: customImages.length,
+			},
+		});
+	} catch (error) {
+		console.error("Error storing user images:", error);
 
-	// 	Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "user-image-storage" } });
-	// 	return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
-	// }
+		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "user-image-storage" } });
+		return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
+	}
 
-	// return rateLimit.sendResponse({ success: true, id: miiRecord.id });
+	return rateLimit.sendResponse({ success: true, id: miiRecord.id });
 }
