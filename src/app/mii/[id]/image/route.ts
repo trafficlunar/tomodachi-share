@@ -110,6 +110,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 	return rateLimit.sendResponse(buffer, 200, {
 		"Content-Type": "image/png",
 		"X-Robots-Tag": "noindex, noimageindex, nofollow",
-		"Cache-Control": "public, max-age=31536000, immutable",
+		"Cache-Control": "public, max-age=60, stale-while-revalidate=30",
 	});
 }
