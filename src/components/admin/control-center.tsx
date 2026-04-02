@@ -1,24 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { settings } from "@/lib/settings";
+import { useState } from "react";
 
 export default function ControlCenter() {
-	const [canSubmit, setCanSubmit] = useState(true);
+	const [canSubmit, setCanSubmit] = useState(settings.canSubmit);
+	const [isQueueEnabled, setIsQeueueEnabled] = useState(settings.queueEnabled);
 
 	const onClickSet = async () => {
 		await fetch("/api/admin/can-submit", { method: "PATCH", body: JSON.stringify(canSubmit) });
+		await fetch("/api/admin/queue", { method: "PATCH", body: JSON.stringify(isQueueEnabled) });
 	};
-
-	useEffect(() => {
-		const check = async () => {
-			const response = await fetch("/api/admin/can-submit");
-			const { value } = await response.json();
-
-			setCanSubmit(value);
-		};
-
-		check();
-	}, []);
 
 	return (
 		<div className="bg-orange-100 rounded-xl border-2 border-orange-400 p-2 flex flex-col gap-2">
@@ -32,6 +24,17 @@ export default function ControlCenter() {
 					onChange={(e) => setCanSubmit(e.target.checked)}
 				/>
 				<label htmlFor="submit">Enable Submissions</label>
+			</div>
+			<div className="flex items-center gap-2">
+				<input
+					id="queue"
+					type="checkbox"
+					className="checkbox size-6!"
+					placeholder="Enter banner text"
+					checked={isQueueEnabled}
+					onChange={(e) => setIsQeueueEnabled(e.target.checked)}
+				/>
+				<label htmlFor="queue">Enable Queue</label>
 			</div>
 
 			<div className="flex gap-2 self-end">

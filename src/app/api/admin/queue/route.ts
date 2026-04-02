@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { settings } from "@/lib/settings";
 
 export async function GET() {
-	return NextResponse.json({ success: true, value: settings.canSubmit });
+	return NextResponse.json({ success: true, value: settings.queueEnabled });
 }
 
 export async function PATCH(request: NextRequest) {
@@ -17,6 +17,6 @@ export async function PATCH(request: NextRequest) {
 	const validated = z.boolean().safeParse(body);
 	if (!validated.success) return NextResponse.json({ error: "Failed to validate body" }, { status: 400 });
 
-	settings.canSubmit = validated.data;
+	settings.queueEnabled = validated.data;
 	return NextResponse.json({ success: true });
 }

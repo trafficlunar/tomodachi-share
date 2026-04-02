@@ -21,6 +21,7 @@ import { ThreeDsTomodachiLifeMii } from "@/lib/three-ds-tomodachi-life-mii";
 
 import { SwitchMiiInstructions } from "@/types";
 import { minifyInstructions } from "@/lib/switch";
+import { settings } from "@/lib/settings";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
@@ -74,10 +75,7 @@ export async function POST(request: NextRequest) {
 	const rateLimit = new RateLimit(request, 3);
 	const check = await rateLimit.handle();
 	if (check) return check;
-
-	const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/can-submit`);
-	const { value } = await response.json();
-	if (!value) return rateLimit.sendResponse({ error: "Submissions are temporarily disabled" }, 503);
+	if (!settings.canSubmit) return rateLimit.sendResponse({ error: "Submissions are temporarily disabled" }, 503);
 
 	// Parse tags and QR code as JSON
 	const formData = await request.formData();
@@ -199,8 +197,8 @@ export async function POST(request: NextRequest) {
 			name,
 			tags,
 			description,
-      gender: gender ?? "MALE",
-			in_queue: true,
+			gender: gender ?? "MALE",
+			in_queue: settings.queueEnabled,
 
 			// Automatically detect certain information if on 3DS
 			...(platform === "THREE_DS"
