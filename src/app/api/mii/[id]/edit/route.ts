@@ -97,6 +97,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	const { name, tags, description, quarantined, gender, makeup, miiPortraitImage, miiFeaturesImage, instructions, image1, image2, image3 } = parsed.data;
 
 	// Validate image files
+	let wasImagesModerated = false;
 	const images: File[] = [];
 
 	for (const img of [image1, image2, image3]) {
@@ -106,7 +107,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		if (imageValidation.valid) {
 			images.push(img);
 		} else {
-			return rateLimit.sendResponse({ error: imageValidation.error }, imageValidation.status ?? 400);
+			wasImagesModerated = true;
 		}
 	}
 
@@ -114,11 +115,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (mii.platform === "SWITCH") {
 		if (miiPortraitImage) {
 			const validation = await validateImage(miiPortraitImage);
-			if (!validation.valid) return rateLimit.sendResponse({ error: `Failed to verify portrait: ${validation.error}` }, validation.status ?? 400);
+			if (!validation.valid) wasImagesModerated = true;
 		}
 		if (miiFeaturesImage) {
 			const validation = await validateImage(miiFeaturesImage);
-			if (!validation.valid) return rateLimit.sendResponse({ error: `Failed to verify features: ${validation.error}` }, validation.status ?? 400);
+			if (!validation.valid) wasImagesModerated = true;
 		}
 	}
 
@@ -136,6 +137,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (makeup !== undefined) updateData.makeup = makeup;
 	if (instructions !== undefined) updateData.instructions = instructions;
 	if (images.length > 0) updateData.imageCount = images.length;
+	if (wasImagesModerated) updateData.in_queue = true;
 
 	if (Object.keys(updateData).length === 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);
 	const updatedMii = await prisma.mii.update({
