@@ -59,7 +59,9 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 			const formData = new FormData();
 			formData.append("image", blob);
 
-			const moderationResponse = await fetch("https://api.trafficlunar.net/moderate/image", { method: "POST", body: formData });
+			const headers = new Headers();
+			headers.append("token", process.env.TOKEN ?? "");
+			const moderationResponse = await fetch("https://api.trafficlunar.net/moderate/image", { method: "POST", body: formData, headers });
 			const result = await moderationResponse.json();
 			if (result.error) {
 				return { valid: false, error: result.error };
