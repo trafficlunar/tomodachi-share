@@ -11,15 +11,13 @@ interface Props {
 	isOpen: boolean;
 	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	onCapture?: () => void;
-	setImage?: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setImage?: (value: string | undefined) => void;
 	setQrBytesRaw?: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export default function Camera({ isOpen, setIsOpen, onCapture, setImage, setQrBytesRaw }: Props) {
 	const [isVisible, setIsVisible] = useState(false);
-
 	const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
-
 	const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
 	const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
 

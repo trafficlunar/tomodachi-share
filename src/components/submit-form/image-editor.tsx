@@ -8,7 +8,7 @@ interface Props {
 	isOpen: boolean;
 	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	image: string | undefined;
-	setImage: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setImage: (value: string | undefined) => void;
 }
 
 export default function ImageEditorPortrait({ isOpen, setIsOpen, image, setImage }: Props) {

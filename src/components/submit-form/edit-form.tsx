@@ -53,7 +53,7 @@ export default function EditForm({ mii, likes }: Props) {
 	const handleDrop = useCallback(
 		(acceptedFiles: FileWithPath[]) => {
 			if (files.length >= 3) return;
-			hasFilesChanged.current = true;
+			hasCustomImagesChanged.current = true;
 
 			setFiles((prev) => [...prev, ...acceptedFiles]);
 		},
@@ -69,10 +69,12 @@ export default function EditForm({ mii, likes }: Props) {
 	const [makeup, setMakeup] = useState<MiiMakeup>(mii.makeup ?? "PARTIAL");
 	const [miiPortraitUri, setMiiPortraitUri] = useState<string | undefined>(`/mii/${mii.id}/image?type=mii`);
 	const [miiFeaturesUri, setMiiFeaturesUri] = useState<string | undefined>(`/mii/${mii.id}/image?type=features`);
-	const hasFilesChanged = useRef(false);
 	const instructions = useRef<SwitchMiiInstructions>(deepMerge(defaultInstructions, (mii.instructions as object) ?? {}));
 
 	const [quarantined, setQuarantined] = useState(mii.quarantined);
+	const hasCustomImagesChanged = useRef(false);
+	const hasMiiPortraitChanged = useRef(false);
+	const hasMiiFeaturesChanged = useRef(false);
 
 	const handleSubmit = async () => {
 		// Validate before sending request
@@ -99,7 +101,7 @@ export default function EditForm({ mii, likes }: Props) {
 		if (minifyInstructions(structuredClone(instructions.current)) !== (mii.instructions as object))
 			formData.append("instructions", JSON.stringify(instructions.current));
 
-		if (hasFilesChanged.current) {
+		if (hasCustomImagesChanged.current) {
 			files.forEach((file, index) => {
 				// image1, image2, etc.
 				formData.append(`image${index + 1}`, file);
@@ -123,11 +125,11 @@ export default function EditForm({ mii, likes }: Props) {
 			return blob;
 		}
 
-		if (miiPortraitUri) {
+		if (miiPortraitUri && hasMiiPortraitChanged.current) {
 			const blob = await getBlob(miiPortraitUri);
 			if (blob) formData.append("miiPortraitImage", blob);
 		}
-		if (miiFeaturesUri) {
+		if (miiFeaturesUri && hasMiiFeaturesChanged.current) {
 			const blob = await getBlob(miiFeaturesUri);
 			if (blob) formData.append("miiFeaturesImage", blob);
 		}
@@ -144,6 +146,16 @@ export default function EditForm({ mii, likes }: Props) {
 		}
 
 		redirect(`/mii/${mii.id}`);
+	};
+
+	const handleMiiPortraitChange = (uri: string | undefined) => {
+		hasMiiPortraitChanged.current = true;
+		setMiiPortraitUri(uri);
+	};
+
+	const handleMiiFeaturesChange = (uri: string | undefined) => {
+		hasMiiFeaturesChanged.current = true;
+		setMiiFeaturesUri(uri);
 	};
 
 	// Load existing images - converts image URLs to File objects
@@ -368,8 +380,8 @@ export default function EditForm({ mii, likes }: Props) {
 							</div>
 
 							<div className="flex flex-col items-center gap-2">
-								<SwitchFileUpload text="a screenshot of your Mii here" image={miiPortraitUri} setImage={setMiiPortraitUri} forceCrop />
-								<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={setMiiFeaturesUri} />
+								<SwitchFileUpload text="a screenshot of your Mii here" image={miiPortraitUri} setImage={handleMiiPortraitChange} forceCrop />
+								<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={handleMiiFeaturesChange} />
 								<SwitchSubmitTutorialButton />
 							</div>
 

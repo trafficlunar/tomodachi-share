@@ -11,7 +11,7 @@ interface Props {
 	text: string;
 	forceCrop?: boolean;
 	image?: string | undefined;
-	setImage: React.Dispatch<React.SetStateAction<string | undefined>>;
+	setImage: (value: string | undefined) => void;
 }
 
 export default function SwitchFileUpload({ text, forceCrop, image, setImage }: Props) {
