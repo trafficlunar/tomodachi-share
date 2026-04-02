@@ -16,6 +16,7 @@ import { generateMetadataImage, validateImage } from "@/lib/images";
 import { RateLimit } from "@/lib/rate-limit";
 import { SwitchMiiInstructions } from "@/types";
 import { minifyInstructions } from "@/lib/switch";
+import { settings } from "@/lib/settings";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
@@ -134,7 +135,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (makeup !== undefined) updateData.makeup = makeup;
 	if (instructions !== undefined) updateData.instructions = instructions;
 	if (images.length > 0) updateData.imageCount = images.length;
-	if (wasImagesModerated) updateData.in_queue = true;
+	if (settings.queueEnabled || wasImagesModerated) updateData.in_queue = true;
 
 	if (Object.keys(updateData).length === 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);
 	const updatedMii = await prisma.mii.update({
