@@ -159,12 +159,9 @@ export async function POST(request: NextRequest) {
 	for (const img of [image1, image2, image3]) {
 		if (!img) continue;
 
-		const imageValidation = await validateImage(img);
-		if (imageValidation.valid) {
-			customImages.push(img);
-		} else {
-			wasImagesModerated = true;
-		}
+		const validation = await validateImage(img);
+		if (!validation.valid) wasImagesModerated = true;
+		customImages.push(img);
 	}
 
 	// Check Mii portrait & features image (Switch)

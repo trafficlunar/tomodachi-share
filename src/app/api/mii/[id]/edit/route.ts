@@ -103,12 +103,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	for (const img of [image1, image2, image3]) {
 		if (!img) continue;
 
-		const imageValidation = await validateImage(img);
-		if (imageValidation.valid) {
-			images.push(img);
-		} else {
-			wasImagesModerated = true;
-		}
+		const validation = await validateImage(img);
+		if (!validation.valid) wasImagesModerated = true;
+		images.push(img);
 	}
 
 	// Check Mii portrait & features image (Switch)
