@@ -5,10 +5,27 @@ import { Icon } from "@iconify/react";
 import { ReportStatus } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
+import ReportTabs from "./report-tabs";
 
-export default async function Reports() {
-	const reports = await prisma.report.findMany({ orderBy: { createdAt: "desc" } });
-	// TODO: add pagination
+const PAGE_SIZE = 20;
+
+export default async function Reports({ searchParams }: { searchParams: { status?: string; page?: string } }) {
+	const status = searchParams.status as ReportStatus | undefined;
+	const page = Number(searchParams.page ?? 1);
+
+	const [reports, total] = await Promise.all([
+		prisma.report.findMany({
+			where: status ? { status } : undefined,
+			orderBy: { createdAt: "desc" },
+			skip: (page - 1) * PAGE_SIZE,
+			take: PAGE_SIZE,
+		}),
+		prisma.report.count({
+			where: status ? { status } : undefined,
+		}),
+	]);
+
+	const totalPages = Math.ceil(total / PAGE_SIZE);
 
 	const updateStatus = async (formData: FormData) => {
 		"use server";
@@ -25,6 +42,9 @@ export default async function Reports() {
 
 	return (
 		<div className="bg-orange-100 rounded-xl border-2 border-orange-400">
+			<ReportTabs status={status} />
+
+			{/* Grid */}
 			<div className="grid grid-cols-2 gap-2 p-2 max-lg:grid-cols-1">
 				{reports.map((report) => (
 					<div key={report.id} className="p-4 bg-white border border-orange-300 shadow-sm rounded-md">
@@ -148,6 +168,34 @@ export default async function Reports() {
 				<div className="text-center py-12 text-gray-500">
 					<p className="text-lg font-medium">No reports to display</p>
 					<p className="text-sm">Reports will appear here when users submit them</p>
+				</div>
+			)}
+
+			{/* Pagination */}
+			{totalPages > 1 && (
+				<div className="flex justify-between items-center p-3 border-t border-orange-300">
+					<span className="text-sm text-orange-700">{total} total</span>
+					<div className="flex items-center gap-3">
+						{page > 1 && (
+							<Link
+								href={`/admin?${new URLSearchParams({ ...(status && { status }), page: String(page - 1) })}`}
+								className="text-sm px-3 py-1 rounded-full font-medium border bg-white text-orange-700 border-orange-300 hover:bg-orange-50 transition-colors"
+							>
+								Previous
+							</Link>
+						)}
+						<span className="text-sm text-orange-700">
+							Page {page} of {totalPages}
+						</span>
+						{page < totalPages && (
+							<Link
+								href={`/admin?${new URLSearchParams({ ...(status && { status }), page: String(page + 1) })}`}
+								className="text-sm px-3 py-1 rounded-full font-medium border bg-white text-orange-700 border-orange-300 hover:bg-orange-50 transition-colors"
+							>
+								Next
+							</Link>
+						)}
+					</div>
 				</div>
 			)}
 		</div>

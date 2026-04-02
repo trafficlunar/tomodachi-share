@@ -13,6 +13,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		signIn: "/login",
 	},
 	callbacks: {
+		async signIn({ user }) {
+			const blacklist = process.env.BLACKLISTED_EMAILS ? process.env.BLACKLISTED_EMAILS.split(",").map((item) => item.trim().toLowerCase()) : [];
+			const email = user?.email?.toLowerCase();
+			if (!email) return false;
+			if (blacklist?.some((blocked) => email.endsWith(blocked))) return false;
+			return true;
+		},
+
 		async session({ session, user }) {
 			if (user) {
 				session.user.id = user.id;

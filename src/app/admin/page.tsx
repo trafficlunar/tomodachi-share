@@ -70,7 +70,7 @@ export default async function AdminPage({ searchParams }: Props) {
 				<hr className="grow border-zinc-300" />
 			</div>
 
-			<Reports />
+			<Reports searchParams={await searchParams} />
 
 			{/* Queue */}
 			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
