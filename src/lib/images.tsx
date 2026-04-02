@@ -60,13 +60,6 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 			formData.append("image", blob);
 
 			const moderationResponse = await fetch("https://api.trafficlunar.net/moderate/image", { method: "POST", body: formData });
-
-			if (!moderationResponse.ok) {
-				console.error("Moderation API error");
-				Sentry.captureException("Moderation API error", { extra: { stage: "moderation-api-response", status: moderationResponse.status } });
-				return { valid: false, error: "Content moderation check failed", status: 500 };
-			}
-
 			const result = await moderationResponse.json();
 			if (result.error) {
 				return { valid: false, error: result.error };

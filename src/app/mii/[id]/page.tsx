@@ -19,6 +19,7 @@ import Description from "@/components/description";
 import MiiInstructions from "@/components/mii/instructions";
 
 import { SwitchMiiInstructions } from "@/types";
+import { settings } from "@/lib/settings";
 
 interface Props {
 	params: Promise<{ id: string }>;
@@ -126,6 +127,15 @@ export default async function MiiPage({ params }: Props) {
 					<div className="bg-red-100 border-2 border-red-400 rounded-2xl shadow-lg p-4 flex items-center gap-3 text-red-700">
 						<Icon icon="material-symbols:warning-rounded" className="text-2xl shrink-0" />
 						<p className="font-medium">This Mii is flagged as controversial and only appears when the filter is enabled</p>
+					</div>
+				)}
+				{mii.in_queue && (
+					<div className="bg-zinc-50 border-2 border-zinc-400 rounded-2xl shadow-lg p-4 flex items-center gap-3 text-zinc-700">
+						<Icon icon="material-symbols:timer" className="text-2xl shrink-0" />
+						<p className="font-medium">
+							This Mii is waiting to be manually reviewed {!settings.queueEnabled && "due to inappropriate images "}
+							and is hidden from the main page.
+						</p>
 					</div>
 				)}
 				<div className="relative grid grid-cols-3 gap-4 max-md:grid-cols-1">
@@ -335,7 +345,7 @@ export default async function MiiPage({ params }: Props) {
 
 							{/* Author and Created date */}
 							<div className="mt-2">
-								<Link href={`/profile/${mii.userId}`} className="text-lg">
+								<Link href={`/profile/${mii.userId}`} className="text-lg wrap-break-word">
 									By <span className="font-bold">{mii.user.name}</span>
 								</Link>
 								<h4 className="text-sm">

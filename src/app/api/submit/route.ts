@@ -153,6 +153,7 @@ export async function POST(request: NextRequest) {
 	const description = uncensoredDescription && profanity.censor(uncensoredDescription);
 
 	// Validate image files
+	let wasImagesModerated = false;
 	const customImages: File[] = [];
 
 	for (const img of [image1, image2, image3]) {
@@ -162,7 +163,7 @@ export async function POST(request: NextRequest) {
 		if (imageValidation.valid) {
 			customImages.push(img);
 		} else {
-			return rateLimit.sendResponse({ error: `Failed to verify custom image: ${imageValidation.error}` }, imageValidation.status ?? 400);
+			wasImagesModerated = true;
 		}
 	}
 
@@ -170,10 +171,8 @@ export async function POST(request: NextRequest) {
 	if (platform === "SWITCH") {
 		const portraitValidation = await validateImage(miiPortraitImage);
 		const featuresValidation = await validateImage(miiFeaturesImage);
-		if (!portraitValidation.valid)
-			return rateLimit.sendResponse({ error: `Failed to verify portrait: ${portraitValidation.error}` }, portraitValidation.status ?? 400);
-		if (!featuresValidation.valid)
-			return rateLimit.sendResponse({ error: `Failed to verify features: ${featuresValidation.error}` }, featuresValidation.status ?? 400);
+		if (!portraitValidation.valid) wasImagesModerated = true;
+		if (!featuresValidation.valid) wasImagesModerated = true;
 	}
 
 	const qrBytes = new Uint8Array(qrBytesRaw ?? []);
@@ -198,7 +197,7 @@ export async function POST(request: NextRequest) {
 			tags,
 			description,
 			gender: gender ?? "MALE",
-			in_queue: settings.queueEnabled,
+			in_queue: wasImagesModerated || settings.queueEnabled,
 
 			// Automatically detect certain information if on 3DS
 			...(platform === "THREE_DS"
@@ -335,5 +334,5 @@ export async function POST(request: NextRequest) {
 		return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
 	}
 
-	return rateLimit.sendResponse({ success: true, id: miiRecord.id });
+	return rateLimit.sendResponse({ success: true, id: miiRecord.id, inQueue: wasImagesModerated });
 }
