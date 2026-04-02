@@ -30,7 +30,10 @@ TomodachiShare is a fan-made website that lets you easily discover, upload, and 
 ---
 
 <p align="center">
-  <sub align="center">
-    <i>Tomodachi Life and Mii characters are trademarks of Nintendo. This project is fan-made and not affiliated with Nintendo.</i>
+	<sub align="center">
+		TomodachiShare branding is not covered by the AGPL-3.0.<br>
+    The name and logo may not be used to suggest affiliation with or endorsement by this project.
+    <br><br>
+    Tomodachi Life and Mii characters are trademarks of Nintendo. This project is fan-made and not affiliated with Nintendo.
   </sub>
 </p>
