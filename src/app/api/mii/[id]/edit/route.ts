@@ -135,7 +135,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (makeup !== undefined) updateData.makeup = makeup;
 	if (instructions !== undefined) updateData.instructions = instructions;
 	if (images.length > 0) updateData.imageCount = images.length;
-	if (settings.queueEnabled || wasImagesModerated) updateData.in_queue = true;
+	
+ const imagesChanged = images.length > 0 || miiPortraitImage || miiFeaturesImage;
+ if ((settings.queueEnabled && imagesChanged) || wasImagesModerated) updateData.in_queue = true;
 
 	if (Object.keys(updateData).length === 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);
 	const updatedMii = await prisma.mii.update({
