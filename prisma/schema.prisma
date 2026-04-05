@@ -193,7 +193,6 @@ enum ReportType {
 enum ReportReason {
   INAPPROPRIATE
   SPAM
-  COPYRIGHT
   BAD_QUALITY
   OTHER
 }

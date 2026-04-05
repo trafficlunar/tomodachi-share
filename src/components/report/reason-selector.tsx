@@ -12,7 +12,6 @@ interface Props {
 const reasonMap: Record<ReportReason, string> = {
 	INAPPROPRIATE: "Inappropriate content",
 	SPAM: "Spam",
-	COPYRIGHT: "Copyrighted content",
 	BAD_QUALITY: "Bad quality",
 	OTHER: "Other...",
 };

@@ -41,19 +41,6 @@ export default function Footer() {
 						•
 					</span>
 
-					<a
-						href="https://github.com/trafficlunar/tomodachi-share"
-						target="_blank"
-						className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline inline-flex items-end gap-1"
-					>
-						<Icon icon="mdi:github" className="text-lg" />
-						Source Code
-					</a>
-
-					<span className="text-zinc-400 hidden sm:inline" aria-hidden="true">
-						•
-					</span>
-
 					<a href="https://trafficlunar.net" target="_blank" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline group">
 						Made by <span className="text-orange-400 group-hover:text-orange-500 font-medium transition-colors duration-200">trafficlunar</span>
 					</a>

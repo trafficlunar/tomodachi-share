@@ -1,4 +1,4 @@
 export const settings = {
 	canSubmit: true,
-	queueEnabled: false,
+	queueEnabled: true,
 };
