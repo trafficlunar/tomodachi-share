@@ -223,7 +223,6 @@ export default function HeadTab({ instructions }: Props) {
 							instructions.current.personality = updated;
 							return updated;
 						});
-						instructions.current.personality = personality;
 					}}
 				/>
 			</div>

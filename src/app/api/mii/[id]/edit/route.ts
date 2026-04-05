@@ -43,7 +43,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
-	const rateLimit = new RateLimit(request, 2); // no grouped pathname; edit each mii 2 times a minute
+	const rateLimit = new RateLimit(request, 6); // no grouped pathname; edit each mii 2 times a minute
 	const check = await rateLimit.handle();
 	if (check) return check;
 

@@ -7,7 +7,7 @@ export function minifyInstructions(instructions: Partial<SwitchMiiInstructions>)
 		for (const key in object) {
 			const value = object[key as keyof SwitchMiiInstructions];
 
-			if (!value || (DEFAULT_ZERO_FIELDS.has(key) && value === 0)) {
+			if (value === null || value === undefined || (DEFAULT_ZERO_FIELDS.has(key) && value === 0)) {
 				delete object[key as keyof SwitchMiiInstructions];
 				continue;
 			}

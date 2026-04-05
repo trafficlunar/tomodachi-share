@@ -27,10 +27,10 @@ export default function VoiceViewer({ data, onChange, onClickTone }: Props) {
 							min={0}
 							max={50}
 							step={1}
-							value={data[label as keyof typeof data] ?? 25}
+							value={data[label.toLowerCase() as keyof typeof data] ?? 25}
 							disabled={!onChange}
 							onChange={(e) => {
-								if (onChange) onChange(e, label);
+								if (onChange) onChange(e, label.toLowerCase());
 							}}
 						/>
 						<div className="absolute h-4 w-1.5 rounded bg-orange-400 z-0"></div>
