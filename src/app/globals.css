@@ -19,21 +19,6 @@
 	}
 }
 
-body {
-	@apply bg-amber-50 text-slate-800;
-
-	--color1: var(--color-amber-50);
-	--color2: var(--color-amber-100);
-
-	background-image:
-		repeating-linear-gradient(45deg, var(--color1) 25%, transparent 25%, transparent 75%, var(--color1) 75%, var(--color1)),
-		repeating-linear-gradient(45deg, var(--color1) 25%, var(--color2) 25%, var(--color2) 75%, var(--color1) 75%, var(--color1));
-	background-position:
-		0 0,
-		10px 10px;
-	background-size: 20px 20px;
-}
-
 .pill {
 	@apply flex justify-center items-center px-5 py-2 bg-orange-300 border-2 border-orange-400 rounded-3xl shadow-md;
 }
@@ -149,4 +134,18 @@ input[type="range"]:hover::-webkit-slider-thumb {
 
 input[type="range"]:hover::-moz-range-thumb {
 	@apply not-disabled:bg-orange-500;
+}
+
+body {
+	@apply bg-amber-50 text-slate-800;
+
+	/* syntax highlighting is a bit broken when it's at the top so it's at the bottom */
+	background-image: url('data:image/svg+xml;utf8,\
+	<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">\
+	<rect width="10" height="10" fill="%23fef3c6"/>\
+	<rect x="10" y="10" width="10" height="10" fill="%23fef3c6"/>\
+	<rect x="10" width="10" height="10" fill="%23fffbeb"/>\
+	<rect y="10" width="10" height="10" fill="%23fffbeb"/>\
+	</svg>');
+	background-size: 20px 20px;
 }
