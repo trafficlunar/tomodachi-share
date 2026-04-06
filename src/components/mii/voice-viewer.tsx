@@ -33,7 +33,7 @@ export default function VoiceViewer({ data, onChange, onClickTone }: Props) {
 								if (onChange) onChange(e, label.toLowerCase());
 							}}
 						/>
-						<div className="absolute h-4 w-1.5 rounded bg-orange-400 z-0"></div>
+						<div className="absolute h-4 w-1.5 rounded bg-orange-300 z-0"></div>
 					</div>
 				</div>
 			))}

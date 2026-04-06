@@ -67,7 +67,7 @@ export default function HeadTab({ instructions }: Props) {
 										instructions.current.height = e.target.valueAsNumber;
 									}}
 								/>
-								<div className="absolute h-4 w-1.5 rounded bg-orange-400 z-0"></div>
+								<div className="absolute h-4 w-1.5 rounded bg-orange-300 z-0"></div>
 							</div>
 						</div>
 
@@ -89,7 +89,7 @@ export default function HeadTab({ instructions }: Props) {
 										instructions.current.weight = e.target.valueAsNumber;
 									}}
 								/>
-								<div className="absolute h-4 w-1.5 rounded bg-orange-400 z-0"></div>
+								<div className="absolute h-4 w-1.5 rounded bg-orange-300 z-0"></div>
 							</div>
 						</div>
 

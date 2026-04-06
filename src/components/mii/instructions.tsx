@@ -206,7 +206,7 @@ export default function MiiInstructions({ instructions }: Props) {
 							</label>
 							<div className="relative h-5 flex justify-center items-center">
 								<input id="height" type="range" min={0} max={128} step={1} disabled value={height} />
-								<div className="absolute h-4 w-1.5 rounded bg-orange-400 z-0"></div>
+								<div className="absolute h-4 w-1.5 rounded bg-orange-300 z-0"></div>
 							</div>
 						</div>
 					)}
@@ -217,7 +217,7 @@ export default function MiiInstructions({ instructions }: Props) {
 							</label>
 							<div className="relative h-5 flex justify-center items-center">
 								<input id="weight" type="range" min={0} max={128} step={1} disabled value={weight} />
-								<div className="absolute h-4 w-1.5 rounded bg-orange-400 z-0"></div>
+								<div className="absolute h-4 w-1.5 rounded bg-orange-300 z-0"></div>
 							</div>
 						</div>
 					)}
