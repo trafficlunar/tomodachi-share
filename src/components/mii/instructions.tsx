@@ -41,7 +41,7 @@ function ColorPosition({ color }: { color: number }) {
 	if (color <= 7) {
 		return (
 			<span className="flex items-center">
-				<div className="size-5 rounded mr-1.5" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
+				<div className="size-5 rounded mr-1.5 shrink-0" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
 				Color menu on left, <GridPosition index={color} cols={1} />
 			</span>
 		);
@@ -49,7 +49,7 @@ function ColorPosition({ color }: { color: number }) {
 	if (color >= 108) {
 		return (
 			<span className="flex items-center">
-				<div className="size-5 rounded mr-1.5" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
+				<div className="size-5 rounded mr-1.5 shrink-0" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
 				Outside color menu, <GridPosition index={color - 108} cols={2} />
 			</span>
 		);
@@ -57,7 +57,7 @@ function ColorPosition({ color }: { color: number }) {
 
 	return (
 		<span className="flex items-center">
-			<div className="size-5 rounded mr-1.5" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
+			<div className="size-5 rounded mr-1.5 shrink-0" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
 			Color menu on right, <GridPosition index={color - 8} cols={10} />
 		</span>
 	);
@@ -88,7 +88,7 @@ function Section({ name, instructions, children, isSubSection }: SectionProps) {
 	const stretch = "stretch" in instructions ? instructions.stretch : undefined;
 
 	return (
-		<div className={`p-3 ${isSubSection ? "not-first:mt-2 pt-0!" : "border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5"}`}>
+		<div className={`p-3 w-max ${isSubSection ? "not-first:mt-2 pt-0!" : "border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5"}`}>
 			<h3 className="font-semibold text-xl text-amber-800 mb-1">{name}</h3>
 
 			<table className="w-full">
@@ -196,7 +196,7 @@ export default function MiiInstructions({ instructions }: Props) {
 			)}
 
 			{(height || weight || datingPreferences || voice || personality) && (
-				<div className="pl-3 text-sm border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5 text-amber-950">
+				<div className="p-3 text-sm border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5 text-amber-950 w-max">
 					<h3 className="font-semibold text-xl text-amber-800 mb-1">Misc</h3>
 
 					{height && (

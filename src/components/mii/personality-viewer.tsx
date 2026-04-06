@@ -22,7 +22,7 @@ export default function PersonalityViewer({ data, onClick }: Props) {
 				const key = label.toLowerCase() as keyof typeof data;
 				return (
 					<div key={label} className="flex justify-center items-center gap-2">
-						<span className="text-sm font-semibold w-24 shrink-0">{label}</span>
+						<span className="text-sm w-24 shrink-0">{label}</span>
 						<span className="text-sm text-zinc-500 w-14 text-right">{left}</span>
 						<div className="flex gap-0.5">
 							{Array.from({ length: 8 }).map((_, i) => {
@@ -43,7 +43,7 @@ export default function PersonalityViewer({ data, onClick }: Props) {
 										onClick={() => {
 											if (onClick) onClick(key, i);
 										}}
-										className={`size-7 rounded-lg transition-opacity duration-100 border-orange-500
+										className={`size-7 rounded-lg transition-opacity duration-100 border-black/40
                   ${colors[i]} ${data[key] === i ? "border-2 opacity-100" : "opacity-70"} ${onClick ? "cursor-pointer" : ""}`}
 									></button>
 								);
