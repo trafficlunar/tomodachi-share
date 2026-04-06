@@ -197,7 +197,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 			</div>
 
 			<div className="max-w-2xl">
-				{inQueueMiisCount && (
+				{inQueueMiisCount !== 0 && (
 					<div className="bg-zinc-50 border-2 border-zinc-400 rounded-2xl shadow-lg p-4 flex items-start gap-3 text-zinc-600 mb-4">
 						<Icon icon="material-symbols:timer" className="text-2xl shrink-0" />
 						<p className="font-medium">
