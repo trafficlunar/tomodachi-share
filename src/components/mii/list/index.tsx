@@ -37,7 +37,19 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 	}
 
 	const where: Prisma.MiiWhereInput = {
-		in_queue: parentPage === "admin",
+		// In queue logic
+		...(parentPage === "admin"
+			? { in_queue: true } // Only show queued Miis
+			: userId
+				? {
+						// Include queued Miis if user is on their profile
+						...(Number(session?.user?.id) === userId ? {} : { in_queue: false }),
+						userId,
+					}
+				: {
+						// Don't show queued Miis on main page
+						in_queue: false,
+					}),
 		// Only show liked miis on likes page
 		...(parentPage === "likes" && miiIdsLiked && { id: { in: miiIdsLiked } }),
 		// Searching
@@ -57,8 +69,6 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 		...(makeup && { makeup: { equals: makeup } }),
 		// Quarantined
 		...(!quarantined && !userId && { quarantined: false }),
-		// Profiles
-		...(userId && { userId }),
 	};
 
 	const select: Prisma.MiiSelect = {
@@ -81,6 +91,7 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 		makeup: true,
 		allowedCopying: true,
 		quarantined: true,
+		in_queue: true,
 		// Mii liked check
 		...(session?.user?.id && {
 			likedBy: {

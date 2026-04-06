@@ -130,11 +130,12 @@ export default async function MiiPage({ params }: Props) {
 					</div>
 				)}
 				{mii.in_queue && (
-					<div className="bg-zinc-50 border-2 border-zinc-400 rounded-2xl shadow-lg p-4 flex items-center gap-3 text-zinc-700">
+					<div className="bg-zinc-50 border-2 border-zinc-400 rounded-2xl shadow-lg p-4 flex items-start gap-3 text-zinc-600">
 						<Icon icon="material-symbols:timer" className="text-2xl shrink-0" />
 						<p className="font-medium">
-							This Mii is waiting to be manually reviewed and is hidden from the main page. (This could take a few hours or a couple of days) You can still
-							share the Mii through the URL!
+							This Mii is waiting to be manually reviewed and is hidden from the main page. The review could take between a few hours and a few days.
+							<br />
+							Despite that, you can still share the Mii through the URL!
 						</p>
 					</div>
 				)}

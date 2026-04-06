@@ -32,8 +32,15 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 			{miis.map((mii) => (
 				<div
 					key={mii.id}
-					className={`flex flex-col relative bg-zinc-50 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300" : "border-zinc-300"}`}
+					className={`flex flex-col relative bg-zinc-50 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300" : mii.in_queue ? "border-zinc-400 opacity-70" : "border-zinc-300"}`}
 				>
+					{mii.in_queue && (
+						<div className="absolute top-2 left-2 z-10 bg-zinc-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm flex items-center gap-1">
+							<Icon icon="mdi:clock-outline" className="text-base" />
+							In Queue
+						</div>
+					)}
+
 					<Carousel
 						images={[
 							`/mii/${mii.id}/image?type=mii`,

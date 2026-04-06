@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default async function SubmitPage() {
 	const session = await auth();
 
-	if (!session) redirect("/login");
+	if (!session || !session.user) redirect("/login");
 	const activePunishment = await prisma.punishment.findFirst({
 		where: {
 			userId: Number(session?.user?.id),
@@ -45,5 +45,7 @@ export default async function SubmitPage() {
 			</div>
 		);
 
-	return <SubmitForm />;
+	const inQueueMiisCount = await prisma.mii.count({ where: { userId: Number(session.user.id), in_queue: true } });
+
+	return <SubmitForm inQueueMiisCount={inQueueMiisCount} />;
 }
