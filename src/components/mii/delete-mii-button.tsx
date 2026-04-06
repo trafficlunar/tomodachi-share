@@ -88,8 +88,8 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 
 							<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 flex overflow-hidden">
 								<Image src={`/mii/${miiId}/image?type=mii`} alt="mii image" width={128} height={128} />
-								<div className="p-4">
-									<p className="text-xl font-bold line-clamp-1" title={miiName}>
+								<div className="p-4 min-w-0">
+									<p className="text-xl font-bold line-clamp-3 wrap-anywhere" title={miiName}>
 										{miiName}
 									</p>
 									<LikeButton likes={likes} isLiked={true} disabled />
@@ -97,7 +97,16 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 							</div>
 
 							<p className="text-sm text-zinc-500 my-2">Type the Mii's name below to delete:</p>
-							<input type="text" className="pill input" value={inputMiiName} onChange={(e) => setInputMiiName(e.target.value)} />
+							<input
+								type="text"
+								className="pill input"
+								value={inputMiiName}
+								onChange={(e) => setInputMiiName(e.target.value)}
+								autoCorrect="off"
+								autoComplete="off"
+								autoCapitalize="off"
+								spellCheck={false}
+							/>
 
 							{error && <span className="text-red-400 font-bold mt-2">Error: {error}</span>}
 
@@ -108,7 +117,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 								<SubmitButton
 									onClick={handleSubmit}
 									text="Delete"
-									disabled={inputMiiName != miiName}
+									disabled={inputMiiName.trim() != miiName}
 									className="bg-red-400! border-red-500! hover:bg-red-500! disabled:bg-red-200! disabled:border-red-300!"
 								/>
 							</div>
