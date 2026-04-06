@@ -27,6 +27,10 @@ const ORDINAL_SUFFIXES: Record<string, string> = {
 };
 const ordinalRules = new Intl.PluralRules("en-US", { type: "ordinal" });
 
+function not(value: any) {
+	return value !== undefined && value !== null;
+}
+
 function GridPosition({ index, cols = 5 }: { index: number; cols?: number }) {
 	const row = Math.floor(index / cols) + 1;
 	const col = (index % cols) + 1;
@@ -36,8 +40,8 @@ function GridPosition({ index, cols = 5 }: { index: number; cols?: number }) {
 	return `${row}${rowSuffix} row, ${col}${colSuffix} column`;
 }
 
-function ColorPosition({ color }: { color: number }) {
-	if (!color) return null;
+function ColorPosition({ color }: { color: number | undefined | null }) {
+	if (color === undefined || color === null) return null;
 	if (color <= 7) {
 		return (
 			<span className="flex items-center">
@@ -93,16 +97,16 @@ function Section({ name, instructions, children, isSubSection }: SectionProps) {
 
 			<table className="w-full">
 				<tbody>
-					{color && (
+					{not(color) && (
 						<TableCell label="Color">
 							<ColorPosition color={color} />
 						</TableCell>
 					)}
-					{height && <TableCell label="Height">{height}</TableCell>}
-					{distance && <TableCell label="Distance">{distance}</TableCell>}
-					{rotation && <TableCell label="Rotation">{rotation}</TableCell>}
-					{size && <TableCell label="Size">{size}</TableCell>}
-					{stretch && <TableCell label="Stretch">{stretch}</TableCell>}
+					{not(height) && <TableCell label="Height">{height}</TableCell>}
+					{not(distance) && <TableCell label="Distance">{distance}</TableCell>}
+					{not(rotation) && <TableCell label="Rotation">{rotation}</TableCell>}
+					{not(size) && <TableCell label="Size">{size}</TableCell>}
+					{not(stretch) && <TableCell label="Stretch">{stretch}</TableCell>}
 
 					{children}
 				</tbody>
@@ -124,7 +128,7 @@ export default function MiiInstructions({ instructions }: Props) {
 
 			{head && (
 				<Section name="Head" instructions={head}>
-					{head.skinColor && (
+					{not(head.skinColor) && (
 						<TableCell label="Skin Color">
 							<ColorPosition color={head.skinColor} />
 						</TableCell>
@@ -133,18 +137,18 @@ export default function MiiInstructions({ instructions }: Props) {
 			)}
 			{hair && (
 				<Section name="Hair" instructions={hair}>
-					{hair.subColor && (
+					{not(hair.subColor) && (
 						<TableCell label="Sub Color">
 							<ColorPosition color={hair.subColor} />
 						</TableCell>
 					)}
-					{hair.subColor2 && (
+					{not(hair.subColor2) && (
 						<TableCell label="Sub Color (Back)">
 							<ColorPosition color={hair.subColor2} />
 						</TableCell>
 					)}
-					{hair.style && <TableCell label="Tying Style">{hair.style}</TableCell>}
-					{hair.isFlipped && <TableCell label="Flipped">{hair.isFlipped ? "Yes" : "No"}</TableCell>}
+					{not(hair.style) && <TableCell label="Tying Style">{hair.style}</TableCell>}
+					{not(hair.isFlipped) && <TableCell label="Flipped">{hair.isFlipped ? "Yes" : "No"}</TableCell>}
 				</Section>
 			)}
 			{eyebrows && <Section name="Eyebrows" instructions={eyebrows}></Section>}
@@ -162,18 +166,18 @@ export default function MiiInstructions({ instructions }: Props) {
 			{nose && <Section name="Nose" instructions={nose}></Section>}
 			{lips && (
 				<Section name="Lips" instructions={lips}>
-					{lips.hasLipstick && <TableCell label="Lipstick">{lips.hasLipstick ? "Yes" : "No"}</TableCell>}
+					{not(lips.hasLipstick) && <TableCell label="Lipstick">{lips.hasLipstick ? "Yes" : "No"}</TableCell>}
 				</Section>
 			)}
 			{ears && <Section name="Ears" instructions={ears}></Section>}
 			{glasses && (
 				<Section name="Glasses" instructions={glasses}>
-					{glasses.ringColor && (
+					{not(glasses.ringColor) && (
 						<TableCell label="Ring Color">
 							<ColorPosition color={glasses.ringColor} />
 						</TableCell>
 					)}
-					{glasses.shadesColor && (
+					{not(glasses.shadesColor) && (
 						<TableCell label="Shades Color">
 							<ColorPosition color={glasses.shadesColor} />
 						</TableCell>
