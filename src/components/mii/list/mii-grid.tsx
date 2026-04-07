@@ -98,7 +98,6 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 										<button
 											onClick={async () => {
 												await fetch(`/api/admin/accept-mii?id=${mii.id}`, { method: "PATCH" });
-												router.refresh();
 											}}
 											className="cursor-pointer text-zinc-400 hover:text-green-500 transition-colors p-1 bg-white rounded-md shadow-sm border border-zinc-200 hover:border-green-500"
 											title="Accept Mii"
