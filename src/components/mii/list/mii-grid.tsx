@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import { Prisma } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -20,6 +21,8 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function MiiGrid({ miis, userId, parentPage }: Props) {
 	const session = useSession();
+	const router = useRouter();
+
 	const ids = miis.map((m) => m.id).join(",");
 	const { data } = useSWR<number[]>(session.data?.user && miis.length > 0 ? `/api/mii/has-liked?ids=${ids}` : null, fetcher, {
 		revalidateOnFocus: false,
@@ -32,7 +35,7 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 			{miis.map((mii) => (
 				<div
 					key={mii.id}
-					className={`flex flex-col relative bg-zinc-50 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300" : mii.in_queue ? "border-zinc-400 opacity-70" : "border-zinc-300"}`}
+					className={`flex flex-col relative bg-zinc-50 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300 bg-red-50!" : mii.in_queue && parentPage !== "admin" ? "border-zinc-400 opacity-70" : "border-zinc-300"}`}
 				>
 					{mii.in_queue && (
 						<div className="absolute top-2 left-2 z-10 bg-zinc-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm flex items-center gap-1">
@@ -87,11 +90,27 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 									<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy} />
 								</div>
 							)}
+
+							{/* Admin Controls */}
 							{parentPage === "admin" && (
-								<div className="flex gap-1 text-2xl justify-end text-zinc-400">
-									<button onClick={() => fetch(`/api/admin/accept-mii?id=${mii.id}`, { method: "PATCH" })} className="cursor-pointer">
-										<Icon icon="material-symbols:check-rounded" />
-									</button>
+								<div className="flex justify-between w-full col-span-2 mt-2">
+									<div className="flex gap-1 text-3xl justify-center">
+										<button
+											onClick={async () => {
+												await fetch(`/api/admin/accept-mii?id=${mii.id}`, { method: "PATCH" });
+												router.refresh();
+											}}
+											className="cursor-pointer text-zinc-400 hover:text-green-500 transition-colors p-1 bg-white rounded-md shadow-sm border border-zinc-200 hover:border-green-500"
+											title="Accept Mii"
+										>
+											<Icon icon="material-symbols:check-rounded" />
+										</button>
+										<div className="text-zinc-400 hover:text-red-500 transition-colors p-1 bg-white rounded-md shadow-sm border border-zinc-200 hover:border-red-500 flex items-center justify-center">
+											<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy} />
+										</div>
+									</div>
+
+									<span className="text-sm w-1/2 text-right">{mii.createdAt.toLocaleString("en-GB", { timeZone: "UTC" })}</span>
 								</div>
 							)}
 						</div>
