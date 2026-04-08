@@ -69,6 +69,7 @@ export default function EditForm({ mii, likes }: Props) {
 	const [makeup, setMakeup] = useState<MiiMakeup>(mii.makeup ?? "PARTIAL");
 	const [miiPortraitUri, setMiiPortraitUri] = useState<string | undefined>(`/mii/${mii.id}/image?type=mii`);
 	const [miiFeaturesUri, setMiiFeaturesUri] = useState<string | undefined>(`/mii/${mii.id}/image?type=features`);
+	const [youtubeId, setYouTubeId] = useState(mii.youtubeId ?? "");
 	const instructions = useRef<SwitchMiiInstructions>(deepMerge(defaultInstructions, (mii.instructions as object) ?? {}));
 
 	const [quarantined, setQuarantined] = useState(mii.quarantined);
@@ -98,6 +99,7 @@ export default function EditForm({ mii, likes }: Props) {
 		if (makeup != mii.makeup) formData.append("makeup", makeup);
 		if (miiPortraitUri) formData.append("miiPortraitUri", miiPortraitUri);
 		if (quarantined != mii.quarantined) formData.append("quarantined", JSON.stringify(quarantined));
+		if (youtubeId != mii.youtubeId) formData.append("youtubeId", youtubeId);
 		if (minifyInstructions(structuredClone(instructions.current)) !== (mii.instructions as object))
 			formData.append("instructions", JSON.stringify(instructions.current));
 
@@ -392,6 +394,27 @@ export default function EditForm({ mii, likes }: Props) {
 							<hr className="grow border-zinc-300" />
 							<span>Instructions</span>
 							<hr className="grow border-zinc-300" />
+						</div>
+
+						{/* YouTube */}
+						<div className="w-full grid grid-cols-3 items-center">
+							<label htmlFor="youtube" className="font-semibold">
+								YouTube Video
+							</label>
+							<input
+								id="youtube"
+								type="text"
+								className="pill input w-full col-span-2"
+								minLength={2}
+								maxLength={64}
+								placeholder="Paste a URL or video ID..."
+								value={youtubeId}
+								onChange={(e) => {
+									const val = e.target.value;
+									const match = val.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+									setYouTubeId(match ? match[1] : val);
+								}}
+							/>
 						</div>
 
 						<MiiEditor instructions={instructions} />

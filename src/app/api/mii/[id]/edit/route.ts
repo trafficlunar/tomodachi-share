@@ -32,6 +32,10 @@ const editSchema = z.object({
 	makeup: z.enum(MiiMakeup).optional(),
 	miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
 	miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
+	youtubeId: z
+		.string()
+		.regex(/^[a-zA-Z0-9_-]{11}$/, "Invalid YouTube video ID")
+		.optional(),
 	instructions: switchMiiInstructionsSchema,
 	image1: z.union([z.instanceof(File), z.any()]).optional(),
 	image2: z.union([z.instanceof(File), z.any()]).optional(),
@@ -88,6 +92,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		makeup: formData.get("makeup") ?? undefined,
 		miiPortraitImage: formData.get("miiPortraitImage"),
 		miiFeaturesImage: formData.get("miiFeaturesImage"),
+		youtubeId: formData.get("youtubeId"),
 		instructions: minifiedInstructions,
 		image1: formData.get("image1"),
 		image2: formData.get("image2"),
@@ -95,7 +100,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	});
 
 	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
-	const { name, tags, description, quarantined, gender, makeup, miiPortraitImage, miiFeaturesImage, instructions, image1, image2, image3 } = parsed.data;
+	const { name, tags, description, quarantined, gender, makeup, miiPortraitImage, miiFeaturesImage, youtubeId, instructions, image1, image2, image3 } =
+		parsed.data;
 
 	// Validate image files
 	let wasImagesModerated = false;
@@ -133,11 +139,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (quarantined !== undefined) updateData.quarantined = quarantined;
 	if (mii.platform === "SWITCH" && gender !== undefined) updateData.gender = gender;
 	if (makeup !== undefined) updateData.makeup = makeup;
+	if (youtubeId !== undefined) updateData.youtubeId = youtubeId;
 	if (instructions !== undefined) updateData.instructions = instructions;
 	if (images.length > 0) updateData.imageCount = images.length;
-	
- const imagesChanged = images.length > 0 || miiPortraitImage || miiFeaturesImage;
- if ((settings.queueEnabled && imagesChanged) || wasImagesModerated) updateData.in_queue = true;
+
+	const imagesChanged = images.length > 0 || miiPortraitImage || miiFeaturesImage;
+	if ((settings.queueEnabled && imagesChanged) || wasImagesModerated) updateData.in_queue = true;
 
 	if (Object.keys(updateData).length === 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);
 	const updatedMii = await prisma.mii.update({

@@ -381,7 +381,28 @@ export default async function MiiPage({ params }: Props) {
 						</div>
 
 						{/* Instructions */}
-						{mii.platform === "SWITCH" && <MiiInstructions instructions={mii.instructions as Partial<SwitchMiiInstructions>} />}
+						{mii.platform === "SWITCH" && (
+							<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-3 max-h-96 overflow-y-auto">
+								<h2 className="text-xl font-semibold text-amber-700 flex items-center gap-2">
+									<Icon icon="fa7-solid:list" />
+									Instructions
+								</h2>
+
+								{mii.youtubeId && (
+									<iframe
+										src={`https://www.youtube-nocookie.com/embed/${mii.youtubeId}`}
+										title="YouTube video player"
+										allow="clipboard-write; encrypted-media;"
+										referrerPolicy="strict-origin-when-cross-origin"
+										allowFullScreen
+										loading="lazy"
+										className="aspect-video rounded-2xl w-full max-w-135"
+									></iframe>
+								)}
+
+								<MiiInstructions instructions={mii.instructions as Partial<SwitchMiiInstructions>} />
+							</div>
+						)}
 					</div>
 				</div>
 

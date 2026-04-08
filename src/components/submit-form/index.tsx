@@ -58,6 +58,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 	const [platform, setPlatform] = useState<MiiPlatform>("SWITCH");
 	const [gender, setGender] = useState<MiiGender>("MALE");
 	const [makeup, setMakeup] = useState<MiiMakeup>("PARTIAL");
+	const [youtubeId, setYouTubeId] = useState("");
 	const instructions = useRef<SwitchMiiInstructions>(defaultInstructions);
 
 	const [error, setError] = useState<string | undefined>(undefined);
@@ -108,6 +109,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 			formData.append("makeup", makeup);
 			formData.append("miiPortraitImage", portraitBlob);
 			formData.append("miiFeaturesImage", featuresBlob);
+			formData.append("youtubeId", youtubeId);
 			formData.append("instructions", JSON.stringify(instructions.current));
 		}
 
@@ -299,7 +301,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 					</div>
 
 					{/* Gender (switch only) */}
-					<div className={`w-full grid grid-cols-3 items-start z-10 ${platform === "SWITCH" ? "" : "hidden"}`}>
+					<div className={`w-full grid grid-cols-3 items-start z-20 ${platform === "SWITCH" ? "" : "hidden"}`}>
 						<label htmlFor="gender" className="font-semibold py-2">
 							Gender
 						</label>
@@ -354,7 +356,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 								type="button"
 								onClick={() => setMakeup("FULL")}
 								aria-label="Full Face Paint"
-								data-tooltip="Full Face Paint"
+								data-tooltip="Face covered more than 80%"
 								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${
 									makeup === "FULL" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 								}`}
@@ -367,7 +369,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 								type="button"
 								onClick={() => setMakeup("PARTIAL")}
 								aria-label="Partial Face Paint"
-								data-tooltip="Partial Face Paint"
+								data-tooltip="For at least any face paint"
 								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400! ${
 									makeup === "PARTIAL" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
 								}`}
@@ -481,6 +483,27 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 						</div>
 
 						<div className="flex flex-col items-center gap-2">
+							{/* YouTube */}
+							<div className="w-full grid grid-cols-3 items-center">
+								<label htmlFor="youtube" className="font-semibold">
+									YouTube Video
+								</label>
+								<input
+									id="youtube"
+									type="text"
+									className="pill input w-full col-span-2"
+									minLength={2}
+									maxLength={64}
+									placeholder="Paste a URL or video ID..."
+									value={youtubeId}
+									onChange={(e) => {
+										const val = e.target.value;
+										const match = val.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+										setYouTubeId(match ? match[1] : val);
+									}}
+								/>
+							</div>
+
 							<MiiEditor instructions={instructions} />
 							<SwitchSubmitTutorialButton />
 							<span className="text-xs text-zinc-400 text-center px-32 max-sm:px-8">

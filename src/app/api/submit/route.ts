@@ -37,6 +37,10 @@ const submitSchema = z
 		makeup: z.enum(MiiMakeup).default("PARTIAL"),
 		miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
 		miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
+		youtubeId: z
+			.string()
+			.regex(/^[a-zA-Z0-9_-]{11}$/, "Invalid YouTube video ID")
+			.optional(),
 		instructions: switchMiiInstructionsSchema,
 
 		// QR code
@@ -108,6 +112,7 @@ export async function POST(request: NextRequest) {
 		makeup: formData.get("makeup") ?? undefined,
 		miiPortraitImage: formData.get("miiPortraitImage"),
 		miiFeaturesImage: formData.get("miiFeaturesImage"),
+		youtubeId: formData.get("youtubeId"),
 		instructions: minifiedInstructions,
 
 		qrBytesRaw: rawQrBytesRaw,
@@ -142,6 +147,7 @@ export async function POST(request: NextRequest) {
 		makeup,
 		miiPortraitImage,
 		miiFeaturesImage,
+		youtubeId,
 		image1,
 		image2,
 		image3,
@@ -206,6 +212,7 @@ export async function POST(request: NextRequest) {
 						allowedCopying: conversion.mii.allowCopying,
 					}
 				: {
+						youtubeId,
 						instructions: minifiedInstructions,
 						makeup: makeup ?? "PARTIAL",
 					}),

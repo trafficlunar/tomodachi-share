@@ -120,12 +120,7 @@ export default function MiiInstructions({ instructions }: Props) {
 	const { head, hair, eyebrows, eyes, nose, lips, ears, glasses, other, height, weight, birthday, datingPreferences, voice, personality } = instructions;
 
 	return (
-		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-3 max-h-96 overflow-y-auto">
-			<h2 className="text-xl font-semibold text-amber-700 flex items-center gap-2">
-				<Icon icon="fa7-solid:list" />
-				Instructions
-			</h2>
-
+		<>
 			{head && (
 				<Section name="Head" instructions={head}>
 					{not(head.skinColor) && (
@@ -264,6 +259,6 @@ export default function MiiInstructions({ instructions }: Props) {
 					)}
 				</div>
 			)}
-		</div>
+		</>
 	);
 }

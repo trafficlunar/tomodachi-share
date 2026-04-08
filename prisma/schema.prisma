@@ -79,6 +79,7 @@ model Mii {
   in_queue    Boolean     @default(false)
 
   instructions Json?
+  youtubeId    String?
   gender       MiiGender?
   makeup       MiiMakeup?
 
