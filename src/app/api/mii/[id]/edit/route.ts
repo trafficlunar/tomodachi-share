@@ -35,6 +35,7 @@ const editSchema = z.object({
 	youtubeId: z
 		.string()
 		.regex(/^[a-zA-Z0-9_-]{11}$/, "Invalid YouTube video ID")
+		.or(z.literal(""))
 		.optional(),
 	instructions: switchMiiInstructionsSchema,
 	image1: z.union([z.instanceof(File), z.any()]).optional(),
