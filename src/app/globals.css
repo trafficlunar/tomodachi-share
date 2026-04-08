@@ -119,12 +119,9 @@ input[type="range"]::-moz-range-track {
 }
 
 /* Thumb */
-input[type="range"]::-webkit-slider-thumb {
-	@apply appearance-none size-4 bg-orange-300 border-2 border-orange-400 rounded-full shadow-md transition -mt-1.5;
-}
-
+input[type="range"]::-webkit-slider-thumb,
 input[type="range"]::-moz-range-thumb {
-	@apply size-3.5 bg-orange-300 border-2 border-orange-400 rounded-full shadow-md transition;
+	@apply appearance-none size-4.5 bg-orange-400 border-2 border-orange-600 rounded-full shadow-md transition;
 }
 
 /* Hover */
