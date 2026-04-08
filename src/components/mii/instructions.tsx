@@ -5,7 +5,6 @@ import VoiceViewer from "./voice-viewer";
 import PersonalityViewer from "./personality-viewer";
 
 import { SwitchMiiInstructions } from "@/types";
-import { Icon } from "@iconify/react";
 import { COLORS } from "@/lib/switch";
 
 interface Props {
@@ -198,31 +197,35 @@ export default function MiiInstructions({ instructions }: Props) {
 				<div className="p-3 text-sm border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5 text-amber-950 w-max">
 					<h3 className="font-semibold text-xl text-amber-800 mb-1">Misc</h3>
 
-					{height && (
-						<div className="flex mb-1">
-							<span className="w-16">Height</span>
-							<span className="font-semibold text-orange-600">
-								{height === 64 ? "0" : height > 64 ? `+${height - 64}` : `${height - 64}`}
-							</span>
-						</div>
-					)}
-					{weight && (
-						<div className="flex">
-							<span className="w-16">Weight</span>
-							<span className="font-semibold text-orange-600">
-								{weight === 64 ? "0" : weight > 64 ? `+${weight - 64}` : `${weight - 64}`}
-							</span>
-						</div>
-					)}
+					<table className="w-full">
+						<tbody>
+							{not(height) && <TableCell label="Height">{height === 64 ? "0" : height! > 64 ? `+${height! - 64}` : `${height! - 64}`}</TableCell>}
+							{not(weight) && <TableCell label="Weight">{weight === 64 ? "0" : weight! > 64 ? `+${weight! - 64}` : `${weight! - 64}`}</TableCell>}
+						</tbody>
+					</table>
 					{birthday && (
 						<div className="pl-2 not-nth-2:mt-4">
 							<h4 className="font-semibold text-xl text-amber-800 mb-1">Birthday</h4>
 							<table className="w-full">
 								<tbody>
-									{birthday.day && <TableCell label="Day">{birthday.day}</TableCell>}
-									{birthday.month && <TableCell label="Month">{birthday.month}</TableCell>}
-									{birthday.age && <TableCell label="Age">{birthday.age}</TableCell>}
-									{birthday.dontAge && <TableCell label="Don't Age">{birthday.dontAge ? "Yes" : "No"}</TableCell>}
+									{not(birthday.day) && <TableCell label="Day">{birthday.day}</TableCell>}
+									{not(birthday.month) && <TableCell label="Month">{birthday.month}</TableCell>}
+									{not(birthday.age) && <TableCell label="Age">{birthday.age}</TableCell>}
+									{not(birthday.dontAge) && <TableCell label="Don't Age">{birthday.dontAge ? "Yes" : "No"}</TableCell>}
+								</tbody>
+							</table>
+						</div>
+					)}
+					{voice && (
+						<div className="pl-2 not-nth-2:mt-4">
+							<h4 className="font-semibold text-xl text-amber-800 mb-1">Voice</h4>
+							<table className="w-full">
+								<tbody>
+									{not(voice.speed) && <TableCell label="Speed">{voice.speed}</TableCell>}
+									{not(voice.pitch) && <TableCell label="Pitch">{voice.pitch}</TableCell>}
+									{not(voice.depth) && <TableCell label="Depth">{voice.depth}</TableCell>}
+									{not(voice.delivery) && <TableCell label="Delivery">{voice.delivery}</TableCell>}
+									{not(voice.tone) && <TableCell label="Tone">{voice.tone}</TableCell>}
 								</tbody>
 							</table>
 						</div>
@@ -232,14 +235,6 @@ export default function MiiInstructions({ instructions }: Props) {
 							<h4 className="font-semibold text-xl text-amber-800 mb-1">Dating Preferences</h4>
 							<div className="w-min">
 								<DatingPreferencesViewer data={datingPreferences} />
-							</div>
-						</div>
-					)}
-					{voice && (
-						<div className="pl-2 not-nth-2:mt-4">
-							<h4 className="font-semibold text-xl text-amber-800 mb-1">Voice</h4>
-							<div className="w-min">
-								<VoiceViewer data={voice} />
 							</div>
 						</div>
 					)}

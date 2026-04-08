@@ -4,42 +4,25 @@ import EnhancedSlider from "@/components/submit-form/mii-editor/enhanced-slider"
 
 interface Props {
 	data: SwitchMiiInstructions["voice"];
-	onChange?: (value: number, label: string) => void;
-	onClickTone?: (i: number) => void;
+	onChange: (value: number, label: string) => void;
+	onClickTone: (i: number) => void;
 }
 
 const VOICE_SETTINGS = ["Speed", "Pitch", "Depth", "Delivery"];
 
 export default function VoiceViewer({ data, onChange, onClickTone }: Props) {
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col">
 			{VOICE_SETTINGS.map((label) => {
 				const value = data[label.toLowerCase() as keyof typeof data] ?? 25;
-				return onChange ? (
-					<EnhancedSlider
-						key={label}
-						label={label}
-						value={value}
-						onChange={(v) => onChange?.(v, label.toLowerCase())}
-						min={0}
-						max={50}
-						mid={25}
-					/>
-				) : (
-					<div key={label} className="flex">
-						<span className="w-14">{label}</span>
-						<span className="font-semibold text-orange-600">
-							{value === 25 ? "0" : value > 25 ? `+${value - 25}` : `${value - 25}`}
-						</span>
-					</div>
-				);
+				return <EnhancedSlider key={label} label={label} value={value} onChange={(v) => onChange?.(v, label.toLowerCase())} min={0} max={50} mid={25} />;
 			})}
 
-			<div className="flex gap-3">
+			<div className="flex gap-3 mt-2">
 				<label htmlFor="delivery" className="text-sm w-14">
 					Tone
 				</label>
-				<div className="grid grid-cols-6 gap-1 min-w-[200px]">
+				<div className="grid grid-cols-6 gap-1 min-w-50">
 					{Array.from({ length: 6 }).map((_, i) => (
 						<button
 							type="button"
@@ -47,7 +30,7 @@ export default function VoiceViewer({ data, onChange, onClickTone }: Props) {
 							onClick={() => {
 								if (onClickTone) onClickTone(i);
 							}}
-							className={`transition-colors duration-100 rounded-xl ${data.tone === i ? "bg-orange-400!" : ""} ${onClickTone ? "hover:bg-orange-300 cursor-pointer" : ""}`}
+							className={`transition-colors duration-100 rounded-xl hover:bg-orange-300 cursor-pointer ${data.tone === i ? "bg-orange-400!" : ""}`}
 						>
 							{i + 1}
 						</button>
