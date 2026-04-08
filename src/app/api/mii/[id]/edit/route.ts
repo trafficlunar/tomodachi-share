@@ -100,7 +100,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		image3: formData.get("image3"),
 	});
 
-	if (!parsed.success) return rateLimit.sendResponse({ error: parsed.error.issues[0].message }, 400);
+	if (!parsed.success) {
+		const firstIssue = parsed.error.issues[0];
+		const path = firstIssue.path.length ? firstIssue.path.join(".") : "root";
+		const error = `${path}: ${firstIssue.message}`;
+		return rateLimit.sendResponse({ error }, 400);
+	}
 	const { name, tags, description, quarantined, gender, makeup, miiPortraitImage, miiFeaturesImage, youtubeId, instructions, image1, image2, image3 } =
 		parsed.data;
 
