@@ -1,17 +1,16 @@
 import { useState } from "react";
 import { MiiGender } from "@prisma/client";
-
 import DatingPreferencesViewer from "@/components/mii/dating-preferences";
 import VoiceViewer from "@/components/mii/voice-viewer";
 import PersonalityViewer from "@/components/mii/personality-viewer";
-
+import EnhancedSlider from "@/components/submit-form/mii-editor/enhanced-slider";
 import { SwitchMiiInstructions } from "@/types";
 
 interface Props {
 	instructions: React.RefObject<SwitchMiiInstructions>;
 }
 
-export default function HeadTab({ instructions }: Props) {
+export default function MiscTab({ instructions }: Props) {
 	const [height, setHeight] = useState(instructions.current.height ?? 64);
 	const [weight, setWeight] = useState(instructions.current.weight ?? 64);
 	const [datingPreferences, setDatingPreferences] = useState<MiiGender[]>(instructions.current.datingPreferences ?? []);
@@ -50,47 +49,31 @@ export default function HeadTab({ instructions }: Props) {
 						</div>
 
 						<div className="flex flex-col">
-							<label htmlFor="height" className="text-sm">
-								Height
-							</label>
-							<div className="relative h-5 flex justify-center items-center">
-								<input
-									type="range"
-									id="height"
-									className="grow z-10"
-									min={0}
-									max={128}
-									step={1}
-									value={height}
-									onChange={(e) => {
-										setHeight(e.target.valueAsNumber);
-										instructions.current.height = e.target.valueAsNumber;
-									}}
-								/>
-								<div className="absolute h-4 w-1.5 rounded bg-orange-300 z-0"></div>
-							</div>
+							<EnhancedSlider
+								label="Height"
+								value={height}
+								onChange={(v) => {
+									setHeight(v);
+									instructions.current.height = v;
+								}}
+								min={0}
+								max={128}
+								mid={64}
+							/>
 						</div>
 
 						<div className="flex flex-col">
-							<label htmlFor="weight" className="text-sm">
-								Weight
-							</label>
-							<div className="relative h-5 flex justify-center items-center">
-								<input
-									type="range"
-									id="weight"
-									className="grow z-10"
-									min={0}
-									max={128}
-									step={1}
-									value={weight}
-									onChange={(e) => {
-										setWeight(e.target.valueAsNumber);
-										instructions.current.weight = e.target.valueAsNumber;
-									}}
-								/>
-								<div className="absolute h-4 w-1.5 rounded bg-orange-300 z-0"></div>
-							</div>
+							<EnhancedSlider
+								label="Weight"
+								value={weight}
+								onChange={(v) => {
+									setWeight(v);
+									instructions.current.weight = v;
+								}}
+								min={0}
+								max={128}
+								mid={64}
+							/>
 						</div>
 
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-1.5 mb-2">
@@ -122,9 +105,9 @@ export default function HeadTab({ instructions }: Props) {
 
 						<VoiceViewer
 							data={voice}
-							onChange={(e, label) => {
-								setVoice((p) => ({ ...p, [label]: e.target.valueAsNumber }));
-								instructions.current.voice[label as keyof typeof voice] = e.target.valueAsNumber;
+							onChange={(v, label) => {
+								setVoice((p) => ({ ...p, [label]: v }));
+								instructions.current.voice[label as keyof typeof voice] = v;
 							}}
 							onClickTone={(i) => {
 								setVoice((p) => ({ ...p, tone: i }));

@@ -200,24 +200,18 @@ export default function MiiInstructions({ instructions }: Props) {
 
 					{height && (
 						<div className="flex mb-1">
-							<label htmlFor="height" className="w-16">
-								Height
-							</label>
-							<div className="relative h-5 flex justify-center items-center">
-								<input id="height" type="range" min={0} max={128} step={1} disabled value={height} />
-								<div className="absolute h-4 w-1.5 rounded bg-orange-300 z-0"></div>
-							</div>
+							<span className="w-16">Height</span>
+							<span className="font-semibold text-orange-600">
+								{height === 64 ? "0" : height > 64 ? `+${height - 64}` : `${height - 64}`}
+							</span>
 						</div>
 					)}
 					{weight && (
 						<div className="flex">
-							<label htmlFor="weight" className="w-16">
-								Weight
-							</label>
-							<div className="relative h-5 flex justify-center items-center">
-								<input id="weight" type="range" min={0} max={128} step={1} disabled value={weight} />
-								<div className="absolute h-4 w-1.5 rounded bg-orange-300 z-0"></div>
-							</div>
+							<span className="w-16">Weight</span>
+							<span className="font-semibold text-orange-600">
+								{weight === 64 ? "0" : weight > 64 ? `+${weight - 64}` : `${weight - 64}`}
+							</span>
 						</div>
 					)}
 					{birthday && (

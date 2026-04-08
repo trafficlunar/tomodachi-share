@@ -1,48 +1,45 @@
 "use client";
-
 import { SwitchMiiInstructions } from "@/types";
-import { ChangeEvent } from "react";
+import EnhancedSlider from "@/components/submit-form/mii-editor/enhanced-slider";
 
 interface Props {
 	data: SwitchMiiInstructions["voice"];
-	onChange?: (e: ChangeEvent<HTMLInputElement, HTMLInputElement>, label: string) => void;
+	onChange?: (value: number, label: string) => void;
 	onClickTone?: (i: number) => void;
 }
 
-const VOICE_SETTINGS: string[] = ["Speed", "Pitch", "Depth", "Delivery"];
+const VOICE_SETTINGS = ["Speed", "Pitch", "Depth", "Delivery"];
 
 export default function VoiceViewer({ data, onChange, onClickTone }: Props) {
 	return (
-		<div className="flex flex-col gap-1">
-			{VOICE_SETTINGS.map((label) => (
-				<div key={label} className="relative flex gap-3">
-					<label htmlFor={label} className="text-sm w-14">
-						{label}
-					</label>
-					<div className="relative h-5 flex justify-center items-center">
-						<input
-							type="range"
-							name={label}
-							className="grow z-10"
-							min={0}
-							max={50}
-							step={1}
-							value={data[label.toLowerCase() as keyof typeof data] ?? 25}
-							disabled={!onChange}
-							onChange={(e) => {
-								if (onChange) onChange(e, label.toLowerCase());
-							}}
-						/>
-						<div className="absolute h-4 w-1.5 rounded bg-orange-300 z-0"></div>
+		<div className="flex flex-col gap-2">
+			{VOICE_SETTINGS.map((label) => {
+				const value = data[label.toLowerCase() as keyof typeof data] ?? 25;
+				return onChange ? (
+					<EnhancedSlider
+						key={label}
+						label={label}
+						value={value}
+						onChange={(v) => onChange?.(v, label.toLowerCase())}
+						min={0}
+						max={50}
+						mid={25}
+					/>
+				) : (
+					<div key={label} className="flex">
+						<span className="w-14">{label}</span>
+						<span className="font-semibold text-orange-600">
+							{value === 25 ? "0" : value > 25 ? `+${value - 25}` : `${value - 25}`}
+						</span>
 					</div>
-				</div>
-			))}
+				);
+			})}
 
 			<div className="flex gap-3">
 				<label htmlFor="delivery" className="text-sm w-14">
 					Tone
 				</label>
-				<div className="grid grid-cols-6 gap-1 grow">
+				<div className="grid grid-cols-6 gap-1 min-w-[200px]">
 					{Array.from({ length: 6 }).map((_, i) => (
 						<button
 							type="button"
