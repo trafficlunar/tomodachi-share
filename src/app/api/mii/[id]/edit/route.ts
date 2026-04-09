@@ -93,7 +93,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		makeup: formData.get("makeup") ?? undefined,
 		miiPortraitImage: formData.get("miiPortraitImage"),
 		miiFeaturesImage: formData.get("miiFeaturesImage"),
-		youtubeId: formData.get("youtubeId"),
+		youtubeId: formData.get("youtubeId") ?? undefined,
 		instructions: minifiedInstructions,
 		image1: formData.get("image1"),
 		image2: formData.get("image2"),
