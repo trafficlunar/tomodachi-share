@@ -164,13 +164,15 @@ export default async function MiiPage({ params }: Props) {
 								/>
 							</div>
 						) : (
-							<ImageViewer
-								src={`/mii/${mii.id}/image?type=features`}
-								alt="mii features"
-								width={300}
-								height={300}
-								className="rounded-lg hover:brightness-90 mb-4 transition-all"
-							/>
+							!mii.miiData && (
+								<ImageViewer
+									src={`/mii/${mii.id}/image?type=features`}
+									alt="mii features"
+									width={300}
+									height={300}
+									className="rounded-lg hover:brightness-90 mb-4 transition-all"
+								/>
+							)
 						)}
 						<hr className="w-full border-t-2 border-t-amber-400" />
 

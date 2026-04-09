@@ -29,6 +29,7 @@ import Carousel from "../carousel";
 import SubmitButton from "../submit-button";
 import Dropzone from "../dropzone";
 import Image from "next/image";
+import { CharInfoEx } from "charinfo-ex";
 
 interface Props {
 	inQueueMiisCount: number;
@@ -58,6 +59,12 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 	const [platform, setPlatform] = useState<MiiPlatform>("SWITCH");
 	const [gender, setGender] = useState<MiiGender>("MALE");
 	const [makeup, setMakeup] = useState<MiiMakeup>("PARTIAL");
+
+	const [way, setWay] = useState<"savedata" | "manual" | null>(null);
+	const [miiSaveFileBytes, setMiiSaveFileBytes] = useState<ArrayBufferLike | undefined>();
+	const [miis, setMiis] = useState<CharInfoEx[]>([]);
+	const [selectedMiiIndex, setSelectedMiiIndex] = useState(0);
+
 	const [youtubeId, setYouTubeId] = useState("");
 	const instructions = useRef<SwitchMiiInstructions>(defaultInstructions);
 
@@ -89,18 +96,15 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 
 		if (platform === "THREE_DS") {
 			formData.append("qrBytesRaw", JSON.stringify(qrBytesRaw));
-		} else if (platform === "SWITCH") {
+		} else if (platform === "SWITCH" && way) {
 			const portraitResponse = await fetch(miiPortraitUri!);
-			const featuresResponse = await fetch(miiFeaturesUri!);
-
-			if (!portraitResponse.ok || !featuresResponse.ok) {
-				setError("Failed to get Mii portrait/features screenshot. Did you upload one?");
+			if (!portraitResponse.ok) {
+				setError("Failed to get Mii portrait screenshot. Did you upload one?");
 				return;
 			}
 
 			const portraitBlob = await portraitResponse.blob();
-			const featuresBlob = await featuresResponse.blob();
-			if (!portraitBlob.type.startsWith("image/") || !featuresBlob.type.startsWith("image/")) {
+			if (!portraitBlob.type.startsWith("image/")) {
 				setError("Invalid image file found");
 				return;
 			}
@@ -108,9 +112,27 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 			formData.append("gender", gender);
 			formData.append("makeup", makeup);
 			formData.append("miiPortraitImage", portraitBlob);
-			formData.append("miiFeaturesImage", featuresBlob);
+			formData.append("way", way);
+			if (way === "savedata") {
+				formData.append("miiData", JSON.stringify(miis[selectedMiiIndex]));
+			} else {
+				const featuresResponse = await fetch(miiFeaturesUri!);
+				if (!featuresResponse.ok) {
+					setError("Failed to get Mii features screenshot. Did you upload one?");
+					return;
+				}
+
+				const featuresBlob = await featuresResponse.blob();
+				if (!featuresBlob.type.startsWith("image/")) {
+					setError("Invalid image file found");
+					return;
+				}
+
+				formData.append("miiFeaturesImage", featuresBlob);
+				formData.append("instructions", JSON.stringify(instructions.current));
+			}
+
 			formData.append("youtubeId", youtubeId);
-			formData.append("instructions", JSON.stringify(instructions.current));
 		}
 
 		const response = await fetch("/api/submit", {
@@ -128,7 +150,20 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 	};
 
 	useEffect(() => {
-		if (platform === "SWITCH" || qrBytesRaw.length == 0) return;
+		if (platform === "SWITCH") {
+			if (!miiSaveFileBytes) return;
+			const miis: CharInfoEx[] = [];
+
+			for (let i = 0; i < 70; i++) {
+				const data = CharInfoEx.FromSaveFileArrayBuffer(miiSaveFileBytes, i);
+				if (data.name === "") continue;
+				miis.push(data);
+			}
+			setMiis(miis);
+			return;
+		}
+
+		if (qrBytesRaw.length == 0) return;
 		const qrBytes = new Uint8Array(qrBytesRaw);
 
 		const preview = async () => {
@@ -164,7 +199,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 		};
 
 		preview();
-	}, [qrBytesRaw, platform]);
+	}, [miiSaveFileBytes, qrBytesRaw, platform]);
 
 	return (
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
@@ -392,8 +427,38 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 						</div>
 					</div>
 
-					{/* (Switch Only) Mii Screenshots */}
+					{/* (Switch Only) Choose a way */}
 					<div className={`${platform === "SWITCH" ? "" : "hidden"}`}>
+						{/* Separator */}
+						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+							<hr className="grow border-zinc-300" />
+							<span>Choose a Way</span>
+							<hr className="grow border-zinc-300" />
+						</div>
+
+						<div className="grid grid-cols-2 gap-4 w-full">
+							<button
+								onClick={() => setWay("savedata")}
+								// aria-label={tutorial.title + " tutorial"}
+								type="button"
+								className={`flex flex-col justify-center items-center rounded-xl p-4 shadow-md border-2 cursor-pointer text-center text-sm transition hover:scale-[1.03] ${way === "savedata" ? "bg-cyan-100 border-cyan-600" : "bg-zinc-50 border-zinc-300 hover:bg-cyan-100 hover:border-cyan-600"}`}
+							>
+								Save Data (no makeup yet)
+							</button>
+
+							<button
+								onClick={() => setWay("manual")}
+								// aria-label={tutorial.title + " tutorial"}
+								type="button"
+								className={`flex flex-col justify-center items-center rounded-xl p-4 shadow-md border-2 cursor-pointer text-center text-sm transition hover:scale-[1.03] ${way === "manual" ? "bg-cyan-100 border-cyan-600" : "bg-zinc-50 border-zinc-300 hover:bg-cyan-100 hover:border-cyan-600"}`}
+							>
+								Manual
+							</button>
+						</div>
+					</div>
+
+					{/* (Switch Only) Mii Screenshots */}
+					<div className={`${platform === "SWITCH" && way ? "" : "hidden"}`}>
 						{/* Separator */}
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
 							<hr className="grow border-zinc-300" />
@@ -401,9 +466,9 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 							<hr className="grow border-zinc-300" />
 						</div>
 
-						<div className="flex flex-col items-center gap-4 w-full">
+						<div className="flex flex-col items-center gap-2 w-full">
 							{/* Step 1 - Portrait */}
-							<div className="flex flex-col items-center gap-2 w-full">
+							<div className="flex flex-col items-center gap-2 w-full mb-4">
 								<div className="flex items-center gap-2 self-start">
 									<span className="bg-orange-400 text-white text-xs font-bold rounded-full size-5 flex items-center justify-center shrink-0">1</span>
 									<span className="text-sm font-semibold text-zinc-600">Portrait screenshot</span>
@@ -423,7 +488,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 							</div>
 
 							{/* Step 2 - Features */}
-							<div className="flex flex-col items-center gap-2 w-full">
+							<div className={`flex flex-col items-center gap-2 w-full ${way === "manual" ? "" : "hidden"}`}>
 								<div className="flex items-center gap-2 self-start">
 									<span className="bg-orange-400 text-white text-xs font-bold rounded-full size-5 flex items-center justify-center shrink-0">2</span>
 									<span className="text-sm font-semibold text-zinc-600">
@@ -444,10 +509,13 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 								</div>
 							</div>
 
-							<SwitchSubmitTutorialButton />
+							{way === "manual" && (
+								<>
+									<SwitchSubmitTutorialButton />
+									<p className="text-xs text-zinc-400 text-center">A tutorial on how to screenshot the features is above.</p>
+								</>
+							)}
 						</div>
-
-						<p className="text-xs text-zinc-400 text-center mt-2">A tutorial on how to screenshot the features is above.</p>
 					</div>
 
 					{/* (3DS only) QR code scanning */}
@@ -474,8 +542,61 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 						</div>
 					</div>
 
+					{/* (Switch only) Save data */}
+					<div className={`${platform === "SWITCH" && way === "savedata" ? "" : "hidden"}`}>
+						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+							<hr className="grow border-zinc-300" />
+							<span>Save Data</span>
+							<hr className="grow border-zinc-300" />
+						</div>
+
+						<div className="flex flex-col items-center gap-2">
+							{/* YouTube */}
+							<div className="w-full grid grid-cols-3 items-center">
+								<label htmlFor="youtube" className="font-semibold">
+									YouTube Video (for makeup)
+								</label>
+								<input
+									id="youtube"
+									type="text"
+									className="pill input w-full col-span-2"
+									minLength={2}
+									maxLength={64}
+									placeholder="Paste a URL or video ID..."
+									value={youtubeId}
+									onChange={(e) => {
+										const val = e.target.value;
+										const match = val.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+										setYouTubeId(match ? match[1] : val);
+									}}
+								/>
+							</div>
+
+							<SwitchFileUpload type="file" text="your Mii.sav file" setFileBytes={setMiiSaveFileBytes} />
+
+							<p className="text-sm text-center">Choose the Mii you want to submit:</p>
+
+							<div className="relative bg-orange-100 border-2 border-orange-300 rounded-lg max-w-md w-full p-1 flex flex-col h-48 overflow-x-auto">
+								{miis?.length === 0 ? (
+									<p className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-center text-sm">No miis found, upload a save file!</p>
+								) : (
+									miis?.map((mii, index) => (
+										<button
+											type="button"
+											key={index}
+											onClick={() => setSelectedMiiIndex(index)}
+											className={`w-full cursor-pointer text-left px-1.5 py-0.5 rounded-md transition-colors duration-75 ${selectedMiiIndex === index ? "bg-orange-300" : "hover:bg-orange-200"}`}
+										>
+											{mii.name}
+										</button>
+									))
+								)}
+							</div>
+						</div>
+					</div>
+
 					{/* (Switch only) Mii instructions */}
-					<div className={`${platform === "SWITCH" ? "" : "hidden"}`}>
+					<div className={`${platform === "SWITCH" && way === "manual" ? "" : "hidden"}`}>
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
 							<hr className="grow border-zinc-300" />
 							<span>Mii Instructions</span>
@@ -513,25 +634,27 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 					</div>
 
 					{/* Custom images selector */}
-					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-6 mb-2">
-						<hr className="grow border-zinc-300" />
-						<span>Custom images</span>
-						<hr className="grow border-zinc-300" />
+					<div className={`${platform === "THREE_DS" || way ? "" : "hidden"} flex flex-col justify-center`}>
+						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-6 mb-2">
+							<hr className="grow border-zinc-300" />
+							<span>Custom images</span>
+							<hr className="grow border-zinc-300" />
+						</div>
+
+						<div className="max-w-md w-full self-center flex flex-col items-center">
+							<Dropzone onDrop={handleDrop}>
+								<p className="text-center text-sm">
+									Drag and drop your images here
+									<br />
+									or click to open
+								</p>
+							</Dropzone>
+
+							<span className="text-xs text-zinc-400 mt-2">Animated images currently not supported.</span>
+						</div>
+
+						<ImageList files={files} setFiles={setFiles} />
 					</div>
-
-					<div className="max-w-md w-full self-center flex flex-col items-center">
-						<Dropzone onDrop={handleDrop}>
-							<p className="text-center text-sm">
-								Drag and drop your images here
-								<br />
-								or click to open
-							</p>
-						</Dropzone>
-
-						<span className="text-xs text-zinc-400 mt-2">Animated images currently not supported.</span>
-					</div>
-
-					<ImageList files={files} setFiles={setFiles} />
 
 					<hr className="border-zinc-300 my-2" />
 					<div className="flex justify-between items-center">
