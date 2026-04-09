@@ -30,6 +30,10 @@ function not(value: any) {
 	return value !== undefined && value !== null;
 }
 
+function numberValue(value: number, cutoff: number = 25) {
+	return value === cutoff ? "0" : value > cutoff ? `+${value - cutoff}` : `${value - cutoff}`;
+}
+
 function GridPosition({ index, cols = 5 }: { index: number; cols?: number }) {
 	const row = Math.floor(index / cols) + 1;
 	const col = (index % cols) + 1;
@@ -101,11 +105,11 @@ function Section({ name, instructions, children, isSubSection }: SectionProps) {
 							<ColorPosition color={color} />
 						</TableCell>
 					)}
-					{not(height) && <TableCell label="Height">{height}</TableCell>}
-					{not(distance) && <TableCell label="Distance">{distance}</TableCell>}
-					{not(rotation) && <TableCell label="Rotation">{rotation}</TableCell>}
-					{not(size) && <TableCell label="Size">{size}</TableCell>}
-					{not(stretch) && <TableCell label="Stretch">{stretch}</TableCell>}
+					{not(height) && <TableCell label="Height">{numberValue(height!, 0)}</TableCell>}
+					{not(distance) && <TableCell label="Distance">{numberValue(distance!, 0)}</TableCell>}
+					{not(rotation) && <TableCell label="Rotation">{numberValue(rotation!, 0)}</TableCell>}
+					{not(size) && <TableCell label="Size">{numberValue(size!, 0)}</TableCell>}
+					{not(stretch) && <TableCell label="Stretch">{numberValue(stretch!, 0)}</TableCell>}
 
 					{children}
 				</tbody>
@@ -194,13 +198,13 @@ export default function MiiInstructions({ instructions }: Props) {
 			)}
 
 			{(height || weight || datingPreferences || voice || personality) && (
-				<div className="p-3 text-sm border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5 text-amber-950 w-max">
+				<div className="p-3 border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5 text-amber-950 w-max">
 					<h3 className="font-semibold text-xl text-amber-800 mb-1">Misc</h3>
 
 					<table className="w-full">
 						<tbody>
-							{not(height) && <TableCell label="Height">{height === 64 ? "0" : height! > 64 ? `+${height! - 64}` : `${height! - 64}`}</TableCell>}
-							{not(weight) && <TableCell label="Weight">{weight === 64 ? "0" : weight! > 64 ? `+${weight! - 64}` : `${weight! - 64}`}</TableCell>}
+							{not(height) && <TableCell label="Height">{numberValue(height!, 64)}</TableCell>}
+							{not(weight) && <TableCell label="Weight">{numberValue(weight!, 64)}</TableCell>}
 						</tbody>
 					</table>
 					{birthday && (
@@ -221,10 +225,10 @@ export default function MiiInstructions({ instructions }: Props) {
 							<h4 className="font-semibold text-xl text-amber-800 mb-1">Voice</h4>
 							<table className="w-full">
 								<tbody>
-									{not(voice.speed) && <TableCell label="Speed">{voice.speed}</TableCell>}
-									{not(voice.pitch) && <TableCell label="Pitch">{voice.pitch}</TableCell>}
-									{not(voice.depth) && <TableCell label="Depth">{voice.depth}</TableCell>}
-									{not(voice.delivery) && <TableCell label="Delivery">{voice.delivery}</TableCell>}
+									{not(voice.speed) && <TableCell label="Speed">{numberValue(voice.speed!, 25)}</TableCell>}
+									{not(voice.pitch) && <TableCell label="Pitch">{numberValue(voice.pitch!, 25)}</TableCell>}
+									{not(voice.depth) && <TableCell label="Depth">{numberValue(voice.depth!, 25)}</TableCell>}
+									{not(voice.delivery) && <TableCell label="Delivery">{numberValue(voice.delivery!, 25)}</TableCell>}
 									{not(voice.tone) && <TableCell label="Tone">{voice.tone}</TableCell>}
 								</tbody>
 							</table>
