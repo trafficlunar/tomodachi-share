@@ -110,26 +110,28 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		parsed.data;
 
 	// Validate image files
-	let wasImagesModerated = false;
-	const images: File[] = [];
+	const customImages: File[] = [];
 
 	for (const img of [image1, image2, image3]) {
 		if (!img) continue;
 
 		const validation = await validateImage(img);
-		if (!validation.valid) wasImagesModerated = true;
-		images.push(img);
+		if (validation.valid) {
+			customImages.push(img);
+		} else {
+			return rateLimit.sendResponse({ error: `Failed to verify custom image: ${validation.error}` }, validation.status ?? 400);
+		}
 	}
 
 	// Check Mii portrait & features image (Switch)
 	if (mii.platform === "SWITCH") {
 		if (miiPortraitImage) {
 			const validation = await validateImage(miiPortraitImage);
-			if (!validation.valid) wasImagesModerated = true;
+			if (!validation.valid) return rateLimit.sendResponse({ error: `Failed to verify portrait: ${validation.error}` }, validation.status ?? 400);
 		}
 		if (miiFeaturesImage) {
 			const validation = await validateImage(miiFeaturesImage);
-			if (!validation.valid) wasImagesModerated = true;
+			if (!validation.valid) return rateLimit.sendResponse({ error: `Failed to verify features: ${validation.error}` }, validation.status ?? 400);
 		}
 	}
 
@@ -147,10 +149,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	if (makeup !== undefined) updateData.makeup = makeup;
 	if (youtubeId !== undefined) updateData.youtubeId = youtubeId;
 	if (instructions !== undefined) updateData.instructions = instructions;
-	if (images.length > 0) updateData.imageCount = images.length;
+	if (customImages.length > 0) updateData.imageCount = customImages.length;
 
-	const imagesChanged = images.length > 0 || miiPortraitImage || miiFeaturesImage;
-	if ((settings.queueEnabled && imagesChanged) || wasImagesModerated) updateData.in_queue = true;
+	const imagesChanged = customImages.length > 0 || miiPortraitImage || miiFeaturesImage;
+	if (settings.queueEnabled && imagesChanged) updateData.in_queue = true;
 
 	if (Object.keys(updateData).length === 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);
 	const updatedMii = await prisma.mii.update({
@@ -172,7 +174,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	await fs.mkdir(miiUploadsDirectory, { recursive: true });
 
 	// Only touch files if new images were uploaded
-	if (images.length > 0) {
+	if (customImages.length > 0) {
 		// Delete all custom images
 		const files = await fs.readdir(miiUploadsDirectory);
 		await Promise.all(files.filter((file) => file.startsWith("image")).map((file) => fs.unlink(path.join(miiUploadsDirectory, file))));
@@ -180,7 +182,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		// Compress and upload new images
 		try {
 			await Promise.all(
-				images.map(async (image, index) => {
+				customImages.map(async (image, index) => {
 					const buffer = Buffer.from(await image.arrayBuffer());
 					const pngBuffer = await sharp(buffer).resize({ height: 800, fit: "inside", withoutEnlargement: true }).png({ quality: 85 }).toBuffer();
 					const fileLocation = path.join(miiUploadsDirectory, `image${index}.png`);
@@ -198,17 +200,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	// Only save portrait & features for Switch Miis when they are provided
 	if (mii.platform === "SWITCH" && (miiPortraitImage || miiFeaturesImage)) {
 		try {
-			// Delete existing portrait/features if they're being replaced
-			await Promise.all(
-				["mii.png", "features.png"]
-					.filter((file) => {
-						if (file === "mii.png") return miiPortraitImage;
-						if (file === "features.png") return miiFeaturesImage;
-						return false;
-					})
-					.map((file) => fs.unlink(path.join(miiUploadsDirectory, file))),
-			);
-
 			await Promise.all(
 				[
 					miiPortraitImage &&

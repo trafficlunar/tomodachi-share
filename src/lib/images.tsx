@@ -52,26 +52,6 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 			return { valid: false, error: "Image dimensions are invalid. Resolution must be between 128x128 and 8000x8000" };
 		}
 
-		// Check for inappropriate content
-		// https://github.com/trafficlunar/api-moderation
-		try {
-			const blob = new Blob([buffer]);
-			const formData = new FormData();
-			formData.append("image", blob);
-
-			const headers = new Headers();
-			headers.append("token", process.env.TOKEN ?? "");
-			const moderationResponse = await fetch("https://api.trafficlunar.net/moderate/image", { method: "POST", body: formData, headers });
-			const result = await moderationResponse.json();
-			if (result.error) {
-				return { valid: false, error: result.error };
-			}
-		} catch (moderationError) {
-			console.error("Error fetching moderation API:", moderationError);
-			Sentry.captureException(moderationError, { extra: { stage: "moderation-api-fetch" } });
-			return { valid: false, error: "Moderation API is down", status: 503 };
-		}
-
 		return { valid: true };
 	} catch (error) {
 		console.error("Error validating image:", error);

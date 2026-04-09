@@ -80,6 +80,8 @@ For Discord, create an application in the developer portal, go to 'OAuth2', copy
 
 For GitHub, navigate to your profile settings, then 'Developer Settings', and create a new application. Set the homepage URL to `http://localhost:3000` and copy the Client ID and generate a new client secret. Finally, add in a callback URL with the value `http://localhost:3000/api/auth/callback/github`.
 
+Google is annoying so I'm not explaining it.
+
 After configuring the environment variables, you can run a development server.
 
 ```bash

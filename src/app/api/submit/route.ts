@@ -63,13 +63,13 @@ const submitSchema = z
 		(data) => {
 			// If platform is Switch, gender, miiPortraitImage, and miiFeaturesImage must be present
 			if (data.platform === "SWITCH") {
-				return data.gender !== undefined && data.miiPortraitImage !== undefined;
+				return data.gender !== undefined && data.miiPortraitImage !== undefined && data.miiFeaturesImage !== undefined;
 			}
 			return true;
 		},
 		{
-			message: "Gender, Mii portrait & features image, and instructions are required for Switch platform",
-			path: ["gender", "miiPortraitImage", "miiFeaturesImage", "instructions"],
+			message: "Gender, Mii portrait & features image are required for Switch platform",
+			path: ["gender", "miiPortraitImage", "miiFeaturesImage"],
 		},
 	);
 
@@ -161,23 +161,27 @@ export async function POST(request: NextRequest) {
 	const description = uncensoredDescription && profanity.censor(uncensoredDescription);
 
 	// Validate image files
-	let wasImagesModerated = false;
 	const customImages: File[] = [];
 
 	for (const img of [image1, image2, image3]) {
 		if (!img) continue;
 
 		const validation = await validateImage(img);
-		if (!validation.valid) wasImagesModerated = true;
-		customImages.push(img);
+		if (validation.valid) {
+			customImages.push(img);
+		} else {
+			return rateLimit.sendResponse({ error: `Failed to verify custom image: ${validation.error}` }, validation.status ?? 400);
+		}
 	}
 
 	// Check Mii portrait & features image (Switch)
 	if (platform === "SWITCH") {
 		const portraitValidation = await validateImage(miiPortraitImage);
 		const featuresValidation = await validateImage(miiFeaturesImage);
-		if (!portraitValidation.valid) wasImagesModerated = true;
-		if (!featuresValidation.valid) wasImagesModerated = true;
+		if (!portraitValidation.valid)
+			return rateLimit.sendResponse({ error: `Failed to verify portrait: ${portraitValidation.error}` }, portraitValidation.status ?? 400);
+		if (!featuresValidation.valid)
+			return rateLimit.sendResponse({ error: `Failed to verify features: ${featuresValidation.error}` }, featuresValidation.status ?? 400);
 	}
 
 	const qrBytes = new Uint8Array(qrBytesRaw ?? []);
@@ -202,7 +206,7 @@ export async function POST(request: NextRequest) {
 			tags,
 			description,
 			gender: gender ?? "MALE",
-			in_queue: wasImagesModerated || settings.queueEnabled,
+			in_queue: settings.queueEnabled,
 
 			// Automatically detect certain information if on 3DS
 			...(platform === "THREE_DS"
@@ -340,5 +344,5 @@ export async function POST(request: NextRequest) {
 		return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
 	}
 
-	return rateLimit.sendResponse({ success: true, id: miiRecord.id, inQueue: wasImagesModerated });
+	return rateLimit.sendResponse({ success: true, id: miiRecord.id });
 }

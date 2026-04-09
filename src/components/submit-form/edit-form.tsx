@@ -50,6 +50,11 @@ export default function EditForm({ mii, likes }: Props) {
 	const session = useSession();
 	const [files, setFiles] = useState<FileWithPath[]>([]);
 
+	const handleFilesChange: React.Dispatch<React.SetStateAction<FileWithPath[]>> = (updater) => {
+		hasCustomImagesChanged.current = true;
+		setFiles(updater);
+	};
+
 	const handleDrop = useCallback(
 		(acceptedFiles: FileWithPath[]) => {
 			if (files.length >= 3) return;
@@ -439,7 +444,7 @@ export default function EditForm({ mii, likes }: Props) {
 					</Dropzone>
 				</div>
 
-				<ImageList files={files} setFiles={setFiles} />
+				<ImageList files={files} setFiles={handleFilesChange} />
 
 				<hr className="border-zinc-300 my-2" />
 				<div className="flex justify-between items-center">
