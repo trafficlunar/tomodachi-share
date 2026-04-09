@@ -28,9 +28,9 @@ export default function VoiceViewer({ data, onChange, onClickTone }: Props) {
 							type="button"
 							key={i}
 							onClick={() => {
-								if (onClickTone) onClickTone(i);
+								if (onClickTone) onClickTone(i + 1);
 							}}
-							className={`transition-colors duration-100 rounded-xl hover:bg-orange-300 cursor-pointer ${data.tone === i ? "bg-orange-400!" : ""}`}
+							className={`transition-colors duration-100 rounded-xl hover:bg-orange-300 cursor-pointer ${data.tone === i + 1 ? "bg-orange-400!" : ""}`}
 						>
 							{i + 1}
 						</button>
