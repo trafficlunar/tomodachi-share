@@ -1,78 +1,43 @@
-import Image from "next/image";
+import { Icon } from "@iconify/react";
 import Link from "next/link";
-
-import { prisma } from "@/lib/prisma";
-
-import ProfilePicture from "./profile-picture";
 
 interface Props {
 	text: string;
 	className?: string;
 }
 
+// Adds fancy formatting to links
 export default function Description({ text, className }: Props) {
+	const urlRegex = /(https?:\/\/[^\s]+)/g;
+	const parts = text.split(urlRegex);
+
 	return (
 		<p className={`text-sm mt-2 bg-white/50 p-3 rounded-lg border border-orange-200 whitespace-break-spaces max-h-54 overflow-y-auto ${className}`}>
-			{/* Adds fancy formatting when linking to other pages on the site */}
-			{(() => {
-				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://tomodachishare.com";
+			{parts.map(async (part, index) => {
+				try {
+					// Check if it's a URL
+					if (!urlRegex.test(part)) throw new Error("Not a URL");
+					const url = new URL(part);
 
-				// Match both mii and profile links
-				const regex = new RegExp(`(${baseUrl.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")}/(?:mii|profile)/\\d+)`, "g");
-				const parts = text.split(regex);
-
-				return parts.map(async (part, index) => {
-					const miiMatch = part.match(new RegExp(`^${baseUrl}/mii/(\\d+)$`));
-					const profileMatch = part.match(new RegExp(`^${baseUrl}/profile/(\\d+)$`));
-
-					if (miiMatch) {
-						const id = Number(miiMatch[1]);
-						const linkedMii = await prisma.mii.findUnique({
-							where: {
-								id,
-							},
-						});
-
-						if (!linkedMii) return;
-
-						return (
-							<Link
-								key={index}
-								href={`/mii/${id}`}
-								className="inline-flex items-center align-bottom gap-1.5 pr-2 bg-amber-100 border border-amber-400 rounded-lg mx-1 text-amber-800 text-xs"
-							>
-								<Image src={`/mii/${id}/image?type=mii`} alt="mii" width={24} height={24} className="bg-white rounded-lg border-r border-amber-400" />
-								{linkedMii.name}
-							</Link>
-						);
-					}
-
-					if (profileMatch) {
-						const id = Number(profileMatch[1]);
-						const linkedProfile = await prisma.user.findUnique({
-							where: {
-								id,
-							},
-						});
-
-						if (!linkedProfile) return;
-
-						return (
-							<Link
-								key={index}
-								href={`/profile/${id}`}
-								className="inline-flex items-center align-bottom gap-1.5 pr-2 bg-orange-100 border border-orange-400 rounded-lg mx-1 text-orange-800 text-xs"
-							>
-								<ProfilePicture src={linkedProfile.image || "/guest.png"} width={24} height={24} className="bg-white rounded-lg border-r border-orange-400" />
-								{linkedProfile.name}
-							</Link>
-						);
-					}
-
-					// Regular text
+					return (
+						<Link
+							key={index}
+							href={`/out?url=${encodeURIComponent(part)}`}
+							target="_blank"
+							className="text-blue-700 underline break-all ml-1 inline-flex items-center group"
+							title={`Go to ${url.hostname}`}
+						>
+							{url.hostname}
+							{url.pathname !== "/" ? url.pathname : ""}
+							{url.search}
+							<Icon icon="mi:arrow-right-up" fontSize={16} className="transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+						</Link>
+					);
+				} catch {
+					// Normal text/Invalid URL fallback
 					return <span key={index}>{part}</span>;
-				});
-			})()}
+				}
+			})}
 		</p>
 	);
 }
