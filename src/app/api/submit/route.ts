@@ -39,8 +39,9 @@ const submitSchema = z
 		miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
 		youtubeId: z
 			.string()
-			.regex(/^[a-zA-Z0-9_-]{11}$/, "Invalid YouTube video ID")
-			.or(z.literal(""))
+			.trim()
+			.transform((val) => (val === "" ? null : val))
+			.refine((val) => val === null || /^[a-zA-Z0-9_-]{11}$/.test(val), "Invalid YouTube video ID")
 			.optional(),
 		instructions: switchMiiInstructionsSchema,
 
