@@ -32,6 +32,9 @@ importers:
       canvas-confetti:
         specifier: ^1.9.4
         version: 1.9.4
+      charinfo-ex:
+        specifier: ^0.0.2
+        version: 0.0.2
       dayjs:
         specifier: ^1.11.20
         version: 1.11.20
@@ -1741,6 +1744,9 @@ packages:
 
   canvas-confetti@1.9.4:
     resolution: {integrity: sha512-yxQbJkAVrFXWNbTUjPqjF7G+g6pDotOUHGbkZq2NELZUMDpiJ85rIEazVb8GTaAptNW2miJAXbs1BtioA251Pw==}
+
+  charinfo-ex@0.0.2:
+    resolution: {integrity: sha512-G1x3yupWRBdB+gCpjQj0Vp+iNN1SeMJoE3L0JMKWH7Di/nMkjtnjoNVU48TMVwFre0K0omrkQ72Cg8M6RDYxMA==}
 
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
@@ -5038,6 +5044,8 @@ snapshots:
   caniuse-lite@1.0.30001781: {}
 
   canvas-confetti@1.9.4: {}
+
+  charinfo-ex@0.0.2: {}
 
   chokidar@4.0.3:
     dependencies:

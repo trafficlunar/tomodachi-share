@@ -65,7 +65,7 @@ export default function OtherTab({ instructions }: Props) {
 			</div>
 
 			<div className="absolute inset-0 flex flex-col justify-center items-center">
-				<ColorPicker disabled={tab === 0 || tab === 1} color={colors[tab]} setColor={setColor} tab={tab === 6 ? "eyeliner" : "hair"} />
+				<ColorPicker disabled={tab === 0 || tab === 1 || tab === 5} color={colors[tab]} setColor={setColor} tab={tab === 6 ? "eyeliner" : "hair"} />
 				<NumberInputs key={tab} target={instructions.current.other[currentTab.name]} />
 
 				{tab === 3 && (

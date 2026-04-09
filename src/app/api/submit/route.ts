@@ -22,56 +22,49 @@ import { ThreeDsTomodachiLifeMii } from "@/lib/three-ds-tomodachi-life-mii";
 import { SwitchMiiInstructions } from "@/types";
 import { minifyInstructions } from "@/lib/switch";
 import { settings } from "@/lib/settings";
+import { CharInfoEx } from "charinfo-ex";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
-const submitSchema = z
-	.object({
-		platform: z.enum(MiiPlatform).default("THREE_DS"),
-		name: nameSchema,
-		tags: tagsSchema,
-		description: z.string().trim().max(512).optional(),
+const submitSchema = z.object({
+	platform: z.enum(MiiPlatform).default("THREE_DS"),
+	name: nameSchema,
+	tags: tagsSchema,
+	description: z.string().trim().max(512).optional(),
 
-		// Switch
-		gender: z.enum(MiiGender).default("MALE"),
-		makeup: z.enum(MiiMakeup).default("PARTIAL"),
-		miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
-		miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
-		youtubeId: z
-			.string()
-			.trim()
-			.transform((val) => (val === "" ? null : val))
-			.refine((val) => val === null || /^[a-zA-Z0-9_-]{11}$/.test(val), "Invalid YouTube video ID")
-			.optional(),
-		instructions: switchMiiInstructionsSchema,
+	// Switch
+	gender: z.enum(MiiGender).default("MALE"),
+	makeup: z.enum(MiiMakeup).default("PARTIAL"),
+	miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
+	youtubeId: z
+		.string()
+		.trim()
+		.transform((val) => (val === "" ? null : val))
+		.refine((val) => val === null || /^[a-zA-Z0-9_-]{11}$/.test(val), "Invalid YouTube video ID")
+		.optional(),
 
-		// QR code
-		qrBytesRaw: z
-			.array(z.number(), { error: "A QR code is required" })
-			.length(372, {
-				error: "QR code size is not a valid Tomodachi Life QR code",
-			})
-			.nullish(),
+	way: z.enum(["savedata", "manual"]).optional(),
 
-		// Custom images
-		image1: z.union([z.instanceof(File), z.any()]).optional(),
-		image2: z.union([z.instanceof(File), z.any()]).optional(),
-		image3: z.union([z.instanceof(File), z.any()]).optional(),
-	})
-	// This refine function is probably useless
-	.refine(
-		(data) => {
-			// If platform is Switch, gender, miiPortraitImage, and miiFeaturesImage must be present
-			if (data.platform === "SWITCH") {
-				return data.gender !== undefined && data.miiPortraitImage !== undefined && data.miiFeaturesImage !== undefined;
-			}
-			return true;
-		},
-		{
-			message: "Gender, Mii portrait & features image are required for Switch platform",
-			path: ["gender", "miiPortraitImage", "miiFeaturesImage"],
-		},
-	);
+	// Save data way
+	// TODO: miiData
+
+	// Manual way
+	miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
+	instructions: switchMiiInstructionsSchema,
+
+	// QR code
+	qrBytesRaw: z
+		.array(z.number(), { error: "A QR code is required" })
+		.length(372, {
+			error: "QR code size is not a valid Tomodachi Life QR code",
+		})
+		.nullish(),
+
+	// Custom images
+	image1: z.union([z.instanceof(File), z.any()]).optional(),
+	image2: z.union([z.instanceof(File), z.any()]).optional(),
+	image3: z.union([z.instanceof(File), z.any()]).optional(),
+});
 
 export async function POST(request: NextRequest) {
 	const session = await auth();
@@ -100,7 +93,7 @@ export async function POST(request: NextRequest) {
 
 	// Minify instructions to save space and improve user experience
 	let minifiedInstructions: Partial<SwitchMiiInstructions> | undefined;
-	if (formData.get("platform") === "SWITCH")
+	if (formData.get("platform") === "SWITCH" && formData.get("way") === "manual")
 		minifiedInstructions = minifyInstructions(JSON.parse((formData.get("instructions") as string) ?? "{}") as SwitchMiiInstructions);
 
 	// Parse and check all submission info
@@ -113,8 +106,11 @@ export async function POST(request: NextRequest) {
 		gender: formData.get("gender") ?? undefined, // ZOD MOMENT
 		makeup: formData.get("makeup") ?? undefined,
 		miiPortraitImage: formData.get("miiPortraitImage"),
-		miiFeaturesImage: formData.get("miiFeaturesImage"),
 		youtubeId: formData.get("youtubeId"),
+
+		way: formData.get("way"),
+
+		miiFeaturesImage: formData.get("miiFeaturesImage"),
 		instructions: minifiedInstructions,
 
 		qrBytesRaw: rawQrBytesRaw,
@@ -149,6 +145,7 @@ export async function POST(request: NextRequest) {
 		makeup,
 		miiPortraitImage,
 		miiFeaturesImage,
+		way,
 		youtubeId,
 		image1,
 		image2,
@@ -177,11 +174,14 @@ export async function POST(request: NextRequest) {
 	// Check Mii portrait & features image (Switch)
 	if (platform === "SWITCH") {
 		const portraitValidation = await validateImage(miiPortraitImage);
-		const featuresValidation = await validateImage(miiFeaturesImage);
 		if (!portraitValidation.valid)
 			return rateLimit.sendResponse({ error: `Failed to verify portrait: ${portraitValidation.error}` }, portraitValidation.status ?? 400);
-		if (!featuresValidation.valid)
-			return rateLimit.sendResponse({ error: `Failed to verify features: ${featuresValidation.error}` }, featuresValidation.status ?? 400);
+
+		if (way === "manual") {
+			const featuresValidation = await validateImage(miiFeaturesImage);
+			if (!featuresValidation.valid)
+				return rateLimit.sendResponse({ error: `Failed to verify features: ${featuresValidation.error}` }, featuresValidation.status ?? 400);
+		}
 	}
 
 	const qrBytes = new Uint8Array(qrBytesRaw ?? []);
@@ -195,6 +195,186 @@ export async function POST(request: NextRequest) {
 			Sentry.captureException(error, { extra: { stage: "qr-conversion" } });
 			return rateLimit.sendResponse({ error: error instanceof Error ? error.message : String(error) }, 400);
 		}
+	}
+
+	const miiData: CharInfoEx | undefined =
+		way === "savedata" && formData.get("miiData") ? (JSON.parse(formData.get("miiData") as string) as CharInfoEx) : undefined;
+
+	if (way === "savedata" && !miiData) {
+		return rateLimit.sendResponse({ error: "No mii data provided" }, 400);
+	}
+
+	if (way === "savedata" && miiData) {
+		const instructions: Partial<SwitchMiiInstructions> = {
+			head: {
+				type: miiData.facelineType,
+				skinColor: miiData.facelineColor,
+			},
+			hair: {
+				set: miiData.hairType,
+				bangs: miiData.hairTypeFront,
+				back: miiData.hairTypeBack,
+				color: miiData.hairColor0,
+				subColor: miiData.hairColor1,
+				subColor2: miiData.hairColor0, // TODO: check
+				style: miiData.hairStyle,
+				// uh oh, no flipped
+				isFlipped: false,
+			},
+			eyebrows: {
+				type: miiData.eyebrowType,
+				color: miiData.eyebrowColor,
+				height: miiData.eyebrowY,
+				distance: miiData.eyebrowX,
+				rotation: miiData.eyebrowRotate,
+				size: miiData.eyebrowScale,
+				stretch: miiData.eyebrowAspect,
+			},
+			eyes: {
+				main: {
+					type: miiData.eyeType,
+					color: miiData.eyeColor,
+					height: miiData.eyeY,
+					distance: miiData.eyeX,
+					rotation: miiData.eyeRotate,
+					size: miiData.eyeScale,
+					stretch: miiData.eyeAspect,
+				},
+				eyelashesTop: {
+					type: miiData.eyelashUpperType,
+					height: miiData.eyelashUpperY,
+					distance: miiData.eyelashUpperX,
+					rotation: miiData.eyelashUpperRotate,
+					size: miiData.eyelashUpperScale,
+					stretch: miiData.eyelashUpperAspect,
+				},
+				eyelashesBottom: {
+					type: miiData.eyelashLowerType,
+					height: miiData.eyelashLowerY,
+					distance: miiData.eyelashLowerX,
+					rotation: miiData.eyelashLowerRotate,
+					size: miiData.eyelashLowerScale,
+					stretch: miiData.eyelashLowerAspect,
+				},
+				eyelidTop: {
+					type: miiData.eyeLidUpperType,
+					height: miiData.eyeLidUpperY,
+					distance: miiData.eyeLidUpperX,
+					rotation: miiData.eyeLidUpperRotate,
+					size: miiData.eyeLidUpperScale,
+					stretch: miiData.eyeLidUpperAspect,
+				},
+				eyelidBottom: {
+					type: miiData.eyelidLowerType,
+					height: miiData.eyelidLowerY,
+					distance: miiData.eyelidLowerX,
+					rotation: miiData.eyelidLowerRotate,
+					size: miiData.eyelidLowerScale,
+					stretch: miiData.eyelidLowerAspect,
+				},
+				eyeliner: {
+					type: miiData.eyeShadowColor != 0,
+					color: miiData.eyeShadowColor,
+				},
+				pupil: {
+					type: miiData.eyeHighlightType,
+					height: miiData.eyeHighlightY,
+					distance: miiData.eyeHighlightX,
+					rotation: miiData.eyeHighlightRotate,
+					size: miiData.eyeHighlightScale,
+					stretch: miiData.eyeHighlightAspect,
+				},
+			},
+			nose: {
+				type: miiData.noseType,
+				height: miiData.noseY,
+				size: miiData.noseScale,
+			},
+			lips: {
+				type: miiData.mouthType,
+				color: miiData.mouthColor,
+				height: miiData.mouthY,
+				rotation: miiData.mouthRotate,
+				size: miiData.mouthScale,
+				stretch: miiData.mouthAspect,
+				// uh oh, no lipstick
+				hasLipstick: false,
+			},
+			ears: {
+				type: miiData.earType,
+				height: miiData.earY,
+				size: miiData.earScale,
+			},
+			glasses: {
+				type: miiData.glassType1,
+				type2: miiData.glassType2,
+				ringColor: miiData.glassColor1,
+				shadesColor: miiData.glassColor2,
+				height: miiData.glassY,
+				size: miiData.glassScale,
+				stretch: miiData.glassAspect,
+			},
+			other: {
+				wrinkles1: {
+					type: miiData.wrinkleLower,
+					height: miiData.wrinkleLowerY,
+					distance: miiData.wrinkleLowerX,
+					size: miiData.wrinkleLowerScale,
+					stretch: miiData.wrinkleLowerAspect,
+				},
+				wrinkles2: {
+					type: miiData.wrinkleUpper,
+					height: miiData.wrinkleUpperY,
+					distance: miiData.wrinkleUpperX,
+					size: miiData.wrinkleUpperScale,
+					stretch: miiData.wrinkleUpperAspect,
+				},
+				beard: {
+					type: miiData.beardType,
+					color: miiData.beardColor,
+				},
+				moustache: {
+					type: miiData.mustacheType,
+					color: miiData.mustacheColor,
+					height: miiData.mustacheY,
+					// uh oh, no flipped
+					isFlipped: false,
+					size: miiData.mustacheScale,
+					stretch: miiData.mustacheAspect,
+				},
+				goatee: {
+					type: miiData.beardShortType,
+					color: miiData.beardShortColor,
+				},
+				mole: {
+					type: miiData.moleX != 0,
+					height: miiData.moleY,
+					distance: miiData.moleX,
+					size: miiData.moleScale,
+				},
+				eyeShadow: {
+					type: miiData.makeup0,
+					color: miiData.makeup0Color,
+					height: miiData.makeup0Y,
+					distance: miiData.makeup0X,
+					size: miiData.makeup0Scale,
+					stretch: miiData.makeup0Aspect,
+				},
+				blush: {
+					type: miiData.makeup1,
+					color: miiData.makeup1Color,
+					height: miiData.makeup1Y,
+					distance: miiData.makeup1X,
+					size: miiData.makeup1Scale,
+					stretch: miiData.makeup1Aspect,
+				},
+			},
+			height: miiData.height,
+			weight: miiData.build,
+			// uh oh, no dating prefs, birthday, voice, personality
+		};
+
+		minifiedInstructions = minifyInstructions(instructions);
 	}
 
 	// Create Mii in database
@@ -219,8 +399,9 @@ export async function POST(request: NextRequest) {
 					}
 				: {
 						youtubeId,
-						instructions: minifiedInstructions,
 						makeup: makeup ?? "PARTIAL",
+						instructions: minifiedInstructions,
+						...(way === "savedata" && { miiData: miiData?.toJson() }),
 					}),
 		},
 	});
@@ -245,18 +426,20 @@ export async function POST(request: NextRequest) {
 		} else if (platform === "SWITCH") {
 			portraitBuffer = Buffer.from(await miiPortraitImage.arrayBuffer());
 
-			// Save features image
-			const featuresBuffer = Buffer.from(await miiFeaturesImage.arrayBuffer());
-			const pngBuffer = await sharp(featuresBuffer)
-				.resize({
-					height: 800,
-					fit: "inside",
-					withoutEnlargement: true,
-				})
-				.png({ quality: 85 })
-				.toBuffer();
-			const fileLocation = path.join(miiUploadsDirectory, "features.png");
-			await fs.writeFile(fileLocation, pngBuffer);
+			if (way === "manual") {
+				// Save features image
+				const featuresBuffer = Buffer.from(await miiFeaturesImage.arrayBuffer());
+				const pngBuffer = await sharp(featuresBuffer)
+					.resize({
+						height: 800,
+						fit: "inside",
+						withoutEnlargement: true,
+					})
+					.png({ quality: 85 })
+					.toBuffer();
+				const fileLocation = path.join(miiUploadsDirectory, "features.png");
+				await fs.writeFile(fileLocation, pngBuffer);
+			}
 		}
 
 		// Save portrait image
