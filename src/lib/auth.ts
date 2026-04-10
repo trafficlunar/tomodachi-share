@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	adapter: PrismaAdapter(prisma),
-	providers: [Discord, Github, Google],
+	providers: [Discord, Github({ issuer: "https://github.com/login/oauth" }), Google],
 	pages: {
 		signIn: "/login",
 	},
