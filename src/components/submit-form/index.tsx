@@ -82,7 +82,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 		formData.append("name", name);
 		formData.append("tags", JSON.stringify(tags));
 		formData.append("description", description);
-  formData.append("youtubeId", youtubeId);
+		formData.append("youtubeId", youtubeId);
 		files.forEach((file, index) => {
 			// image1, image2, etc.
 			formData.append(`image${index + 1}`, file);
@@ -167,7 +167,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 	}, [qrBytesRaw, platform]);
 
 	return (
-		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
+		<div className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
 				<div className="w-75 h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
 					<Carousel
@@ -541,6 +541,6 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 					</div>
 				</div>
 			</div>
-		</form>
+		</div>
 	);
 }

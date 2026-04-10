@@ -189,7 +189,7 @@ export default function EditForm({ mii, likes }: Props) {
 	}, [mii.id, mii.imageCount]);
 
 	return (
-		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
+		<div className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
 			<div className="flex justify-center">
 				<div className="w-75 h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
 					<Carousel
@@ -453,6 +453,6 @@ export default function EditForm({ mii, likes }: Props) {
 					<SubmitButton onClick={handleSubmit} text="Edit" className="ml-auto" />
 				</div>
 			</div>
-		</form>
+		</div>
 	);
 }
