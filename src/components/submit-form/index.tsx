@@ -82,6 +82,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 		formData.append("name", name);
 		formData.append("tags", JSON.stringify(tags));
 		formData.append("description", description);
+  formData.append("youtubeId", youtubeId);
 		files.forEach((file, index) => {
 			// image1, image2, etc.
 			formData.append(`image${index + 1}`, file);
@@ -109,7 +110,6 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 			formData.append("makeup", makeup);
 			formData.append("miiPortraitImage", portraitBlob);
 			formData.append("miiFeaturesImage", featuresBlob);
-			formData.append("youtubeId", youtubeId);
 			formData.append("instructions", JSON.stringify(instructions.current));
 		}
 
