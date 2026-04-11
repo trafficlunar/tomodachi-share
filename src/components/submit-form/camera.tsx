@@ -235,7 +235,7 @@ export default function Camera({ isOpen, setIsOpen, onCapture, setImage, setQrBy
 
 					<div className="rounded-2xl border-2 border-amber-500 max-h-96 flex justify-center items-center overflow-hidden">
 						<img src="/loading.svg" alt="loading indicator" width={256} height={256} className="absolute" />
-						<video ref={videoRef} className={`size-full z-10 ${setQrBytesRaw ? "object-cover" : ""}`} />
+						<video ref={videoRef} className={`size-full z-10 ${setQrBytesRaw ? "object-cover aspect-square" : ""}`} />
 					</div>
 					{setQrBytesRaw && <QrFinder />}
 					<canvas ref={canvasRef} className="hidden" />

@@ -101,7 +101,7 @@ export default function HairTab({ instructions }: Props) {
 								setStyle(i + 1);
 								instructions.current.hair.style = i + 1;
 							}}
-							className={`size-full aspect-square cursor-pointer hover:bg-orange-300 transition-colors duration-100 rounded-lg ${style === i ? "bg-orange-400!" : ""}`}
+							className={`size-full aspect-square cursor-pointer hover:bg-orange-300 transition-colors duration-100 rounded-lg ${style === i + 1 ? "bg-orange-400!" : ""}`}
 						>
 							{i + 1}
 						</button>
