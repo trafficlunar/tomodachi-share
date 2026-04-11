@@ -385,10 +385,14 @@ export default async function MiiPage({ params }: Props) {
 						{/* Instructions */}
 						{mii.platform === "SWITCH" && (
 							<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-3 max-h-96 overflow-y-auto">
-								<h2 className="text-xl font-semibold text-amber-700 flex items-center gap-2">
-									<Icon icon="fa7-solid:list" />
-									Instructions
-								</h2>
+								<div>
+									<h2 className="text-xl font-semibold text-amber-700 flex items-center gap-2">
+										<Icon icon="fa7-solid:list" />
+										Instructions
+									</h2>
+
+									<p className="text-xs text-amber-800">All instructions are based off of the default Male Mii.</p>
+								</div>
 
 								{mii.youtubeId && (
 									<iframe
