@@ -28,37 +28,31 @@ export function minifyInstructions(instructions: Partial<SwitchMiiInstructions>)
 }
 
 export const defaultInstructions: SwitchMiiInstructions = {
-	head: { skinColor: null },
-	hair: {
-		color: null,
-		subColor: null,
-		subColor2: null,
-		style: null,
-		isFlipped: false,
-	},
-	eyebrows: { color: null, height: null, distance: null, rotation: null, size: null, stretch: null },
+	head: { type: null, skinColor: null },
+	hair: { set: null, bangs: null, back: null, color: null, subColor: null, subColor2: null, style: null, isFlipped: false },
+	eyebrows: { type: null, color: null, height: null, distance: null, rotation: null, size: null, stretch: null },
 	eyes: {
-		main: { color: null, height: null, distance: null, rotation: null, size: null, stretch: null },
-		eyelashesTop: { height: null, distance: null, rotation: null, size: null, stretch: null },
-		eyelashesBottom: { height: null, distance: null, rotation: null, size: null, stretch: null },
-		eyelidTop: { height: null, distance: null, rotation: null, size: null, stretch: null },
-		eyelidBottom: { height: null, distance: null, rotation: null, size: null, stretch: null },
-		eyeliner: { color: null },
-		pupil: { height: null, distance: null, rotation: null, size: null, stretch: null },
+		main: { type: null, color: null, height: null, distance: null, rotation: null, size: null, stretch: null },
+		eyelashesTop: { type: null, height: null, distance: null, rotation: null, size: null, stretch: null },
+		eyelashesBottom: { type: null, height: null, distance: null, rotation: null, size: null, stretch: null },
+		eyelidTop: { type: null, height: null, distance: null, rotation: null, size: null, stretch: null },
+		eyelidBottom: { type: null, height: null, distance: null, rotation: null, size: null, stretch: null },
+		eyeliner: { type: false, color: null },
+		pupil: { type: null, height: null, distance: null, rotation: null, size: null, stretch: null },
 	},
-	nose: { height: null, size: null },
-	lips: { color: null, height: null, rotation: null, size: null, stretch: null, hasLipstick: false },
-	ears: { height: null, size: null },
-	glasses: { ringColor: null, shadesColor: null, height: null, size: null, stretch: null },
+	nose: { type: null, height: null, size: null },
+	lips: { type: null, color: null, height: null, rotation: null, size: null, stretch: null, hasLipstick: false },
+	ears: { type: null, height: null, size: null },
+	glasses: { type: null, type2: null, ringColor: null, shadesColor: null, height: null, size: null, stretch: null },
 	other: {
-		wrinkles1: { height: null, distance: null, size: null, stretch: null },
-		wrinkles2: { height: null, distance: null, size: null, stretch: null },
-		beard: { color: null },
-		moustache: { color: null, height: null, isFlipped: false, size: null, stretch: null },
-		goatee: { color: null },
-		mole: { color: null, height: null, distance: null, size: null },
-		eyeShadow: { color: null, height: null, distance: null, size: null, stretch: null },
-		blush: { color: null, height: null, distance: null, size: null, stretch: null },
+		wrinkles1: { type: null, height: null, distance: null, size: null, stretch: null },
+		wrinkles2: { type: null, height: null, distance: null, size: null, stretch: null },
+		beard: { type: null, color: null },
+		moustache: { type: null, color: null, height: null, isFlipped: false, size: null, stretch: null },
+		goatee: { type: null, color: null },
+		mole: { type: false, height: null, distance: null, size: null },
+		eyeShadow: { type: null, color: null, height: null, distance: null, size: null, stretch: null },
+		blush: { type: null, color: null, height: null, distance: null, size: null, stretch: null },
 	},
 	height: null,
 	weight: null,
@@ -237,4 +231,27 @@ export const COLORS: string[] = [
 	"F54A4A",
 	"86E1B0",
 	"6E44B0",
+];
+
+export const COLOR_MAP: number[] = [
+	// Row 1
+	88, 99, 107, 97, 48, 101, 90, 29, 98, 68,
+	// Row 2
+	89, 91, 74, 92, 100, 87, 94, 49, 58, 67,
+	// Row 3
+	57, 47, 80, 69, 96, 37, 27, 17, 106, 76,
+	// Row 4
+	86, 77, 66, 56, 46, 36, 26, 16, 105, 95,
+	// Row 5
+	85, 75, 65, 45, 55, 35, 25, 15, 104, 84,
+	// Row 6
+	64, 44, 24, 54, 34, 14, 103, 93, 83, 73,
+	// Row 7
+	63, 53, 43, 23, 13, 102, 72, 82, 62, 52,
+	// Row 8
+	42, 33, 32, 22, 12, 81, 71, 51, 61, 41,
+	// Row 9
+	31, 21, 11, 79, 19, 30, 40, 20, 10, 59,
+	// Row 10
+	60, 39, 70, 50, 9, 78, 38, 28, 18, 8,
 ];

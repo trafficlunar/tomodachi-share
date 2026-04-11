@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 interface Props {
 	isOpen: boolean;
 	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	image: string | undefined;
+	image: string | File | undefined;
 	setImage: (value: string | undefined) => void;
 }
 

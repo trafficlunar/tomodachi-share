@@ -402,7 +402,7 @@ export default async function MiiPage({ params }: Props) {
 									></iframe>
 								)}
 
-								<MiiInstructions instructions={mii.instructions as Partial<SwitchMiiInstructions>} />
+								<MiiInstructions instructions={mii.instructions as Partial<SwitchMiiInstructions>} isUsingSaveFile={mii.miiData !== null} />
 							</div>
 						)}
 					</div>

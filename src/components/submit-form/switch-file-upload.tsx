@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { FileWithPath } from "react-dropzone";
 import { Icon } from "@iconify/react";
 import Dropzone from "../dropzone";
@@ -11,43 +11,37 @@ interface Props {
 	text: string;
 	type?: "file" | "image";
 	forceCrop?: boolean;
-	image?: string | undefined;
-	setFileBytes?: (value: ArrayBufferLike | undefined) => void;
+	file?: string | File | undefined;
+	setFile?: (value: File | undefined) => void;
 	setImage?: (value: string | undefined) => void;
 }
 
-export default function SwitchFileUpload({ text, type = "image", forceCrop, image, setFileBytes, setImage }: Props) {
+export default function SwitchFileUpload({ text, type = "image", forceCrop, file, setFile, setImage }: Props) {
 	const [isCameraOpen, setIsCameraOpen] = useState(false);
 	const [isCropOpen, setIsCropOpen] = useState(false);
 
 	const handleDrop = useCallback(
 		(acceptedFiles: FileWithPath[]) => {
 			const file = acceptedFiles[0];
-			const reader = new FileReader();
-			reader.onload = async (event) => {
-				const result = event.target!.result;
-
-				if (type === "file") {
-					const buffer = result as ArrayBuffer;
-					setFileBytes!(buffer);
-				} else {
-					// for images
-					setImage!(result as string);
+			if (type === "file") {
+				setFile!(file);
+			} else {
+				const reader = new FileReader();
+				reader.onload = (event) => {
+					setImage!(event.target!.result as string);
 					if (forceCrop) setIsCropOpen(true);
-				}
-			};
-
-			if (type === "file") reader.readAsArrayBuffer(file);
-			else reader.readAsDataURL(file);
+				};
+				reader.readAsDataURL(file);
+			}
 		},
-		[setFileBytes, setImage],
+		[setFile, setImage],
 	);
 
 	return (
 		<div className="max-w-md w-full flex flex-col items-center gap-2">
 			<Dropzone type={type} onDrop={handleDrop} options={{ maxFiles: 1 }}>
 				<p className="text-center text-sm">
-					{!image ? (
+					{!file ? (
 						<>
 							Drag and drop {text}
 							<br />
@@ -82,7 +76,7 @@ export default function SwitchFileUpload({ text, type = "image", forceCrop, imag
 							if (forceCrop) setIsCropOpen(true);
 						}}
 					/>
-					<ImageEditorPortrait isOpen={isCropOpen} setIsOpen={setIsCropOpen} image={image} setImage={setImage!} />
+					<ImageEditorPortrait isOpen={isCropOpen} setIsOpen={setIsCropOpen} image={file} setImage={setImage!} />
 				</>
 			)}
 		</div>

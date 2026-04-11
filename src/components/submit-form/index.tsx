@@ -61,9 +61,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 	const [makeup, setMakeup] = useState<MiiMakeup>("PARTIAL");
 
 	const [way, setWay] = useState<"savedata" | "manual" | null>(null);
-	const [miiSaveFileBytes, setMiiSaveFileBytes] = useState<ArrayBufferLike | undefined>();
-	const [miis, setMiis] = useState<CharInfoEx[]>([]);
-	const [selectedMiiIndex, setSelectedMiiIndex] = useState(0);
+	const [miiDataFile, setMiiDataFile] = useState<File | undefined>();
 
 	const [youtubeId, setYouTubeId] = useState("");
 	const instructions = useRef<SwitchMiiInstructions>(defaultInstructions);
@@ -114,7 +112,11 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 			formData.append("miiPortraitImage", portraitBlob);
 			formData.append("way", way);
 			if (way === "savedata") {
-				formData.append("miiData", JSON.stringify(miis[selectedMiiIndex]));
+				if (!miiDataFile) {
+					setError("Failed to find Mii data file, did you upload one?");
+					return;
+				}
+				formData.append("miiDataFile", miiDataFile);
 			} else {
 				const featuresResponse = await fetch(miiFeaturesUri!);
 				if (!featuresResponse.ok) {
@@ -150,19 +152,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 	};
 
 	useEffect(() => {
-		if (platform === "SWITCH") {
-			if (!miiSaveFileBytes) return;
-			const miis: CharInfoEx[] = [];
-
-			for (let i = 0; i < 70; i++) {
-				const data = CharInfoEx.FromSaveFileArrayBuffer(miiSaveFileBytes, i);
-				if (data.name === "") continue;
-				miis.push(data);
-			}
-			setMiis(miis);
-			return;
-		}
-
+		if (platform !== "THREE_DS") return;
 		if (qrBytesRaw.length == 0) return;
 		const qrBytes = new Uint8Array(qrBytesRaw);
 
@@ -199,7 +189,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 		};
 
 		preview();
-	}, [miiSaveFileBytes, qrBytesRaw, platform]);
+	}, [qrBytesRaw, platform]);
 
 	return (
 		<form className="flex justify-center gap-4 w-full max-lg:flex-col max-lg:items-center">
@@ -233,7 +223,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 				</div>
 			</div>
 
-			<div className="max-w-2xl">
+			<div className="max-w-2xl w-full">
 				{inQueueMiisCount !== 0 && (
 					<div className="bg-zinc-50 border-2 border-zinc-400 rounded-2xl shadow-lg p-4 flex items-start gap-3 text-zinc-600 mb-4">
 						<Icon icon="material-symbols:timer" className="text-2xl shrink-0" />
@@ -443,7 +433,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 								type="button"
 								className={`flex flex-col justify-center items-center rounded-xl p-4 shadow-md border-2 cursor-pointer text-center text-sm transition hover:scale-[1.03] ${way === "savedata" ? "bg-cyan-100 border-cyan-600" : "bg-zinc-50 border-zinc-300 hover:bg-cyan-100 hover:border-cyan-600"}`}
 							>
-								Save Data (no makeup yet)
+								.ltd file
 							</button>
 
 							<button
@@ -455,6 +445,8 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 								Manual
 							</button>
 						</div>
+
+						<p className="text-xs text-zinc-400 text-center mt-2">Click on a way to see tutorials for them</p>
 					</div>
 
 					{/* (Switch Only) Mii Screenshots */}
@@ -483,7 +475,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 											className="size-20 object-cover rounded-xl border-2 border-orange-300 shrink-0 opacity-70"
 										/>
 									</div>
-									<SwitchFileUpload text="a screenshot of your Mii here" image={miiPortraitUri} setImage={setMiiPortraitUri} forceCrop />
+									<SwitchFileUpload text="a screenshot of your Mii here" file={miiPortraitUri} setImage={setMiiPortraitUri} forceCrop />
 								</div>
 							</div>
 
@@ -505,7 +497,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 											className="size-20 object-cover rounded-xl border-2 border-orange-300 shrink-0 opacity-70"
 										/>
 									</div>
-									<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={setMiiFeaturesUri} />
+									<SwitchFileUpload text="a screenshot of your Mii's features here" file={miiFeaturesUri} setImage={setMiiFeaturesUri} />
 								</div>
 							</div>
 
@@ -551,6 +543,8 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 						</div>
 
 						<div className="flex flex-col items-center gap-2">
+							<SwitchFileUpload type="file" text="your Mii's .ltd file" file={miiDataFile} setFile={setMiiDataFile} />
+
 							{/* YouTube */}
 							<div className="w-full grid grid-cols-3 items-center">
 								<label htmlFor="youtube" className="font-semibold">
@@ -570,27 +564,6 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 										setYouTubeId(match ? match[1] : val);
 									}}
 								/>
-							</div>
-
-							<SwitchFileUpload type="file" text="your Mii.sav file" setFileBytes={setMiiSaveFileBytes} />
-
-							<p className="text-sm text-center">Choose the Mii you want to submit:</p>
-
-							<div className="relative bg-orange-100 border-2 border-orange-300 rounded-lg max-w-md w-full p-1 flex flex-col h-48 overflow-x-auto">
-								{miis?.length === 0 ? (
-									<p className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-center text-sm">No miis found, upload a save file!</p>
-								) : (
-									miis?.map((mii, index) => (
-										<button
-											type="button"
-											key={index}
-											onClick={() => setSelectedMiiIndex(index)}
-											className={`w-full cursor-pointer text-left px-1.5 py-0.5 rounded-md transition-colors duration-75 ${selectedMiiIndex === index ? "bg-orange-300" : "hover:bg-orange-200"}`}
-										>
-											{mii.name}
-										</button>
-									))
-								)}
 							</div>
 						</div>
 					</div>

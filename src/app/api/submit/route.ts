@@ -46,7 +46,10 @@ const submitSchema = z.object({
 	way: z.enum(["savedata", "manual"]).optional(),
 
 	// Save data way
-	// TODO: miiData
+	miiDataFile: z
+		.instanceof(File)
+		.refine((blob) => blob.size < 1024 * 30, "File too large") // TODO: actual size
+		.optional(),
 
 	// Manual way
 	miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
@@ -109,6 +112,7 @@ export async function POST(request: NextRequest) {
 		youtubeId: formData.get("youtubeId"),
 
 		way: formData.get("way"),
+		miiDataFile: formData.get("miiDataFile"),
 
 		miiFeaturesImage: formData.get("miiFeaturesImage"),
 		instructions: minifiedInstructions,
@@ -146,6 +150,7 @@ export async function POST(request: NextRequest) {
 		miiPortraitImage,
 		miiFeaturesImage,
 		way,
+		miiDataFile,
 		youtubeId,
 		image1,
 		image2,
@@ -197,14 +202,13 @@ export async function POST(request: NextRequest) {
 		}
 	}
 
-	const miiData: CharInfoEx | undefined =
-		way === "savedata" && formData.get("miiData") ? (JSON.parse(formData.get("miiData") as string) as CharInfoEx) : undefined;
+	const miiDataFileBuffer = miiDataFile ? await miiDataFile.arrayBuffer() : undefined;
+	const miiDataFileArray = miiDataFileBuffer ? new Uint8Array(miiDataFileBuffer) : undefined;
+	const miiData = miiDataFileBuffer ? CharInfoEx.FromShareMiiFileArrayBuffer(miiDataFileBuffer) : undefined;
 
-	if (way === "savedata" && !miiData) {
-		return rateLimit.sendResponse({ error: "No mii data provided" }, 400);
-	}
+	if (way === "savedata") {
+		if (!miiData) return rateLimit.sendResponse({ error: "No mii data provided" }, 400);
 
-	if (way === "savedata" && miiData) {
 		const instructions: Partial<SwitchMiiInstructions> = {
 			head: {
 				type: miiData.facelineType,
@@ -257,12 +261,12 @@ export async function POST(request: NextRequest) {
 					stretch: miiData.eyelashLowerAspect,
 				},
 				eyelidTop: {
-					type: miiData.eyeLidUpperType,
-					height: miiData.eyeLidUpperY,
-					distance: miiData.eyeLidUpperX,
-					rotation: miiData.eyeLidUpperRotate,
-					size: miiData.eyeLidUpperScale,
-					stretch: miiData.eyeLidUpperAspect,
+					type: miiData.eyelidUpperType,
+					height: miiData.eyelidUpperY,
+					distance: miiData.eyelidUpperX,
+					rotation: miiData.eyelidUpperRotate,
+					size: miiData.eyelidUpperScale,
+					stretch: miiData.eyelidUpperAspect,
 				},
 				eyelidBottom: {
 					type: miiData.eyelidLowerType,
@@ -316,14 +320,14 @@ export async function POST(request: NextRequest) {
 			},
 			other: {
 				wrinkles1: {
-					type: miiData.wrinkleLower,
+					type: miiData.wrinkleLowerType,
 					height: miiData.wrinkleLowerY,
 					distance: miiData.wrinkleLowerX,
 					size: miiData.wrinkleLowerScale,
 					stretch: miiData.wrinkleLowerAspect,
 				},
 				wrinkles2: {
-					type: miiData.wrinkleUpper,
+					type: miiData.wrinkleUpperType,
 					height: miiData.wrinkleUpperY,
 					distance: miiData.wrinkleUpperX,
 					size: miiData.wrinkleUpperScale,
@@ -401,7 +405,7 @@ export async function POST(request: NextRequest) {
 						youtubeId,
 						makeup: makeup ?? "PARTIAL",
 						instructions: minifiedInstructions,
-						...(way === "savedata" && { miiData: miiData?.toJson() }),
+						...(way === "savedata" && { miiData: miiDataFileArray }),
 					}),
 		},
 	});

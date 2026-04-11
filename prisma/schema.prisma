@@ -83,7 +83,7 @@ model Mii {
   gender       MiiGender?
   makeup       MiiMakeup?
 
-  miiData Json?
+  miiData Bytes?
 
   firstName      String?
   lastName       String?

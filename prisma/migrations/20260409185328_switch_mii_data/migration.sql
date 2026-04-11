@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "miis" ADD COLUMN     "miiData" JSONB;
+ALTER TABLE "miis" ADD COLUMN     "miiData" BYTEA;

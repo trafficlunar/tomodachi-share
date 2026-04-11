@@ -2,14 +2,14 @@ import React from "react";
 import Image from "next/image";
 
 import DatingPreferencesViewer from "./dating-preferences";
-import VoiceViewer from "./voice-viewer";
 import PersonalityViewer from "./personality-viewer";
 
 import { SwitchMiiInstructions } from "@/types";
-import { COLORS } from "@/lib/switch";
+import { COLOR_MAP, COLORS } from "@/lib/switch";
 
 interface Props {
 	instructions: Partial<SwitchMiiInstructions>;
+	isUsingSaveFile: boolean;
 }
 
 interface SectionProps {
@@ -19,6 +19,7 @@ interface SectionProps {
 	pad?: number; // Number of digits to pad with zeroes
 	children?: React.ReactNode;
 	isSubSection?: boolean;
+	isUsingSaveFile: boolean;
 }
 
 const ORDINAL_SUFFIXES: Record<string, string> = {
@@ -46,29 +47,35 @@ function GridPosition({ index, cols = 5 }: { index: number; cols?: number }) {
 	return `${row}${rowSuffix} row, ${col}${colSuffix} column`;
 }
 
-function ColorPosition({ color }: { color: number | undefined | null }) {
+function ColorPosition({ color, isUsingSaveFile }: { color: number | undefined | null; isUsingSaveFile: boolean }) {
 	if (color === undefined || color === null) return null;
-	if (color <= 7) {
+
+	const index = isUsingSaveFile ? COLOR_MAP[color] : color;
+	if (index === undefined) return null;
+
+	console.log(index, color, COLORS[color]);
+
+	if (index <= 7) {
 		return (
 			<span className="flex items-center">
-				<div className="size-5 rounded mr-1.5 shrink-0" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
-				Color menu on left, <GridPosition index={color} cols={1} />
+				<div className="size-5 rounded mr-1.5 shrink-0" style={{ backgroundColor: `#${COLORS[index]}` }}></div>
+				Color menu on left, <GridPosition index={index} cols={1} />
 			</span>
 		);
 	}
-	if (color >= 108) {
+	if (index >= 108) {
 		return (
 			<span className="flex items-center">
-				<div className="size-5 rounded mr-1.5 shrink-0" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
-				Outside color menu, <GridPosition index={color - 108} cols={2} />
+				<div className="size-5 rounded mr-1.5 shrink-0" style={{ backgroundColor: `#${COLORS[index]}` }}></div>
+				Outside color menu, <GridPosition index={index - 108} cols={2} />
 			</span>
 		);
 	}
 
 	return (
 		<span className="flex items-center">
-			<div className="size-5 rounded mr-1.5 shrink-0" style={{ backgroundColor: `#${COLORS[color]}` }}></div>
-			Color menu on right, <GridPosition index={color - 8} cols={10} />
+			<div className="size-5 rounded mr-1.5 shrink-0" style={{ backgroundColor: `#${COLORS[index]}` }}></div>
+			Color menu on right, <GridPosition index={index - 8} cols={10} />
 		</span>
 	);
 }
@@ -87,7 +94,7 @@ function TableCell({ label, children }: TableCellProps) {
 	);
 }
 
-function Section({ name, iconTemplate, pad = 2, instructions, children, isSubSection }: SectionProps) {
+function Section({ name, iconTemplate, pad = 2, instructions, children, isSubSection, isUsingSaveFile }: SectionProps) {
 	if (typeof instructions !== "object" || !instructions) return null;
 
 	const type = "type" in instructions ? instructions.type : undefined;
@@ -102,7 +109,7 @@ function Section({ name, iconTemplate, pad = 2, instructions, children, isSubSec
 	const isBooleanType = typeof type === "boolean";
 
 	return (
-		<div className={`p-3 w-max ${isSubSection ? "not-first:mt-2 pt-0!" : "border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5 mb-4"}`}>
+		<div className={`p-3 w-max ${isSubSection ? "not-first:mt-2 pt-0!" : "border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5"}`}>
 			<h3 className={`font-semibold text-amber-800 mb-1 ${isSubSection ? "text-lg" : "text-xl"}`}>{name}</h3>
 
 			<table className="w-full">
@@ -117,7 +124,7 @@ function Section({ name, iconTemplate, pad = 2, instructions, children, isSubSec
 
 					{not(color) && (
 						<TableCell label="Color">
-							<ColorPosition color={color} />
+							<ColorPosition color={color} isUsingSaveFile={isUsingSaveFile} />
 						</TableCell>
 					)}
 					{not(height) && <TableCell label="Height">{numberValue(height, 0)}</TableCell>}
@@ -133,27 +140,27 @@ function Section({ name, iconTemplate, pad = 2, instructions, children, isSubSec
 	);
 }
 
-export default function MiiInstructions({ instructions }: Props) {
+export default function MiiInstructions({ instructions, isUsingSaveFile }: Props) {
 	if (Object.keys(instructions).length === 0) return null;
 	const { head, hair, eyebrows, eyes, nose, lips, ears, glasses, other, height, weight, birthday, datingPreferences, voice, personality } = instructions;
 
 	return (
 		<>
 			{head && (
-				<Section name="Head" iconTemplate="Faceline%s_Uit" instructions={head}>
+				<Section name="Head" iconTemplate="Faceline%s_Uit" instructions={head} isUsingSaveFile={isUsingSaveFile}>
 					{not(head.skinColor) && (
 						<TableCell label="Skin Color">
-							<ColorPosition color={head.skinColor} />
+							<ColorPosition color={head.skinColor} isUsingSaveFile={isUsingSaveFile} />
 						</TableCell>
 					)}
 				</Section>
 			)}
 
 			{hair && (
-				<Section name="Hair" iconTemplate="HairAll%s_Uit" pad={3} instructions={hair}>
+				<Section name="Hair" iconTemplate="HairAll%s_Uit" pad={3} instructions={hair} isUsingSaveFile={isUsingSaveFile}>
 					{not(hair.set) && (
 						<TableCell label="Set">
-							<Image src={`/icons/MiiEditor_Face_HairAll${String(hair.set).padStart(3, "0")}_Uit.png`} width={64} height={64} alt="icon" />
+							<Image src={`/icons/MiiEditor_Face_Hair${String(hair.set).padStart(3, "0")}_Uit.png`} width={64} height={64} alt="icon" />
 						</TableCell>
 					)}
 					{not(hair.bangs) && (
@@ -168,12 +175,12 @@ export default function MiiInstructions({ instructions }: Props) {
 					)}
 					{not(hair.subColor) && (
 						<TableCell label="Sub Color">
-							<ColorPosition color={hair.subColor} />
+							<ColorPosition color={hair.subColor} isUsingSaveFile={isUsingSaveFile} />
 						</TableCell>
 					)}
 					{not(hair.subColor2) && (
 						<TableCell label="Sub Color (Back)">
-							<ColorPosition color={hair.subColor2} />
+							<ColorPosition color={hair.subColor2} isUsingSaveFile={isUsingSaveFile} />
 						</TableCell>
 					)}
 					{not(hair.style) && <TableCell label="Tying Style">{hair.style}</TableCell>}
@@ -181,64 +188,64 @@ export default function MiiInstructions({ instructions }: Props) {
 				</Section>
 			)}
 
-			{eyebrows && <Section name="Eyebrows" iconTemplate="Eyebrow%s_Uit" instructions={eyebrows}></Section>}
+			{eyebrows && <Section name="Eyebrows" iconTemplate="Eyebrow%s_Uit" instructions={eyebrows} isUsingSaveFile={isUsingSaveFile} />}
 
 			{eyes && (
-				<Section name="Eyes" instructions={eyes}>
-					<Section isSubSection name="Main" iconTemplate="Eye%s_Uit" pad={3} instructions={eyes.main} />
-					<Section isSubSection name="Eyelashes (Top)" iconTemplate="Eyelash%s_Uit" instructions={eyes.eyelashesTop} />
-					<Section isSubSection name="Eyelashes (Bottom)" iconTemplate="EyelashLower%s_Uit" instructions={eyes.eyelashesBottom} />
-					<Section isSubSection name="Eyelid (Top)" iconTemplate="EyelidUpper%s_Uit" instructions={eyes.eyelidTop} />
-					<Section isSubSection name="Eyelid (Bottom)" iconTemplate="EyelidLower%s_Uit" instructions={eyes.eyelidBottom} />
-					<Section isSubSection name="Eyeliner" instructions={eyes.eyeliner} />
-					<Section isSubSection name="Pupil" iconTemplate="EyeHighlight%s_Uit" instructions={eyes.pupil} />
+				<Section name="Eyes" instructions={eyes} isUsingSaveFile={isUsingSaveFile}>
+					<Section isSubSection name="Main" iconTemplate="Eye%s_Uit" pad={3} instructions={eyes.main} isUsingSaveFile={isUsingSaveFile} />
+					<Section isSubSection name="Eyelashes (Top)" iconTemplate="Eyelash%s_Uit" instructions={eyes.eyelashesTop} isUsingSaveFile={isUsingSaveFile} />
+					<Section
+						isSubSection
+						name="Eyelashes (Bottom)"
+						iconTemplate="EyelashLower%s_Uit"
+						instructions={eyes.eyelashesBottom}
+						isUsingSaveFile={isUsingSaveFile}
+					/>
+					<Section isSubSection name="Eyelid (Top)" iconTemplate="EyelidUpper%s_Uit" instructions={eyes.eyelidTop} isUsingSaveFile={isUsingSaveFile} />
+					<Section isSubSection name="Eyelid (Bottom)" iconTemplate="EyelidLower%s_Uit" instructions={eyes.eyelidBottom} isUsingSaveFile={isUsingSaveFile} />
+					<Section isSubSection name="Eyeliner" instructions={eyes.eyeliner} isUsingSaveFile={isUsingSaveFile} />
+					<Section isSubSection name="Pupil" iconTemplate="EyeHighlight%s_Uit" instructions={eyes.pupil} isUsingSaveFile={isUsingSaveFile} />
 				</Section>
 			)}
 
-			{nose && <Section name="Nose" iconTemplate="Nose%s_Uit" instructions={nose}></Section>}
+			{nose && <Section name="Nose" iconTemplate="Nose%s_Uit" instructions={nose} isUsingSaveFile={isUsingSaveFile} />}
 
 			{lips && (
-				<Section name="Lips" iconTemplate="Mouth%s_Uit" pad={3} instructions={lips}>
+				<Section name="Lips" iconTemplate="Mouth%s_Uit" pad={3} instructions={lips} isUsingSaveFile={isUsingSaveFile}>
 					{not(lips.hasLipstick) && <TableCell label="Lipstick">{lips.hasLipstick ? "Yes" : "No"}</TableCell>}
 				</Section>
 			)}
 
-			{ears && <Section name="Ears" iconTemplate="Ear%s_Uit" instructions={ears}></Section>}
+			{ears && <Section name="Ears" iconTemplate="Ear%s_Uit" instructions={ears} isUsingSaveFile={isUsingSaveFile} />}
 
 			{glasses && (
-				<Section name="Glasses" iconTemplate="Glass%scolor_Uit" instructions={glasses}>
+				<Section name="Glasses" iconTemplate="Glass%scolor_Uit" instructions={glasses} isUsingSaveFile={isUsingSaveFile}>
 					{not(glasses.type2) && <TableCell label="Type 2">{glasses.type2}</TableCell>}
 					{not(glasses.ringColor) && (
 						<TableCell label="Ring Color">
-							<ColorPosition color={glasses.ringColor} />
+							<ColorPosition color={glasses.ringColor} isUsingSaveFile={isUsingSaveFile} />
 						</TableCell>
 					)}
 					{not(glasses.shadesColor) && (
 						<TableCell label="Shades Color">
-							<ColorPosition color={glasses.shadesColor} />
+							<ColorPosition color={glasses.shadesColor} isUsingSaveFile={isUsingSaveFile} />
 						</TableCell>
 					)}
 				</Section>
 			)}
 
 			{other && (
-				<Section name="Other" instructions={other}>
-					<Section isSubSection name="Wrinkles 1" iconTemplate="WrinkleLower%s_Uit" instructions={other.wrinkles1} />
-					<Section isSubSection name="Wrinkles 2" iconTemplate="WrinkleUpper%s_Uit" instructions={other.wrinkles2} />
-					<Section isSubSection name="Beard" iconTemplate="Beard%s_Uit" instructions={other.beard} />
-					<Section isSubSection name="Moustache" iconTemplate="Mustache%s_Uit" instructions={other.moustache}>
+				<Section name="Other" instructions={other} isUsingSaveFile={isUsingSaveFile}>
+					<Section isSubSection name="Wrinkles 1" iconTemplate="WrinkleLower%s_Uit" instructions={other.wrinkles1} isUsingSaveFile={isUsingSaveFile} />
+					<Section isSubSection name="Wrinkles 2" iconTemplate="WrinkleUpper%s_Uit" instructions={other.wrinkles2} isUsingSaveFile={isUsingSaveFile} />
+					<Section isSubSection name="Beard" iconTemplate="Beard%s_Uit" instructions={other.beard} isUsingSaveFile={isUsingSaveFile} />
+					<Section isSubSection name="Moustache" iconTemplate="Mustache%s_Uit" instructions={other.moustache} isUsingSaveFile={isUsingSaveFile}>
 						{other.moustache && other.moustache.isFlipped !== undefined && <TableCell label="Flipped">{other.moustache.isFlipped ? "Yes" : "No"}</TableCell>}
 					</Section>
-					<Section isSubSection name="Goatee" iconTemplate="BeardShort%s_Uit" instructions={other.goatee} />
-					<Section isSubSection name="Mole" instructions={other.mole}>
-						{other.mole?.type && (
-							<TableCell label="Icon">
-								<Image src={`/icons/MiiEditor_Face_Mole00_Uit.png`} width={64} height={64} alt="icon" />
-							</TableCell>
-						)}
-					</Section>
-					<Section isSubSection name="Eye Shadow" iconTemplate="MakeUpper%s_Uit" instructions={other.eyeShadow} />
-					<Section isSubSection name="Blush" iconTemplate="MakeLower%s_Uit" instructions={other.blush} />
+					<Section isSubSection name="Goatee" iconTemplate="BeardShort%s_Uit" instructions={other.goatee} isUsingSaveFile={isUsingSaveFile} />
+					<Section isSubSection name="Mole" instructions={other.mole} isUsingSaveFile={isUsingSaveFile} />
+					<Section isSubSection name="Eye Shadow" iconTemplate="MakeUpper%s_Uit" instructions={other.eyeShadow} isUsingSaveFile={isUsingSaveFile} />
+					<Section isSubSection name="Blush" iconTemplate="MakeLower%s_Uit" instructions={other.blush} isUsingSaveFile={isUsingSaveFile} />
 				</Section>
 			)}
 

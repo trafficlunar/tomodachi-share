@@ -22,7 +22,7 @@ export default function Dropzone({ type = "image", onDrop, options, children }: 
 	const { getRootProps, getInputProps } = useDropzone({
 		onDrop: handleDrop,
 		maxFiles: 3,
-		accept: type === "image" ? { "image/*": [".png", ".jpg", ".jpeg", ".bmp", ".png", ".heic"] } : { "application/octet-stream": [".sav"] },
+		accept: type === "image" ? { "image/*": [".png", ".jpg", ".jpeg", ".bmp", ".png", ".heic"] } : { "application/octet-stream": [".ltd"] },
 		...options,
 	});
 
