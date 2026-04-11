@@ -98,8 +98,8 @@ export default function HairTab({ instructions }: Props) {
 							type="button"
 							key={i}
 							onClick={() => {
-								setStyle(i);
-								instructions.current.hair.style = i;
+								setStyle(i + 1);
+								instructions.current.hair.style = i + 1;
 							}}
 							className={`size-full aspect-square cursor-pointer hover:bg-orange-300 transition-colors duration-100 rounded-lg ${style === i ? "bg-orange-400!" : ""}`}
 						>
