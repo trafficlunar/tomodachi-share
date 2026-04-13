@@ -433,7 +433,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 								type="button"
 								className={`flex flex-col justify-center items-center rounded-xl p-4 shadow-md border-2 cursor-pointer text-center text-sm transition hover:scale-[1.03] ${way === "savedata" ? "bg-cyan-100 border-cyan-600" : "bg-zinc-50 border-zinc-300 hover:bg-cyan-100 hover:border-cyan-600"}`}
 							>
-								.ltd file
+								.ltd file (Modded)
 							</button>
 
 							<button

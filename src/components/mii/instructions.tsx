@@ -252,6 +252,7 @@ export default function MiiInstructions({ instructions, isUsingSaveFile }: Props
 			{(height || weight || datingPreferences || voice || personality) && (
 				<div className="p-3 border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5 text-amber-950 w-max mb-4">
 					<h3 className="font-semibold text-xl text-amber-800 mb-1">Misc</h3>
+					<p className="text-xs text-amber-800 mb-4">These contain sliders: 0 is middle, positive is to the right, negative is to the left</p>
 
 					<table className="w-full">
 						<tbody>

@@ -48,7 +48,7 @@ const submitSchema = z.object({
 	// Save data way
 	miiDataFile: z
 		.instanceof(File)
-		.refine((blob) => blob.size < 1024 * 30, "File too large") // TODO: actual size
+		.refine((blob) => blob.size < 1024 * 1024 * 1.5, "File too large") // TODO: actual size
 		.optional(),
 
 	// Manual way
@@ -207,7 +207,16 @@ export async function POST(request: NextRequest) {
 	const miiData = miiDataFileBuffer ? CharInfoEx.FromShareMiiFileArrayBuffer(miiDataFileBuffer) : undefined;
 
 	if (way === "savedata") {
-		if (!miiData) return rateLimit.sendResponse({ error: "No mii data provided" }, 400);
+		if (!miiData || !miiDataFileBuffer || !miiDataFileArray) return rateLimit.sendResponse({ error: "No valid Mii data provided" }, 400);
+
+		const view = new DataView(miiDataFileBuffer);
+
+		const parse = (index: number): number => view.getUint8(161 + index * 4);
+
+		const age = view.getUint32(0x00e1, true);
+		const year = view.getUint32(0x00d9, true);
+
+		const dontAge = age !== 0xffffffff;
 
 		const instructions: Partial<SwitchMiiInstructions> = {
 			head: {
@@ -375,7 +384,28 @@ export async function POST(request: NextRequest) {
 			},
 			height: miiData.height,
 			weight: miiData.build,
-			// uh oh, no dating prefs, birthday, voice, personality
+			datingPreferences: ([MiiGender.MALE, MiiGender.FEMALE, MiiGender.NONBINARY] as const).filter((_, i) => miiDataFileArray[0x01a9 + i] === 1),
+			birthday: {
+				month: parse(17),
+				day: parse(15),
+				age: dontAge ? age : new Date().getFullYear() - year,
+				dontAge,
+			},
+			voice: {
+				speed: parse(6),
+				pitch: parse(8),
+				depth: parse(5),
+				delivery: Math.max(0, view.getInt8(0xc5)), // why is this an integer??
+				tone: parse(7) + 1,
+				// preset type?
+			},
+			personality: {
+				movement: parse(4) - 1,
+				speech: parse(2) - 1,
+				energy: parse(1) - 1,
+				thinking: parse(0) - 1,
+				overall: parse(3) - 1,
+			},
 		};
 
 		minifiedInstructions = minifyInstructions(instructions);
