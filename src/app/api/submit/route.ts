@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 
 import fs from "fs/promises";
@@ -76,7 +75,6 @@ const submitSchema = z
 export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 3);
 	const check = await rateLimit.handle();
@@ -92,9 +90,6 @@ export async function POST(request: NextRequest) {
 		rawTags = JSON.parse(formData.get("tags") as string);
 		rawQrBytesRaw = JSON.parse(formData.get("qrBytesRaw") as string);
 	} catch (error) {
-		Sentry.captureException(error, {
-			extra: { stage: "submit-json-parse" },
-		});
 		return rateLimit.sendResponse({ error: "Invalid JSON in tags or QR code data" }, 400);
 	}
 
@@ -128,15 +123,6 @@ export async function POST(request: NextRequest) {
 		const firstIssue = parsed.error.issues[0];
 		const path = firstIssue.path.length ? firstIssue.path.join(".") : "root";
 		const error = `${path}: ${firstIssue.message}`;
-		const issues = parsed.error.issues;
-		const hasInstructionsErrors = issues.some((issue) => issue.path[0] === "instructions");
-
-		if (hasInstructionsErrors) {
-			Sentry.captureException(error, {
-				extra: { issues, rawInstructions: formData.get("instructions"), stage: "submit-instructions" },
-			});
-		}
-
 		return rateLimit.sendResponse({ error }, 400);
 	}
 	const {
@@ -192,7 +178,6 @@ export async function POST(request: NextRequest) {
 		try {
 			conversion = convertQrCode(qrBytes);
 		} catch (error) {
-			Sentry.captureException(error, { extra: { stage: "qr-conversion" } });
 			return rateLimit.sendResponse({ error: error instanceof Error ? error.message : String(error) }, 400);
 		}
 	}
@@ -277,7 +262,6 @@ export async function POST(request: NextRequest) {
 		await prisma.mii.delete({ where: { id: miiRecord.id } });
 
 		console.error("Failed to download/store Mii portrait/features:", error);
-		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "studio-image-download" } });
 		return rateLimit.sendResponse({ error: "Failed to download/store Mii portrait/features" }, 500);
 	}
 
@@ -285,7 +269,6 @@ export async function POST(request: NextRequest) {
 		await generateMetadataImage(miiRecord, session.user?.name!);
 	} catch (error) {
 		console.error("Failed to generate metadata image:", error);
-		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "metadata-image-generation" } });
 	}
 
 	if (platform === "THREE_DS") {
@@ -311,7 +294,6 @@ export async function POST(request: NextRequest) {
 			await prisma.mii.delete({ where: { id: miiRecord.id } });
 
 			console.error("Error processing Mii files:", error);
-			Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "file-processing" } });
 			return rateLimit.sendResponse({ error: "Failed to process and store Mii files" }, 500);
 		}
 	}
@@ -339,8 +321,6 @@ export async function POST(request: NextRequest) {
 		});
 	} catch (error) {
 		console.error("Error storing user images:", error);
-
-		Sentry.captureException(error, { extra: { miiId: miiRecord.id, stage: "user-image-storage" } });
 		return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
 	}
 

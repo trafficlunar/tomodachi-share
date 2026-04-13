@@ -16,7 +16,6 @@
 		"@bprogress/next": "^3.2.12",
 		"@hello-pangea/dnd": "^18.0.1",
 		"@prisma/client": "^6.19.2",
-		"@sentry/nextjs": "^10.48.0",
 		"bit-buffer": "^0.3.0",
 		"canvas-confetti": "^1.9.4",
 		"dayjs": "^1.11.20",

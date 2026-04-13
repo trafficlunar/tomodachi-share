@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as Sentry from "@sentry/nextjs";
 import { profanity } from "@2toad/profanity";
 import z from "zod";
 
@@ -10,7 +9,6 @@ import { RateLimit } from "@/lib/rate-limit";
 export async function PATCH(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 3);
 	const check = await rateLimit.handle();
@@ -29,7 +27,6 @@ export async function PATCH(request: NextRequest) {
 		});
 	} catch (error) {
 		console.error("Failed to update description:", error);
-		Sentry.captureException(error, { extra: { stage: "update-about-me" } });
 		return rateLimit.sendResponse({ error: "Failed to update description" }, 500);
 	}
 

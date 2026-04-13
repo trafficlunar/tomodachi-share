@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as Sentry from "@sentry/nextjs";
 import dayjs from "dayjs";
 import { z } from "zod";
 
@@ -21,7 +20,6 @@ const formDataSchema = z.object({
 export async function PATCH(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 3);
 	const check = await rateLimit.handle();
@@ -70,7 +68,6 @@ export async function PATCH(request: NextRequest) {
 		await fs.writeFile(fileLocation, pngBuffer);
 	} catch (error) {
 		console.error("Error uploading profile picture:", error);
-		Sentry.captureException(error, { extra: { stage: "upload-profile-picture" } });
 		return rateLimit.sendResponse({ error: "Failed to store profile picture" }, 500);
 	}
 
@@ -81,7 +78,6 @@ export async function PATCH(request: NextRequest) {
 		});
 	} catch (error) {
 		console.error("Failed to update profile picture:", error);
-		Sentry.captureException(error, { extra: { stage: "update-profile-picture" } });
 		return rateLimit.sendResponse({ error: "Failed to update profile picture" }, 500);
 	}
 

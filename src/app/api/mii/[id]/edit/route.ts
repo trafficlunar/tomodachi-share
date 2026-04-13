@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
-import { Mii, MiiGender, MiiMakeup, Prisma } from "@prisma/client";
+import { MiiGender, MiiMakeup, Prisma } from "@prisma/client";
 
 import fs from "fs/promises";
 import path from "path";
@@ -46,7 +45,6 @@ const editSchema = z.object({
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 6); // no grouped pathname; edit each mii 2 times a minute
 	const check = await rateLimit.handle();
@@ -192,7 +190,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 			);
 		} catch (error) {
 			console.error("Error uploading user images:", error);
-			Sentry.captureException(error, { extra: { stage: "edit-custom-images" } });
 			return rateLimit.sendResponse({ error: "Failed to store user images" }, 500);
 		}
 	}
@@ -232,7 +229,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 			);
 		} catch (error) {
 			console.error("Error uploading portrait/features images:", error);
-			Sentry.captureException(error, { extra: { stage: "edit-portrait-features" } });
 			return rateLimit.sendResponse({ error: "Failed to store portrait/features images" }, 500);
 		}
 	}
@@ -257,7 +253,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 		}),
 	}).catch((err) => {
 		console.error("Cloudflare cache purge failed:", err);
-		Sentry.captureException(err, { extra: { stage: "cloudflare-purge", miiId } });
 	});
 
 	return rateLimit.sendResponse({ success: true });

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as Sentry from "@sentry/nextjs";
 
 import fs from "fs/promises";
 import path from "path";
@@ -14,7 +13,6 @@ const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	Sentry.setUser({ id: session.user?.id, name: session.user?.name });
 
 	const rateLimit = new RateLimit(request, 30, "/api/mii/delete");
 	const check = await rateLimit.handle();
@@ -44,7 +42,6 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 		});
 	} catch (error) {
 		console.error("Failed to delete Mii from database:", error);
-		Sentry.captureException(error, { extra: { stage: "delete-mii" } });
 		return rateLimit.sendResponse({ error: "Failed to delete Mii" }, 500);
 	}
 
@@ -52,7 +49,6 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 		await fs.rm(miiUploadsDirectory, { recursive: true, force: true });
 	} catch (error) {
 		console.warn("Failed to delete Mii image files:", error);
-		Sentry.captureException(error, { extra: { stage: "delete-mii-images" } });
 	}
 
 	return rateLimit.sendResponse({ success: true });

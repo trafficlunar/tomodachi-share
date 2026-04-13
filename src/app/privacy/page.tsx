@@ -10,7 +10,7 @@ export default function PrivacyPage() {
 		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl p-6">
 			<h1 className="text-2xl font-bold">Privacy Policy</h1>
 			<h2 className="font-light">
-				<strong className="font-medium">Effective Date:</strong> 21 February 2026
+				<strong className="font-medium">Effective Date:</strong> 13 April 2026
 			</h2>
 
 			<hr className="border-black/20 mt-1 mb-4" />
@@ -63,23 +63,6 @@ export default function PrivacyPage() {
 							to collect anonymous data about how users interact with the site. Umami is fully GDPR-compliant, and no personally identifiable information is
 							collected through this service.
 						</p>
-					</section>
-				</li>
-				<li>
-					<h3 className="text-xl font-semibold mt-6 mb-2">Error Reporting</h3>
-					<section>
-						<p className="mb-2">
-							This website uses{" "}
-							<a href="https://glitchtip.com/" className="text-blue-700">
-								GlitchTip
-							</a>{" "}
-							(a self-hosted Sentry-like instance) to monitor errors and site performance. To protect your privacy:
-						</p>
-						<ul className="list-disc list-inside ml-4">
-							<li>Errors and performance data is collected.</li>
-							<li>Only your user ID and name are sent, no other personally identifiable information is collected.</li>
-							<li>You can use ad blockers or browser privacy features to opt out.</li>
-						</ul>
 					</section>
 				</li>
 				<li>

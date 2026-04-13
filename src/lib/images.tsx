@@ -4,7 +4,6 @@
 /* eslint-disable @next/next/no-img-element */
 
 import type { ReactNode } from "react";
-import * as Sentry from "@sentry/nextjs";
 
 import fs from "fs/promises";
 import path from "path";
@@ -55,7 +54,6 @@ export async function validateImage(file: File): Promise<{ valid: boolean; error
 		return { valid: true };
 	} catch (error) {
 		console.error("Error validating image:", error);
-		Sentry.captureException(error, { extra: { stage: "image-validation" } });
 		return { valid: false, error: "Failed to process image file", status: 500 };
 	}
 }
@@ -217,7 +215,6 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 		await fs.writeFile(fileLocation, buffer);
 	} catch (error) {
 		console.error("Error storing 'metadata' image type", error);
-		Sentry.captureException(error, { extra: { stage: "metadata-image-storage", miiId: mii.id } });
 		return { error: `Failed to store metadata image for ${mii.id}`, status: 500 };
 	}
 
