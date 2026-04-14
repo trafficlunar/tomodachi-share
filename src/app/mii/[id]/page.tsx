@@ -164,7 +164,15 @@ export default async function MiiPage({ params }: Props) {
 								/>
 							</div>
 						) : (
-							!mii.miiData && (
+							<>
+								{mii.isFromSaveFile && (
+									<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-4 w-full">
+										<hr className="grow border-zinc-300" />
+										<span>Face Paint Texture</span>
+										<hr className="grow border-zinc-300" />
+									</div>
+								)}
+
 								<ImageViewer
 									src={`/mii/${mii.id}/image?type=features`}
 									alt="mii features"
@@ -172,7 +180,7 @@ export default async function MiiPage({ params }: Props) {
 									height={300}
 									className="rounded-lg hover:brightness-90 mb-4 transition-all"
 								/>
-							)
+							</>
 						)}
 						<hr className="w-full border-t-2 border-t-amber-400" />
 
@@ -374,7 +382,7 @@ export default async function MiiPage({ params }: Props) {
 						<div className="flex gap-4 w-fit bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 text-3xl text-orange-400 max-md:place-self-center *:size-12 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-xs">
 							<AuthorButtons mii={mii} />
 
-							{mii.miiData && (
+							{mii.isFromSaveFile && (
 								<Link aria-label="Download Mii" href={`/mii/${mii.id}/download`} download>
 									<Icon icon="material-symbols:download" />
 									<span>Download</span>
@@ -400,7 +408,7 @@ export default async function MiiPage({ params }: Props) {
 									<p className="text-xs text-amber-800">
 										All instructions are based off of the default Male Mii.
 										<br />
-										{mii.miiData && "If you're on modded/emulator, you can download the .ltd file above."}
+										{mii.isFromSaveFile && "If you're on modded/emulator, you can download the .ltd file above."}
 									</p>
 								</div>
 
@@ -416,7 +424,7 @@ export default async function MiiPage({ params }: Props) {
 									></iframe>
 								)}
 
-								<MiiInstructions instructions={mii.instructions as Partial<SwitchMiiInstructions>} isUsingSaveFile={mii.miiData !== null} />
+								<MiiInstructions instructions={mii.instructions as Partial<SwitchMiiInstructions>} isUsingSaveFile={mii.isFromSaveFile} />
 							</div>
 						)}
 					</div>

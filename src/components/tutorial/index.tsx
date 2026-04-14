@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Icon } from "@iconify/react";
 import confetti from "canvas-confetti";
+import Link from "next/link";
 
 interface Slide {
 	// step is never used, undefined is assumed as a step
 	type?: "start" | "step" | "finish";
 	text?: string;
+	link?: string;
 	imageSrc?: string;
 }
 
@@ -159,7 +161,13 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 										</div>
 									) : (
 										<>
-											<p className="text-sm text-zinc-500 mb-2 text-center">{slide.text}</p>
+											{slide.link ? (
+												<Link href={slide.link} className="text-sm text-blue-600 mb-2 text-center">
+													{slide.text}
+												</Link>
+											) : (
+												<p className="text-sm text-zinc-500 mb-2 text-center">{slide.text}</p>
+											)}
 
 											<Image
 												src={slide.imageSrc ?? "/missing.svg"}

@@ -10,6 +10,7 @@ import { Icon } from "@iconify/react";
 import LikeButton from "@/components/like-button";
 import DeleteMiiButton from "../delete-mii-button";
 import Carousel from "@/components/carousel";
+import Image from "next/image";
 
 interface Props {
 	miis: Prisma.MiiGetPayload<{ include: { user: { select: { id: true; name: true } }; _count: { select: { likedBy: true } } } }>[];
@@ -44,20 +45,16 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 						</div>
 					)}
 
-					<Carousel
-						images={[
-							`/mii/${mii.id}/image?type=mii`,
-							...(mii.platform === "THREE_DS" ? [`/mii/${mii.id}/image?type=qr-code`] : [`/mii/${mii.id}/image?type=features`]),
-							...Array.from({ length: mii.imageCount }, (_, index) => `/mii/${mii.id}/image?type=image${index}`),
-						]}
-					/>
+					<Link href={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
+						<Image src={`/mii/${mii.id}/image?type=mii`} width={240} height={160} alt="mii image" className="w-full h-auto aspect-3/2 object-contain" />
+					</Link>
 
 					<div className="p-4 flex flex-col gap-1 h-full">
-						<div className="flex justify-between items-center">
+						<div className="flex justify-between items-start">
 							<Link href={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1 w-full text-ellipsis wrap-break-word" title={mii.name}>
 								{mii.name}
 							</Link>
-							<div title={mii.platform === "SWITCH" ? "Switch" : "3DS"} className="-mr-3 text-[1.25rem] opacity-25">
+							<div title={mii.platform === "SWITCH" ? "Switch" : "3DS"} className="text-[1.25rem] opacity-25">
 								{mii.platform === "SWITCH" ? (
 									<Icon icon="cib:nintendo-switch" className="text-red-400" />
 								) : (

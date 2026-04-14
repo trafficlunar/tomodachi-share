@@ -83,7 +83,7 @@ model Mii {
   gender       MiiGender?
   makeup       MiiMakeup?
 
-  miiData Bytes?
+  isFromSaveFile Boolean @default(false)
 
   firstName      String?
   lastName       String?

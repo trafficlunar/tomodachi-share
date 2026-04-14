@@ -24,6 +24,7 @@
 		"downshift": "^9.3.2",
 		"embla-carousel-react": "^8.6.0",
 		"file-type": "^22.0.1",
+		"fzstd": "^0.1.1",
 		"jsqr": "^1.4.0",
 		"next": "16.2.3",
 		"next-auth": "5.0.0-beta.30",

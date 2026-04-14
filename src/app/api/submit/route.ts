@@ -23,6 +23,7 @@ import { SwitchMiiInstructions } from "@/types";
 import { minifyInstructions } from "@/lib/switch";
 import { settings } from "@/lib/settings";
 import { CharInfoEx } from "charinfo-ex";
+import { SwitchTomodachiLifeMii } from "@/lib/switch-tomodachi-life-mii";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
@@ -203,212 +204,15 @@ export async function POST(request: NextRequest) {
 	}
 
 	const miiDataFileBuffer = miiDataFile ? await miiDataFile.arrayBuffer() : undefined;
-	const miiDataFileArray = miiDataFileBuffer ? new Uint8Array(miiDataFileBuffer) : undefined;
 	const miiData = miiDataFileBuffer ? CharInfoEx.FromShareMiiFileArrayBuffer(miiDataFileBuffer) : undefined;
 
+	let parsedSwitchMii: SwitchTomodachiLifeMii | undefined = undefined;
+
 	if (way === "savedata") {
-		if (!miiData || !miiDataFileBuffer || !miiDataFileArray) return rateLimit.sendResponse({ error: "No valid Mii data provided" }, 400);
+		if (!miiData || !miiDataFileBuffer) return rateLimit.sendResponse({ error: "No valid Mii data provided" }, 400);
 
-		const view = new DataView(miiDataFileBuffer);
-
-		const parse = (index: number): number => view.getUint8(161 + index * 4);
-
-		const age = view.getUint32(0x00e1, true);
-		const year = view.getUint32(0x00d9, true);
-
-		const dontAge = age !== 0xffffffff;
-
-		const instructions: Partial<SwitchMiiInstructions> = {
-			head: {
-				type: miiData.facelineType,
-				skinColor: miiData.facelineColor,
-			},
-			hair: {
-				set: miiData.hairType,
-				bangs: miiData.hairTypeFront,
-				back: miiData.hairTypeBack,
-				color: miiData.hairColor0,
-				subColor: miiData.hairColor1,
-				subColor2: miiData.hairColor0, // TODO: check
-				style: miiData.hairStyle,
-				// uh oh, no flipped
-				isFlipped: false,
-			},
-			eyebrows: {
-				type: miiData.eyebrowType,
-				color: miiData.eyebrowColor,
-				height: miiData.eyebrowY - 10,
-				distance: miiData.eyebrowX - 4,
-				rotation: miiData.eyebrowRotate - 6,
-				size: miiData.eyebrowScale - 4,
-				stretch: miiData.eyebrowAspect - 3,
-			},
-			eyes: {
-				main: {
-					type: miiData.eyeType,
-					color: miiData.eyeColor,
-					height: miiData.eyeY - 12,
-					distance: miiData.eyeX - 2,
-					rotation: miiData.eyeRotate - 4,
-					size: miiData.eyeScale - 4,
-					stretch: miiData.eyeAspect - 3,
-				},
-				eyelashesTop: {
-					type: miiData.eyelashUpperType,
-					height: miiData.eyelashUpperY,
-					distance: miiData.eyelashUpperX,
-					rotation: miiData.eyelashUpperRotate,
-					size: miiData.eyelashUpperScale,
-					stretch: miiData.eyelashUpperAspect,
-				},
-				eyelashesBottom: {
-					type: miiData.eyelashLowerType,
-					height: miiData.eyelashLowerY,
-					distance: miiData.eyelashLowerX,
-					rotation: miiData.eyelashLowerRotate,
-					size: miiData.eyelashLowerScale,
-					stretch: miiData.eyelashLowerAspect,
-				},
-				eyelidTop: {
-					type: miiData.eyelidUpperType,
-					height: miiData.eyelidUpperY,
-					distance: miiData.eyelidUpperX,
-					rotation: miiData.eyelidUpperRotate,
-					size: miiData.eyelidUpperScale,
-					stretch: miiData.eyelidUpperAspect,
-				},
-				eyelidBottom: {
-					type: miiData.eyelidLowerType,
-					height: miiData.eyelidLowerY,
-					distance: miiData.eyelidLowerX,
-					rotation: miiData.eyelidLowerRotate,
-					size: miiData.eyelidLowerScale,
-					stretch: miiData.eyelidLowerAspect,
-				},
-				eyeliner: {
-					type: miiData.eyeShadowColor != 0,
-					color: miiData.eyeShadowColor,
-				},
-				pupil: {
-					type: miiData.eyeHighlightType,
-					height: miiData.eyeHighlightY,
-					distance: miiData.eyeHighlightX,
-					rotation: miiData.eyeHighlightRotate,
-					size: miiData.eyeHighlightScale,
-					stretch: miiData.eyeHighlightAspect,
-				},
-			},
-			nose: {
-				type: miiData.noseType,
-				height: miiData.noseY - 9,
-				size: miiData.noseScale - 4,
-			},
-			lips: {
-				type: miiData.mouthType,
-				color: miiData.mouthColor,
-				height: miiData.mouthY - 13,
-				rotation: miiData.mouthRotate,
-				size: miiData.mouthScale - 4,
-				stretch: miiData.mouthAspect - 3,
-				// uh oh, no lipstick
-				hasLipstick: false,
-			},
-			ears: {
-				type: miiData.earType,
-				height: miiData.earY - 4,
-				size: miiData.earScale - 2,
-			},
-			glasses: {
-				type: miiData.glassType1,
-				type2: miiData.glassType2,
-				ringColor: miiData.glassColor1,
-				shadesColor: miiData.glassColor2,
-				height: miiData.glassY - 11,
-				size: miiData.glassScale - 4,
-				stretch: miiData.glassAspect - 3,
-			},
-			other: {
-				wrinkles1: {
-					type: miiData.wrinkleLowerType,
-					height: miiData.wrinkleLowerY - 15,
-					distance: miiData.wrinkleLowerX - 2,
-					size: miiData.wrinkleLowerScale - 6,
-					stretch: miiData.wrinkleLowerAspect - 3,
-				},
-				wrinkles2: {
-					type: miiData.wrinkleUpperType,
-					height: miiData.wrinkleUpperY - 23,
-					distance: miiData.wrinkleUpperX - 7,
-					size: miiData.wrinkleUpperScale - 6,
-					stretch: miiData.wrinkleUpperAspect - 3,
-				},
-				beard: {
-					type: miiData.beardType,
-					color: miiData.beardColor,
-				},
-				moustache: {
-					type: miiData.mustacheType,
-					color: miiData.mustacheColor,
-					height: miiData.mustacheY - 10,
-					// uh oh, no flipped
-					isFlipped: false,
-					size: miiData.mustacheScale - 4,
-					stretch: miiData.mustacheAspect - 3,
-				},
-				goatee: {
-					type: miiData.beardShortType,
-					color: miiData.beardShortColor,
-				},
-				mole: {
-					type: miiData.moleX != 0,
-					height: miiData.moleY - 20,
-					distance: miiData.moleX - 2,
-					size: miiData.moleScale - 4,
-				},
-				eyeShadow: {
-					type: miiData.makeup0,
-					color: miiData.makeup0Color,
-					height: miiData.makeup0Y - 12,
-					distance: miiData.makeup0X - 1,
-					size: miiData.makeup0Scale - 6,
-					stretch: miiData.makeup0Aspect - 3,
-				},
-				blush: {
-					type: miiData.makeup1,
-					color: miiData.makeup1Color,
-					height: miiData.makeup1Y - 19,
-					distance: miiData.makeup1X - 6,
-					size: miiData.makeup1Scale - 5,
-					stretch: miiData.makeup1Aspect - 3,
-				},
-			},
-			height: miiData.height,
-			weight: miiData.build,
-			datingPreferences: ([MiiGender.MALE, MiiGender.FEMALE, MiiGender.NONBINARY] as const).filter((_, i) => miiDataFileArray[0x01a9 + i] === 1),
-			birthday: {
-				month: parse(17),
-				day: parse(15),
-				age: dontAge ? age : new Date().getFullYear() - year,
-				dontAge,
-			},
-			voice: {
-				speed: parse(6),
-				pitch: parse(8),
-				depth: parse(5),
-				delivery: Math.max(0, view.getInt8(0xc5)), // why is this an integer??
-				tone: parse(7) + 1,
-				// preset type?
-			},
-			personality: {
-				movement: parse(4) - 1,
-				speech: parse(2) - 1,
-				energy: parse(1) - 1,
-				thinking: parse(0) - 1,
-				overall: parse(3) - 1,
-			},
-		};
-
-		minifiedInstructions = minifyInstructions(instructions);
+		parsedSwitchMii = new SwitchTomodachiLifeMii(miiDataFileBuffer, miiData);
+		minifiedInstructions = parsedSwitchMii.toInstructions();
 	}
 
 	// Create Mii in database
@@ -435,7 +239,7 @@ export async function POST(request: NextRequest) {
 						youtubeId,
 						makeup: makeup ?? "PARTIAL",
 						instructions: minifiedInstructions,
-						...(way === "savedata" && { miiData: miiDataFileArray }),
+						...(way === "savedata" && { isFromSaveFile: true }),
 					}),
 		},
 	});
@@ -473,6 +277,20 @@ export async function POST(request: NextRequest) {
 					.toBuffer();
 				const fileLocation = path.join(miiUploadsDirectory, "features.png");
 				await fs.writeFile(fileLocation, pngBuffer);
+			} else if (way === "savedata" && miiDataFileBuffer) {
+				const fileLocation = path.join(miiUploadsDirectory, "data.ltd");
+				await fs.writeFile(fileLocation, Buffer.from(miiDataFileBuffer));
+
+				// Save face paint image
+				if (parsedSwitchMii) {
+					const pngBuffer = await parsedSwitchMii.extractFacePaintImage();
+					if (pngBuffer) {
+						const fileLocation = path.join(miiUploadsDirectory, "features.png"); // Save as features because it isn't used
+						await fs.writeFile(fileLocation, pngBuffer);
+					}
+				} else {
+					return rateLimit.sendResponse({ error: "Failed to extract Switch Mii data" }, 500);
+				}
 			}
 		}
 

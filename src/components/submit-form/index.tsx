@@ -429,16 +429,14 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 						<div className="grid grid-cols-2 gap-4 w-full">
 							<button
 								onClick={() => setWay("savedata")}
-								// aria-label={tutorial.title + " tutorial"}
 								type="button"
 								className={`flex flex-col justify-center items-center rounded-xl p-4 shadow-md border-2 cursor-pointer text-center text-sm transition hover:scale-[1.03] ${way === "savedata" ? "bg-cyan-100 border-cyan-600" : "bg-zinc-50 border-zinc-300 hover:bg-cyan-100 hover:border-cyan-600"}`}
 							>
-								.ltd file (Modded)
+								ShareMii file (.ltd) (Modded)
 							</button>
 
 							<button
 								onClick={() => setWay("manual")}
-								// aria-label={tutorial.title + " tutorial"}
 								type="button"
 								className={`flex flex-col justify-center items-center rounded-xl p-4 shadow-md border-2 cursor-pointer text-center text-sm transition hover:scale-[1.03] ${way === "manual" ? "bg-cyan-100 border-cyan-600" : "bg-zinc-50 border-zinc-300 hover:bg-cyan-100 hover:border-cyan-600"}`}
 							>
@@ -446,7 +444,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 							</button>
 						</div>
 
-						<p className="text-xs text-zinc-400 text-center mt-2">Click on a way to see tutorials for them</p>
+						<p className="text-xs text-zinc-400 text-center mt-2">Select a method above and click 'How to?' to view the tutorial.</p>
 					</div>
 
 					{/* (Switch Only) Mii Screenshots */}
@@ -503,7 +501,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 
 							{way === "manual" && (
 								<>
-									<SwitchSubmitTutorialButton />
+									<SwitchSubmitTutorialButton type="manual" />
 									<p className="text-xs text-zinc-400 text-center">A tutorial on how to screenshot the features is above.</p>
 								</>
 							)}
@@ -538,12 +536,13 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 					<div className={`${platform === "SWITCH" && way === "savedata" ? "" : "hidden"}`}>
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
 							<hr className="grow border-zinc-300" />
-							<span>Save Data</span>
+							<span>ShareMii File</span>
 							<hr className="grow border-zinc-300" />
 						</div>
 
 						<div className="flex flex-col items-center gap-2">
 							<SwitchFileUpload type="file" text="your Mii's .ltd file" file={miiDataFile} setFile={setMiiDataFile} />
+							<SwitchSubmitTutorialButton type="savedata" />
 
 							{/* YouTube */}
 							<div className="w-full grid grid-cols-3 items-center">
@@ -599,7 +598,7 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 							</div>
 
 							<MiiEditor instructions={instructions} />
-							<SwitchSubmitTutorialButton />
+							<SwitchSubmitTutorialButton type="manual" />
 							<span className="text-xs text-zinc-400 text-center px-32 max-sm:px-8">
 								Mii editor may be inaccurate. Instructions are recommended, but not required - you do not have to add every instruction.
 							</span>
