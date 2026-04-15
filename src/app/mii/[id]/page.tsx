@@ -164,23 +164,13 @@ export default async function MiiPage({ params }: Props) {
 								/>
 							</div>
 						) : (
-							<>
-								{mii.isFromSaveFile && (
-									<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-4 w-full">
-										<hr className="grow border-zinc-300" />
-										<span>Face Paint Texture</span>
-										<hr className="grow border-zinc-300" />
-									</div>
-								)}
-
-								<ImageViewer
-									src={`/mii/${mii.id}/image?type=features`}
-									alt="mii features"
-									width={300}
-									height={300}
-									className="rounded-lg hover:brightness-90 mb-4 transition-all"
-								/>
-							</>
+							<ImageViewer
+								src={`/mii/${mii.id}/image?type=features`}
+								alt="mii features"
+								width={300}
+								height={300}
+								className="rounded-lg hover:brightness-90 mb-4 transition-all"
+							/>
 						)}
 						<hr className="w-full border-t-2 border-t-amber-400" />
 
@@ -437,9 +427,9 @@ export default async function MiiPage({ params }: Props) {
 						Gallery
 					</h2>
 
-					{images.length > 0 ? (
+					{images.length > 0 || mii.isFromSaveFile ? (
 						<div className="grid grid-cols-3 gap-2 w-full max-md:grid-cols-2 max-[24rem]:grid-cols-1">
-							{images.map((src, index) => (
+							{[...(mii.isFromSaveFile ? [`/mii/${mii.id}/image?type=facepaint`] : []), ...images].map((src, index) => (
 								<div
 									key={index}
 									className="relative aspect-3/2 rounded-xl bg-black/65 border-2 border-amber-400 shadow-md overflow-hidden transition hover:shadow-lg shadow-black/30"

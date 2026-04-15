@@ -49,7 +49,7 @@ const submitSchema = z.object({
 	// Save data way
 	miiDataFile: z
 		.instanceof(File)
-		.refine((blob) => blob.size < 1024 * 1024 * 1.5, "File too large") // TODO: actual size
+		.refine((blob) => blob.size < 1024 * 1024 * 1, "File too large") // TODO: actual size
 		.optional(),
 
 	// Manual way
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
 
 	// Minify instructions to save space and improve user experience
 	let minifiedInstructions: Partial<SwitchMiiInstructions> | undefined;
-	if (formData.get("platform") === "SWITCH" && formData.get("way") === "manual")
+	if (formData.get("platform") === "SWITCH")
 		minifiedInstructions = minifyInstructions(JSON.parse((formData.get("instructions") as string) ?? "{}") as SwitchMiiInstructions);
 
 	// Parse and check all submission info
@@ -211,8 +211,13 @@ export async function POST(request: NextRequest) {
 	if (way === "savedata") {
 		if (!miiData || !miiDataFileBuffer) return rateLimit.sendResponse({ error: "No valid Mii data provided" }, 400);
 
-		parsedSwitchMii = new SwitchTomodachiLifeMii(miiDataFileBuffer, miiData);
-		minifiedInstructions = parsedSwitchMii.toInstructions();
+		try {
+			parsedSwitchMii = new SwitchTomodachiLifeMii(miiDataFileBuffer, miiData);
+		} catch (error) {
+			console.warn("Failed to verify Switch Mii data", error);
+			return rateLimit.sendResponse({ error: "Failed to verify Mii data: is your ShareMii file up to date?" }, 400);
+		}
+		// minifiedInstructions = parsedSwitchMii.toInstructions();
 	}
 
 	// Create Mii in database
@@ -285,7 +290,7 @@ export async function POST(request: NextRequest) {
 				if (parsedSwitchMii) {
 					const pngBuffer = await parsedSwitchMii.extractFacePaintImage();
 					if (pngBuffer) {
-						const fileLocation = path.join(miiUploadsDirectory, "features.png"); // Save as features because it isn't used
+						const fileLocation = path.join(miiUploadsDirectory, "facepaint.png");
 						await fs.writeFile(fileLocation, pngBuffer);
 					}
 				} else {

@@ -21,29 +21,11 @@ import MiiEditor from "./mii-editor";
 import SwitchSubmitTutorialButton from "../tutorial/switch-submit";
 import { Icon } from "@iconify/react";
 import SwitchFileUpload from "./switch-file-upload";
+import { deepMerge } from "@/lib/utils";
 
 interface Props {
 	mii: Mii;
 	likes: number;
-}
-
-function deepMerge<T>(target: T, source: Partial<T>): T {
-	const output = structuredClone(target);
-
-	if (typeof source !== "object" || source === null) return output;
-
-	for (const key in source) {
-		const sourceValue = source[key];
-		const targetValue = (output as any)[key];
-
-		if (typeof sourceValue === "object" && sourceValue !== null && !Array.isArray(sourceValue)) {
-			(output as any)[key] = deepMerge(targetValue, sourceValue);
-		} else {
-			(output as any)[key] = sourceValue;
-		}
-	}
-
-	return output;
 }
 
 export default function EditForm({ mii, likes }: Props) {
@@ -387,9 +369,11 @@ export default function EditForm({ mii, likes }: Props) {
 							</div>
 
 							<div className="flex flex-col items-center gap-2">
-								<SwitchFileUpload text="a screenshot of your Mii here" image={miiPortraitUri} setImage={handleMiiPortraitChange} forceCrop />
-								<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={handleMiiFeaturesChange} />
-								<SwitchSubmitTutorialButton />
+								<SwitchFileUpload text="a screenshot of your Mii here" file={miiPortraitUri} setImage={handleMiiPortraitChange} forceCrop />
+								{!mii.isFromSaveFile && (
+									<SwitchFileUpload text="a screenshot of your Mii's features here" file={miiFeaturesUri} setImage={handleMiiFeaturesChange} />
+								)}
+								<SwitchSubmitTutorialButton type="manual" />
 							</div>
 
 							<p className="text-xs text-zinc-400 text-center mt-2">You must upload a screenshot of the features, check tutorial on how.</p>
@@ -423,7 +407,7 @@ export default function EditForm({ mii, likes }: Props) {
 						</div>
 
 						<MiiEditor instructions={instructions} />
-						<SwitchSubmitTutorialButton />
+						<SwitchSubmitTutorialButton type="manual" />
 					</>
 				)}
 

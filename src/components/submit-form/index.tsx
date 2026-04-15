@@ -477,8 +477,14 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 								</div>
 							</div>
 
+							{way === "savedata" && (
+								<p className="text-xs text-zinc-400 text-center mb-2">
+									Unfortunately, at this time we can't automatically generate instructions from a .ltd file.
+								</p>
+							)}
+
 							{/* Step 2 - Features */}
-							<div className={`flex flex-col items-center gap-2 w-full ${way === "manual" ? "" : "hidden"}`}>
+							<div className="flex flex-col items-center gap-2 w-full">
 								<div className="flex items-center gap-2 self-start">
 									<span className="bg-orange-400 text-white text-xs font-bold rounded-full size-5 flex items-center justify-center shrink-0">2</span>
 									<span className="text-sm font-semibold text-zinc-600">
@@ -544,31 +550,14 @@ export default function SubmitForm({ inQueueMiisCount }: Props) {
 							<SwitchFileUpload type="file" text="your Mii's .ltd file" file={miiDataFile} setFile={setMiiDataFile} />
 							<SwitchSubmitTutorialButton type="savedata" />
 
-							{/* YouTube */}
-							<div className="w-full grid grid-cols-3 items-center">
-								<label htmlFor="youtube" className="font-semibold">
-									YouTube Video (for makeup)
-								</label>
-								<input
-									id="youtube"
-									type="text"
-									className="pill input w-full col-span-2"
-									minLength={2}
-									maxLength={64}
-									placeholder="Paste a URL or video ID..."
-									value={youtubeId}
-									onChange={(e) => {
-										const val = e.target.value;
-										const match = val.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-										setYouTubeId(match ? match[1] : val);
-									}}
-								/>
-							</div>
+							{way === "savedata" && (
+								<p className="text-xs text-zinc-400 text-center mb-2">Only the v3 format is supported, please make sure ShareMii is up to date.</p>
+							)}
 						</div>
 					</div>
 
 					{/* (Switch only) Mii instructions */}
-					<div className={`${platform === "SWITCH" && way === "manual" ? "" : "hidden"}`}>
+					<div className={`${platform === "SWITCH" && way ? "" : "hidden"}`}>
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
 							<hr className="grow border-zinc-300" />
 							<span>Mii Instructions</span>
