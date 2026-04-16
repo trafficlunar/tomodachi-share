@@ -68,9 +68,10 @@ export class RateLimit {
 
 			return { success, limit: this.maxRequests, remaining, expires: expireAt };
 		} catch (error) {
+			// Fail open — don't block users when Redis is unreachable
 			console.error("Rate limit check failed", error);
 			return {
-				success: false,
+				success: true,
 				limit: this.maxRequests,
 				remaining: this.maxRequests,
 				expires: expireAt,

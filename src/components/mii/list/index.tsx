@@ -108,7 +108,6 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 	const skip = (page - 1) * limit;
 
 	let totalCount: number;
-	let filteredCount: number;
 	let miis: Prisma.MiiGetPayload<{ select: typeof select }>[];
 
 	if (sort === "random") {
@@ -119,7 +118,6 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 		});
 
 		totalCount = matchingIds.length;
-		filteredCount = Math.max(0, Math.min(limit, totalCount - skip));
 
 		if (matchingIds.length === 0) return;
 
@@ -155,14 +153,13 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 			orderBy = [{ createdAt: "desc" }, { name: "asc" }];
 		}
 
-		[totalCount, filteredCount, miis] = await Promise.all([
+		[totalCount, miis] = await Promise.all([
 			prisma.mii.count({ where: { ...where, userId } }),
-			prisma.mii.count({ where, skip, take: limit }),
 			prisma.mii.findMany({
 				where,
 				orderBy,
 				select,
-				skip: (page - 1) * limit,
+				skip,
 				take: limit,
 			}),
 		]);
@@ -174,19 +171,8 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 		<div className="w-full">
 			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-center gap-2 mb-2 max-md:flex-col">
 				<div className="flex items-center gap-2">
-					{totalCount == filteredCount ? (
-						<>
-							<span className="text-2xl font-bold text-amber-900">{totalCount}</span>
-							<span className="text-lg text-amber-700">{totalCount === 1 ? "Mii" : "Miis"}</span>
-						</>
-					) : (
-						<>
-							<span className="text-2xl font-bold text-amber-900">{filteredCount}</span>
-							<span className="text-sm text-amber-700">of</span>
-							<span className="text-lg font-semibold text-amber-800">{totalCount}</span>
-							<span className="text-lg text-amber-700">Miis</span>
-						</>
-					)}
+					<span className="text-2xl font-bold text-amber-900">{totalCount}</span>
+					<span className="text-lg text-amber-700">{totalCount === 1 ? "Mii" : "Miis"}</span>
 				</div>
 
 				<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
