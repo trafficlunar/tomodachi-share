@@ -1,6 +1,5 @@
 import { type ChangeEvent } from "react";
-import { MiiGender } from "@tomodachi-share/backend";
-import { type SwitchMiiInstructions } from "@tomodachi-share/shared";
+import { type MiiGender, type SwitchMiiInstructions } from "@tomodachi-share/shared";
 
 interface Props {
 	data: SwitchMiiInstructions["datingPreferences"];

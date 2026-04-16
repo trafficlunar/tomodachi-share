@@ -8,7 +8,6 @@ import ShareMiiButton from "../mii/share-mii-button";
 import ThreeDsScanTutorialButton from "../tutorial/3ds-scan";
 import SwitchAddMiiTutorialButton from "../tutorial/switch-add-mii";
 import MiiInstructions from "../mii/instructions";
-import type { Mii } from "@tomodachi-share/backend";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 
@@ -17,7 +16,7 @@ interface Props {
 }
 
 export default function MiiPage({ id }: Props) {
-	const [mii, setMii] = useState<Mii | any>(null);
+	const [mii, setMii] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -291,7 +290,7 @@ export default function MiiPage({ id }: Props) {
 
 						{/* Buttons */}
 						<div className="flex gap-3 w-fit bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 text-3xl text-orange-400 max-md:place-self-center *:size-12 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-xs">
-							<AuthorButtons mii={mii} />
+							{/* <AuthorButtons mii={mii} /> */}
 
 							<ShareMiiButton miiId={mii.id} />
 							<a aria-label="Report Mii" href={`${import.meta.env.PUBLIC_API_URL}/report/mii/${mii.id}`}>

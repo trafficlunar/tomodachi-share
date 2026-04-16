@@ -1,19 +1,18 @@
 import { Icon } from "@iconify/react";
 
 import Description from "./description";
-import { type User } from "@tomodachi-share/backend";
 import { useStore } from "@nanostores/react";
 import { session } from "../session";
 
 interface Props {
-	user?: User | any;
+	user?: any;
 	page?: "settings" | "likes";
 }
 
 export default function ProfileInformation({ user, page }: Props) {
 	const $session = useStore(session);
 
-	const isAdmin = (!user ? $session.user.id : user.id) === Number(import.meta.env.PUBLIC_ADMIN_USER_ID);
+	const isAdmin = (!user ? $session?.user.id : user.id) === Number(import.meta.env.PUBLIC_ADMIN_USER_ID);
 	const isContributor = import.meta.env.PUBLIC_CONTRIBUTORS_USER_IDS?.split(",").includes(user.id);
 	const isOwnProfile = !user || $session?.user?.id === user.id;
 

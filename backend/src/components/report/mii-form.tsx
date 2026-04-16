@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { type Mii, ReportReason } from "@tomodachi-share/backend";
 
 import ReasonSelector from "./reason-selector";
 import SubmitButton from "../submit-button";
+import { Mii, ReportReason } from "@prisma/client";
 
 interface Props {
 	mii: Mii;

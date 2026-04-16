@@ -1,4 +1,3 @@
-import { MiiGender, MiiMakeup, MiiPlatform } from "@tomodachi-share/backend";
 import { z } from "zod";
 
 // profanity censoring bypasses the regex in some of these but I think it's funny
@@ -58,9 +57,9 @@ export const searchSchema = z.object({
 				.map((tag) => tag.trim())
 				.filter((tag) => tag.length > 0),
 		),
-	platform: z.enum(MiiPlatform, { error: "Platform must be either 'THREE_DS', or 'SWITCH'" }).optional(),
-	gender: z.enum(MiiGender, { error: "Gender must be either 'MALE', 'FEMALE', or 'NONBINARY' if on Switch platform" }).optional(),
-	makeup: z.enum(MiiMakeup, { error: "Makeup must be either 'FULL', 'PARTIAL', or 'NONE'" }).optional(),
+	platform: z.enum(["THREE_DS", "SWITCH"], { error: "Platform must be either 'THREE_DS', or 'SWITCH'" }).optional(),
+	gender: z.enum(["MALE", "FEMALE", "NONBINARY"], { error: "Gender must be either 'MALE', 'FEMALE', or 'NONBINARY' if on Switch platform" }).optional(),
+	makeup: z.enum(["FULL", "PARTIAL", "NONE"], { error: "Makeup must be either 'FULL', 'PARTIAL', or 'NONE'" }).optional(),
 	allowCopying: z.coerce.boolean({ error: "Allow Copying must be either true or false" }).optional(),
 	quarantined: z.coerce.boolean({ error: "Quarantined must be either true or false" }).optional(),
 	// todo: incorporate tagsSchema
@@ -286,7 +285,7 @@ export const switchMiiInstructionsSchema = z
 			.optional(),
 		height: z.number().int().min(0).max(128).optional(),
 		weight: z.number().int().min(0).max(128).optional(),
-		datingPreferences: z.array(z.enum(MiiGender)).optional(),
+		datingPreferences: z.array(z.enum(["MALE", "FEMALE", "NONBINARY"])).optional(),
 		birthday: z
 			.object({
 				day: z.number().int().min(1).max(31).optional(),

@@ -22,7 +22,6 @@
     "@nanostores/react": "^1.1.0",
     "@swup/astro": "^1.8.0",
     "@tailwindcss/vite": "^4.2.2",
-    "@tomodachi-share/backend": "workspace:*",
     "@tomodachi-share/shared": "workspace:*",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

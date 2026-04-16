@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 
-import type { MiiGender, MiiMakeup, MiiPlatform } from "@tomodachi-share/backend";
-
 import PlatformSelect from "./platform-select";
 import TagFilter from "./tag-filter";
 import GenderSelect from "./gender-select";
 import OtherFilters from "./other-filters";
 import MakeupSelect from "./makeup-select";
+import type { MiiGender, MiiMakeup, MiiPlatform } from "@tomodachi-share/shared";
 
 export default function FilterMenu() {
 	const searchParams = new URLSearchParams(window.location.search);

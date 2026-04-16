@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { MiiGender } from "@tomodachi-share/backend";
-import type { SwitchMiiInstructions } from "@tomodachi-share/shared";
+import type { MiiGender, SwitchMiiInstructions } from "@tomodachi-share/shared";
 import EnhancedSlider from "../enhanced-slider";
 import DatingPreferencesViewer from "../../../mii/dating-preferences";
 import VoiceViewer from "../../../mii/voice-viewer";

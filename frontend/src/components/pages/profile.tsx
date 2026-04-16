@@ -1,4 +1,3 @@
-import type { User } from "@tomodachi-share/backend";
 import { useEffect, useState } from "react";
 import ProfileInformation from "../profile-information";
 
@@ -7,7 +6,7 @@ interface Props {
 }
 
 export default function ProfilePage({ id }: Props) {
-	const [user, setUser] = useState<User | any>(null);
+	const [user, setUser] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {

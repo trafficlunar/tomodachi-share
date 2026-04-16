@@ -3,13 +3,12 @@ import FilterMenu from "../mii/list/filter-menu";
 import SortSelect from "../mii/list/sort-select";
 import MiiGrid from "../mii/list/mii-grid";
 import Pagination from "../pagination";
-import { type Mii } from "@tomodachi-share/backend";
 import Skeleton from "../mii/list/skeleton";
 
 interface ApiResponse {
 	totalCount: number;
 	filteredCount: number;
-	miis: Mii[];
+	miis: any[];
 	lastPage: number;
 }
 
@@ -40,8 +39,10 @@ export default function IndexPage() {
 				{searchParams.get("tags") ? `Miis tagged with '${searchParams.get("tags")}' - TomodachiShare` : "TomodachiShare - index mii list"}
 			</h1>
 
+			<p className="text-center mb-4">We're currently going through some major code changes therefore some features won't work.</p>
+
 			<Suspense fallback={<Skeleton />}>
-				{!loading && (
+				{!loading && data ? (
 					<div className="w-full">
 						<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-center gap-2 mb-2 max-md:flex-col">
 							<div className="flex items-center gap-2">
@@ -69,6 +70,8 @@ export default function IndexPage() {
 						<MiiGrid miis={data.miis} />
 						<Pagination lastPage={data.lastPage} />
 					</div>
+				) : (
+					<p>No Miis found :( Has the server died?</p>
 				)}
 			</Suspense>
 		</>

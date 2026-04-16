@@ -1,6 +1,6 @@
 import { useState, useTransition } from "react";
 import { Icon } from "@iconify/react";
-import type { MiiPlatform } from "@tomodachi-share/backend";
+import type { MiiPlatform } from "@tomodachi-share/shared";
 
 export default function PlatformSelect() {
 	const searchParams = new URLSearchParams(window.location.search);

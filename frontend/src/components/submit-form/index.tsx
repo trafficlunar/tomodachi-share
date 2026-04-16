@@ -3,7 +3,6 @@ import { type FileWithPath } from "react-dropzone";
 import { Icon } from "@iconify/react";
 
 import qrcode from "qrcode-generator";
-import { MiiGender, MiiMakeup, MiiPlatform } from "@tomodachi-share/backend";
 
 import { nameSchema, tagsSchema } from "@tomodachi-share/shared/schemas";
 import { defaultInstructions, type SwitchMiiInstructions, ThreeDsTomodachiLifeMii, convertQrCode } from "@tomodachi-share/shared";
@@ -21,6 +20,7 @@ import LikeButton from "../like-button";
 import Carousel from "../carousel";
 import SubmitButton from "../submit-button";
 import Dropzone from "../dropzone";
+import type { MiiPlatform, MiiGender, MiiMakeup } from "@tomodachi-share/shared";
 
 export default function SubmitForm() {
 	const [files, setFiles] = useState<FileWithPath[]>([]);

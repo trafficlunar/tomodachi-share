@@ -1,9 +1,8 @@
 import { Icon } from "@iconify/react";
 import DeleteMiiButton from "./delete-mii-button";
-import type { Mii } from "@tomodachi-share/backend";
 
 interface Props {
-	mii: Mii | any;
+	mii: any;
 }
 
 export default function AuthorButtons({ mii }: Props) {

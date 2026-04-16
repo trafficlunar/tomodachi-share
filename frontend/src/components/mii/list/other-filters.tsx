@@ -1,4 +1,4 @@
-import { type MiiPlatform } from "@tomodachi-share/backend";
+import type { MiiPlatform } from "@tomodachi-share/shared";
 import { type ChangeEvent, useState, useTransition } from "react";
 
 export default function OtherFilters() {

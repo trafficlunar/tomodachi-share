@@ -1,4 +1,6 @@
-import { MiiGender } from "@tomodachi-share/backend";
+type MiiGender = "MALE" | "FEMALE" | "NONBINARY";
+type MiiPlatform = "THREE_DS" | "SWITCH";
+type MiiMakeup = "FULL" | "PARTIAL" | "NONE";
 
 export interface SwitchMiiInstructions {
 	head: {
