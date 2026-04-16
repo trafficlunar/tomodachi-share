@@ -104,6 +104,7 @@ model Mii {
   @@index([gender])
   @@index([makeup])
   @@index([quarantined, id])
+  @@index([in_queue, quarantined, createdAt(sort: Desc)])
   @@map("miis")
 }
 
