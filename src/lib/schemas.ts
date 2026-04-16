@@ -72,6 +72,8 @@ export const searchSchema = z.object({
 		.max(100, { error: "Limit cannot be more than 100" })
 		.optional(),
 	page: z.coerce.number({ error: "Page must be a number" }).int({ error: "Page must be an integer" }).min(1, { error: "Page must be at least 1" }).optional(),
+	// Time range filter
+	timeRange: z.enum(["day", "week", "month", "year"], { error: "Time range must be either 'day', 'week', 'month', or 'year'" }).optional(),
 });
 
 export const userNameSchema = z
