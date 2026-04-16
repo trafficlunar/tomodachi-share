@@ -1,0 +1,42 @@
+{
+	"compilerOptions": {
+		"target": "ES2017",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"jsx": "react-jsx",
+		"incremental": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
+		"paths": {
+			"@/*": ["./src/*"],
+			"sjcl-with-all": ["./node_modules/@types/sjcl"]
+		}
+	},
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		".next/dev/types/**/*.ts",
+		"../shared/src/constants.ts",
+		"../frontend/src/lib/abbreviation.ts",
+		"../shared/src/qr-codes.ts",
+		"../shared/src/three-ds-tomodachi-life-mii.ts",
+		"../shared/src/types.d.ts",
+		"../shared/src/switch.ts",
+		"../frontend/src/components/provider.tsx",
+		"../shared/src/schemas.ts"
+	],
+	"exclude": ["node_modules"]
+}

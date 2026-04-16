@@ -1,0 +1,11 @@
+---
+import Layout from "../layout.astro";
+import IndexPage from "../components/pages/index";
+---
+
+<Layout>
+	<!-- <Suspense fallback={<Skeleton />}> -->
+	<!-- <MiiList searchParams={Astro.url.searchParams} /> -->
+	<!-- </Suspense> -->
+	<IndexPage client:only />
+</Layout>

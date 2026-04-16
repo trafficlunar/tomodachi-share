@@ -1,0 +1,51 @@
+{
+  "name": "",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/react": "^5.0.3",
+    "@bprogress/react": "^1.2.7",
+    "@hello-pangea/dnd": "^18.0.1",
+    "@iconify-json/ic": "^1.2.4",
+    "@iconify-json/material-icon-theme": "^1.2.59",
+    "@iconify-json/mdi": "^1.2.3",
+    "@iconify-json/stash": "^1.2.4",
+    "@nanostores/react": "^1.1.0",
+    "@swup/astro": "^1.8.0",
+    "@tailwindcss/vite": "^4.2.2",
+    "@tomodachi-share/backend": "workspace:*",
+    "@tomodachi-share/shared": "workspace:*",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^6.1.7",
+    "canvas-confetti": "^1.9.4",
+    "dayjs": "^1.11.20",
+    "downshift": "^9.3.2",
+    "embla-carousel-react": "^8.6.0",
+    "jsqr": "^1.4.0",
+    "nanostores": "^1.2.0",
+    "qrcode-generator": "^2.0.4",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-dropzone": "^15.0.0",
+    "react-image-crop": "^11.0.10",
+    "seedrandom": "^3.0.5",
+    "tailwindcss": "^4.2.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@iconify/react": "^6.0.2",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/seedrandom": "^3.0.8",
+    "astro-icon": "^1.1.5"
+  }
+}

@@ -1,0 +1,54 @@
+---
+import Layout from "../layout.astro";
+import { Icon } from "astro-icon/components";
+
+const API_BASE_URL = import.meta.env.PUBLIC_API_URL;
+---
+
+<Layout>
+	<div class="grow flex items-center justify-center">
+		<div class="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg px-10 py-12 max-w-md text-center">
+			<h1 class="text-3xl font-bold mb-4">Welcome to TomodachiShare!</h1>
+
+			<div class="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-8">
+				<hr class="grow border-zinc-300" />
+				<span>Choose your login method</span>
+				<hr class="grow border-zinc-300" />
+			</div>
+
+			<div class="flex flex-col items-center gap-2">
+				<a
+					href={`${API_BASE_URL}/api/auth/signin/discord`}
+					aria-label="Login with Discord"
+					class="pill button gap-2 px-3! bg-indigo-400! border-indigo-500! hover:bg-indigo-500!"
+				>
+					<Icon name="ic:baseline-discord" size={32} />
+					Login with Discord
+				</a>
+				<a
+					href={`${API_BASE_URL}/api/auth/signin/github`}
+					aria-label="Login with GitHub"
+					class="pill button gap-2 px-3! bg-zinc-700! border-zinc-800! hover:bg-zinc-800! text-white"
+				>
+					<Icon name="mdi:github" size={32} />
+					Login with GitHub
+				</a>
+				<a
+					href={`${API_BASE_URL}/api/auth/signin/google`}
+					aria-label="Login with Google"
+					class="pill button gap-2 px-3! bg-white! border-gray-300! hover:bg-gray-100! text-black! flex items-center"
+				>
+					<Icon name="material-icon-theme:google" size={32} />
+					Login with Google
+				</a>
+			</div>
+
+			<p class="mt-8 text-xs text-zinc-400">
+				By signing up, you agree to the{" "}
+				<a href="/terms-of-service" class="underline hover:text-zinc-600">Terms of Service</a>{" "}
+				and{" "}
+				<a href="/privacy" class="underline hover:text-zinc-600">Privacy Policy</a>.
+			</p>
+		</div>
+	</div>
+</Layout>

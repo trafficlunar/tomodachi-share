@@ -1,0 +1,12 @@
+---
+import MiiPage from "../../components/pages/mii";
+import Layout from "../../layout.astro";
+
+const { id } = Astro.params;
+
+export const prerender = false;
+---
+
+<Layout>
+	<MiiPage client:load id={id} />
+</Layout>

@@ -1,0 +1,9 @@
+---
+import ProfileSettings from "../../components/profile-settings";
+import Layout from "../../layout.astro";
+---
+
+<Layout>
+	<!-- <ProfileInformation client:only page="settings" /> -->
+	<ProfileSettings client:only currentDescription={null} />
+</Layout>

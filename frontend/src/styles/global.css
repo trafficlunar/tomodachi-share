@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+@theme {
+	--animate-like: like 0.5s ease;
+
+	@keyframes like {
+		0% {
+			transform: scale(1);
+		}
+		30% {
+			transform: scale(1.25);
+		}
+		60% {
+			transform: scale(0.95);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+}
+
+.pill {
+	@apply flex justify-center items-center px-5 py-2 bg-orange-300 border-2 border-orange-400 rounded-3xl shadow-md;
+}
+
+.button {
+	@apply hover:bg-orange-400 transition cursor-pointer;
+}
+
+.button:disabled {
+	@apply text-zinc-600 bg-zinc-100! border-zinc-300! cursor-auto;
+}
+
+.input {
+	@apply bg-orange-200! outline-0 focus:ring-[3px] ring-orange-400/50 transition placeholder:text-black/40;
+}
+
+.input:disabled {
+	@apply text-zinc-600 bg-zinc-100! border-zinc-300!;
+}
+
+.checkbox {
+	@apply flex items-center justify-center appearance-none size-5 bg-orange-300 border-2 border-orange-400 rounded-md cursor-pointer checked:bg-orange-400;
+}
+
+.checkbox::after {
+	@apply hidden size-4 bg-cover bg-no-repeat content-[''];
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 13l4 4L19 7' /%3E%3C/svg%3E");
+}
+
+.checkbox:checked::after {
+	@apply block;
+}
+
+.checkbox-alt {
+	@apply relative appearance-none bg-zinc-400 rounded-2xl h-5 w-8.5 cursor-pointer transition-all
+                    after:transition-all after:bg-zinc-100 after:rounded-full after:h-3.5 after:absolute after:w-3.5
+                    after:left-[3px] after:top-[3px] hover:bg-zinc-500 checked:bg-orange-400 checked:after:left-[16px]
+                    checked:hover:bg-orange-500 ml-auto;
+}
+
+[data-tooltip] {
+	@apply relative z-10;
+}
+
+[data-tooltip]::before {
+	@apply content-[''] absolute left-1/2 -translate-x-1/2 top-full size-0 border-4 border-transparent border-b-orange-400 opacity-0 scale-75 transition-all duration-200 ease-out origin-bottom;
+}
+
+[data-tooltip]::after {
+	@apply content-[attr(data-tooltip)] absolute left-1/2 -translate-x-1/2 top-full mt-2 px-2 py-1 bg-orange-400 border border-orange-400 rounded-md text-sm text-white opacity-0 scale-75 transition-all duration-200 ease-out origin-top shadow-md whitespace-nowrap select-none pointer-events-none;
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:hover::after {
+	@apply opacity-100 scale-100;
+}
+
+/* Fallback Tooltips */
+[data-tooltip-span] {
+	@apply relative;
+}
+
+[data-tooltip-span] > .tooltip {
+	@apply absolute left-1/2 top-full mt-2 px-2 py-1 bg-orange-400 border border-orange-400 rounded-md text-sm text-white whitespace-nowrap select-none pointer-events-none shadow-md opacity-0 scale-75 transition-all duration-200 ease-out origin-top -translate-x-1/2 z-999999;
+}
+
+[data-tooltip-span] > .tooltip::before {
+	@apply content-[''] absolute left-1/2 -translate-x-1/2 -top-2 border-4 border-transparent border-b-orange-400;
+}
+
+[data-tooltip-span]:hover > .tooltip {
+	@apply opacity-100 scale-100;
+}
+
+/* Scrollbar */
+/* Firefox */
+* {
+	scrollbar-color: #ff8903 transparent;
+}
+
+/* Chrome, and Safari */
+*::-webkit-scrollbar-track {
+	background: #ff8903;
+}
+
+/* Range input */
+input[type="range"] {
+	@apply appearance-none bg-transparent not-disabled:cursor-pointer;
+}
+
+/* Track */
+input[type="range"]::-webkit-slider-runnable-track {
+	@apply h-1 bg-orange-300 rounded-full;
+}
+
+input[type="range"]::-moz-range-track {
+	@apply h-1 bg-orange-300 rounded-full;
+}
+
+/* Thumb */
+input[type="range"]::-webkit-slider-thumb,
+input[type="range"]::-moz-range-thumb {
+	@apply appearance-none size-4.5 bg-orange-400 border-2 border-orange-600 rounded-full shadow-md transition;
+}
+
+/* Hover */
+input[type="range"]:hover::-webkit-slider-thumb {
+	@apply not-disabled:bg-orange-500;
+}
+
+input[type="range"]:hover::-moz-range-thumb {
+	@apply not-disabled:bg-orange-500;
+}
+
+body {
+	@apply bg-amber-50 text-slate-800;
+	font-family: var(--font-lexend);
+
+	/* syntax highlighting is a bit broken when it's at the top so it's at the bottom */
+	background-image: url('data:image/svg+xml;utf8,\
+	<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">\
+	<rect width="10" height="10" fill="%23fef3c6"/>\
+	<rect x="10" y="10" width="10" height="10" fill="%23fef3c6"/>\
+	<rect x="10" width="10" height="10" fill="%23fffbeb"/>\
+	<rect y="10" width="10" height="10" fill="%23fffbeb"/>\
+	</svg>');
+	background-size: 20px 20px;
+}

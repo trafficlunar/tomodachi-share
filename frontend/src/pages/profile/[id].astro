@@ -1,0 +1,12 @@
+---
+import ProfilePage from "../../components/pages/profile";
+import Layout from "../../layout.astro";
+
+const { id } = Astro.params;
+
+export const prerender = false;
+---
+
+<Layout>
+	<ProfilePage client:only id={id} />
+</Layout>

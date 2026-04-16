@@ -1,0 +1,126 @@
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { Icon } from "@iconify/react";
+
+import LikeButton from "../like-button";
+import SubmitButton from "../submit-button";
+
+interface Props {
+	miiId: number;
+	miiName: string;
+	likes: number;
+	inMiiPage?: boolean;
+}
+
+export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Props) {
+	const [isOpen, setIsOpen] = useState(false);
+	const [isVisible, setIsVisible] = useState(false);
+
+	const [error, setError] = useState<string | undefined>(undefined);
+	const [inputMiiName, setInputMiiName] = useState("");
+
+	const handleSubmit = async () => {
+		const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/mii/${miiId}/delete`, { method: "DELETE", credentials: "include" });
+		if (!response.ok) {
+			const { error } = await response.json();
+			setError(error);
+			return;
+		}
+
+		close();
+		window.location.reload(); // I would use router.refresh() here but the Mii list doesn't update
+	};
+
+	const close = () => {
+		setIsVisible(false);
+		setTimeout(() => {
+			setIsOpen(false);
+		}, 300);
+	};
+
+	useEffect(() => {
+		if (isOpen) {
+			// slight delay to trigger animation
+			setTimeout(() => setIsVisible(true), 10);
+		}
+	}, [isOpen]);
+
+	return (
+		<>
+			{inMiiPage ? (
+				<button onClick={() => setIsOpen(true)} aria-label="Delete Mii" className="cursor-pointer">
+					<Icon icon="mdi:trash" />
+					<span>Delete</span>
+				</button>
+			) : (
+				<button onClick={() => setIsOpen(true)} aria-label="Delete Mii" title="Delete Mii" data-tooltip="Delete" className="cursor-pointer aspect-square">
+					<Icon icon="mdi:trash" />
+				</button>
+			)}
+
+			{isOpen &&
+				createPortal(
+					<div className="fixed inset-0 h-[calc(100%-var(--header-height))] top-(--header-height) flex items-center justify-center z-40">
+						<div
+							onClick={close}
+							className={`z-40 absolute inset-0 backdrop-brightness-75 backdrop-blur-xs transition-opacity duration-300 ${
+								isVisible ? "opacity-100" : "opacity-0"
+							}`}
+						/>
+
+						<div
+							className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg p-6 w-full max-w-md transition-discrete duration-300 flex flex-col ${
+								isVisible ? "scale-100 opacity-100" : "scale-75 opacity-0"
+							}`}
+						>
+							<div className="flex justify-between items-center mb-2">
+								<h2 className="text-xl font-bold">Delete Mii</h2>
+								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
+									<Icon icon="material-symbols:close-rounded" />
+								</button>
+							</div>
+
+							<p className="text-sm text-zinc-500">Are you sure? This will delete your Mii permanently. This action cannot be undone.</p>
+
+							<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 flex overflow-hidden">
+								<img src={`${import.meta.env.PUBLIC_API_URL}/mii/${miiId}/image?type=mii`} alt="mii image" width={128} height={128} />
+								<div className="p-4 min-w-0">
+									<p className="text-xl font-bold line-clamp-3 wrap-anywhere" title={miiName}>
+										{miiName}
+									</p>
+									<LikeButton likes={likes} isLiked={true} disabled />
+								</div>
+							</div>
+
+							<p className="text-sm text-zinc-500 my-2">Type the Mii's name below to delete:</p>
+							<input
+								type="text"
+								className="pill input"
+								value={inputMiiName}
+								onChange={(e) => setInputMiiName(e.target.value)}
+								autoCorrect="off"
+								autoComplete="off"
+								autoCapitalize="off"
+								spellCheck={false}
+							/>
+
+							{error && <span className="text-red-400 font-bold mt-2">Error: {error}</span>}
+
+							<div className="flex justify-end gap-2 mt-4">
+								<button onClick={close} className="pill button">
+									Cancel
+								</button>
+								<SubmitButton
+									onClick={handleSubmit}
+									text="Delete"
+									disabled={inputMiiName.trim() != miiName}
+									className="bg-red-400! border-red-500! hover:bg-red-500! disabled:bg-red-200! disabled:border-red-300!"
+								/>
+							</div>
+						</div>
+					</div>,
+					document.body,
+				)}
+		</>
+	);
+}
