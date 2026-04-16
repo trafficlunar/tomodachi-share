@@ -4,7 +4,11 @@ import Layout from "../../layout.astro";
 
 const { id } = Astro.params;
 
-export const prerender = false;
+export async function getStaticPaths() {
+	return Array.from({ length: 50000 }, (_, i) => ({
+		params: { id: String(i + 1) },
+	}));
+}
 ---
 
 <Layout>
