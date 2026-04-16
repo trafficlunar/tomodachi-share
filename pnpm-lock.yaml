@@ -71,9 +71,6 @@ importers:
       satori:
         specifier: ^0.26.0
         version: 0.26.0
-      seedrandom:
-        specifier: ^3.0.5
-        version: 3.0.5
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
@@ -108,9 +105,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
-      '@types/seedrandom':
-        specifier: ^3.0.8
-        version: 3.0.8
       '@types/sjcl':
         specifier: ^1.0.34
         version: 1.0.34
@@ -796,9 +790,6 @@ packages:
 
   '@types/react@19.2.14':
     resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
-
-  '@types/seedrandom@3.0.8':
-    resolution: {integrity: sha512-TY1eezMU2zH2ozQoAFAQFOPpvP15g+ZgSfTZt31AUUH/Rxtnz3H+A/Sv1Snw2/amp//omibc+AEkTaA8KUeOLQ==}
 
   '@types/sjcl@1.0.34':
     resolution: {integrity: sha512-bQHEeK5DTQRunIfQeUMgtpPsNNCcZyQ9MJuAfW1I7iN0LDunTc78Fu17STbLMd7KiEY/g2zHVApippa70h6HoQ==}
@@ -2252,9 +2243,6 @@ packages:
   schema-dts@2.0.0:
     resolution: {integrity: sha512-t7NoCy3Rn5GHGx6p7s1qIYK/AeIb8ZxJNR9WUNFkwMv2CiiGZBmqqYWc2FlZVm5ZbiHMY4OvBWhj7QtyrFO2Jw==}
 
-  seedrandom@3.0.5:
-    resolution: {integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==}
-
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
@@ -3110,8 +3098,6 @@ snapshots:
   '@types/react@19.2.14':
     dependencies:
       csstype: 3.2.3
-
-  '@types/seedrandom@3.0.8': {}
 
   '@types/sjcl@1.0.34': {}
 
@@ -4700,8 +4686,6 @@ snapshots:
       schema-dts-lib: 1.0.0(typescript@6.0.2)
     transitivePeerDependencies:
       - typescript
-
-  seedrandom@3.0.5: {}
 
   semver@6.3.1: {}
 
