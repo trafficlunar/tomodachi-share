@@ -12,7 +12,7 @@ export default function Description({ text, className }: Props) {
 
 	return (
 		<p className={`text-sm mt-2 bg-white/50 p-3 rounded-lg border border-orange-200 whitespace-break-spaces max-h-54 overflow-y-auto ${className}`}>
-			{parts.map(async (part, index) => {
+			{parts.map((part, index) => {
 				try {
 					// Check if it's a URL
 					if (!urlRegex.test(part)) throw new Error("Not a URL");

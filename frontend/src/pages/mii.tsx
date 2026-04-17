@@ -1,6 +1,6 @@
 import type { SwitchMiiInstructions } from "@tomodachi-share/shared";
 
-// import ImageViewer from "../components/image-viewer";
+import ImageViewer from "../components/image-viewer";
 import LikeButton from "../components/like-button";
 import Description from "../components/description";
 import ShareMiiButton from "../components/mii/share-mii-button";
@@ -64,7 +64,7 @@ export default function MiiPage() {
 					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 h-min flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
 						{/* Mii Image */}
 						<div className="bg-linear-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center">
-							<img
+							<ImageViewer
 								src={`${API_URL}/mii/${mii.id}/image?type=mii`}
 								alt="mii headshot"
 								width={250}
@@ -75,7 +75,7 @@ export default function MiiPage() {
 						{/* QR Code */}
 						{mii.platform === "THREE_DS" ? (
 							<div className="bg-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center p-2">
-								<img
+								<ImageViewer
 									src={`${API_URL}/mii/${mii.id}/image?type=qr-code`}
 									alt="mii qr code"
 									width={128}
@@ -84,7 +84,7 @@ export default function MiiPage() {
 								/>
 							</div>
 						) : (
-							<img
+							<ImageViewer
 								src={`${API_URL}/mii/${mii.id}/image?type=features`}
 								alt="mii features"
 								width={300}
@@ -348,12 +348,13 @@ export default function MiiPage() {
 										className="absolute size-full blur-sm contrast-150 brightness-[0.65] object-cover"
 									/>
 
-									<img
+									<ImageViewer
 										src={src}
 										alt="mii screenshot"
 										width={256}
 										height={170}
 										className="aspect-3/2 w-full object-contain hover:scale-105 duration-300 transition-transform relative z-10"
+										images={images}
 									/>
 								</div>
 							))}
