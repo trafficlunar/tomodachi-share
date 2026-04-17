@@ -7,9 +7,7 @@ WORKDIR /app
 # Copy root workspace files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Copy backend only
-COPY backend/package.json ./backend/package.json
-COPY backend/prisma ./backend/prisma
+COPY . .
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm install --frozen-lockfile
@@ -23,7 +21,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN corepack enable pnpm && pnpm --filter backend prisma generate
-RUN pnpm prisma migrate deploy
+RUN pnpm --filter backend prisma migrate deploy
 RUN pnpm --filter backend build
 
 # Production image, copy all the files and run next
@@ -36,16 +34,16 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/backend/public ./public
 
 # Create the uploads directory and set ownership
 RUN mkdir -p /app/uploads && chown -R nextjs:nodejs /app/uploads
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder /app/backend/.next/standalone ./
+COPY --from=builder /app/backend/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/backend/prisma ./prisma
 
 USER nextjs
 
