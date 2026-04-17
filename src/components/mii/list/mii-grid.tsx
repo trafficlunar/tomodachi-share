@@ -28,7 +28,7 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 	// 	revalidateOnFocus: false,
 	// 	revalidateOnReconnect: false,
 	// });
-	const likedIds = new Set([]);
+	const likedIds = new Set([0]);
 
 	return (
 		<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[30rem]:grid-cols-1">
