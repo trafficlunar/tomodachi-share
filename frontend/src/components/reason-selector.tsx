@@ -1,7 +1,5 @@
-"use client";
-
 import { Icon } from "@iconify/react";
-import { ReportReason } from "@prisma/client";
+import type { ReportReason } from "@tomodachi-share/shared";
 import { useSelect } from "downshift";
 
 interface Props {

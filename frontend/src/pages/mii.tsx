@@ -294,7 +294,7 @@ export default function MiiPage() {
 							{/* <AuthorButtons mii={mii} /> */}
 
 							<ShareMiiButton miiId={mii.id} />
-							<Link aria-label="Report Mii" to={`${API_URL}/report/mii/${mii.id}`}>
+							<Link aria-label="Report Mii" to={`/report/mii/${mii.id}`}>
 								<Icon icon="material-symbols:flag-rounded" />
 								<span>Report</span>
 							</Link>

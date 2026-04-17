@@ -1,5 +1,7 @@
 # TomodachiShare Development Instructions
 
+This is probably outdated.
+
 Welcome to the TomodachiShare development guide! This project uses [pnpm](https://pnpm.io/) for package management, [Next.js](https://nextjs.org/) with the app router for the front-end and back-end, [Prisma](https://prisma.io) for the database, [TailwindCSS](https://tailwindcss.com/) for styling, and [TypeScript](https://www.typescriptlang.org/) for type safety.
 
 ## Getting started

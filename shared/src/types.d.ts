@@ -1,6 +1,7 @@
 type MiiGender = "MALE" | "FEMALE" | "NONBINARY";
 type MiiPlatform = "THREE_DS" | "SWITCH";
 type MiiMakeup = "FULL" | "PARTIAL" | "NONE";
+type ReportReason = "INAPPROPRIATE" | "SPAM" | "BAD_QUALITY" | "OTHER";
 
 export interface SwitchMiiInstructions {
 	head: {

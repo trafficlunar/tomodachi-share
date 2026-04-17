@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/logo.svg" alt="TomodachiShare Logo" width="128" />
+  <img src="backend/public/logo.svg" alt="TomodachiShare Logo" width="128" />
 </p>
 
 <h1 align="center"><a href="https://tomodachishare.com">TomodachiShare</a></h1>

@@ -18,6 +18,8 @@ import LinkOutPage from "./pages/out.tsx";
 import Layout from "./layout.tsx";
 import ProfileLayout from "./pages/profile/layout.tsx";
 import ProfileLikesPage from "./pages/profile/likes.tsx";
+import ReportMiiPage from "./pages/report/mii.tsx";
+import ReportUserPage from "./pages/report/user.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
@@ -34,6 +36,10 @@ createRoot(document.getElementById("root")!).render(
 						</Route>
 						<Route path="/submit" element={<SubmitPage />} />
 						<Route path="/login" element={<LoginPage />} />
+						<Route path="/report">
+							<Route path="mii/:id" element={<ReportMiiPage />} />
+							<Route path="profile/:id" element={<ReportUserPage />} />
+						</Route>
 						<Route path="/out" element={<LinkOutPage />} />
 						<Route path="/privacy" element={<PrivacyPage />} />
 						<Route path="/terms-of-service" element={<TermsOfServicePage />} />
