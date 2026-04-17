@@ -13,6 +13,9 @@
   <a href="https://trafficlunar.net"><img src="https://raw.githubusercontent.com/trafficlunar/trafficlunar/refs/heads/main/trafficlunar-cozy-minimal_vector.svg" alt="Visit my personal website" /></a>
 </p>
 
+> [!CAUTION]
+> **The server is under load** – You may experience slower response times. Please bear with us.
+
 ---
 
 ## About
