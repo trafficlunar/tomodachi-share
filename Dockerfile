@@ -1,54 +1,63 @@
 FROM node:23-alpine AS base
 
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy root workspace files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+
+# -------------------------
+# Install dependencies
+# -------------------------
+FROM base AS deps
+
+WORKDIR /app
 
 COPY . .
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm install --frozen-lockfile
 
-# Rebuild the source code only when needed
+
+# -------------------------
+# Build stage
+# -------------------------
 FROM base AS builder
+
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+
+COPY --from=deps /app /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN corepack enable pnpm && pnpm --filter backend prisma generate
-RUN pnpm --filter backend prisma migrate deploy
-RUN pnpm --filter backend build
+# Build backend workspace
+RUN cd backend && pnpm build
 
-# Production image, copy all the files and run next
+
+# -------------------------
+# Production stage
+# -------------------------
 FROM base AS runner
+
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Copy Next/Backend output
 COPY --from=builder /app/backend/public ./public
-
-# Create the uploads directory and set ownership
-RUN mkdir -p /app/uploads && chown -R nextjs:nodejs /app/uploads
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder /app/backend/.next/standalone ./
-COPY --from=builder /app/backend/.next/static ./.next/static
+COPY --from=builder /app/backend/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/backend/prisma ./prisma
+
+# uploads dir
+RUN mkdir -p /app/uploads && chown -R nextjs:nodejs /app/uploads
 
 USER nextjs
 
 EXPOSE 3000
-ENV PORT=3000
 
-ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+CMD ["node", ".next/standalone/backend/server.js"]
