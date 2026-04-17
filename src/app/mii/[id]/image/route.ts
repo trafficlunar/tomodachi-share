@@ -20,7 +20,7 @@ const searchParamsSchema = z.object({
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const rateLimit = new RateLimit(request, 200, "/mii/image");
-	const check = await rateLimit.handle();
+	const check = await rateLimit.handleByIp();
 	if (check) return check;
 
 	const { id: slugId } = await params;
@@ -107,9 +107,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 		});
 	}
 
+	// mii, features are purged on edit; qr-code is immutable. imageN isn't purged, so keep its TTL short.
+	const isStableType = imageType === "mii" || imageType === "qr-code" || imageType === "features";
+
 	return rateLimit.sendResponse(buffer, 200, {
 		"Content-Type": "image/png",
 		"X-Robots-Tag": "noindex, noimageindex, nofollow",
-		"Cache-Control": "public, max-age=60, stale-while-revalidate=30",
+		"Cache-Control": isStableType ? "public, max-age=3600, stale-while-revalidate=86400" : "public, max-age=60, stale-while-revalidate=30",
 	});
 }
