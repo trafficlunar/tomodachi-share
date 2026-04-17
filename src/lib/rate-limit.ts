@@ -107,4 +107,13 @@ export class RateLimit {
 		if (!this.data.success) return this.sendResponse({ error: "Rate limit exceeded. Please try again later." }, 429);
 		return;
 	}
+
+	// IP-only variant — skips the session lookup for anonymous read paths like images
+	async handleByIp(): Promise<NextResponse<object | unknown> | undefined> {
+		const ip = this.request.headers.get("CF-Connecting-IP") || this.request.headers.get("X-Forwarded-For")?.split(",")[0] || "anonymous";
+		this.data = await this.check(ip);
+
+		if (!this.data.success) return this.sendResponse({ error: "Rate limit exceeded. Please try again later." }, 429);
+		return;
+	}
 }

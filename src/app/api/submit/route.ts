@@ -220,7 +220,8 @@ export async function POST(request: NextRequest) {
 		// Download the image of the Mii (3DS)
 		if (platform === "THREE_DS") {
 			const studioUrl = conversion?.mii.studioUrl({ width: 512 });
-			const studioResponse = await fetch(studioUrl!);
+			if (!studioUrl || new URL(studioUrl).hostname !== "studio.mii.nintendo.com") throw new Error("Invalid studio URL");
+			const studioResponse = await fetch(studioUrl);
 
 			if (!studioResponse.ok) {
 				throw new Error(`Failed to fetch Mii image ${studioResponse.status}`);

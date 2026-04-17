@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,7 +6,6 @@ import { redirect } from "next/navigation";
 
 import { Icon } from "@iconify/react";
 
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { MiiPlatform } from "@prisma/client";
 
@@ -25,24 +25,21 @@ interface Props {
 	params: Promise<{ id: string }>;
 }
 
+export const revalidate = 300;
+
+const getMii = cache(async (id: number) =>
+	prisma.mii.findUnique({
+		where: { id },
+		include: {
+			user: { select: { name: true } },
+			_count: { select: { likedBy: true } },
+		},
+	}),
+);
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { id } = await params;
-
-	const mii = await prisma.mii.findUnique({
-		where: {
-			id: Number(id),
-		},
-		include: {
-			user: {
-				select: {
-					name: true,
-				},
-			},
-			_count: {
-				select: { likedBy: true }, // Get total like count
-			},
-		},
-	});
+	const mii = await getMii(Number(id));
 
 	// Bots get redirected anyways
 	if (!mii) return {};
@@ -90,31 +87,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function MiiPage({ params }: Props) {
 	const { id } = await params;
-	const session = await auth();
-
-	const mii = await prisma.mii.findUnique({
-		where: {
-			id: Number(id),
-		},
-		include: {
-			user: {
-				select: {
-					name: true,
-				},
-			},
-			likedBy: session?.user
-				? {
-						where: {
-							userId: Number(session.user.id),
-						},
-						select: { userId: true },
-					}
-				: false,
-			_count: {
-				select: { likedBy: true }, // Get total like count
-			},
-		},
-	});
+	const mii = await getMii(Number(id));
 
 	if (!mii) redirect("/404");
 
@@ -333,7 +306,7 @@ export default async function MiiPage({ params }: Props) {
 								{/* Submission name */}
 								<h1 className="text-4xl font-extrabold wrap-break-word whitespace-break-spaces text-amber-700 flex-1 min-w-0">{mii.name}</h1>
 								{/* Like button */}
-								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={(mii.likedBy ?? []).length > 0} big />
+								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={false} big />
 							</div>
 							{/* Tags */}
 							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">

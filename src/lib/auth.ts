@@ -13,10 +13,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		signIn: "/login",
 	},
 	callbacks: {
-		async signIn({ user }) {
+		async signIn({ user, account, profile }) {
 			const blacklist = process.env.BLACKLISTED_EMAILS ? process.env.BLACKLISTED_EMAILS.split(",").map((item) => item.trim().toLowerCase()) : [];
 			const email = user?.email?.toLowerCase();
 			if (!email) return false;
+			if (account?.provider === "google" && (profile as { email_verified?: boolean })?.email_verified === false) return false;
 			if (blacklist?.some((blocked) => email.endsWith(blocked))) return false;
 			return true;
 		},
