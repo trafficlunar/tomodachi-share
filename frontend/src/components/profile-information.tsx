@@ -12,10 +12,12 @@ interface Props {
 export default function ProfileInformation({ user, page }: Props) {
 	const $session = useStore(session);
 
+	if (!user) return null;
+
 	const currentUser = user ?? $session?.user;
-	const isAdmin = currentUser?.id === Number(import.meta.env.PUBLIC_ADMIN_USER_ID);
-	const isContributor = import.meta.env.PUBLIC_CONTRIBUTORS_USER_IDS?.split(",").includes(user.id);
-	const isOwnProfile = currentUser?.id === user.id;
+	const isAdmin = currentUser?.id === Number(import.meta.env.VITE_ADMIN_USER_ID);
+	const isContributor = import.meta.env.VITE_CONTRIBUTORS_USER_IDS?.split(",").includes(user?.id);
+	const isOwnProfile = currentUser?.id === user?.id;
 
 	return (
 		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex gap-4 mb-2 max-md:flex-col">

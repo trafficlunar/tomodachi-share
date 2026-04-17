@@ -33,7 +33,7 @@ export default function MiiPage() {
 				setLoading(false);
 				window.location.href = "/404";
 			});
-	}, []);
+	}, [id]);
 
 	if (loading || !mii) {
 		return <div className="p-6 text-center">Loading...</div>;
@@ -258,7 +258,9 @@ export default function MiiPage() {
 							{/* Tags */}
 							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
 								{mii.tags.map((tag: string) => (
-									<Link to={`/tags=${tag}`}>{tag}</Link>
+									<Link to={`/tags=${tag}`} key={tag}>
+										{tag}
+									</Link>
 								))}
 							</div>
 
@@ -333,8 +335,11 @@ export default function MiiPage() {
 
 					{images.length > 0 ? (
 						<div className="grid grid-cols-3 gap-2 w-full max-md:grid-cols-2 max-[24rem]:grid-cols-1">
-							{images.map((src) => (
-								<div className="relative aspect-3/2 rounded-xl bg-black/65 border-2 border-amber-400 shadow-md overflow-hidden transition hover:shadow-lg shadow-black/30">
+							{images.map((src, index) => (
+								<div
+									key={index}
+									className="relative aspect-3/2 rounded-xl bg-black/65 border-2 border-amber-400 shadow-md overflow-hidden transition hover:shadow-lg shadow-black/30"
+								>
 									<img
 										src={src}
 										alt="mii screenshot background blur"

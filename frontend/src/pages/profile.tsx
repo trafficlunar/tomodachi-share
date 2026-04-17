@@ -22,7 +22,7 @@ export default function ProfilePage() {
 				setLoading(false);
 				window.location.href = "/404";
 			});
-	}, []);
+	}, [id]);
 
 	if (loading || !user) {
 		return <div className="p-6 text-center">Loading...</div>;

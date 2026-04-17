@@ -13,7 +13,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 	const [hasCopiedUrl, setHasCopiedUrl] = useState(false);
 	const [hasCopiedImage, setHasCopiedImage] = useState(false);
 
-	const url = `${import.meta.env.PUBLIC_BASE_URL}/mii/${miiId}`;
+	const url = `${import.meta.env.VITE_BASE_URL}/mii/${miiId}`;
 
 	const handleCopyUrl = async () => {
 		await navigator.clipboard.writeText(url);
