@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 import ReasonSelector from "./reason-selector";

@@ -2,6 +2,7 @@ import { TOMODACHI_LIFE_DECRYPTION_KEY } from "./constants";
 // @ts-ignore
 import sjcl from "sjcl-with-all";
 
+// @ts-ignore - This is not in the types, but it's a function needed to enable CTR mode.
 sjcl.beware["CTR mode is dangerous because it doesn't protect message integrity."]();
 
 // Converts hair dye to studio color

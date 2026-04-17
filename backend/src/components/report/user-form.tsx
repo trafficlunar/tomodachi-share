@@ -1,9 +1,11 @@
+"use client";
+
 import { useState } from "react";
 
 import ReasonSelector from "./reason-selector";
 import SubmitButton from "../submit-button";
-import { ReportReason } from "@prisma/client";
-import { User } from "next-auth";
+import { ReportReason, User } from "@prisma/client";
+import Image from "next/image";
 
 interface Props {
 	user: User;
@@ -39,7 +41,13 @@ export default function ReportUserForm({ user }: Props) {
 			<hr className="border-zinc-300" />
 
 			<div className="bg-orange-100 rounded-xl border-2 border-orange-400 flex p-4 gap-4">
-				<image src={user.image ?? "/guest.png"} width={96} height={96} className="aspect-square rounded-full border-2 border-orange-400" />
+				<Image
+					src={user.image ?? "/guest.png"}
+					alt="profile picture"
+					width={96}
+					height={96}
+					className="aspect-square rounded-full border-2 border-orange-400"
+				/>
 				<p className="text-xl font-bold overflow-hidden text-ellipsis">{user.name}</p>
 			</div>
 

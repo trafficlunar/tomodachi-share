@@ -25,6 +25,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.2
         version: 6.19.3(prisma@6.19.3(typescript@6.0.2))(typescript@6.0.2)
+      '@tomodachi-share/shared':
+        specifier: workspace:*
+        version: link:../shared
       bit-buffer:
         specifier: ^0.3.0
         version: 0.3.0
@@ -98,9 +101,6 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.2.2
         version: 4.2.2
-      '@tomodachi-share/shared':
-        specifier: workspace:*
-        version: link:../shared
       '@types/canvas-confetti':
         specifier: ^1.9.0
         version: 1.9.0
