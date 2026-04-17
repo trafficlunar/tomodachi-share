@@ -25,6 +25,7 @@ export default function MiiPage() {
 				return res.json();
 			})
 			.then((data) => {
+				console.log("Mii API response:", data);
 				setMii(data);
 				setLoading(false);
 			})
@@ -39,7 +40,7 @@ export default function MiiPage() {
 		return <div className="p-6 text-center">Loading...</div>;
 	}
 
-	const images = [...Array.from({ length: mii.imageCount }, (_, index) => `${API_URL}/mii/${mii.id}/image?type=image${index}`)];
+	const images = [...Array.from({ length: mii.imageCount ?? 0 }, (_, index) => `${API_URL}/mii/${mii.id}/image?type=image${index}`)];
 
 	return (
 		<div className="flex flex-col items-center">
@@ -253,7 +254,7 @@ export default function MiiPage() {
 								{/* Submission name */}
 								<h1 className="text-4xl font-extrabold wrap-break-word whitespace-break-spaces text-amber-700 flex-1 min-w-0">{mii.name}</h1>
 								{/* Like button */}
-								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={(mii.likedBy ?? []).length > 0} big />
+								<LikeButton likes={mii._count?.likedBy ?? 0} miiId={mii.id} isLiked={false} big />
 							</div>
 							{/* Tags */}
 							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">

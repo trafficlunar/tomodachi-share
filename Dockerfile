@@ -54,7 +54,7 @@ COPY --from=builder /app/backend/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/backend/prisma ./prisma
 
 # uploads dir
-RUN mkdir -p /app/uploads && chown -R nextjs:nodejs /app/uploads
+RUN mkdir -p /app/uploads && chown -R nextjs:nodejs /app/.next/standalone/backend/uploads
 
 USER nextjs
 
