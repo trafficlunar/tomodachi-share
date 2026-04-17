@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import FilterMenu from "../components/mii/list/filter-menu";
 import SortSelect from "../components/mii/list/sort-select";
 import MiiGrid from "../components/mii/list/mii-grid";
@@ -7,13 +7,12 @@ import Skeleton from "../components/mii/list/skeleton";
 
 interface ApiResponse {
 	totalCount: number;
-	filteredCount: number;
 	miis: any[];
 	lastPage: number;
 }
 
 export default function IndexPage() {
-	const searchParams = new URLSearchParams(location.search);
+	const searchParams = useMemo(() => new URLSearchParams(location.search), []);
 	const [data, setData] = useState<ApiResponse | null>(null);
 	const [loading, setLoading] = useState(true);
 
@@ -31,7 +30,7 @@ export default function IndexPage() {
 				console.error(err);
 				setLoading(false);
 			});
-	}, []);
+	}, [searchParams]);
 
 	return (
 		<>
@@ -46,19 +45,8 @@ export default function IndexPage() {
 					<div className="w-full">
 						<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-center gap-2 mb-2 max-md:flex-col">
 							<div className="flex items-center gap-2">
-								{data.totalCount == data.filteredCount ? (
-									<>
-										<span className="text-2xl font-bold text-amber-900">{data.totalCount}</span>
-										<span className="text-lg text-amber-700">{data.totalCount === 1 ? "Mii" : "Miis"}</span>
-									</>
-								) : (
-									<>
-										<span className="text-2xl font-bold text-amber-900">{data.filteredCount}</span>
-										<span className="text-sm text-amber-700">of</span>
-										<span className="text-lg font-semibold text-amber-800">{data.totalCount}</span>
-										<span className="text-lg text-amber-700">Miis</span>
-									</>
-								)}
+								<span className="text-2xl font-bold text-amber-900">{data.totalCount}</span>
+								<span className="text-lg text-amber-700">{data.totalCount === 1 ? "Mii" : "Miis"}</span>
 							</div>
 
 							<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">

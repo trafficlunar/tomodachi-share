@@ -31,8 +31,7 @@ export default function Header() {
 				</li>
 				<li>
 					<a href={"/submit"} className="pill button h-full">
-						{" "}
-						Submit{" "}
+						Submit
 					</a>
 				</li>
 				<HeaderProfile />

@@ -1,6 +1,14 @@
 import { Icon } from "@iconify/react";
+import { useStore } from "@nanostores/react";
+import { useNavigate } from "react-router";
+import { session } from "../session";
 
 export default function LoginPage() {
+	const navigate = useNavigate();
+	const $session = useStore(session);
+
+	if ($session) navigate("/");
+
 	const API_URL = import.meta.env.VITE_API_URL;
 
 	return (

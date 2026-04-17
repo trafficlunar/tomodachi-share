@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { searchSchema } from "@tomodachi-share/shared/schemas";
-import { RateLimit } from "@/lib/rate-limit";
 import { Prisma } from "@prisma/client";
-import crypto from "crypto";
-import seedrandom from "seedrandom";
 
 export async function GET(request: NextRequest) {
 	const session = await auth();
@@ -94,75 +91,37 @@ export async function GET(request: NextRequest) {
 		},
 	};
 
-	const skip = (page - 1) * limit;
-
 	let totalCount: number;
-	let filteredCount: number;
 	let miis: Prisma.MiiGetPayload<{ select: typeof select }>[];
 
-	if (sort === "random") {
-		// Get all IDs that match the where conditions
-		const matchingIds = await prisma.mii.findMany({
-			where,
-			select: { id: true },
-		});
+	// Sorting by likes, newest, or oldest
+	let orderBy: Prisma.MiiOrderByWithRelationInput[];
 
-		totalCount = matchingIds.length;
-		filteredCount = Math.max(0, Math.min(limit, totalCount - skip));
-
-		if (matchingIds.length === 0) return;
-
-		// Use seed for consistent random results
-		const randomSeed = seed || crypto.randomInt(0, 1_000_000_000);
-		const rng = seedrandom(randomSeed.toString());
-
-		// Randomize all IDs using the Durstenfeld algorithm
-		for (let i = matchingIds.length - 1; i > 0; i--) {
-			const j = Math.floor(rng() * (i + 1));
-			[matchingIds[i], matchingIds[j]] = [matchingIds[j], matchingIds[i]];
-		}
-
-		// Convert to number[] array
-		const selectedIds = matchingIds.slice(skip, skip + limit).map((i) => i.id);
-
-		miis = await prisma.mii.findMany({
-			where: {
-				id: { in: selectedIds },
-			},
-			select,
-		});
+	if (sort === "likes") {
+		orderBy = [{ likedBy: { _count: "desc" } }, { name: "asc" }];
+	} else if (sort === "oldest") {
+		orderBy = [{ createdAt: "asc" }, { name: "asc" }];
 	} else {
-		// Sorting by likes, newest, or oldest
-		let orderBy: Prisma.MiiOrderByWithRelationInput[];
-
-		if (sort === "likes") {
-			orderBy = [{ likedBy: { _count: "desc" } }, { name: "asc" }];
-		} else if (sort === "oldest") {
-			orderBy = [{ createdAt: "asc" }, { name: "asc" }];
-		} else {
-			// default to newest
-			orderBy = [{ createdAt: "desc" }, { name: "asc" }];
-		}
-
-		[totalCount, filteredCount, miis] = await Promise.all([
-			prisma.mii.count({ where: { ...where } }), // TODO: User id
-			prisma.mii.count({ where, skip, take: limit }),
-			prisma.mii.findMany({
-				where,
-				orderBy,
-				select,
-				skip: (page - 1) * limit,
-				take: limit,
-			}),
-		]);
+		// default to newest
+		orderBy = [{ createdAt: "desc" }, { name: "asc" }];
 	}
+
+	[totalCount, miis] = await Promise.all([
+		prisma.mii.count({ where: { ...where } }), // TODO: User id
+		prisma.mii.findMany({
+			where,
+			orderBy,
+			select,
+			skip: (page - 1) * limit,
+			take: limit,
+		}),
+	]);
 
 	const lastPage = Math.ceil(totalCount / limit);
 
 	return NextResponse.json({
 		miis,
 		totalCount,
-		filteredCount,
 		lastPage,
 	});
 }
