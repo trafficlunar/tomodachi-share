@@ -8,14 +8,16 @@ import PrivacyPage from "./pages/privacy.tsx";
 import TermsOfServicePage from "./pages/terms-of-service.tsx";
 import NotFoundPage from "./pages/not-found.tsx";
 import LoginPage from "./pages/login.tsx";
-import ProfilePage from "./pages/profile.tsx";
+import ProfilePage from "./pages/profile";
 import MiiPage from "./pages/mii.tsx";
 import SubmitPage from "./pages/submit.tsx";
 import IndexPage from "./pages/index.tsx";
-import ProfileSettingsPage from "./pages/settings.tsx";
+import ProfileSettingsPage from "./pages/profile/settings.tsx";
 import { ProgressProvider } from "@bprogress/react";
 import LinkOutPage from "./pages/out.tsx";
 import Layout from "./layout.tsx";
+import ProfileLayout from "./pages/profile/layout.tsx";
+import ProfileLikesPage from "./pages/profile/likes.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
@@ -25,8 +27,9 @@ createRoot(document.getElementById("root")!).render(
 					<Routes>
 						<Route path="/" element={<IndexPage />} />
 						<Route path="/mii/:id" element={<MiiPage />} />
-						<Route path="/profile">
+						<Route path="/profile" element={<ProfileLayout />}>
 							<Route path=":id" element={<ProfilePage />} />
+							<Route path="likes" element={<ProfileLikesPage />} />
 							<Route path="settings" element={<ProfileSettingsPage />} />
 						</Route>
 						<Route path="/submit" element={<SubmitPage />} />

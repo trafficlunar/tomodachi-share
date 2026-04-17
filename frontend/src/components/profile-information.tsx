@@ -3,19 +3,20 @@ import { Icon } from "@iconify/react";
 import Description from "./description";
 import { useStore } from "@nanostores/react";
 import { session } from "../session";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
 interface Props {
 	user?: any;
-	page?: "settings" | "likes";
 }
 
-export default function ProfileInformation({ user, page }: Props) {
+export default function ProfileInformation({ user }: Props) {
+	const location = useLocation();
 	const $session = useStore(session);
 
 	if (!user) return null;
 
 	const currentUser = user ?? $session?.user;
+	const page = location.pathname;
 	const isAdmin = currentUser?.id === Number(import.meta.env.VITE_ADMIN_USER_ID);
 	const isContributor = import.meta.env.VITE_CONTRIBUTORS_USER_IDS?.split(",").includes(user?.id);
 	const isOwnProfile = currentUser?.id === user?.id;
@@ -24,8 +25,8 @@ export default function ProfileInformation({ user, page }: Props) {
 		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex gap-4 mb-2 max-md:flex-col">
 			<div className="flex w-full gap-4 overflow-x-scroll">
 				{/* Profile picture */}
-				<Link to={`/profile/${user.id}`} className="size-28 aspect-square">
-					<img src={user.image ?? "/guest.png"} className="rounded-full bg-white border-2 border-orange-400 shadow max-md:self-center" />
+				<Link to={`${import.meta.env.VITE_API_URL}/profile/${user.id}`} className="size-28 aspect-square">
+					<img src={user.image ?? "/guest.png"} className="rounded-full bg-white border-2 border-orange-400 shadow w-full max-md:self-center" />
 				</Link>
 				{/* User information */}
 				<div className="flex flex-col w-full relative py-3">
@@ -72,19 +73,19 @@ export default function ProfileInformation({ user, page }: Props) {
 						<span>Admin</span>
 					</Link>
 				)}
-				{/* {isOwnProfile && page !== "likes" && (
+				{isOwnProfile && page !== "/profile/likes" && (
 					<Link aria-label="Go to My Likes" to="/profile/likes">
 						<Icon icon="icon-park-solid:like" />
 						<span>My Likes</span>
 					</Link>
-				)} */}
-				{isOwnProfile && page !== "settings" && (
+				)}
+				{isOwnProfile && page !== "/profile/settings" && (
 					<Link aria-label="Go to Settings" to="/profile/settings">
 						<Icon icon="material-symbols:settings-rounded" />
 						<span>Settings</span>
 					</Link>
 				)}
-				{page && (
+				{(page === "/profile/likes" || page === "/profile/settings") && (
 					<Link aria-label="Go Back to Profile" to={`/profile/${user.id}`}>
 						<Icon icon="tabler:chevron-left" />
 						<span>Back</span>

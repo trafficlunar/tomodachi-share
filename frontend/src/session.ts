@@ -8,4 +8,5 @@ interface SessionData {
 	};
 }
 
-export const session = atom<SessionData | null>(null);
+// Undefined means still loading, null means no session
+export const session = atom<SessionData | null | undefined>(undefined);

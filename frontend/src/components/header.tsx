@@ -11,7 +11,7 @@ export default function Header() {
 				aria-label="Go to Home Page"
 				className="font-black text-3xl text-orange-400 flex items-center gap-2 max-md:justify-center max-md:col-span-2"
 			>
-				<img src="/logo.svg" width={56} height={45} alt="logo" />
+				<img src="/favicon.svg" width={56} height={45} alt="logo" />
 				TomodachiShare
 			</Link>
 

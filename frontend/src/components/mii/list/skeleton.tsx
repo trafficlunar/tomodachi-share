@@ -1,17 +1,18 @@
-import FilterSelect from "./tag-filter";
 import SortSelect from "./sort-select";
 import Pagination from "../../pagination";
+import FilterMenu from "./filter-menu";
 
 export default function Skeleton() {
 	return (
 		<div className="w-full animate-pulse">
-			<div className="flex justify-between items-end mb-2 max-[32rem]:flex-col max-[32rem]:items-center">
-				<p className="text-lg">
-					<span className="font-extrabold">???</span> Miis
-				</p>
+			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex justify-between items-center gap-2 mb-2 max-md:flex-col">
+				<div className="flex items-center gap-2">
+					<span className="text-2xl font-bold text-amber-900">???</span>
+					<span className="text-lg text-amber-700">Miis</span>
+				</div>
 
-				<div className="flex gap-2 pointer-events-none">
-					<FilterSelect />
+				<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
+					<FilterMenu />
 					<SortSelect />
 				</div>
 			</div>

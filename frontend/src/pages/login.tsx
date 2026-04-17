@@ -5,6 +5,7 @@ import { session } from "../session";
 
 export default function LoginPage() {
 	const $session = useStore(session);
+	if ($session === undefined) return <div className="p-6 text-center">Loading...</div>;
 	if ($session) return <Navigate to="/" replace />;
 
 	const API_URL = import.meta.env.VITE_API_URL;

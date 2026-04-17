@@ -1,15 +1,27 @@
+import { Outlet, useNavigate, useParams } from "react-router";
+import ProfileInformation from "../../components/profile-information";
 import { useEffect, useState } from "react";
-import ProfileInformation from "../components/profile-information";
-import { useNavigate, useParams } from "react-router";
+import { useStore } from "@nanostores/react";
+import { session } from "../../session";
 
-export default function ProfilePage() {
+export default function ProfileLayout() {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const [user, setUser] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
+	const $session = useStore(session);
 
 	useEffect(() => {
-		fetch(`${import.meta.env.VITE_API_URL}/api/profile/${id}/info`)
+		if ($session === undefined) return; // session still loading
+		if ($session === null) {
+			// not logged in
+			navigate("/404");
+			return;
+		}
+
+		const userId = id ? id : $session.user!.id;
+
+		fetch(`${import.meta.env.VITE_API_URL}/api/profile/${userId}/info`)
 			.then((res) => {
 				if (!res.ok) throw new Error("Failed to fetch profile");
 				return res.json();
@@ -23,7 +35,7 @@ export default function ProfilePage() {
 				setLoading(false);
 				navigate("/404");
 			});
-	}, [id]);
+	}, [id, $session]);
 
 	if (loading || !user) {
 		return <div className="p-6 text-center">Loading...</div>;
@@ -32,9 +44,7 @@ export default function ProfilePage() {
 	return (
 		<div>
 			<ProfileInformation user={user} />
-			{/* <Suspense fallback={<Skeleton />}>
-				<MiiList searchParams={await searchParams} userId={user.id} />
-			</Suspense> */}
+			<Outlet />
 		</div>
 	);
 }
