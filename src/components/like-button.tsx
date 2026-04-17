@@ -24,31 +24,31 @@ export default function LikeButton({ likes, isLiked, miiId, disabled, abbreviate
 	const [isAnimating, setIsAnimating] = useState(false);
 
 	const onClick = async () => {
-		if (disabled) return;
-		if (!session.data?.user) {
-			router.push("/login");
-			return;
-		}
+		// if (disabled) return;
+		// if (!session.data?.user) {
+		// 	router.push("/login");
+		// 	return;
+		// }
 
-		setIsLikedState(!isLikedState);
-		setLikesState(isLikedState ? likesState - 1 : likesState + 1);
+		// setIsLikedState(!isLikedState);
+		// setLikesState(isLikedState ? likesState - 1 : likesState + 1);
 
-		// Trigger animation
-		if (!isLikedState) {
-			setIsAnimating(true);
-			setTimeout(() => setIsAnimating(false), 1000); // match animation duration
-		}
+		// // Trigger animation
+		// if (!isLikedState) {
+		// 	setIsAnimating(true);
+		// 	setTimeout(() => setIsAnimating(false), 1000); // match animation duration
+		// }
 
-		const response = await fetch(`/api/mii/${miiId}/like`, { method: "PATCH" });
+		// const response = await fetch(`/api/mii/${miiId}/like`, { method: "PATCH" });
 
-		if (response.ok) {
-			const { liked, count } = await response.json();
-			setIsLikedState(liked);
-			setLikesState(count);
-		} else {
-			setIsLikedState(isLikedState);
-			setLikesState(likesState);
-		}
+		// if (response.ok) {
+		// 	const { liked, count } = await response.json();
+		// 	setIsLikedState(liked);
+		// 	setLikesState(count);
+		// } else {
+		// 	setIsLikedState(isLikedState);
+		// 	setLikesState(likesState);
+		// }
 	};
 
 	// Preload like button icons
@@ -56,9 +56,9 @@ export default function LikeButton({ likes, isLiked, miiId, disabled, abbreviate
 		loadIcons(["icon-park-solid:like", "icon-park-outline:like"]);
 	}, []);
 
-	useEffect(() => {
-		setIsLikedState(isLiked);
-	}, [isLiked]);
+	// useEffect(() => {
+	// 	setIsLikedState(isLiked);
+	// }, [isLiked]);
 
 	return (
 		<button

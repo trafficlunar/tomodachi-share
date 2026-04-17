@@ -23,12 +23,12 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 	const session = useSession();
 	const router = useRouter();
 
-	const ids = miis.map((m) => m.id).join(",");
-	const { data } = useSWR<number[]>(session.data?.user && miis.length > 0 ? `/api/mii/has-liked?ids=${ids}` : null, fetcher, {
-		revalidateOnFocus: false,
-		revalidateOnReconnect: false,
-	});
-	const likedIds = new Set(data ?? []);
+	// const ids = miis.map((m) => m.id).join(",");
+	// const { data } = useSWR<number[]>(session.data?.user && miis.length > 0 ? `/api/mii/has-liked?ids=${ids}` : null, fetcher, {
+	// 	revalidateOnFocus: false,
+	// 	revalidateOnReconnect: false,
+	// });
+	const likedIds = new Set([]);
 
 	return (
 		<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[30rem]:grid-cols-1">

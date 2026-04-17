@@ -1,7 +1,5 @@
 import { Prisma } from "@prisma/client";
 
-import crypto from "crypto";
-
 import { searchSchema } from "@/lib/schemas";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
