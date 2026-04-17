@@ -4,10 +4,15 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml* ./
-COPY prisma ./prisma/
+# Copy root workspace files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
+# Copy backend only
+COPY backend/package.json ./backend/package.json
+COPY backend/prisma ./backend/prisma
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -17,9 +22,9 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN corepack enable pnpm && pnpm prisma generate
+RUN corepack enable pnpm && pnpm --filter backend prisma generate
 RUN pnpm prisma migrate deploy
-RUN pnpm run build
+RUN pnpm --filter backend build
 
 # Production image, copy all the files and run next
 FROM base AS runner
