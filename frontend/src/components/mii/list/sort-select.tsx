@@ -1,13 +1,15 @@
 import { useTransition } from "react";
 import { useSelect } from "downshift";
 import { Icon } from "@iconify/react";
+import { useNavigate, useSearchParams } from "react-router";
 
-type Sort = "likes" | "newest" | "oldest" | "random";
+type Sort = "likes" | "newest" | "oldest";
 
-const items = ["likes", "newest", "oldest", "random"];
+const items = ["likes", "newest", "oldest"];
 
 export default function SortSelect() {
-	const searchParams = new URLSearchParams(window.location.search);
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 	const [, startTransition] = useTransition();
 
 	const currentSort = (searchParams.get("sort") as Sort) || "newest";
@@ -22,13 +24,8 @@ export default function SortSelect() {
 			params.set("page", "1");
 			params.set("sort", selectedItem);
 
-			if (selectedItem == "random") {
-				params.set("seed", Math.floor(Math.random() * 1_000_000_000).toString());
-			}
-
 			startTransition(() => {
-				// router.push(`?${params.toString()}`, { scroll: false });
-				window.location.href = `?${params.toString()}`;
+				navigate(`?${params.toString()}`);
 			});
 		},
 	});

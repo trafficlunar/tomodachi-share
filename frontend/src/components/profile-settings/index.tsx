@@ -6,12 +6,14 @@ import ProfilePictureSettings from "./profile-picture";
 import SubmitDialogButton from "./submit-dialog-button";
 import DeleteAccount from "./delete-account";
 import z from "zod";
+import { useNavigate } from "react-router";
 
 interface Props {
 	currentDescription: string | null | undefined;
 }
 
 export default function ProfileSettings({ currentDescription }: Props) {
+	const navigate = useNavigate();
 	const [description, setDescription] = useState(currentDescription);
 	const [name, setName] = useState("");
 
@@ -39,7 +41,7 @@ export default function ProfileSettings({ currentDescription }: Props) {
 		}
 
 		close();
-		window.location.reload();
+		navigate(0);
 	};
 
 	const handleSubmitNameChange = async (close: () => void) => {
@@ -63,7 +65,7 @@ export default function ProfileSettings({ currentDescription }: Props) {
 		}
 
 		close();
-		window.location.reload();
+		navigate(0);
 	};
 
 	return (

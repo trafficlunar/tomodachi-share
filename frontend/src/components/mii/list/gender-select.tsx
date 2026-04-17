@@ -1,9 +1,11 @@
 import { useState, useTransition } from "react";
 import { Icon } from "@iconify/react";
 import type { MiiGender, MiiPlatform } from "@tomodachi-share/shared";
+import { useNavigate, useSearchParams } from "react-router";
 
 export default function GenderSelect() {
-	const searchParams = new URLSearchParams(window.location.search);
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 	const [, startTransition] = useTransition();
 
 	const [selected, setSelected] = useState<MiiGender | null>((searchParams.get("gender") as MiiGender) ?? null);
@@ -23,8 +25,7 @@ export default function GenderSelect() {
 		}
 
 		startTransition(() => {
-			// router.push(`?${params.toString()}`, { scroll: false });
-			window.location.href = `?${params.toString()}`;
+			navigate(`?${params.toString()}`);
 		});
 	};
 

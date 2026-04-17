@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import { Link } from "react-router";
 
 export default function Footer() {
 	return (
@@ -11,38 +12,42 @@ export default function Footer() {
 
 				{/* Links section */}
 				<div className="flex flex-wrap justify-center items-center gap-x-4 text-sm max-sm:gap-x-12">
-					<a href="/terms-of-service" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline">
+					<Link to="/terms-of-service" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline">
 						Terms of Service
-					</a>
+					</Link>
 
 					<span className="text-zinc-400 hidden sm:inline" aria-hidden="true">
 						•
 					</span>
 
-					<a href="/privacy" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline">
+					<Link to="/privacy" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline">
 						Privacy Policy
-					</a>
+					</Link>
 
 					<span className="text-zinc-400 hidden sm:inline" aria-hidden="true">
 						•
 					</span>
 
-					<a
-						href="https://discord.gg/48cXBFKvWQ"
+					<Link
+						to="https://discord.gg/48cXBFKvWQ"
 						target="_blank"
 						className="text-[#5865F2] hover:text-[#454FBF] transition-colors duration-200 hover:underline inline-flex items-end gap-1"
 					>
 						<Icon icon="ic:baseline-discord" className="text-lg" />
 						Discord
-					</a>
+					</Link>
 
 					<span className="text-zinc-400 hidden sm:inline" aria-hidden="true">
 						•
 					</span>
 
-					<a href="https://trafficlunar.net" target="_blank" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline group">
+					<Link
+						to="https://trafficlunar.net"
+						target="_blank"
+						className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline group"
+					>
 						Made by <span className="text-orange-400 group-hover:text-orange-500 font-medium transition-colors duration-200">trafficlunar</span>
-					</a>
+					</Link>
 				</div>
 
 				{/* Copyright */}

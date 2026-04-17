@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import TagSelector from "../../tag-selector";
+import { useNavigate, useSearchParams } from "react-router";
 
 interface Props {
 	isExclude?: boolean;
 }
 
 export default function TagFilter({ isExclude }: Props) {
-	const searchParams = new URLSearchParams(window.location.search);
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 	const [, startTransition] = useTransition();
 
 	const rawTags = searchParams.get(isExclude ? "exclude" : "tags") || "";
@@ -45,8 +47,7 @@ export default function TagFilter({ isExclude }: Props) {
 		}
 
 		startTransition(() => {
-			// router.push(`?${params.toString()}`, { scroll: false });
-			window.location.href = `?${params.toString()}`;
+			navigate(`?${params.toString()}`);
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [tags]);

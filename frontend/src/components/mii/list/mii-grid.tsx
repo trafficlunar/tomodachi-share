@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 
 import LikeButton from "../../like-button";
 import DeleteMiiButton from "../delete-mii-button";
+import { Link } from "react-router";
 
 interface Props {
 	// miis: Prisma.MiiGetPayload<{ include: { user: { select: { id: true; name: true } }; _count: { select: { likedBy: true } } } }>[];
@@ -25,7 +26,7 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 						</div>
 					)}
 
-					<a href={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
+					<Link to={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
 						<img
 							src={`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`}
 							width={240}
@@ -33,13 +34,13 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 							alt="mii image"
 							className="w-full h-auto aspect-3/2 object-contain"
 						/>
-					</a>
+					</Link>
 
 					<div className="p-4 flex flex-col gap-1 h-full">
 						<div className="flex justify-between">
-							<a href={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1 w-full text-ellipsis wrap-break-word" title={mii.name}>
+							<Link to={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1 w-full text-ellipsis wrap-break-word" title={mii.name}>
 								{mii.name}
-							</a>
+							</Link>
 							<div title={mii.platform === "SWITCH" ? "Switch" : "3DS"} className="text-[1.25rem] opacity-25">
 								{mii.platform === "SWITCH" ? (
 									<Icon icon="cib:nintendo-switch" className="text-red-400" />
@@ -50,9 +51,9 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 						</div>
 						<div id="tags" className="flex flex-wrap gap-1">
 							{mii.tags.map((tag: string) => (
-								<a href={`?tags=${tag}`} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
+								<Link to={`?tags=${tag}`} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
 									{tag}
-								</a>
+								</Link>
 							))}
 						</div>
 
@@ -60,16 +61,16 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 							<LikeButton likes={mii._count.likedBy} miiId={mii.id} isLiked={false} abbreviate />
 
 							{!userId && (
-								<a href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis whitespace-nowrap">
+								<Link to={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis whitespace-nowrap">
 									@{mii.user?.name}
-								</a>
+								</Link>
 							)}
 
 							{/* {userId && Number(session.data?.user?.id) == userId && (
 								<div className="flex gap-1 text-2xl justify-end text-zinc-400">
-									<a href={`/edit/${mii.id}`} title="Edit Mii" aria-label="Edit Mii" data-tooltip="Edit">
+									<Link to={`/edit/${mii.id}`} title="Edit Mii" aria-label="Edit Mii" data-tooltip="Edit">
 										<Icon icon="mdi:pencil" />
-									</a>
+									</Link>
 									<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy} />
 								</div>
 							)} */}

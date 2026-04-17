@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import { Link } from "react-router";
 
 interface Props {
 	text: string;
@@ -19,9 +20,9 @@ export default function Description({ text, className }: Props) {
 					const url = new URL(part);
 
 					return (
-						<a
+						<Link
 							key={index}
-							href={`/out?url=${encodeURIComponent(part)}`}
+							to={`/out?url=${encodeURIComponent(part)}`}
 							target="_blank"
 							className="text-blue-700 underline break-all ml-1 inline-flex items-center group"
 							title={`Go to ${url.hostname}`}
@@ -30,7 +31,7 @@ export default function Description({ text, className }: Props) {
 							{url.pathname !== "/" ? url.pathname : ""}
 							{url.search}
 							<Icon icon="mi:arrow-right-up" fontSize={16} className="transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-						</a>
+						</Link>
 					);
 				} catch {
 					// Normal text/Invalid URL fallback

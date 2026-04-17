@@ -1,0 +1,13 @@
+User-Agent: *
+Allow: /
+Disallow: /*?*page=
+Disallow: /profile*?*tags=
+Disallow: /edit/*
+Disallow: /profile/settings
+Disallow: /random
+Disallow: /submit
+Disallow: /report/mii/*
+Disallow: /report/user/*
+Disallow: /admin
+
+Sitemap: https://api.tomodachishare.com/sitemap.xml

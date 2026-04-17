@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import ProfileInformation from "../components/profile-information";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 export default function ProfilePage() {
 	const { id } = useParams();
+	const navigate = useNavigate();
 	const [user, setUser] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 
@@ -20,7 +21,7 @@ export default function ProfilePage() {
 			.catch((err) => {
 				console.error(err);
 				setLoading(false);
-				window.location.href = "/404";
+				navigate("/404");
 			});
 	}, [id]);
 

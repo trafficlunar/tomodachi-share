@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
 import SubmitButton from "../submit-button";
+import { useNavigate } from "react-router";
 
 export default function DeleteAccount() {
+	const navigate = useNavigate();
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -17,7 +19,7 @@ export default function DeleteAccount() {
 			return;
 		}
 
-		window.location.href = "/404";
+		navigate("/404");
 	};
 
 	const close = () => {

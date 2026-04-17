@@ -38,7 +38,7 @@ export const idSchema = z.coerce.number({ error: "ID must be a number" }).int({ 
 
 export const searchSchema = z.object({
 	q: querySchema.optional(),
-	sort: z.enum(["likes", "newest", "oldest", "random"], { error: "Sort must be either 'likes', 'newest', 'oldest', or 'random'" }).default("newest"),
+	sort: z.enum(["likes", "newest", "oldest"], { error: "Sort must be either 'likes', 'newest', 'oldest'" }).default("newest"),
 	tags: z
 		.string()
 		.optional()
@@ -71,8 +71,6 @@ export const searchSchema = z.object({
 		.max(100, { error: "Limit cannot be more than 100" })
 		.optional(),
 	page: z.coerce.number({ error: "Page must be a number" }).int({ error: "Page must be an integer" }).min(1, { error: "Page must be at least 1" }).optional(),
-	// Random sort
-	seed: z.coerce.number({ error: "Seed must be a number" }).int({ error: "Seed must be an integer" }).optional(),
 	// Other
 	parentPage: z.string().optional(),
 	userId: idSchema.optional(),

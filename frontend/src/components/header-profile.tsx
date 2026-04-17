@@ -2,6 +2,7 @@ import { Icon } from "@iconify/react";
 import { useEffect } from "react";
 import { useStore } from "@nanostores/react";
 import { session } from "../session";
+import { Link } from "react-router";
 
 export default function HeaderProfile() {
 	const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -25,15 +26,15 @@ export default function HeaderProfile() {
 		<>
 			{!$session?.user ? (
 				<li>
-					<a href={"/login"} className="pill button h-full">
+					<Link to={"/login"} className="pill button h-full">
 						Login
-					</a>
+					</Link>
 				</li>
 			) : (
 				<>
 					<li title="Your profile">
-						<a
-							href={`/profile/${$session?.user?.id}`}
+						<Link
+							to={`/profile/${$session?.user?.id}`}
 							aria-label="Go to profile"
 							className="pill button gap-2! p-0! h-full max-w-64"
 							data-tooltip="Your Profile"
@@ -46,12 +47,12 @@ export default function HeaderProfile() {
 								className="rounded-full aspect-square object-cover h-full bg-white outline-2 outline-orange-400"
 							/>
 							<span className="pr-4 overflow-hidden whitespace-nowrap text-ellipsis w-full">{$session?.user?.name ?? "unknown"}</span>
-						</a>
+						</Link>
 					</li>
 					<li title="Logout">
-						<a href={`${API_BASE_URL}/api/auth/signout`} aria-label="Log Out" className="pill button p-2! aspect-square h-full" data-tooltip="Log Out">
+						<Link to={`${API_BASE_URL}/api/auth/signout`} aria-label="Log Out" className="pill button p-2! aspect-square h-full" data-tooltip="Log Out">
 							<Icon icon="ic:round-logout" fontSize={24} />
-						</a>
+						</Link>
 					</li>
 				</>
 			)}

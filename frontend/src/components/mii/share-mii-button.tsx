@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
+import { Link } from "react-router";
 
 interface Props {
 	miiId: number;
@@ -128,15 +129,15 @@ export default function ShareMiiButton({ miiId }: Props) {
 							<div className="flex justify-end gap-2 mt-4">
 								<div className="flex gap-2 w-full">
 									{/* Save button */}
-									<a
-										href={`${import.meta.env.VITE_API_URL}/mii/${miiId}/image?type=metadata`}
+									<Link
+										to={`${import.meta.env.VITE_API_URL}/mii/${miiId}/image?type=metadata`}
 										className="pill button p-0! aspect-square size-11 cursor-pointer text-xl"
 										aria-label="Save Image"
 										data-tooltip="Save Image"
 										download={"hello.png"}
 									>
 										<Icon icon="material-symbols:save-rounded" />
-									</a>
+									</Link>
 
 									{/* Copy button */}
 									<button

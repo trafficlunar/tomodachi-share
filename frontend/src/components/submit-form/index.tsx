@@ -21,8 +21,10 @@ import Carousel from "../carousel";
 import SubmitButton from "../submit-button";
 import Dropzone from "../dropzone";
 import type { MiiPlatform, MiiGender, MiiMakeup } from "@tomodachi-share/shared";
+import { useNavigate } from "react-router";
 
 export default function SubmitForm() {
+	const navigate = useNavigate();
 	const [files, setFiles] = useState<FileWithPath[]>([]);
 
 	const handleDrop = useCallback(
@@ -113,7 +115,7 @@ export default function SubmitForm() {
 			return;
 		}
 
-		window.location.href = `/mii/${id}`;
+		navigate(`/mii/${id}`);
 	};
 
 	useEffect(() => {

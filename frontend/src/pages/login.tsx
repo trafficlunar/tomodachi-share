@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useStore } from "@nanostores/react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { session } from "../session";
 
 export default function LoginPage() {
@@ -23,41 +23,41 @@ export default function LoginPage() {
 				</div>
 
 				<div className="flex flex-col items-center gap-2">
-					<a
-						href={`${API_URL}/api/auth/signin/discord`}
+					<Link
+						to={`${API_URL}/api/auth/signin/discord`}
 						aria-label="Login with Discord"
 						className="pill button gap-2 px-3! bg-indigo-400! border-indigo-500! hover:bg-indigo-500!"
 					>
 						<Icon icon="ic:baseline-discord" fontSize={32} />
 						Login with Discord
-					</a>
-					<a
-						href={`${API_URL}/api/auth/signin/github`}
+					</Link>
+					<Link
+						to={`${API_URL}/api/auth/signin/github`}
 						aria-label="Login with GitHub"
 						className="pill button gap-2 px-3! bg-zinc-700! border-zinc-800! hover:bg-zinc-800! text-white"
 					>
 						<Icon icon="mdi:github" fontSize={32} />
 						Login with GitHub
-					</a>
-					<a
-						href={`${API_URL}/api/auth/signin/google`}
+					</Link>
+					<Link
+						to={`${API_URL}/api/auth/signin/google`}
 						aria-label="Login with Google"
 						className="pill button gap-2 px-3! bg-white! border-gray-300! hover:bg-gray-100! text-black! flex items-center"
 					>
 						<Icon icon="material-icon-theme:google" fontSize={32} />
 						Login with Google
-					</a>
+					</Link>
 				</div>
 
 				<p className="mt-8 text-xs text-zinc-400">
 					By signing up, you agree to the{" "}
-					<a href="/terms-of-service" className="underline hover:text-zinc-600">
+					<Link to="/terms-of-service" className="underline hover:text-zinc-600">
 						Terms of Service
-					</a>{" "}
+					</Link>{" "}
 					and{" "}
-					<a href="/privacy" className="underline hover:text-zinc-600">
+					<Link to="/privacy" className="underline hover:text-zinc-600">
 						Privacy Policy
-					</a>
+					</Link>
 					.
 				</p>
 			</div>

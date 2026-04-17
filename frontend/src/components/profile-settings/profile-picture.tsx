@@ -6,8 +6,10 @@ import dayjs from "dayjs";
 
 import SubmitDialogButton from "./submit-dialog-button";
 import Dropzone from "../dropzone";
+import { useNavigate } from "react-router";
 
 export default function ProfilePictureSettings() {
+	const navigate = useNavigate();
 	const [error, setError] = useState<string | undefined>(undefined);
 	const [newPicture, setNewPicture] = useState<FileWithPath | undefined>();
 
@@ -30,7 +32,7 @@ export default function ProfilePictureSettings() {
 		}
 
 		close();
-		location.reload();
+		navigate(0);
 	};
 
 	const handleDrop = useCallback((acceptedFiles: FileWithPath[]) => {

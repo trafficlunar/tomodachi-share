@@ -9,10 +9,11 @@ import SwitchAddMiiTutorialButton from "../components/tutorial/switch-add-mii";
 import MiiInstructions from "../components/mii/instructions";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 
 export default function MiiPage() {
 	const { id } = useParams();
+	const navigate = useNavigate();
 	const [mii, setMii] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 
@@ -31,7 +32,7 @@ export default function MiiPage() {
 			.catch((err) => {
 				console.error(err);
 				setLoading(false);
-				window.location.href = "/404";
+				navigate("/404");
 			});
 	}, [id]);
 

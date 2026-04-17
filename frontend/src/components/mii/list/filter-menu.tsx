@@ -7,9 +7,10 @@ import GenderSelect from "./gender-select";
 import OtherFilters from "./other-filters";
 import MakeupSelect from "./makeup-select";
 import type { MiiGender, MiiMakeup, MiiPlatform } from "@tomodachi-share/shared";
+import { useSearchParams } from "react-router";
 
 export default function FilterMenu() {
-	const searchParams = new URLSearchParams(window.location.search);
+	const [searchParams] = useSearchParams();
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);

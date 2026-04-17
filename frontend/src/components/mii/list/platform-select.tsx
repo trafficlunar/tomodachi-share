@@ -1,9 +1,11 @@
 import { useState, useTransition } from "react";
 import { Icon } from "@iconify/react";
 import type { MiiPlatform } from "@tomodachi-share/shared";
+import { useNavigate, useSearchParams } from "react-router";
 
 export default function PlatformSelect() {
-	const searchParams = new URLSearchParams(window.location.search);
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 	const [, startTransition] = useTransition();
 
 	const [selected, setSelected] = useState<MiiPlatform | null>((searchParams.get("platform") as MiiPlatform) ?? null);
@@ -20,8 +22,7 @@ export default function PlatformSelect() {
 		}
 
 		startTransition(() => {
-			// router.push(`?${params.toString()}`);
-			window.location.href = `?${params.toString()}`;
+			navigate(`?${params.toString()}`);
 		});
 	};
 

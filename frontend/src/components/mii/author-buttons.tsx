@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import DeleteMiiButton from "./delete-mii-button";
+import { Link } from "react-router";
 
 interface Props {
 	mii: any;
@@ -13,10 +14,10 @@ export default function AuthorButtons({ mii }: Props) {
 
 	return (
 		<>
-			<a aria-label="Edit Mii" href={`/edit/${mii.id}`}>
+			<Link aria-label="Edit Mii" to={`/edit/${mii.id}`}>
 				<Icon icon="mdi:pencil" />
 				<span>Edit</span>
-			</a>
+			</Link>
 			<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy ?? 0} inMiiPage />
 		</>
 	);

@@ -1,8 +1,11 @@
 import type { MiiPlatform } from "@tomodachi-share/shared";
 import { type ChangeEvent, useState, useTransition } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 
 export default function OtherFilters() {
-	const searchParams = new URLSearchParams(window.location.search);
+	const location = useLocation();
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 	const [, startTransition] = useTransition();
 
 	const platform = (searchParams.get("platform") as MiiPlatform) || undefined;
@@ -22,8 +25,7 @@ export default function OtherFilters() {
 		}
 
 		startTransition(() => {
-			// router.push(`?${params.toString()}`, { scroll: false });
-			window.location.href = `?${params.toString()}`;
+			navigate(`?${params.toString()}`);
 		});
 	};
 
@@ -40,8 +42,7 @@ export default function OtherFilters() {
 		}
 
 		startTransition(() => {
-			// router.push(`?${params.toString()}`, { scroll: false });
-			window.location.href = `?${params.toString()}`;
+			navigate(`?${params.toString()}`);
 		});
 	};
 

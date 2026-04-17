@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 
 import LikeButton from "../like-button";
 import SubmitButton from "../submit-button";
+import { useNavigate } from "react-router";
 
 interface Props {
 	miiId: number;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Props) {
+	const navigate = useNavigate();
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -28,7 +30,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 		}
 
 		close();
-		window.location.reload(); // I would use router.refresh() here but the Mii list doesn't update
+		navigate(0);
 	};
 
 	const close = () => {

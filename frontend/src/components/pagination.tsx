@@ -1,12 +1,14 @@
 import { useCallback, useMemo } from "react";
 import { Icon } from "@iconify/react";
+import { Link, useLocation, useSearchParams } from "react-router";
 
 interface Props {
 	lastPage: number;
 }
 
 export default function Pagination({ lastPage }: Props) {
-	const searchParams = new URLSearchParams(location.search);
+	const location = useLocation();
+	const [searchParams] = useSearchParams();
 	const page = Number(searchParams.get("page") ?? 1);
 
 	const createPageUrl = useCallback(
@@ -33,63 +35,63 @@ export default function Pagination({ lastPage }: Props) {
 	return (
 		<div className="flex justify-center items-center w-full mt-8">
 			{/* Go to first page */}
-			<a
-				href={page === 1 ? "#" : createPageUrl(1)}
+			<Link
+				to={page === 1 ? "#" : createPageUrl(1)}
 				aria-label="Go to First Page"
 				aria-disabled={page === 1}
 				tabIndex={page === 1 ? -1 : undefined}
 				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${page === 1 ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"}`}
 			>
 				<Icon icon="stash:chevron-double-left" />
-			</a>
+			</Link>
 
 			{/* Previous page */}
-			<a
-				href={page === 1 ? "#" : createPageUrl(page - 1)}
+			<Link
+				to={page === 1 ? "#" : createPageUrl(page - 1)}
 				aria-label="Go to Previous Page"
 				aria-disabled={page === 1}
 				tabIndex={page === 1 ? -1 : undefined}
 				className={`pill bg-orange-100! p-0.5! aspect-square text-2xl ${page === 1 ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"}`}
 			>
 				<Icon icon="stash:chevron-left" />
-			</a>
+			</Link>
 
 			{/* Page numbers */}
 			<div className="flex mx-2">
 				{numbers.map((number) => (
-					<a
+					<Link
 						key={number}
-						href={createPageUrl(number)}
+						to={createPageUrl(number)}
 						aria-label={`Go to Page ${number}`}
 						aria-current={number === page ? "page" : undefined}
 						className={`pill p-0! w-8 h-8 text-center rounded-md! ${number == page ? "bg-orange-400!" : "bg-orange-100! hover:bg-orange-400!"}`}
 					>
 						{number}
-					</a>
+					</Link>
 				))}
 			</div>
 
 			{/* Next page */}
-			<a
-				href={page >= lastPage ? "#" : createPageUrl(page + 1)}
+			<Link
+				to={page >= lastPage ? "#" : createPageUrl(page + 1)}
 				aria-label="Go to Next Page"
 				aria-disabled={page >= lastPage}
 				tabIndex={page >= lastPage ? -1 : undefined}
 				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${page >= lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"}`}
 			>
 				<Icon icon="stash:chevron-right" />
-			</a>
+			</Link>
 
 			{/* Go to last page */}
-			<a
-				href={page >= lastPage ? "#" : createPageUrl(lastPage)}
+			<Link
+				to={page >= lastPage ? "#" : createPageUrl(lastPage)}
 				aria-label="Go to Last Page"
 				aria-disabled={page >= lastPage}
 				tabIndex={page >= lastPage ? -1 : undefined}
 				className={`pill button bg-orange-100! p-0.5! aspect-square text-2xl ${page >= lastPage ? "pointer-events-none opacity-50" : "hover:bg-orange-400!"}`}
 			>
 				<Icon icon="stash:chevron-double-right" />
-			</a>
+			</Link>
 		</div>
 	);
 }

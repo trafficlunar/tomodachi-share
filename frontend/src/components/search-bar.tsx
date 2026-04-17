@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { querySchema } from "@tomodachi-share/shared/schemas";
+import { useNavigate, useSearchParams } from "react-router";
 
 export default function SearchBar() {
-	const searchParams = new URLSearchParams(window.location.search);
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 	const [query, setQuery] = useState(searchParams.get("q") || "");
 
 	const handleSearch = () => {
 		const result = querySchema.safeParse(query);
 		if (!result.success) {
-			// router.push("/", { scroll: false });
-			window.location.href = "/";
+			navigate("/", { preventScrollReset: true });
 			return;
 		}
 
@@ -19,8 +20,7 @@ export default function SearchBar() {
 		params.set("q", query);
 		params.set("page", "1");
 
-		// router.push(`/?${params.toString()}`, { scroll: false });
-		window.location.href = `/?${params.toString()}`;
+		navigate(`/?${params.toString()}`, { preventScrollReset: true });
 	};
 
 	const handleKeyDown = (event: React.KeyboardEvent) => {

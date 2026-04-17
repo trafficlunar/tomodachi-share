@@ -1,9 +1,10 @@
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import FilterMenu from "../components/mii/list/filter-menu";
 import SortSelect from "../components/mii/list/sort-select";
 import MiiGrid from "../components/mii/list/mii-grid";
 import Pagination from "../components/pagination";
 import Skeleton from "../components/mii/list/skeleton";
+import { useSearchParams } from "react-router";
 
 interface ApiResponse {
 	totalCount: number;
@@ -12,7 +13,7 @@ interface ApiResponse {
 }
 
 export default function IndexPage() {
-	const searchParams = useMemo(() => new URLSearchParams(location.search), []);
+	const [searchParams] = useSearchParams();
 	const [data, setData] = useState<ApiResponse | null>(null);
 	const [loading, setLoading] = useState(true);
 

@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 import Description from "./description";
 import { useStore } from "@nanostores/react";
 import { session } from "../session";
+import { Link } from "react-router";
 
 interface Props {
 	user?: any;
@@ -23,9 +24,9 @@ export default function ProfileInformation({ user, page }: Props) {
 		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex gap-4 mb-2 max-md:flex-col">
 			<div className="flex w-full gap-4 overflow-x-scroll">
 				{/* Profile picture */}
-				<a href={`/profile/${user.id}`} className="size-28 aspect-square">
+				<Link to={`/profile/${user.id}`} className="size-28 aspect-square">
 					<img src={user.image ?? "/guest.png"} className="rounded-full bg-white border-2 border-orange-400 shadow max-md:self-center" />
-				</a>
+				</Link>
 				{/* User information */}
 				<div className="flex flex-col w-full relative py-3">
 					<div className="flex items-center gap-2">
@@ -60,34 +61,34 @@ export default function ProfileInformation({ user, page }: Props) {
 			{/* Buttons */}
 			<div className="flex gap-1 w-fit text-3xl text-orange-400 max-md:place-self-center *:size-17 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-sm">
 				{!isOwnProfile && (
-					<a aria-label="Report User" href={`${import.meta.env.VITE_API_URL}/report/user/${user.id}`}>
+					<Link aria-label="Report User" to={`${import.meta.env.VITE_API_URL}/report/user/${user.id}`}>
 						<Icon icon="material-symbols:flag-rounded" />
 						<span>Report</span>
-					</a>
+					</Link>
 				)}
 				{isOwnProfile && isAdmin && (
-					<a aria-label="Go to Admin" href="/admin">
+					<Link aria-label="Go to Admin" to="/admin">
 						<Icon icon="mdi:shield-moon" />
 						<span>Admin</span>
-					</a>
+					</Link>
 				)}
 				{/* {isOwnProfile && page !== "likes" && (
-					<a aria-label="Go to My Likes" href="/profile/likes">
+					<Link aria-label="Go to My Likes" to="/profile/likes">
 						<Icon icon="icon-park-solid:like" />
 						<span>My Likes</span>
-					</a>
+					</Link>
 				)} */}
 				{isOwnProfile && page !== "settings" && (
-					<a aria-label="Go to Settings" href="/profile/settings">
+					<Link aria-label="Go to Settings" to="/profile/settings">
 						<Icon icon="material-symbols:settings-rounded" />
 						<span>Settings</span>
-					</a>
+					</Link>
 				)}
 				{page && (
-					<a aria-label="Go Back to Profile" href={`/profile/${user.id}`}>
+					<Link aria-label="Go Back to Profile" to={`/profile/${user.id}`}>
 						<Icon icon="tabler:chevron-left" />
 						<span>Back</span>
-					</a>
+					</Link>
 				)}
 			</div>
 		</div>
