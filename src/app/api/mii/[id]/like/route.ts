@@ -55,5 +55,5 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 	// 	return { liked: !existingLike, count: likeCount };
 	// });
 
-	return rateLimit.sendResponse({ success: false });
+	return NextResponse.json({ success: false });
 }
