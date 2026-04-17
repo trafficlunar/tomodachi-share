@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import ProfileInformation from "../profile-information";
+import ProfileInformation from "../components/profile-information";
+import { useParams } from "react-router";
 
-interface Props {
-	id: string;
-}
-
-export default function ProfilePage({ id }: Props) {
+export default function ProfilePage() {
+	const { id } = useParams();
 	const [user, setUser] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		fetch(`${import.meta.env.PUBLIC_API_URL}/api/profile/${id}/info`)
+		fetch(`${import.meta.env.VITE_API_URL}/api/profile/${id}/info`)
 			.then((res) => {
 				if (!res.ok) throw new Error("Failed to fetch profile");
 				return res.json();

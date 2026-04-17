@@ -1,5 +1,5 @@
 import { profanity } from "@2toad/profanity";
-// import { AES_CCM } from "@trafficlunar/asmcrypto.js";
+// @ts-ignore
 import sjcl from "sjcl-with-all";
 
 import { MII_DECRYPTION_KEY, MII_QR_ENCRYPTED_LENGTH } from "./constants";
@@ -19,9 +19,7 @@ import { ThreeDsTomodachiLifeMii, HairDyeMode } from "./three-ds-tomodachi-life-
 /** Private _ctrMode function defined here: {@link https://github.com/bitwiseshiftleft/sjcl/blob/85caa53c281eeeb502310013312c775d35fe0867/core/ccm.js#L194} */
 const sjclCcmCtrMode:
 	| ((prf: sjcl.SjclCipher, data: sjcl.BitArray, iv: sjcl.BitArray, tag: sjcl.BitArray, tlen: number, L: number) => { data: sjcl.BitArray; tag: sjcl.BitArray })
-	| undefined =
-	// @ts-expect-error -- Referencing a private function that is not in the types.
-	sjcl.mode.ccm.u; // NOTE: This may need to be changed with a different sjcl build. Read above
+	| undefined = sjcl.mode.ccm.u; // NOTE: This may need to be changed with a different sjcl build. Read above
 
 export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: ThreeDsTomodachiLifeMii } | never {
 	// Decrypt 96 byte 3DS/Wii U format Mii data from the QR code.
@@ -91,7 +89,7 @@ export function convertQrCode(bytes: Uint8Array): { mii: Mii; tomodachiLifeMii: 
 		// Decrypt Tomodachi Life Mii data from encrypted QR code bytes.
 		const tomodachiLifeMii = ThreeDsTomodachiLifeMii.fromBytes(bytes);
 
-		// Apply hair dye fields.
+		// @ts-ignore Apply hair dye fields.
 		switch (tomodachiLifeMii.hairDyeMode) {
 			case HairDyeMode.HairEyebrowBeard:
 				mii.eyebrowColor = tomodachiLifeMii.studioHairColor;

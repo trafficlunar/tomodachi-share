@@ -1,31 +1,23 @@
 {
-  "name": "",
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "version": "0.0.1",
-  "engines": {
-    "node": ">=22.12.0"
-  },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@astrojs/react": "^5.0.3",
     "@bprogress/react": "^1.2.7",
+    "@fontsource-variable/lexend": "^5.2.11",
     "@hello-pangea/dnd": "^18.0.1",
-    "@iconify-json/ic": "^1.2.4",
-    "@iconify-json/material-icon-theme": "^1.2.59",
-    "@iconify-json/mdi": "^1.2.3",
-    "@iconify-json/stash": "^1.2.4",
     "@nanostores/react": "^1.1.0",
-    "@swup/astro": "^1.8.0",
     "@tailwindcss/vite": "^4.2.2",
     "@tomodachi-share/shared": "workspace:*",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "astro": "^6.1.7",
     "canvas-confetti": "^1.9.4",
     "dayjs": "^1.11.20",
     "downshift": "^9.3.2",
@@ -33,18 +25,30 @@
     "jsqr": "^1.4.0",
     "nanostores": "^1.2.0",
     "qrcode-generator": "^2.0.4",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-dropzone": "^15.0.0",
     "react-image-crop": "^11.0.10",
+    "react-router": "^7.14.1",
     "seedrandom": "^3.0.5",
     "tailwindcss": "^4.2.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@iconify/react": "^6.0.2",
     "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^24.12.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@types/seedrandom": "^3.0.8",
-    "astro-icon": "^1.1.5"
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.58.0",
+    "vite": "^8.0.4"
   }
 }

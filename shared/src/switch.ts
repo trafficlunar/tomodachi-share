@@ -1,4 +1,4 @@
-import { SwitchMiiInstructions } from "./types";
+import { type SwitchMiiInstructions } from "./types";
 
 export function minifyInstructions(instructions: Partial<SwitchMiiInstructions>) {
 	const DEFAULT_ZERO_FIELDS = new Set(["height", "distance", "rotation", "size", "stretch"]);

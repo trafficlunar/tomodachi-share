@@ -4,7 +4,7 @@ import { useStore } from "@nanostores/react";
 import { session } from "../session";
 
 export default function HeaderProfile() {
-	const API_BASE_URL = import.meta.env.PUBLIC_API_URL;
+	const API_BASE_URL = import.meta.env.VITE_API_URL;
 	const $session = useStore(session);
 
 	useEffect(() => {

@@ -12,16 +12,17 @@ interface Props {
 export default function ProfileInformation({ user, page }: Props) {
 	const $session = useStore(session);
 
-	const isAdmin = (!user ? $session?.user.id : user.id) === Number(import.meta.env.PUBLIC_ADMIN_USER_ID);
+	const currentUser = user ?? $session?.user;
+	const isAdmin = currentUser?.id === Number(import.meta.env.PUBLIC_ADMIN_USER_ID);
 	const isContributor = import.meta.env.PUBLIC_CONTRIBUTORS_USER_IDS?.split(",").includes(user.id);
-	const isOwnProfile = !user || $session?.user?.id === user.id;
+	const isOwnProfile = currentUser?.id === user.id;
 
 	return (
 		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex gap-4 mb-2 max-md:flex-col">
 			<div className="flex w-full gap-4 overflow-x-scroll">
 				{/* Profile picture */}
 				<a href={`/profile/${user.id}`} className="size-28 aspect-square">
-					<image src={user.image ?? "/guest.png"} className="rounded-full bg-white border-2 border-orange-400 shadow max-md:self-center" />
+					<img src={user.image ?? "/guest.png"} className="rounded-full bg-white border-2 border-orange-400 shadow max-md:self-center" />
 				</a>
 				{/* User information */}
 				<div className="flex flex-col w-full relative py-3">
@@ -57,7 +58,7 @@ export default function ProfileInformation({ user, page }: Props) {
 			{/* Buttons */}
 			<div className="flex gap-1 w-fit text-3xl text-orange-400 max-md:place-self-center *:size-17 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-sm">
 				{!isOwnProfile && (
-					<a aria-label="Report User" href={`${import.meta.env.PUBLIC_API_URL}/report/user/${user.id}`}>
+					<a aria-label="Report User" href={`${import.meta.env.VITE_API_URL}/report/user/${user.id}`}>
 						<Icon icon="material-symbols:flag-rounded" />
 						<span>Report</span>
 					</a>

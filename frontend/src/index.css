@@ -19,6 +19,10 @@
 	}
 }
 
+#root {
+	@apply antialiased flex flex-col items-center w-screen h-screen;
+}
+
 .pill {
 	@apply flex justify-center items-center px-5 py-2 bg-orange-300 border-2 border-orange-400 rounded-3xl shadow-md;
 }
@@ -134,8 +138,8 @@ input[type="range"]:hover::-moz-range-thumb {
 }
 
 body {
-	@apply bg-amber-50 text-slate-800;
-	font-family: var(--font-lexend);
+	@apply bg-amber-50 text-slate-800 min-h-screen;
+	font-family: "Lexend Variable", sans-serif;
 
 	/* syntax highlighting is a bit broken when it's at the top so it's at the bottom */
 	background-image: url('data:image/svg+xml;utf8,\

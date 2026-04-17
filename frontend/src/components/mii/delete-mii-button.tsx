@@ -20,7 +20,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 	const [inputMiiName, setInputMiiName] = useState("");
 
 	const handleSubmit = async () => {
-		const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/mii/${miiId}/delete`, { method: "DELETE", credentials: "include" });
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mii/${miiId}/delete`, { method: "DELETE", credentials: "include" });
 		if (!response.ok) {
 			const { error } = await response.json();
 			setError(error);
@@ -83,7 +83,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 							<p className="text-sm text-zinc-500">Are you sure? This will delete your Mii permanently. This action cannot be undone.</p>
 
 							<div className="bg-orange-100 rounded-xl border-2 border-orange-400 mt-4 flex overflow-hidden">
-								<img src={`${import.meta.env.PUBLIC_API_URL}/mii/${miiId}/image?type=mii`} alt="mii image" width={128} height={128} />
+								<img src={`${import.meta.env.VITE_API_URL}/mii/${miiId}/image?type=mii`} alt="mii image" width={128} height={128} />
 								<div className="p-4 min-w-0">
 									<p className="text-xl font-bold line-clamp-3 wrap-anywhere" title={miiName}>
 										{miiName}

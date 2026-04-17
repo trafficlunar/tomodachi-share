@@ -101,7 +101,7 @@ export default function SubmitForm() {
 			formData.append("instructions", JSON.stringify(instructions.current));
 		}
 
-		const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/submit`, {
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/submit`, {
 			method: "POST",
 			body: formData,
 			credentials: "include",

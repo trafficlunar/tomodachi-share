@@ -1,26 +1,25 @@
 import type { SwitchMiiInstructions } from "@tomodachi-share/shared";
 
-import ImageViewer from "../image-viewer";
-import LikeButton from "../like-button";
-import Description from "../description";
-import AuthorButtons from "../mii/author-buttons";
-import ShareMiiButton from "../mii/share-mii-button";
-import ThreeDsScanTutorialButton from "../tutorial/3ds-scan";
-import SwitchAddMiiTutorialButton from "../tutorial/switch-add-mii";
-import MiiInstructions from "../mii/instructions";
+import ImageViewer from "../components/image-viewer";
+import LikeButton from "../components/like-button";
+import Description from "../components/description";
+import ShareMiiButton from "../components/mii/share-mii-button";
+import ThreeDsScanTutorialButton from "../components/tutorial/3ds-scan";
+import SwitchAddMiiTutorialButton from "../components/tutorial/switch-add-mii";
+import MiiInstructions from "../components/mii/instructions";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router";
 
-interface Props {
-	id: string;
-}
-
-export default function MiiPage({ id }: Props) {
+export default function MiiPage() {
+	const { id } = useParams();
 	const [mii, setMii] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 
+	const API_URL = import.meta.env.VITE_API_URL;
+
 	useEffect(() => {
-		fetch(`${import.meta.env.PUBLIC_API_URL}/api/mii/${id}/info`)
+		fetch(`${API_URL}/api/mii/${id}/info`)
 			.then((res) => {
 				if (!res.ok) throw new Error("Failed to fetch Miis");
 				return res.json();
@@ -40,8 +39,7 @@ export default function MiiPage({ id }: Props) {
 		return <div className="p-6 text-center">Loading...</div>;
 	}
 
-	const API_BASE_URL = import.meta.env.PUBLIC_API_URL;
-	const images = [...Array.from({ length: mii.imageCount }, (_, index) => `${API_BASE_URL}/mii/${mii.id}/image?type=image${index}`)];
+	const images = [...Array.from({ length: mii.imageCount }, (_, index) => `${API_URL}/mii/${mii.id}/image?type=image${index}`)];
 
 	return (
 		<div className="flex flex-col items-center">
@@ -67,7 +65,7 @@ export default function MiiPage({ id }: Props) {
 						{/* Mii Image */}
 						<div className="bg-linear-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center">
 							<ImageViewer
-								src={`${API_BASE_URL}/mii/${mii.id}/image?type=mii`}
+								src={`${API_URL}/mii/${mii.id}/image?type=mii`}
 								alt="mii headshot"
 								width={250}
 								height={250}
@@ -78,7 +76,7 @@ export default function MiiPage({ id }: Props) {
 						{mii.platform === "THREE_DS" ? (
 							<div className="bg-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center p-2">
 								<ImageViewer
-									src={`${API_BASE_URL}/mii/${mii.id}/image?type=qr-code`}
+									src={`${API_URL}/mii/${mii.id}/image?type=qr-code`}
 									alt="mii qr code"
 									width={128}
 									height={128}
@@ -87,7 +85,7 @@ export default function MiiPage({ id }: Props) {
 							</div>
 						) : (
 							<ImageViewer
-								src={`${API_BASE_URL}/mii/${mii.id}/image?type=features`}
+								src={`${API_URL}/mii/${mii.id}/image?type=features`}
 								alt="mii features"
 								width={300}
 								height={300}
@@ -260,15 +258,15 @@ export default function MiiPage({ id }: Props) {
 							{/* Tags */}
 							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
 								{mii.tags.map((tag: string) => (
-									<a href={`/tags=${tag}`}>{tag}</a>
+									<Link to={`/tags=${tag}`}>{tag}</Link>
 								))}
 							</div>
 
 							{/* Author and Created date */}
 							<div className="mt-2">
-								<a href={`/profile/${mii.userId}`} className="text-lg wrap-break-word">
+								<Link to={`/profile/${mii.userId}`} className="text-lg wrap-break-word">
 									By <span className="font-bold">{mii.user.name}</span>
-								</a>
+								</Link>
 								<h4 className="text-sm">
 									Created:{" "}
 									{new Date(mii.createdAt).toLocaleString("en-GB", {
@@ -293,10 +291,10 @@ export default function MiiPage({ id }: Props) {
 							{/* <AuthorButtons mii={mii} /> */}
 
 							<ShareMiiButton miiId={mii.id} />
-							<a aria-label="Report Mii" href={`${import.meta.env.PUBLIC_API_URL}/report/mii/${mii.id}`}>
+							<Link aria-label="Report Mii" to={`${API_URL}/report/mii/${mii.id}`}>
 								<Icon icon="material-symbols:flag-rounded" />
 								<span>Report</span>
-							</a>
+							</Link>
 							{mii.platform === "THREE_DS" ? <ThreeDsScanTutorialButton /> : <SwitchAddMiiTutorialButton />}
 						</div>
 

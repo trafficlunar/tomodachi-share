@@ -17,7 +17,7 @@ export default function ProfilePictureSettings() {
 		const formData = new FormData();
 		if (newPicture) formData.append("image", newPicture);
 
-		const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/auth/picture`, {
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/picture`, {
 			method: "PATCH",
 			body: formData,
 			credentials: "include",

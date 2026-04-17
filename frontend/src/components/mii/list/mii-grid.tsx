@@ -2,8 +2,6 @@ import { Icon } from "@iconify/react";
 
 import LikeButton from "../../like-button";
 import DeleteMiiButton from "../delete-mii-button";
-import Carousel from "../../carousel";
-import ImageViewer from "../../image-viewer";
 
 interface Props {
 	// miis: Prisma.MiiGetPayload<{ include: { user: { select: { id: true; name: true } }; _count: { select: { likedBy: true } } } }>[];
@@ -12,11 +10,7 @@ interface Props {
 	parentPage?: string;
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
 export default function MiiGrid({ miis, userId, parentPage }: Props) {
-	const likedIds = new Set([]);
-
 	return (
 		<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[30rem]:grid-cols-1">
 			{miis.map((mii) => (
@@ -33,7 +27,7 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 
 					<a href={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
 						<img
-							src={`${import.meta.env.PUBLIC_API_URL}/mii/${mii.id}/image?type=mii`}
+							src={`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`}
 							width={240}
 							height={160}
 							alt="mii image"
@@ -63,7 +57,7 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 						</div>
 
 						<div className="mt-auto grid grid-cols-2 items-center">
-							<LikeButton likes={mii._count.likedBy} miiId={mii.id} isLiked={likedIds.has(mii.id)} abbreviate />
+							<LikeButton likes={mii._count.likedBy} miiId={mii.id} isLiked={false} abbreviate />
 
 							{!userId && (
 								<a href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis whitespace-nowrap">

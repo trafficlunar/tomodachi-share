@@ -11,10 +11,10 @@ interface Props {
 	big?: boolean;
 }
 
-export default function LikeButton({ likes, isLiked, miiId, disabled, abbreviate, big }: Props) {
+export default function LikeButton({ likes, isLiked, disabled, abbreviate, big }: Props) {
 	const [isLikedState, setIsLikedState] = useState(isLiked);
-	const [likesState, setLikesState] = useState(likes);
-	const [isAnimating, setIsAnimating] = useState(false);
+	const [likesState] = useState(likes);
+	const [isAnimating] = useState(false);
 
 	const onClick = async () => {
 		// if (disabled) return;

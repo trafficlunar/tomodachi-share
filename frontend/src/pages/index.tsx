@@ -1,9 +1,9 @@
 import { Suspense, useEffect, useState } from "react";
-import FilterMenu from "../mii/list/filter-menu";
-import SortSelect from "../mii/list/sort-select";
-import MiiGrid from "../mii/list/mii-grid";
-import Pagination from "../pagination";
-import Skeleton from "../mii/list/skeleton";
+import FilterMenu from "../components/mii/list/filter-menu";
+import SortSelect from "../components/mii/list/sort-select";
+import MiiGrid from "../components/mii/list/mii-grid";
+import Pagination from "../components/pagination";
+import Skeleton from "../components/mii/list/skeleton";
 
 interface ApiResponse {
 	totalCount: number;
@@ -13,12 +13,12 @@ interface ApiResponse {
 }
 
 export default function IndexPage() {
-	const searchParams = new URLSearchParams(window.location.search);
-	const [data, setData] = useState<ApiResponse>();
+	const searchParams = new URLSearchParams(location.search);
+	const [data, setData] = useState<ApiResponse | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		fetch(`${import.meta.env.PUBLIC_API_URL}/api/mii/list?${searchParams.toString()}`)
+		fetch(`${import.meta.env.VITE_API_URL}/api/mii/list?${searchParams.toString()}`)
 			.then((res) => {
 				if (!res.ok) throw new Error("Failed to fetch Miis");
 				return res.json();

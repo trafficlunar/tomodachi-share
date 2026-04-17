@@ -25,7 +25,7 @@ export default function ProfileSettings({ currentDescription }: Props) {
 			return;
 		}
 
-		const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/auth/about-me`, {
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/about-me`, {
 			method: "PATCH",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ description }),
@@ -49,7 +49,7 @@ export default function ProfileSettings({ currentDescription }: Props) {
 			return;
 		}
 
-		const response = await fetch(`${import.meta.env.PUBLIC_API_URL}/api/auth/name`, {
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/name`, {
 			method: "PATCH",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ name }),
