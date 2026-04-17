@@ -6,20 +6,29 @@ export default function LinkOutPage() {
 	const [searchParams] = useSearchParams();
 	const url = searchParams.get("url");
 
-	if (!url || Array.isArray(url)) navigate("/");
+	if (!url) {
+		navigate("/");
+		return null;
+	}
 
 	let parsed: URL;
 	try {
 		parsed = new URL(url);
 	} catch {
 		navigate("/"); // redirect if URL is invalid
+		return null;
 	}
 
-	// Next.js doesn't allow attacks like these but you can never be too safe
-	if (!["http:", "https:"].includes(parsed.protocol)) navigate("/");
+	if (!["http:", "https:"].includes(parsed.protocol)) {
+		navigate("/");
+		return null;
+	}
 
 	const isSafe = Array.from(SAFE_LINKS).some((domain) => parsed.hostname === domain || parsed.hostname.endsWith(`.${domain}`));
-	if (isSafe) navigate(url);
+	if (isSafe) {
+		navigate(url);
+		return null;
+	}
 
 	return (
 		<div className="grow flex items-center justify-center">
