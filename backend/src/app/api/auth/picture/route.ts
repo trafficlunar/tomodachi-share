@@ -17,7 +17,7 @@ const formDataSchema = z.object({
 	image: z.union([z.instanceof(File), z.any()]).optional(),
 });
 
-export async function PATCH(request: NextRequest) {
+export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

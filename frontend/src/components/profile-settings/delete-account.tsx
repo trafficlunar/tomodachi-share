@@ -12,7 +12,7 @@ export default function DeleteAccount() {
 	const [error, setError] = useState<string | undefined>(undefined);
 
 	const handleSubmit = async () => {
-		const response = await fetch("/api/auth/delete", { method: "DELETE" });
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/delete`, { method: "DELETE", credentials: "include" });
 		if (!response.ok) {
 			const { error } = await response.json();
 			setError(error);

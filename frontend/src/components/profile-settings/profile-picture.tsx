@@ -20,7 +20,7 @@ export default function ProfilePictureSettings() {
 		if (newPicture) formData.append("image", newPicture);
 
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/picture`, {
-			method: "PATCH",
+			method: "POST",
 			body: formData,
 			credentials: "include",
 		});

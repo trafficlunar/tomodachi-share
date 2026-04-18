@@ -11,7 +11,7 @@ export default function RegenerateImagesButton() {
 	const [error, setError] = useState<string | undefined>(undefined);
 
 	const handleSubmit = async () => {
-		const response = await fetch("/api/admin/regenerate-metadata-images", { method: "PATCH" });
+		const response = await fetch("/api/admin/regenerate-metadata-images", { method: "POST" });
 
 		if (!response.ok) {
 			const data = await response.json();

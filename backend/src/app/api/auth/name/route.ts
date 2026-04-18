@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { userNameSchema } from "@tomodachi-share/shared/schemas";
 import { RateLimit } from "@/lib/rate-limit";
 
-export async function PATCH(request: NextRequest) {
+export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session || !session.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

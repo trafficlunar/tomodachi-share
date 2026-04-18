@@ -28,7 +28,7 @@ export default function ProfileSettings({ currentDescription }: Props) {
 		}
 
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/about-me`, {
-			method: "PATCH",
+			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ description }),
 			credentials: "include",
@@ -52,7 +52,7 @@ export default function ProfileSettings({ currentDescription }: Props) {
 		}
 
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/name`, {
-			method: "PATCH",
+			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ name }),
 			credentials: "include",

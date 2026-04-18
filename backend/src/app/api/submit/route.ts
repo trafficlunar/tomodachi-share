@@ -18,7 +18,7 @@ import Mii from "../../../../../shared/src/mii.js/mii";
 import { convertQrCode, minifyInstructions, ThreeDsTomodachiLifeMii } from "@tomodachi-share/shared";
 
 import { SwitchMiiInstructions } from "@tomodachi-share/shared";
-import { settings } from "@/lib/settings";
+import { settings } from "../../../lib/settings";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 

@@ -29,7 +29,7 @@ export default function LikeButton({ likes, isLiked, disabled, abbreviate, big }
 		// 	setIsAnimating(true);
 		// 	setTimeout(() => setIsAnimating(false), 1000); // match animation duration
 		// }
-		// const response = await fetch(`/api/mii/${miiId}/like`, { method: "PATCH" });
+		// const response = await fetch(`/api/mii/${miiId}/like`, { method: "POST" });
 		// if (response.ok) {
 		// 	const { liked, count } = await response.json();
 		// 	setIsLikedState(liked);

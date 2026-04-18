@@ -6,8 +6,8 @@
 // 	const [isQueueEnabled, setIsQeueueEnabled] = useState(settings.queueEnabled);
 
 // 	const onClickSet = async () => {
-// 		await fetch("/api/admin/can-submit", { method: "PATCH", body: JSON.stringify(canSubmit) });
-// 		await fetch("/api/admin/queue", { method: "PATCH", body: JSON.stringify(isQueueEnabled) });
+// 		await fetch("/api/admin/can-submit", { method: "POST", body: JSON.stringify(canSubmit) });
+// 		await fetch("/api/admin/queue", { method: "POST", body: JSON.stringify(isQueueEnabled) });
 // 	};
 
 // 	return (

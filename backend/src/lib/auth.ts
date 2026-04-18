@@ -18,6 +18,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				sameSite: "none",
 				path: "/",
 				secure: true,
+				domain: process.env.NODE_ENV === "production" ? ".tomodachishare.com" : "localhost",
 			},
 		},
 	},

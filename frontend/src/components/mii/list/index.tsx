@@ -80,21 +80,27 @@ export default function MiiList({ parentPage, userId }: Props) {
 									</div>
 								)}
 
-								{parentPage !== "admin" ? <Link to={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
-									<img
-										src={`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`}
-										width={240}
-										height={160}
-										alt="mii image"
-										className="w-full h-auto aspect-3/2 object-contain"
+								{parentPage !== "admin" ? (
+									<Link to={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
+										<img
+											src={`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`}
+											width={240}
+											height={160}
+											alt="mii image"
+											className="w-full h-auto aspect-3/2 object-contain"
+										/>
+									</Link>
+								) : (
+									<Carousel
+										images={[
+											`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`,
+											...(mii.platform === "THREE_DS"
+												? [`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=qr-code`]
+												: [`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=features`]),
+											...Array.from({ length: mii.imageCount }, (_, index) => `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=image${index}`),
+										]}
 									/>
-								</Link> : <Carousel
-									images={[
-										`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`,
-										...(mii.platform === "THREE_DS" ? [`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=qr-code`] : [`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=features`]),
-										...Array.from({ length: mii.imageCount }, (_, index) => `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=image${index}`),
-									]}
-								/>}
+								)}
 
 								<div className="p-4 flex flex-col gap-1 h-full">
 									<div className="flex justify-between">
@@ -141,7 +147,7 @@ export default function MiiList({ parentPage, userId }: Props) {
 												<div className="flex gap-1 text-3xl justify-center">
 													<button
 														onClick={async () => {
-															await fetch(`${import.meta.env.VITE_API_URL}/api/admin/accept-mii?id=${mii.id}`, { method: "PATCH", credentials: "include" });
+															await fetch(`${import.meta.env.VITE_API_URL}/api/admin/accept-mii?id=${mii.id}`, { method: "POST", credentials: "include" });
 														}}
 														className="cursor-pointer text-zinc-400 hover:text-green-500 transition-colors p-1 bg-white rounded-md shadow-sm border border-zinc-200 hover:border-green-500"
 														title="Accept Mii"

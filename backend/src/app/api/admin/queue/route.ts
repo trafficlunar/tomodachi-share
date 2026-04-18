@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
-import { settings } from "@/lib/settings";
+import { settings } from "../../../../lib/settings";
 
 export async function GET() {
 	return NextResponse.json({ success: true, value: settings.queueEnabled });
 }
 
-export async function PATCH(request: NextRequest) {
+export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

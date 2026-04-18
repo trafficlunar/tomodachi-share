@@ -21,6 +21,7 @@ import ProfileLikesPage from "./pages/profile/likes.tsx";
 import ReportMiiPage from "./pages/report/mii.tsx";
 import ReportUserPage from "./pages/report/user.tsx";
 import AdminPage from "./pages/admin.tsx";
+import EditMiiPage from "./pages/edit.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
@@ -30,6 +31,7 @@ createRoot(document.getElementById("root")!).render(
 					<Routes>
 						<Route path="/" element={<IndexPage />} />
 						<Route path="/mii/:id" element={<MiiPage />} />
+						<Route path="/edit/:id" element={<EditMiiPage />} />
 						<Route path="/profile" element={<ProfileLayout />}>
 							<Route path=":id" element={<ProfilePage />} />
 							<Route path="likes" element={<ProfileLikesPage />} />

@@ -14,7 +14,7 @@ import { idSchema, nameSchema, switchMiiInstructionsSchema, tagsSchema } from "@
 import { generateMetadataImage, validateImage } from "@/lib/images";
 import { RateLimit } from "@/lib/rate-limit";
 import { minifyInstructions, SwitchMiiInstructions } from "@tomodachi-share/shared";
-import { settings } from "@/lib/settings";
+import { settings } from "../../../../../lib/settings";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
@@ -41,7 +41,7 @@ const editSchema = z.object({
 	image3: z.union([z.instanceof(File), z.any()]).optional(),
 });
 
-export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

@@ -10,6 +10,7 @@ import MiiInstructions from "../components/mii/instructions";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
+import AuthorButtons from "../components/mii/author-buttons";
 
 export default function MiiPage() {
 	const { id } = useParams();
@@ -36,10 +37,7 @@ export default function MiiPage() {
 			});
 	}, [id]);
 
-	if (loading || !mii) {
-		return <div className="p-6 text-center">Loading...</div>;
-	}
-
+	if (loading || !mii) return <div className="p-6 text-center">Loading...</div>;
 	const images = [...Array.from({ length: mii.imageCount ?? 0 }, (_, index) => `${API_URL}/mii/${mii.id}/image?type=image${index}`)];
 
 	return (
@@ -291,7 +289,7 @@ export default function MiiPage() {
 
 						{/* Buttons */}
 						<div className="flex gap-3 w-fit bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 text-3xl text-orange-400 max-md:place-self-center *:size-12 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-xs">
-							{/* <AuthorButtons mii={mii} /> */}
+							<AuthorButtons mii={mii} />
 
 							<ShareMiiButton miiId={mii.id} />
 							<Link aria-label="Report Mii" to={`/report/mii/${mii.id}`}>
