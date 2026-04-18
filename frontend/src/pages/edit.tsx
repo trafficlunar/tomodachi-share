@@ -44,7 +44,7 @@ export default function EditMiiPage() {
 	const [error, setError] = useState<string | undefined>(undefined);
 
 	const [name, setName] = useState("");
-	const [tags, setTags] = useState([]);
+	const [tags, setTags] = useState<string[]>([]);
 	const [description, setDescription] = useState("");
 	const [gender, setGender] = useState<MiiGender>("MALE");
 	const [makeup, setMakeup] = useState<MiiMakeup>("PARTIAL");
