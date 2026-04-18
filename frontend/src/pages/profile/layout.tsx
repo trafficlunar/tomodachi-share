@@ -15,8 +15,9 @@ export default function ProfileLayout() {
 
 	useEffect(() => {
 		if ($session === undefined) return; // session still loading
-		if ($session === null) {
-			// not logged in
+
+		const userId = id ?? $session?.user?.id;
+		if (!userId) {
 			navigate("/404");
 			return;
 		}
