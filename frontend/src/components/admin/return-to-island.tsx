@@ -11,7 +11,7 @@
 // 	const [error, setError] = useState<string | undefined>(undefined);
 
 // 	const handleClick = async () => {
-// 		const response = await fetch("/api/return", { method: "DELETE" });
+// 		const response = await fetch("/api/return", { method: "POST" });
 
 // 		if (!response.ok) {
 // 			const data = await response.json();

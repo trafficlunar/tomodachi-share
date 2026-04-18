@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { RateLimit } from "@/lib/rate-limit";
 
-export async function DELETE(request: NextRequest) {
+export async function POST(request: NextRequest) {
 	const session = await auth();
 	if (!session || !session.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

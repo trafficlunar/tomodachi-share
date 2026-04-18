@@ -190,7 +190,7 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 
 				{/* Watermark */}
 				<div tw="absolute bottom-0 right-0 flex items-center">
-					<img src={`${process.env.NEXT_PUBLIC_BASE_URL}/logo.svg`} height={32} />
+					<img src={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/logo.svg`} height={32} />
 					{/* I tried using text-orange-400 but it wasn't correct..? */}
 					<span tw="ml-2 font-black text-xl" style={{ color: "#FF8904" }}>
 						TomodachiShare

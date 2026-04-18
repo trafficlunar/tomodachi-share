@@ -10,7 +10,7 @@ import { RateLimit } from "@/lib/rate-limit";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const session = await auth();
 	if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

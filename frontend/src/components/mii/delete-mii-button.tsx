@@ -22,7 +22,7 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 	const [inputMiiName, setInputMiiName] = useState("");
 
 	const handleSubmit = async () => {
-		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mii/${miiId}/delete`, { method: "DELETE", credentials: "include" });
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mii/${miiId}/delete`, { method: "POST", credentials: "include" });
 		if (!response.ok) {
 			const { error } = await response.json();
 			setError(error);
