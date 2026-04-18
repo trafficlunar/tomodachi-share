@@ -1,65 +1,68 @@
-// import { useSearchParams } from "next/navigation";
-// import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Icon } from "@iconify/react";
+import { useSearchParams } from "react-router";
 
-// import useSWR from "swr";
-// import { Icon } from "@iconify/react";
+interface ApiResponse {
+	message: string;
+}
 
-// interface ApiResponse {
-// 	message: string;
-// }
+function RedirectBanner() {
+	const [searchParams] = useSearchParams();
+	const from = searchParams.get("from");
+	if (from !== "old-domain") return null;
 
-// const fetcher = (url: string) => fetch(url).then((res) => res.json());
+	return (
+		<div className="w-full h-10 bg-orange-300 border-y-2 border-y-orange-400 mt-1 pl-2 shadow-md flex justify-center items-center gap-2 text-orange-900 text-nowrap overflow-x-auto font-semibold max-sm:justify-start">
+			<Icon icon="humbleicons:link" className="text-2xl min-w-6" />
+			<span>We have moved URLs, welcome to tomodachishare.com!</span>
+		</div>
+	);
+}
 
-// function RedirectBanner() {
-// 	const searchParams = useSearchParams();
-// 	const from = searchParams.get("from");
-// 	if (from !== "old-domain") return null;
+export default function AdminBanner() {
+	const [message, setMessage] = useState<string | null>(null);
+	const [shouldShow, setShouldShow] = useState(false);
 
-// 	return (
-// 		<div className="w-full h-10 bg-orange-300 border-y-2 border-y-orange-400 mt-1 pl-2 shadow-md flex justify-center items-center gap-2 text-orange-900 text-nowrap overflow-x-auto font-semibold max-sm:justify-start">
-// 			<Icon icon="humbleicons:link" className="text-2xl min-w-6" />
-// 			<span>We have moved URLs, welcome to tomodachishare.com!</span>
-// 		</div>
-// 	);
-// }
+	useEffect(() => {
+		fetch(`${import.meta.env.VITE_API_URL}/api/admin/banner`)
+			.then((res) => {
+				if (!res.ok) throw new Error("Failed to get admin banner");
+				return res.json() as Promise<ApiResponse>;
+			})
+			.then((data) => {
+				if (!data.message) return;
+				const closedBanner = localStorage.getItem("closedBanner");
+				setMessage(data.message);
+				setShouldShow(data.message !== closedBanner);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	}, []);
 
-// export default function AdminBanner() {
-// 	const { data } = useSWR<ApiResponse>("/api/admin/banner", fetcher);
-// 	const [shouldShow, setShouldShow] = useState(true);
+	const handleClose = () => {
+		if (!message) return;
 
-// 	useEffect(() => {
-// 		if (!data?.message) return;
+		// Close banner and remember it
+		localStorage.setItem("closedBanner", message);
+		setShouldShow(false);
+	};
 
-// 		// Check if the current banner text was closed by the user
-// 		const closedBanner = window.localStorage.getItem("closedBanner");
-// 		setShouldShow(data.message !== closedBanner);
-// 	}, [data]);
+	return (
+		<>
+			{shouldShow && message && (
+				<div className="relative w-full min-h-10 bg-orange-300 border-y-2 border-y-orange-400 mt-1 pl-2 shadow-md flex justify-center text-orange-900 text-nowrap overflow-x-auto font-semibold max-sm:justify-between">
+					<div className="flex gap-2 h-full items-center w-fit">
+						<Icon icon="humbleicons:exclamation" className="text-2xl min-w-6" />
+						<span>{message}</span>
+					</div>
 
-// 	const handleClose = () => {
-// 		if (!data) return;
-
-// 		// Close banner and remember it
-// 		window.localStorage.setItem("closedBanner", data.message);
-// 		setShouldShow(false);
-// 	};
-
-// 	return (
-// 		<>
-// 			{data && data.message && shouldShow && (
-// 				<div className="relative w-full h-10 bg-orange-300 border-y-2 border-y-orange-400 mt-1 pl-2 shadow-md flex justify-center text-orange-900 text-nowrap overflow-x-auto font-semibold max-sm:justify-between">
-// 					<div className="flex gap-2 h-full items-center w-fit">
-// 						<Icon icon="humbleicons:exclamation" className="text-2xl min-w-6" />
-// 						<span>{data.message}</span>
-// 					</div>
-
-// 					<button onClick={handleClose} className="min-sm:absolute right-2 cursor-pointer p-1.5">
-// 						<Icon icon="humbleicons:times" className="text-2xl min-w-6" />
-// 					</button>
-// 				</div>
-// 			)}
-// 			<Suspense>
-// 				<RedirectBanner />
-// 			</Suspense>
-// 		</>
-// 	);
-// }
+					<button onClick={handleClose} className="sm:absolute right-2 cursor-pointer p-1.5">
+						<Icon icon="humbleicons:times" className="text-2xl min-w-6" />
+					</button>
+				</div>
+			)}
+			<RedirectBanner />
+		</>
+	);
+}

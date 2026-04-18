@@ -11,12 +11,16 @@ import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import AuthorButtons from "../components/mii/author-buttons";
+import { useStore } from "@nanostores/react";
+import { session } from "../session";
 
 export default function MiiPage() {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const $session = useStore(session);
 	const [mii, setMii] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
+	const [isLiked, setIsLiked] = useState(false);
 
 	const API_URL = import.meta.env.VITE_API_URL;
 
@@ -29,6 +33,14 @@ export default function MiiPage() {
 			.then((data) => {
 				setMii(data);
 				setLoading(false);
+
+				if ($session === null || $session === undefined) return;
+				fetch(`${API_URL}/api/mii/has-liked?ids=${data.id}`, { credentials: "include" })
+					.then((res) => (res.ok ? res.json() : []))
+					.then((likedIds: number[]) => setIsLiked(likedIds.length > 0))
+					.catch((err) => {
+						console.error("Error liking:", err);
+					});
 			})
 			.catch((err) => {
 				console.error(err);
@@ -252,7 +264,7 @@ export default function MiiPage() {
 								{/* Submission name */}
 								<h1 className="text-4xl font-extrabold wrap-break-word whitespace-break-spaces text-amber-700 flex-1 min-w-0">{mii.name}</h1>
 								{/* Like button */}
-								<LikeButton likes={mii._count?.likedBy ?? 0} miiId={mii.id} isLiked={false} big />
+								<LikeButton likes={mii._count?.likedBy ?? 0} miiId={mii.id} isLiked={isLiked} big />
 							</div>
 							{/* Tags */}
 							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">

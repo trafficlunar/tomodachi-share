@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Icon, loadIcons } from "@iconify/react";
 import { abbreviateNumber } from "../lib/abbreviation";
+import { useStore } from "@nanostores/react";
+import { session } from "../session";
+import { useNavigate } from "react-router";
 
 interface Props {
 	likes: number;
@@ -11,33 +14,41 @@ interface Props {
 	big?: boolean;
 }
 
-export default function LikeButton({ likes, isLiked, disabled, abbreviate, big }: Props) {
+export default function LikeButton({ likes, miiId, isLiked, disabled, abbreviate, big }: Props) {
+	const $session = useStore(session);
+	const navigate = useNavigate();
 	const [isLikedState, setIsLikedState] = useState(isLiked);
-	const [likesState] = useState(likes);
-	const [isAnimating] = useState(false);
+	const [likesState, setLikesState] = useState(likes);
+	const [isAnimating, setIsAnimating] = useState(false);
 
 	const onClick = async () => {
-		// if (disabled) return;
-		// if (!session.data?.user) {
-		// 	router.push("/login");
-		// 	return;
-		// }
-		// setIsLikedState(!isLikedState);
-		// setLikesState(isLikedState ? likesState - 1 : likesState + 1);
-		// // Trigger animation
-		// if (!isLikedState) {
-		// 	setIsAnimating(true);
-		// 	setTimeout(() => setIsAnimating(false), 1000); // match animation duration
-		// }
-		// const response = await fetch(`/api/mii/${miiId}/like`, { method: "POST" });
-		// if (response.ok) {
-		// 	const { liked, count } = await response.json();
-		// 	setIsLikedState(liked);
-		// 	setLikesState(count);
-		// } else {
-		// 	setIsLikedState(isLikedState);
-		// 	setLikesState(likesState);
-		// }
+		if (disabled || !miiId) return;
+		if ($session === undefined) return;
+		if ($session === null) {
+			navigate("/login");
+			return;
+		}
+
+		const prevLiked = isLikedState;
+		const prevLikes = likesState;
+		setIsLikedState(!prevLiked);
+		setLikesState(prevLiked ? likesState - 1 : likesState + 1);
+
+		// Trigger animation
+		if (!prevLiked) {
+			setIsAnimating(true);
+			setTimeout(() => setIsAnimating(false), 1000);
+		}
+
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mii/${miiId}/like`, { method: "POST", credentials: "include" });
+		if (response.ok) {
+			const { liked, count } = await response.json();
+			setIsLikedState(liked);
+			setLikesState(count);
+		} else {
+			setIsLikedState(prevLiked);
+			setLikesState(prevLikes);
+		}
 	};
 
 	// Preload like button icons

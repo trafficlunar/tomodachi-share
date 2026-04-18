@@ -1,3 +1,4 @@
+import AdminBanner from "./components/admin/banner";
 import Footer from "./components/footer";
 import Header from "./components/header";
 import { useEffect } from "react";
@@ -27,7 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<>
 			<Header />
-			{/* <AdminBanner /> */}
+			<AdminBanner />
 			<main className="px-4 py-8 max-w-7xl w-full grow flex flex-col">{children}</main>
 			<Footer />
 		</>

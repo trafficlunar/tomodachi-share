@@ -27,6 +27,7 @@ export default function MiiList({ parentPage, userId }: Props) {
 	const [data, setData] = useState<ApiResponse | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [acceptingAll, setAcceptingAll] = useState(false);
+	const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
 
 	const $session = useStore(session);
 
@@ -40,15 +41,24 @@ export default function MiiList({ parentPage, userId }: Props) {
 				if (!res.ok) throw new Error("Failed to fetch Miis");
 				return res.json();
 			})
-			.then((data) => {
+			.then(async (data) => {
 				setData(data);
 				setLoading(false);
+
+				if ($session === undefined || $session === null || !data.miis.length) return;
+				const ids = data.miis.map((m: any) => m.id).join(",");
+				fetch(`${import.meta.env.VITE_API_URL}/api/mii/has-liked?ids=${ids}`, { credentials: "include" })
+					.then((res) => (res.ok ? res.json() : []))
+					.then((likedIds: number[]) => setLikedIds(new Set(likedIds)))
+					.catch((err) => {
+						console.error("Error fetching likes:", err);
+					});
 			})
 			.catch((err) => {
 				console.error(err);
 				setLoading(false);
 			});
-	}, [searchParams, userId, parentPage]);
+	}, [searchParams, userId, parentPage, $session]);
 
 	async function handleAcceptAll() {
 		if (!data) return;
@@ -162,7 +172,7 @@ export default function MiiList({ parentPage, userId }: Props) {
 									{parentPage === "admin" && mii.description && <Description text={mii.description} />}
 
 									<div className="mt-auto grid grid-cols-2 items-center">
-										<LikeButton likes={mii._count.likedBy} miiId={mii.id} isLiked={false} abbreviate />
+										<LikeButton likes={mii._count.likedBy} miiId={mii.id} isLiked={likedIds.has(mii.id)} abbreviate />
 
 										{!userId && (
 											<Link to={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis whitespace-nowrap">
