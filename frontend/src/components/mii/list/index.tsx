@@ -9,7 +9,7 @@ import { Icon } from "@iconify/react";
 import LikeButton from "../../like-button";
 import { useStore } from "@nanostores/react";
 import { session } from "../../../session";
-import Carousel from "../../carousel";
+import Description from "../../description";
 
 interface ApiResponse {
 	totalCount: number;
@@ -26,6 +26,7 @@ export default function MiiList({ parentPage, userId }: Props) {
 	const [searchParams] = useSearchParams();
 	const [data, setData] = useState<ApiResponse | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [acceptingAll, setAcceptingAll] = useState(false);
 
 	const $session = useStore(session);
 
@@ -49,6 +50,28 @@ export default function MiiList({ parentPage, userId }: Props) {
 			});
 	}, [searchParams, userId, parentPage]);
 
+	async function handleAcceptAll() {
+		if (!data) return;
+		setAcceptingAll(true);
+		try {
+			await Promise.all(
+				data.miis.map((mii) =>
+					fetch(`${import.meta.env.VITE_API_URL}/api/admin/accept-mii?id=${mii.id}`, {
+						method: "POST",
+						credentials: "include",
+					}),
+				),
+			);
+			const params = new URLSearchParams(searchParams.toString());
+			if (userId) params.append("userId", userId.toString());
+			if (parentPage) params.append("parentPage", parentPage);
+			const res = await fetch(`${import.meta.env.VITE_API_URL}/api/mii/list?${params.toString()}`, { credentials: "include" });
+			if (res.ok) setData(await res.json());
+		} finally {
+			setAcceptingAll(false);
+		}
+	}
+
 	return (
 		<>
 			{loading ? (
@@ -62,6 +85,16 @@ export default function MiiList({ parentPage, userId }: Props) {
 						</div>
 
 						<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
+							{parentPage === "admin" && data.miis.length > 0 && (
+								<button
+									onClick={handleAcceptAll}
+									disabled={acceptingAll}
+									className="pill button flex items-center gap-1.5 px-3 py-1.5 bg-green-500! border-green-600! hover:bg-green-600! disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow transition-colors"
+								>
+									<Icon icon="material-symbols:check-circle-rounded" className="text-base" />
+									{acceptingAll ? "Accepting…" : `Accept All`}
+								</button>
+							)}
 							<FilterMenu />
 							<SortSelect />
 						</div>
@@ -91,15 +124,17 @@ export default function MiiList({ parentPage, userId }: Props) {
 										/>
 									</Link>
 								) : (
-									<Carousel
-										images={[
+									<div className="grid grid-cols-2 gap-1 rounded-xl bg-zinc-200">
+										{[
 											`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`,
-											...(mii.platform === "THREE_DS"
-												? [`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=qr-code`]
-												: [`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=features`]),
-											...Array.from({ length: mii.imageCount }, (_, index) => `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=image${index}`),
-										]}
-									/>
+											mii.platform === "THREE_DS"
+												? `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=qr-code`
+												: `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=features`,
+											...Array.from({ length: mii.imageCount }, (_, i) => `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=image${i}`),
+										].map((src, i) => (
+											<img key={i} src={src} alt="mii image" className="w-full bg-zinc-200" />
+										))}
+									</div>
 								)}
 
 								<div className="p-4 flex flex-col gap-1 h-full">
@@ -115,6 +150,7 @@ export default function MiiList({ parentPage, userId }: Props) {
 											)}
 										</div>
 									</div>
+
 									<div id="tags" className="flex flex-wrap gap-1">
 										{mii.tags.map((tag: string) => (
 											<Link to={`?tags=${tag}`} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
@@ -122,6 +158,8 @@ export default function MiiList({ parentPage, userId }: Props) {
 											</Link>
 										))}
 									</div>
+
+									{parentPage === "admin" && mii.description && <Description text={mii.description} />}
 
 									<div className="mt-auto grid grid-cols-2 items-center">
 										<LikeButton likes={mii._count.likedBy} miiId={mii.id} isLiked={false} abbreviate />
@@ -141,7 +179,6 @@ export default function MiiList({ parentPage, userId }: Props) {
 											</div>
 										)}
 
-										{/* Admin Controls */}
 										{parentPage === "admin" && (
 											<div className="flex justify-between w-full col-span-2 mt-2">
 												<div className="flex gap-1 text-3xl justify-center">

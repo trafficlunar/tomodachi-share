@@ -89,6 +89,10 @@ export async function GET(request: NextRequest) {
 		_count: {
 			select: { likedBy: true },
 		},
+		// Admin
+		...(parentPage === "admin" && {
+			description: true,
+		}),
 	};
 
 	let totalCount: number;

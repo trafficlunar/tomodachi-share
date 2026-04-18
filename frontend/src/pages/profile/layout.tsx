@@ -22,8 +22,6 @@ export default function ProfileLayout() {
 			return;
 		}
 
-		const userId = id ? id : $session.user!.id;
-
 		fetch(`${import.meta.env.VITE_API_URL}/api/profile/${userId}/info`)
 			.then((res) => {
 				if (!res.ok) throw new Error("Failed to fetch profile");
