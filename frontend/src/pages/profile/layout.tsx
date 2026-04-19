@@ -28,6 +28,8 @@ export default function ProfileLayout() {
 				return res.json();
 			})
 			.then((data) => {
+				if (!data) throw new Error("Profile not found");
+
 				setUser(data);
 				setLoading(false);
 			})

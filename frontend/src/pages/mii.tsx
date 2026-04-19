@@ -31,6 +31,8 @@ export default function MiiPage() {
 				return res.json();
 			})
 			.then((data) => {
+				if (!data) throw new Error("Mii not found");
+
 				setMii(data);
 				setLoading(false);
 
