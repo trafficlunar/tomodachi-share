@@ -89,6 +89,7 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 		allowedCopying: true,
 		quarantined: true,
 		in_queue: true,
+		likeCount: true,
 		// Mii liked check
 		...(session?.user?.id && {
 			likedBy: {
@@ -96,10 +97,6 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 				select: { userId: true },
 			},
 		}),
-		// Like count
-		_count: {
-			select: { likedBy: true },
-		},
 	};
 
 	const skip = (page - 1) * limit;
@@ -111,7 +108,7 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 	let orderBy: Prisma.MiiOrderByWithRelationInput[];
 
 	if (sort === "likes") {
-		orderBy = [{ likedBy: { _count: "desc" } }, { name: "asc" }];
+		orderBy = [{ likeCount: "desc" }, { name: "asc" }];
 	} else if (sort === "oldest") {
 		orderBy = [{ createdAt: "asc" }, { name: "asc" }];
 	} else {

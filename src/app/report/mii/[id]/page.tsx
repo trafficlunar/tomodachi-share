@@ -41,7 +41,7 @@ export default async function ReportMiiPage({ params }: Props) {
 
 	return (
 		<div className="flex justify-center w-full">
-			<ReportMiiForm mii={mii} likes={mii._count.likedBy} />
+			<ReportMiiForm mii={mii} likes={mii.likeCount} />
 		</div>
 	);
 }

@@ -51,13 +51,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	return {
 		metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 		title: `${mii.name} - TomodachiShare`,
-		description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+		description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii.likeCount} likes.`,
 		keywords: ["mii", "tomodachi life", "nintendo", "tomodachishare", "tomodachi-share", "mii creator", "mii collection", ...mii.tags],
 		creator: name,
 		openGraph: {
 			type: "article",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii.likeCount} likes.`,
 			images: [
 				{
 					url: metadataImageUrl,
@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		twitter: {
 			card: "summary_large_image",
 			title: `${mii.name} - TomodachiShare`,
-			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii._count.likedBy} likes.`,
+			description: `Check out '${mii.name}', a ${mii.platform === MiiPlatform.SWITCH ? "Switch Living the Dream" : "3DS"} Tomodachi Life Mii created by ${mii.name} on TomodachiShare with ${mii.likeCount} likes.`,
 			images: [
 				{
 					url: metadataImageUrl,
@@ -306,7 +306,7 @@ export default async function MiiPage({ params }: Props) {
 								{/* Submission name */}
 								<h1 className="text-4xl font-extrabold wrap-break-word whitespace-break-spaces text-amber-700 flex-1 min-w-0">{mii.name}</h1>
 								{/* Like button */}
-								<LikeButton likes={mii._count.likedBy ?? 0} miiId={mii.id} isLiked={false} big />
+								<LikeButton likes={mii.likeCount ?? 0} miiId={mii.id} isLiked={false} big />
 							</div>
 							{/* Tags */}
 							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">

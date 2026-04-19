@@ -74,7 +74,7 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 						</div>
 
 						<div className="mt-auto grid grid-cols-2 items-center">
-							<LikeButton likes={mii._count.likedBy} miiId={mii.id} isLiked={likedIds.has(mii.id)} abbreviate />
+							<LikeButton likes={mii.likeCount} miiId={mii.id} isLiked={likedIds.has(mii.id)} abbreviate />
 
 							{!userId && (
 								<Link href={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis whitespace-nowrap">
@@ -87,7 +87,7 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 									<Link href={`/edit/${mii.id}`} title="Edit Mii" aria-label="Edit Mii" data-tooltip="Edit">
 										<Icon icon="mdi:pencil" />
 									</Link>
-									<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy} />
+									<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likeCount} />
 								</div>
 							)}
 
@@ -105,7 +105,7 @@ export default function MiiGrid({ miis, userId, parentPage }: Props) {
 											<Icon icon="material-symbols:check-rounded" />
 										</button>
 										<div className="text-zinc-400 hover:text-red-500 transition-colors p-1 bg-white rounded-md shadow-sm border border-zinc-200 hover:border-red-500 flex items-center justify-center">
-											<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy} />
+											<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likeCount} />
 										</div>
 									</div>
 
