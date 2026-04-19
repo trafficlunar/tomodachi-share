@@ -28,6 +28,8 @@ export default function ProfileLayout() {
 				return res.json();
 			})
 			.then((data) => {
+				if (!data) throw new Error("Profile not found");
+
 				setUser(data);
 				setLoading(false);
 			})
@@ -42,11 +44,11 @@ export default function ProfileLayout() {
 		return <div className="p-6 text-center">Loading...</div>;
 	}
 
-	const currentUser = user ?? $session?.user;
+	const sessionUserId = $session?.user?.id ? Number($session.user.id) : null;
 	const page = location.pathname;
-	const isAdmin = currentUser?.id === Number(import.meta.env.VITE_ADMIN_USER_ID);
-	const isContributor = import.meta.env.VITE_CONTRIBUTORS_USER_IDS?.split(",").includes(user?.id);
-	const isOwnProfile = currentUser?.id === user?.id;
+	const isAdmin = sessionUserId === Number(import.meta.env.VITE_ADMIN_USER_ID);
+	const isContributor = import.meta.env.VITE_CONTRIBUTORS_USER_IDS?.split(",").includes(String(user?.id));
+	const isOwnProfile = sessionUserId === user?.id;
 
 	return (
 		<div>

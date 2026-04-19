@@ -34,5 +34,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 		},
 	});
 
+	if (!mii) return NextResponse.json({ error: "Mii not found" }, { status: 404 });
+
 	return NextResponse.json(mii);
 }
