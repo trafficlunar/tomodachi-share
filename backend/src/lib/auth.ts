@@ -44,6 +44,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		},
 
 		async redirect({ url, baseUrl }) {
+			if (url.startsWith(baseUrl)) return url;
 			return process.env.NEXT_PUBLIC_FRONTEND_URL ?? "http://localhost:4321";
 		},
 	},
