@@ -1,4 +1,4 @@
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { Icon } from "@iconify/react";
 import type { MiiGender, MiiPlatform } from "@tomodachi-share/shared";
 import { useNavigate, useSearchParams } from "react-router";
@@ -8,12 +8,11 @@ export default function GenderSelect() {
 	const [searchParams] = useSearchParams();
 	const [, startTransition] = useTransition();
 
-	const [selected, setSelected] = useState<MiiGender | null>((searchParams.get("gender") as MiiGender) ?? null);
+	const selected = (searchParams.get("gender") as MiiGender) ?? null;
 	const platform = (searchParams.get("platform") as MiiPlatform) || undefined;
 
 	const handleClick = (gender: MiiGender) => {
 		const filter = selected === gender ? null : gender;
-		setSelected(filter);
 
 		const params = new URLSearchParams(searchParams);
 		params.set("page", "1");
