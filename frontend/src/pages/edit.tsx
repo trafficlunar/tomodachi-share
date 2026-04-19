@@ -149,7 +149,7 @@ export default function EditMiiPage() {
 			try {
 				const existing = await Promise.all(
 					Array.from({ length: mii.imageCount }, async (_, index) => {
-						const path = `${API_URL}/mii/${mii.id}/image?type=image${index}`;
+						const path = `${STATIC_URL}/mii/${mii.id}/image${index}.png`;
 						const response = await fetch(path);
 						const blob = await response.blob();
 
@@ -167,6 +167,7 @@ export default function EditMiiPage() {
 	}, [mii, mii?.id, mii?.imageCount]);
 
 	const API_URL = import.meta.env.VITE_API_URL;
+	const STATIC_URL = import.meta.env.VITE_STATIC_URL;
 
 	useEffect(() => {
 		fetch(`${API_URL}/api/mii/${id}/info`)
@@ -181,8 +182,8 @@ export default function EditMiiPage() {
 				setDescription(data.description);
 				setGender(data.gender ?? "MALE");
 				setMakeup(data.makeup ?? "PARTIAL");
-				setMiiPortraitUri(`${API_URL}/mii/${data.id}/image?type=mii`);
-				setMiiFeaturesUri(`${API_URL}/mii/${data.id}/image?type=features`);
+				setMiiPortraitUri(`${STATIC_URL}/mii/${data.id}/mii.png`);
+				setMiiFeaturesUri(`${STATIC_URL}/mii/${data.id}/features.png`);
 				setYouTubeId(data.youtubeId ?? "");
 				setQuarantined(data.quarantined);
 				instructions.current = deepMerge(defaultInstructions, (data.instructions as object) ?? {});
@@ -208,10 +209,8 @@ export default function EditMiiPage() {
 				<div className="w-75 h-min flex flex-col bg-zinc-50 rounded-3xl border-2 border-zinc-300 shadow-lg p-3">
 					<Carousel
 						images={[
-							miiPortraitUri ?? `${API_URL}/mii/${mii.id}/image?type=mii`,
-							...(mii.platform === "THREE_DS"
-								? [`${API_URL}/mii/${mii.id}/image?type=qr-code`]
-								: [miiFeaturesUri ?? `${API_URL}/mii/${mii.id}/image?type=features`]),
+							miiPortraitUri ?? `${STATIC_URL}/mii/${mii.id}/mii.png`,
+							...(mii.platform === "THREE_DS" ? [`${STATIC_URL}/mii/${mii.id}/qr-code.png`] : [miiFeaturesUri ?? `${STATIC_URL}/mii/${mii.id}/features.png`]),
 							...files.map((file) => URL.createObjectURL(file)),
 						]}
 					/>

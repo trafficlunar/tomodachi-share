@@ -28,7 +28,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 	};
 
 	const handleCopyImage = async () => {
-		const response = await fetch(`${import.meta.env.VITE_API_URL}/mii/${miiId}/image?type=metadata`);
+		const response = await fetch(`${import.meta.env.VITE_STATIC_URL}/mii/${miiId}/metadata.png`);
 		const blob = await response.blob();
 
 		await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
@@ -118,7 +118,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 
 							<div className="flex justify-center items-center p-4 w-full bg-orange-100 border border-orange-400 rounded-lg">
 								<img
-									src={`${import.meta.env.VITE_API_URL}/mii/${miiId}/image?type=metadata`}
+									src={`${import.meta.env.VITE_STATIC_URL}/mii/${miiId}/metadata.png`}
 									alt="mii 'metadata' image"
 									width={248}
 									height={248}
@@ -130,7 +130,7 @@ export default function ShareMiiButton({ miiId }: Props) {
 								<div className="flex gap-2 w-full">
 									{/* Save button */}
 									<Link
-										to={`${import.meta.env.VITE_API_URL}/mii/${miiId}/image?type=metadata`}
+										to={`${import.meta.env.VITE_STATIC_URL}/mii/${miiId}/metadata.png`}
 										className="pill button p-0! aspect-square size-11 cursor-pointer text-xl"
 										aria-label="Save Image"
 										data-tooltip="Save Image"

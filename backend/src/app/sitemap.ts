@@ -7,8 +7,9 @@ export const revalidate = 43200; // update every 12 hours
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-	if (!baseUrl) {
-		console.error("NEXT_PUBLIC_BASE_URL environment variable missing");
+	const staticUrl = process.env.NEXT_PUBLIC_STATIC_URL;
+	if (!baseUrl || !staticUrl) {
+		console.error("NEXT_PUBLIC_BASE_URL or NEXT_PUBLIC_STATIC_URL environment variable missing");
 		return [];
 	}
 
@@ -34,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 					lastModified: mii.createdAt,
 					changeFrequency: "weekly",
 					priority: 0.7,
-					images: [`${baseUrl}/mii/${mii.id}/image?type=metadata`],
+					images: [`${staticUrl}/mii/${mii.id}/metadata.png`],
 				}) as SitemapRoute,
 		),
 		...users.map(
