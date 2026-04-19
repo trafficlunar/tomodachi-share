@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./index.css";
+import "react-image-crop/dist/ReactCrop.css";
 import "@fontsource-variable/lexend/wght.css";
 
 import PrivacyPage from "./pages/privacy.tsx";
