@@ -90,20 +90,23 @@ model Mii {
 
   createdAt DateTime @default(now())
 
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  likedBy Like[]
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likeCount Int  @default(0)
 
   punishmentId Int?
   punishments  MiiPunishment[]
+  likedBy      Like[]
 
   @@index([tags], type: Gin)
   @@index([createdAt])
+  @@index([likeCount(sort: Desc)])
   @@index([quarantined, createdAt(sort: Desc)])
   @@index([platform, createdAt(sort: Desc)])
   @@index([userId, createdAt(sort: Desc)])
   @@index([gender])
   @@index([makeup])
   @@index([quarantined, id])
+  @@index([in_queue, quarantined, createdAt(sort: Desc)])
   @@map("miis")
 }
 

@@ -78,6 +78,7 @@ export async function GET(request: NextRequest) {
 		allowedCopying: true,
 		quarantined: true,
 		in_queue: true,
+		likeCount: true,
 		// Mii liked check
 		...(session?.user?.id && {
 			likedBy: {
@@ -85,10 +86,6 @@ export async function GET(request: NextRequest) {
 				select: { userId: true },
 			},
 		}),
-		// Like count
-		_count: {
-			select: { likedBy: true },
-		},
 		// Admin
 		...(parentPage === "admin" && {
 			description: true,
@@ -102,7 +99,7 @@ export async function GET(request: NextRequest) {
 	let orderBy: Prisma.MiiOrderByWithRelationInput[];
 
 	if (sort === "likes") {
-		orderBy = [{ likedBy: { _count: "desc" } }, { name: "asc" }];
+		orderBy = [{ likeCount: "desc" }, { name: "asc" }];
 	} else if (sort === "oldest") {
 		orderBy = [{ createdAt: "asc" }, { name: "asc" }];
 	} else {

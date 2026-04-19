@@ -30,7 +30,6 @@ export default function LikeButton({ likes, miiId, isLiked, disabled, abbreviate
 		}
 
 		const prevLiked = isLikedState;
-		const prevLikes = likesState;
 		setIsLikedState(!prevLiked);
 		setLikesState(prevLiked ? likesState - 1 : likesState + 1);
 
@@ -42,12 +41,10 @@ export default function LikeButton({ likes, miiId, isLiked, disabled, abbreviate
 
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mii/${miiId}/like`, { method: "POST", credentials: "include" });
 		if (response.ok) {
-			const { liked, count } = await response.json();
+			const { liked } = await response.json();
 			setIsLikedState(liked);
-			setLikesState(count);
 		} else {
 			setIsLikedState(prevLiked);
-			setLikesState(prevLikes);
 		}
 	};
 

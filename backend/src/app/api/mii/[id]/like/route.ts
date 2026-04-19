@@ -29,7 +29,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 		});
 
 		if (existingLike) {
-			// Remove the like if it exists
 			await tx.like.delete({
 				where: {
 					userId_miiId: {
@@ -38,22 +37,25 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 					},
 				},
 			});
+			await tx.mii.update({
+				where: { id: miiId },
+				data: { likeCount: { decrement: 1 } },
+			});
 		} else {
-			// Add a like if it doesn't exist
 			await tx.like.create({
 				data: {
 					userId: Number(session.user?.id),
 					miiId,
 				},
 			});
+			await tx.mii.update({
+				where: { id: miiId },
+				data: { likeCount: { increment: 1 } },
+			});
 		}
 
-		const likeCount = await tx.like.count({
-			where: { miiId },
-		});
-
-		return { liked: !existingLike, count: likeCount };
+		return { liked: !existingLike };
 	});
 
-	return rateLimit.sendResponse({ success: true, liked: result.liked, count: result.count });
+	return rateLimit.sendResponse({ success: true, liked: result.liked });
 }
