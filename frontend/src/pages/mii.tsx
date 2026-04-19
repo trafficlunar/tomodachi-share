@@ -265,7 +265,7 @@ export default function MiiPage() {
 								{/* Submission name */}
 								<h1 className="text-4xl font-extrabold wrap-break-word whitespace-break-spaces text-amber-700 flex-1 min-w-0">{mii.name}</h1>
 								{/* Like button */}
-								<LikeButton likes={mii._count?.likedBy ?? 0} miiId={mii.id} isLiked={isLiked} big />
+								<LikeButton likes={mii.likeCount ?? 0} miiId={mii.id} isLiked={isLiked} big />
 							</div>
 							{/* Tags */}
 							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">

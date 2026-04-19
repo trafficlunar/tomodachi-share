@@ -20,7 +20,7 @@ export default function AuthorButtons({ mii }: Props) {
 				<Icon icon="mdi:pencil" />
 				<span>Edit</span>
 			</Link>
-			<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii._count.likedBy ?? 0} inMiiPage />
+			<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likeCount ?? 0} inMiiPage />
 		</>
 	);
 }
