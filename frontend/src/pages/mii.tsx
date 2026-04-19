@@ -270,7 +270,7 @@ export default function MiiPage() {
 							{/* Tags */}
 							<div id="tags" className="flex flex-wrap gap-1 mt-1 *:px-2 *:py-1 *:bg-orange-300 *:rounded-full *:text-xs">
 								{mii.tags.map((tag: string) => (
-									<Link to={`/tags=${tag}`} key={tag}>
+									<Link to={`/?tags=${encodeURIComponent(tag)}`} key={tag}>
 										{tag}
 									</Link>
 								))}
