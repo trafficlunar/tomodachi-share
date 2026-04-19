@@ -246,8 +246,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 		body: JSON.stringify({
 			files: [
 				`${process.env.NEXT_PUBLIC_BASE_URL}/mii/${miiId}`,
-				`${process.env.NEXT_PUBLIC_STATIC_URL}/mii/${miiId}/mii.png`,
-				`${process.env.NEXT_PUBLIC_STATIC_URL}/mii/${miiId}/features.png`,
+				`${process.env.NEXT_PUBLIC_BASE_URL}/mii/${miiId}/image?type=mii`,
+				`${process.env.NEXT_PUBLIC_BASE_URL}/mii/${miiId}/image?type=features`,
 			],
 		}),
 	}).catch((err) => {

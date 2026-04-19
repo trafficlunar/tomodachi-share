@@ -64,7 +64,7 @@ export default function ReportMiiPage() {
 				<hr className="border-zinc-300" />
 
 				<div className="bg-orange-100 rounded-xl border-2 border-orange-400 flex">
-					<img src={`${import.meta.env.VITE_STATIC_URL}/mii/${mii.id}/mii.png`} alt="mii image" width={128} height={128} />
+					<img src={`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`} alt="mii image" width={128} height={128} />
 					<div className="p-4">
 						<p className="text-xl font-bold line-clamp-1">{mii.name}</p>
 					</div>

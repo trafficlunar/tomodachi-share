@@ -126,7 +126,7 @@ export default function MiiList({ parentPage, userId }: Props) {
 								{parentPage !== "admin" ? (
 									<Link to={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
 										<img
-											src={`${import.meta.env.VITE_STATIC_URL}/mii/${mii.id}/mii.png`}
+											src={`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`}
 											width={240}
 											height={160}
 											alt="mii image"
@@ -136,11 +136,11 @@ export default function MiiList({ parentPage, userId }: Props) {
 								) : (
 									<div className="grid grid-cols-2 gap-1 rounded-xl bg-zinc-200">
 										{[
-											`${import.meta.env.VITE_STATIC_URL}/mii/${mii.id}/mii.png`,
+											`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`,
 											mii.platform === "THREE_DS"
-												? `${import.meta.env.VITE_STATIC_URL}/mii/${mii.id}/qr-code.png`
-												: `${import.meta.env.VITE_STATIC_URL}/mii/${mii.id}/features.png`,
-											...Array.from({ length: mii.imageCount }, (_, i) => `${import.meta.env.VITE_STATIC_URL}/mii/${mii.id}/image${i}.png`),
+												? `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=qr-code`
+												: `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=features`,
+											...Array.from({ length: mii.imageCount }, (_, i) => `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=image${i}`),
 										].map((src, i) => (
 											<img key={i} src={src} alt="mii image" className="w-full bg-zinc-200" />
 										))}

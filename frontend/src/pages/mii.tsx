@@ -23,7 +23,6 @@ export default function MiiPage() {
 	const [isLiked, setIsLiked] = useState(false);
 
 	const API_URL = import.meta.env.VITE_API_URL;
-	const STATIC_URL = import.meta.env.VITE_STATIC_URL;
 
 	useEffect(() => {
 		fetch(`${API_URL}/api/mii/${id}/info`)
@@ -51,7 +50,7 @@ export default function MiiPage() {
 	}, [id]);
 
 	if (loading || !mii) return <div className="p-6 text-center">Loading...</div>;
-	const images = [...Array.from({ length: mii.imageCount ?? 0 }, (_, index) => `${STATIC_URL}/mii/${mii.id}/image${index}.png`)];
+	const images = [...Array.from({ length: mii.imageCount ?? 0 }, (_, index) => `${API_URL}/mii/${mii.id}/image?type=image${index}`)];
 
 	return (
 		<div className="flex flex-col items-center">
@@ -77,7 +76,7 @@ export default function MiiPage() {
 						{/* Mii Image */}
 						<div className="bg-linear-to-b from-amber-100 to-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center">
 							<ImageViewer
-								src={`${STATIC_URL}/mii/${mii.id}/mii.png`}
+								src={`${API_URL}/mii/${mii.id}/image?type=mii`}
 								alt="mii headshot"
 								width={250}
 								height={250}
@@ -88,7 +87,7 @@ export default function MiiPage() {
 						{mii.platform === "THREE_DS" ? (
 							<div className="bg-amber-200 overflow-hidden rounded-xl w-full mb-4 flex justify-center p-2">
 								<ImageViewer
-									src={`${STATIC_URL}/mii/${mii.id}/qr-code.png`}
+									src={`${API_URL}/mii/${mii.id}/image?type=qr-code`}
 									alt="mii qr code"
 									width={128}
 									height={128}
@@ -97,7 +96,7 @@ export default function MiiPage() {
 							</div>
 						) : (
 							<ImageViewer
-								src={`${STATIC_URL}/mii/${mii.id}/features.png`}
+								src={`${API_URL}/mii/${mii.id}/image?type=features`}
 								alt="mii features"
 								width={300}
 								height={300}
