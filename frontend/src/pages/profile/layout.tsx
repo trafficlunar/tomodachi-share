@@ -13,7 +13,7 @@ export default function ProfileLayout() {
 	const [loading, setLoading] = useState(true);
 	const $session = useStore(session);
 
-	const userId = Number($session ? id : $session?.user?.id);
+	const userId = Number(id ?? $session?.user?.id);
 
 	useEffect(() => {
 		if ($session === undefined) return; // session still loading
