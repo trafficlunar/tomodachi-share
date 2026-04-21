@@ -23,12 +23,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		},
 	});
 
-	const users = await prisma.user.findMany({
-		select: {
-			id: true,
-			updatedAt: true,
-		},
-	});
+	// const users = await prisma.user.findMany({
+	// 	select: {
+	// 		id: true,
+	// 		updatedAt: true,
+	// 	},
+	// });
 
 	const dynamicRoutes: MetadataRoute.Sitemap = [
 		...miis.map(
@@ -41,15 +41,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 					images: [`${baseUrl}/mii/${mii.id}/image?type=metadata`],
 				}) as SitemapRoute,
 		),
-		...users.map(
-			(user) =>
-				({
-					url: `${baseUrl}/profile/${user.id}`,
-					lastModified: user.updatedAt,
-					changeFrequency: "weekly",
-					priority: 0.2,
-				}) as SitemapRoute,
-		),
+		// ...users.map(
+		// 	(user) =>
+		// 		({
+		// 			url: `${baseUrl}/profile/${user.id}`,
+		// 			lastModified: user.updatedAt,
+		// 			changeFrequency: "weekly",
+		// 			priority: 0.2,
+		// 		}) as SitemapRoute,
+		// ),
 	];
 
 	const lastModified = new Date();
