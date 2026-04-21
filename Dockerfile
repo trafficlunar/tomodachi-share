@@ -28,12 +28,13 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+COPY --from=builder /app/backend/.next/standalone ./
+COPY --from=builder /app/backend/.next/static ./.next/static
 COPY --from=builder /app/backend/public ./public
-COPY --from=builder /app/backend/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/backend/prisma ./prisma
 
-RUN mkdir -p /app/.next/standalone/backend/uploads && chown -R nextjs:nodejs /app/.next/standalone/backend/uploads
+RUN mkdir -p /app/uploads && chown -R nextjs:nodejs /app/uploads
 
 USER nextjs
 EXPOSE 3000
-CMD ["node", ".next/standalone/backend/server.js"]
+CMD ["node", "backend/server.js"]
