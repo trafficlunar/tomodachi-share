@@ -17,6 +17,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			id: true,
 			createdAt: true,
 		},
+		where: {
+			in_queue: false,
+			quarantined: false,
+		},
 	});
 
 	const users = await prisma.user.findMany({
