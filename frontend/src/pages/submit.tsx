@@ -342,49 +342,26 @@ export default function SubmitPage() {
 
 					{/* Makeup (switch only) */}
 					<div className={`w-full grid grid-cols-3 items-start ${platform === "SWITCH" ? "" : "hidden"}`}>
-						<label htmlFor="makeup" className="font-semibold py-2">
-							Face Paint
-						</label>
+						<label className="font-semibold py-2">Face Paint</label>
 
-						<div className="col-span-2 flex gap-1">
-							{/* Full Makeup */}
-							<button
-								type="button"
-								onClick={() => setMakeup("FULL")}
-								aria-label="Full Face Paint"
-								data-tooltip="Face covered more than 80%"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${
-									makeup === "FULL" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
-							>
-								<Icon icon="mdi:palette" className="text-pink-400" />
-							</button>
-
-							{/* Partial Makeup */}
-							<button
-								type="button"
-								onClick={() => setMakeup("PARTIAL")}
-								aria-label="Partial Face Paint"
-								data-tooltip="For at least any face paint"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400! ${
-									makeup === "PARTIAL" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
-							>
-								<Icon icon="mdi:lipstick" className="text-purple-400" />
-							</button>
-
-							{/* No Makeup */}
-							<button
-								type="button"
-								onClick={() => setMakeup("NONE")}
-								aria-label="No Face Paint"
-								data-tooltip="No Face Paint"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-gray-400! after:border-gray-400! before:border-b-gray-400! ${
-									makeup === "NONE" ? "bg-gray-200 border-gray-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
-							>
-								<Icon icon="codex:cross" className="text-gray-400" />
-							</button>
+						<div className="col-span-2 flex flex-col gap-1.5">
+							{[
+								{ value: "FULL", label: "Full", desc: "Most of the face/features are covered", color: "pink" },
+								{ value: "PARTIAL", label: "Partial", desc: "Small designs that don't cover features, like marks, stickers, etc.", color: "purple" },
+								{ value: "NONE", label: "None", desc: "No face paint present.", color: "gray" },
+							].map(({ value, label, desc, color }) => (
+								<button
+									key={value}
+									type="button"
+									onClick={() => setMakeup(value as MiiMakeup)}
+									className={`cursor-pointer rounded-xl text-left px-3 py-2 border-2 transition-all ${
+										makeup === value ? `bg-${color}-100 border-${color}-400 shadow-md` : "bg-white border-gray-300 hover:border-gray-400"
+									}`}
+								>
+									<div className={`font-medium text-sm ${makeup === value ? `text-${color}-500` : "text-gray-500"}`}>{label}</div>
+									<div className="text-xs text-gray-500 mt-0.5">{desc}</div>
+								</button>
+							))}
 						</div>
 					</div>
 
@@ -503,7 +480,7 @@ export default function SubmitPage() {
 							<MiiEditor instructions={instructions} />
 							<SwitchSubmitTutorialButton />
 							<span className="text-xs text-zinc-400 text-center px-32 max-sm:px-8">
-								Mii editor may be inaccurate. Instructions are recommended, but not required - you do not have to add every instruction.
+								Mii editor may be inaccurate. Instructions are REALLY recommended, but you do not have to add every instruction.
 							</span>
 						</div>
 					</div>

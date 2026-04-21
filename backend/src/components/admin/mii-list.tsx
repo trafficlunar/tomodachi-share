@@ -11,7 +11,7 @@ export default async function MiiList({ searchParams }: Props) {
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { page = 1, limit = 24 } = parsed.data;
+	const { page = 1, limit = 100 } = parsed.data;
 
 	const skip = (page - 1) * limit;
 
