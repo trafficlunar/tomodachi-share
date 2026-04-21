@@ -17,12 +17,10 @@ export default function MiiGrid({ miis, totalCount, lastPage }: Props) {
 
 	const acceptMii = async (id: number) => {
 		await fetch(`/api/admin/accept-mii?id=${id}`, { method: "POST" });
-		router.refresh();
 	};
 
 	const acceptMany = async (ids: number[]) => {
 		await Promise.all(ids.map((id) => fetch(`/api/admin/accept-mii?id=${id}`, { method: "POST" })));
-		router.refresh();
 	};
 
 	const rows: (typeof miis)[] = [];
@@ -68,6 +66,16 @@ export default function MiiGrid({ miis, totalCount, lastPage }: Props) {
 											In Queue
 										</div>
 									)}
+
+									<div className="grid grid-cols-2 gap-1 rounded-xl bg-zinc-200">
+										{[
+											`/mii/${mii.id}/image?type=mii`,
+											mii.platform === "THREE_DS" ? `/mii/${mii.id}/image?type=qr-code` : `/mii/${mii.id}/image?type=features`,
+											...Array.from({ length: mii.imageCount }, (_, i) => `/mii/${mii.id}/image?type=image${i}`),
+										].map((src, i) => (
+											<img key={i} src={src} alt="mii image" className="w-full bg-zinc-200" />
+										))}
+									</div>
 
 									<div className="p-4 flex flex-col gap-1 h-full">
 										<div className="flex justify-between items-center">

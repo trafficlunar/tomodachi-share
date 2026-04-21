@@ -5,11 +5,10 @@ import { auth } from "@/lib/auth";
 
 import BannerForm from "@/components/admin/banner-form";
 // import ControlCenter from "@/components/admin/control-center";
-import RegenerateImagesButton from "@/components/admin/regenerate-images";
+// import RegenerateImagesButton from "@/components/admin/regenerate-images";
 import UserManagement from "@/components/admin/user-management";
 import Reports from "@/components/admin/reports";
 import MiiList from "@/components/admin/mii-list";
-// import MiiList from "@/components/mii/list";
 
 export const metadata: Metadata = {
 	title: "Admin - TomodachiShare",
