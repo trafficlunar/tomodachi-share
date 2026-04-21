@@ -25,6 +25,7 @@ export default async function Reports({ searchParams }: { searchParams: { status
 	]);
 
 	const totalPages = Math.ceil(total / PAGE_SIZE);
+	const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL;
 
 	const updateStatus = async (formData: FormData) => {
 		"use server";
@@ -88,21 +89,24 @@ export default async function Reports({ searchParams }: { searchParams: { status
 						<div className="grid grid-cols-4 text-xs text-zinc-600 mt-4 max-sm:grid-cols-2">
 							<div>
 								<p>Target ID</p>
-								<a href={report.reportType === "MII" ? `/mii/${report.targetId}` : `/profile/${report.targetId}`} className="text-blue-600 text-sm">
+								<a
+									href={report.reportType === "MII" ? `${FRONTEND_URL}/mii/${report.targetId}` : `${FRONTEND_URL}/profile/${report.targetId}`}
+									className="text-blue-600 text-sm"
+								>
 									{report.targetId}
 								</a>
 							</div>
 
 							<div>
 								<p>Creator ID</p>
-								<a href={`/profile/${report.creatorId}`} className="text-blue-600 text-sm">
+								<a href={`${FRONTEND_URL}/profile/${report.creatorId}`} className="text-blue-600 text-sm">
 									{report.creatorId}
 								</a>
 							</div>
 
 							<div>
 								<p>Reporter</p>
-								<a href={`/profile/${report.authorId}`} className="text-blue-600 text-sm">
+								<a href={`${FRONTEND_URL}/profile/${report.authorId}`} className="text-blue-600 text-sm">
 									{report.authorId}
 								</a>
 							</div>

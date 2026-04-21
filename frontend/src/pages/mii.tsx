@@ -54,8 +54,36 @@ export default function MiiPage() {
 	if (loading || !mii) return <div className="p-6 text-center">Loading...</div>;
 	const images = [...Array.from({ length: mii.imageCount ?? 0 }, (_, index) => `${API_URL}/mii/${mii.id}/image?type=image${index}`)];
 
+	const metaTitle = `${mii.name} - TomodachiShare`;
+	const platformLabel = mii.platform === "SWITCH" ? "Switch Living the Dream" : "3DS";
+	const metaDescription = `Check out '${mii.name}', a ${platformLabel} Tomodachi Life Mii created by ${mii.user.name} on TomodachiShare with ${mii.likeCount ?? 0} likes.`;
+	const metaImage = `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=metadata`;
+	const metaImageAlt = `${mii.name}, ${mii.tags?.join(", ")} ${mii.gender} Mii character`;
+
 	return (
 		<div className="flex flex-col items-center">
+			<title>{metaTitle}</title>
+			<meta name="description" content={metaDescription} />
+			<meta name="keywords" content={["mii", "tomodachi life", "nintendo", "tomodachishare", ...mii.tags].join(", ")} />
+			<link rel="canonical" href={`${import.meta.env.VITE_BASE_URL}/mii/${mii.id}`} />
+
+			{/* Open Graph */}
+			<meta property="og:type" content="article" />
+			<meta property="og:title" content={metaTitle} />
+			<meta property="og:description" content={metaDescription} />
+			<meta property="og:image" content={metaImage} />
+			<meta property="og:image:alt" content={metaImageAlt} />
+			<meta property="article:published_time" content={new Date(mii.createdAt).toISOString()} />
+			<meta property="article:author" content={`@${mii.user.name}`} />
+
+			{/* Twitter / X */}
+			<meta name="twitter:card" content="summary_large_image" />
+			<meta name="twitter:title" content={metaTitle} />
+			<meta name="twitter:description" content={metaDescription} />
+			<meta name="twitter:image" content={metaImage} />
+			<meta name="twitter:image:alt" content={metaImageAlt} />
+			<meta name="twitter:creator" content={`@${mii.user.name}`} />
+
 			<div className="max-w-5xl w-full flex flex-col gap-4">
 				{mii.quarantined && (
 					<div className="bg-red-100 border-2 border-red-400 rounded-2xl shadow-lg p-4 flex items-center gap-3 text-red-700">

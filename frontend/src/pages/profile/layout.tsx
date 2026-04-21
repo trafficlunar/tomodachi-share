@@ -13,10 +13,10 @@ export default function ProfileLayout() {
 	const [loading, setLoading] = useState(true);
 	const $session = useStore(session);
 
+	const userId = Number($session ? id : $session?.user?.id);
+
 	useEffect(() => {
 		if ($session === undefined) return; // session still loading
-
-		const userId = id ?? $session?.user?.id;
 		if (!userId) {
 			navigate("/404");
 			return;
@@ -44,14 +44,38 @@ export default function ProfileLayout() {
 		return <div className="p-6 text-center">Loading...</div>;
 	}
 
-	const sessionUserId = $session?.user?.id ? Number($session.user.id) : null;
-	const page = location.pathname;
-	const isAdmin = sessionUserId === Number(import.meta.env.VITE_ADMIN_USER_ID);
+	const isAdmin = userId === Number(import.meta.env.VITE_ADMIN_USER_ID);
 	const isContributor = import.meta.env.VITE_CONTRIBUTORS_USER_IDS?.split(",").includes(String(user?.id));
-	const isOwnProfile = sessionUserId === user?.id;
+	const isOwnProfile = userId === user?.id;
+
+	const joinDate = new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+	const metaTitle = `${user.name} - TomodachiShare`;
+	const metaDescription = `View ${user.name}'s profile on TomodachiShare. Creator of ${user._count.miis} Miis. Member since ${joinDate}.`;
+	const metaImage = user.image.startsWith("/profile")
+		? `${import.meta.env.VITE_API_URL}${user.image}`
+		: (user.image ?? `${import.meta.env.VITE_API_URL}/guest.png`);
 
 	return (
 		<div>
+			<title>{metaTitle}</title>
+			<meta name="description" content={metaDescription} />
+			<meta name="keywords" content="mii, tomodachi life, nintendo, mii creator, mii collection, profile" />
+			<link rel="canonical" href={`${import.meta.env.VITE_BASE_URL}/profile/${user.id}`} />
+
+			{/* Open Graph */}
+			<meta property="og:type" content="profile" />
+			<meta property="og:title" content={metaTitle} />
+			<meta property="og:description" content={metaDescription} />
+			<meta property="og:image" content={metaImage} />
+			<meta property="og:profile:username" content={user.name} />
+
+			{/* Twitter / X */}
+			<meta name="twitter:card" content="summary" />
+			<meta name="twitter:title" content={metaTitle} />
+			<meta name="twitter:description" content={metaDescription} />
+			<meta name="twitter:image" content={metaImage} />
+			<meta name="twitter:creator" content={user.name} />
+
 			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex gap-4 mb-2 max-md:flex-col">
 				<div className="flex w-full gap-4 overflow-x-scroll">
 					{/* Profile picture */}
@@ -110,19 +134,19 @@ export default function ProfileLayout() {
 							<span>Admin</span>
 						</a>
 					)}
-					{isOwnProfile && page !== "/profile/likes" && (
+					{isOwnProfile && location.pathname !== "/profile/likes" && (
 						<Link aria-label="Go to My Likes" to="/profile/likes">
 							<Icon icon="icon-park-solid:like" />
 							<span>My Likes</span>
 						</Link>
 					)}
-					{isOwnProfile && page !== "/profile/settings" && (
+					{isOwnProfile && location.pathname !== "/profile/settings" && (
 						<Link aria-label="Go to Settings" to="/profile/settings">
 							<Icon icon="material-symbols:settings-rounded" />
 							<span>Settings</span>
 						</Link>
 					)}
-					{(page === "/profile/likes" || page === "/profile/settings") && (
+					{(location.pathname === "/profile/likes" || location.pathname === "/profile/settings") && (
 						<Link aria-label="Go Back to Profile" to={`/profile/${user.id}`}>
 							<Icon icon="tabler:chevron-left" />
 							<span>Back</span>
