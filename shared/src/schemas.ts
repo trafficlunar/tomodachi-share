@@ -39,6 +39,7 @@ export const idSchema = z.coerce.number({ error: "ID must be a number" }).int({ 
 export const searchSchema = z.object({
 	q: querySchema.optional(),
 	sort: z.enum(["likes", "newest", "oldest"], { error: "Sort must be either 'likes', 'newest', 'oldest'" }).default("newest"),
+	// todo: incorporate tagsSchema
 	tags: z
 		.string()
 		.optional()
@@ -62,7 +63,6 @@ export const searchSchema = z.object({
 	makeup: z.enum(["FULL", "PARTIAL", "NONE"], { error: "Makeup must be either 'FULL', 'PARTIAL', or 'NONE'" }).optional(),
 	allowCopying: z.coerce.boolean({ error: "Allow Copying must be either true or false" }).optional(),
 	quarantined: z.coerce.boolean({ error: "Quarantined must be either true or false" }).optional(),
-	// todo: incorporate tagsSchema
 	// Pages
 	limit: z.coerce
 		.number({ error: "Limit must be a number" })
@@ -74,6 +74,8 @@ export const searchSchema = z.object({
 	// Other
 	parentPage: z.string().optional(),
 	userId: idSchema.optional(),
+	// Time range filter
+	timeRange: z.enum(["day", "week", "month", "year"], { error: "Time range must be either 'day', 'week', 'month', or 'year'" }).optional(),
 });
 
 export const userNameSchema = z

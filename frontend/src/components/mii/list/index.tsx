@@ -9,7 +9,7 @@ import { Icon } from "@iconify/react";
 import LikeButton from "../../like-button";
 import { useStore } from "@nanostores/react";
 import { session } from "../../../session";
-import Description from "../../description";
+import TimeRangeSelect from "./time-range-select";
 
 interface ApiResponse {
 	totalCount: number;
@@ -19,14 +19,13 @@ interface ApiResponse {
 
 interface Props {
 	userId?: number;
-	parentPage?: "likes" | "admin";
+	parentPage?: "likes";
 }
 
 export default function MiiList({ parentPage, userId }: Props) {
 	const [searchParams] = useSearchParams();
 	const [data, setData] = useState<ApiResponse | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [acceptingAll, setAcceptingAll] = useState(false);
 	const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
 
 	const $session = useStore(session);
@@ -60,28 +59,6 @@ export default function MiiList({ parentPage, userId }: Props) {
 			});
 	}, [searchParams, userId, parentPage, $session]);
 
-	async function handleAcceptAll() {
-		if (!data) return;
-		setAcceptingAll(true);
-		try {
-			await Promise.all(
-				data.miis.map((mii) =>
-					fetch(`${import.meta.env.VITE_API_URL}/api/admin/accept-mii?id=${mii.id}`, {
-						method: "POST",
-						credentials: "include",
-					}),
-				),
-			);
-			const params = new URLSearchParams(searchParams.toString());
-			if (userId) params.append("userId", userId.toString());
-			if (parentPage) params.append("parentPage", parentPage);
-			const res = await fetch(`${import.meta.env.VITE_API_URL}/api/mii/list?${params.toString()}`, { credentials: "include" });
-			if (res.ok) setData(await res.json());
-		} finally {
-			setAcceptingAll(false);
-		}
-	}
-
 	return (
 		<>
 			{loading ? (
@@ -95,18 +72,9 @@ export default function MiiList({ parentPage, userId }: Props) {
 						</div>
 
 						<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
-							{parentPage === "admin" && data.miis.length > 0 && (
-								<button
-									onClick={handleAcceptAll}
-									disabled={acceptingAll}
-									className="pill button flex items-center gap-1.5 px-3 py-1.5 bg-green-500! border-green-600! hover:bg-green-600! disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow transition-colors"
-								>
-									<Icon icon="material-symbols:check-circle-rounded" className="text-base" />
-									{acceptingAll ? "Accepting…" : `Accept All`}
-								</button>
-							)}
 							<FilterMenu />
 							<SortSelect />
+							<TimeRangeSelect />
 						</div>
 					</div>
 
@@ -114,7 +82,7 @@ export default function MiiList({ parentPage, userId }: Props) {
 						{data.miis.map((mii) => (
 							<div
 								key={mii.id}
-								className={`flex flex-col relative bg-zinc-50 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300 bg-red-50!" : mii.in_queue && parentPage !== "admin" ? "border-zinc-400 opacity-70" : "border-zinc-300"}`}
+								className={`flex flex-col relative bg-zinc-50 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300 bg-red-50!" : mii.in_queue ? "border-zinc-400 opacity-70" : "border-zinc-300"}`}
 							>
 								{mii.in_queue && (
 									<div className="absolute top-2 left-2 z-10 bg-zinc-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm flex items-center gap-1">
@@ -123,29 +91,15 @@ export default function MiiList({ parentPage, userId }: Props) {
 									</div>
 								)}
 
-								{parentPage !== "admin" ? (
-									<Link to={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
-										<img
-											src={`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`}
-											width={240}
-											height={160}
-											alt="mii image"
-											className="w-full h-auto aspect-3/2 object-contain"
-										/>
-									</Link>
-								) : (
-									<div className="grid grid-cols-2 gap-1 rounded-xl bg-zinc-200">
-										{[
-											`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`,
-											mii.platform === "THREE_DS"
-												? `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=qr-code`
-												: `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=features`,
-											...Array.from({ length: mii.imageCount }, (_, i) => `${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=image${i}`),
-										].map((src, i) => (
-											<img key={i} src={src} alt="mii image" className="w-full bg-zinc-200" />
-										))}
-									</div>
-								)}
+								<Link to={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
+									<img
+										src={`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`}
+										width={240}
+										height={160}
+										alt="mii image"
+										className="w-full h-auto aspect-3/2 object-contain"
+									/>
+								</Link>
 
 								<div className="p-4 flex flex-col gap-1 h-full">
 									<div className="flex justify-between">
@@ -169,8 +123,6 @@ export default function MiiList({ parentPage, userId }: Props) {
 										))}
 									</div>
 
-									{parentPage === "admin" && mii.description && <Description text={mii.description} />}
-
 									<div className="mt-auto grid grid-cols-2 items-center">
 										<LikeButton likes={mii.likeCount} miiId={mii.id} isLiked={likedIds.has(mii.id)} abbreviate />
 
@@ -186,27 +138,6 @@ export default function MiiList({ parentPage, userId }: Props) {
 													<Icon icon="mdi:pencil" />
 												</Link>
 												<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likeCount} />
-											</div>
-										)}
-
-										{parentPage === "admin" && (
-											<div className="flex justify-between w-full col-span-2 mt-2">
-												<div className="flex gap-1 text-3xl justify-center">
-													<button
-														onClick={async () => {
-															await fetch(`${import.meta.env.VITE_API_URL}/api/admin/accept-mii?id=${mii.id}`, { method: "POST", credentials: "include" });
-														}}
-														className="cursor-pointer text-zinc-400 hover:text-green-500 transition-colors p-1 bg-white rounded-md shadow-sm border border-zinc-200 hover:border-green-500"
-														title="Accept Mii"
-													>
-														<Icon icon="material-symbols:check-rounded" />
-													</button>
-													<div className="text-zinc-400 hover:text-red-500 transition-colors p-1 bg-white rounded-md shadow-sm border border-zinc-200 hover:border-red-500 flex items-center justify-center">
-														<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likeCount} />
-													</div>
-												</div>
-
-												<span className="text-sm w-1/2 text-right">{new Date(mii.createdAt).toLocaleString("en-GB", { timeZone: "UTC" })}</span>
 											</div>
 										)}
 									</div>

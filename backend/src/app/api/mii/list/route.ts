@@ -9,7 +9,22 @@ export async function GET(request: NextRequest) {
 	const parsed = searchSchema.safeParse(Object.fromEntries(request.nextUrl.searchParams));
 	if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
 
-	const { q: query, sort, tags, exclude, platform, gender, makeup, allowCopying, quarantined, page = 1, limit = 24, parentPage, userId } = parsed.data;
+	const {
+		q: query,
+		sort,
+		tags,
+		exclude,
+		platform,
+		gender,
+		makeup,
+		allowCopying,
+		quarantined,
+		page = 1,
+		limit = 24,
+		parentPage,
+		userId,
+		timeRange,
+	} = parsed.data;
 
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
@@ -55,6 +70,12 @@ export async function GET(request: NextRequest) {
 		...(makeup && { makeup: { equals: makeup } }),
 		// Quarantined
 		...(!quarantined && !userId && { quarantined: false }),
+		// Time range
+		...(timeRange && {
+			createdAt: {
+				gte: new Date(Date.now() - { day: 86400000, week: 604800000, month: 2592000000, year: 31536000000 }[timeRange]),
+			},
+		}),
 	};
 
 	const select: Prisma.MiiSelect = {
