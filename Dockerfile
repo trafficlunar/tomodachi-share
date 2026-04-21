@@ -14,7 +14,7 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app /app
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN cd backend && pnpm build
+RUN cd backend && pnpm prisma migrate deploy && pnpm build
 
 FROM base AS runner
 
