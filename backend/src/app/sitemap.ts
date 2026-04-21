@@ -6,11 +6,8 @@ type SitemapRoute = MetadataRoute.Sitemap[0];
 export const revalidate = 43200; // update every 12 hours
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-	const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-	if (!baseUrl) {
-		console.error("NEXT_PUBLIC_BASE_URL environment variable missing");
-		return [];
-	}
+	const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL!;
+	const apiUrl = process.env.NEXT_PUBLIC_BASE_URL!;
 
 	const miis = await prisma.mii.findMany({
 		select: {
@@ -38,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 					lastModified: mii.createdAt,
 					changeFrequency: "weekly",
 					priority: 0.7,
-					images: [`${baseUrl}/mii/${mii.id}/image?type=metadata`],
+					images: [`${apiUrl}/mii/${mii.id}/image?type=metadata`],
 				}) as SitemapRoute,
 		),
 		// ...users.map(
