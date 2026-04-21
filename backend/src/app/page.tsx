@@ -1,9 +1,3 @@
 export default function IndexPage() {
-	return (
-		<html>
-			<body>
-				<p>TomodachiShare API</p>
-			</body>
-		</html>
-	);
+	return <p>TomodachiShare API</p>;
 }

@@ -29,16 +29,7 @@ export async function GET(request: NextRequest) {
 					id: true,
 					type: true,
 					returned: true,
-
-					notes: true,
-					reasons: true,
-					violatingMiis: {
-						select: {
-							miiId: true,
-							reason: true,
-						},
-					},
-
+					reason: true,
 					expiresAt: true,
 					createdAt: true,
 				},

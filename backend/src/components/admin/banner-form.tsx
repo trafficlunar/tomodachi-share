@@ -1,15 +1,16 @@
+"use client";
+
 import { useState } from "react";
 
 export default function BannerForm() {
 	const [message, setMessage] = useState("");
-	const API_URL = import.meta.env.VITE_API_URL;
 
 	const onClickClear = async () => {
-		await fetch(`${API_URL}/api/admin/banner`, { method: "DELETE", credentials: "include" }); // TODO
+		await fetch(`/api/admin/banner`, { method: "DELETE" });
 	};
 
 	const onClickSet = async () => {
-		await fetch(`${API_URL}/api/admin/banner`, { method: "POST", body: message, credentials: "include" });
+		await fetch(`/api/admin/banner`, { method: "POST", body: message });
 	};
 
 	return (

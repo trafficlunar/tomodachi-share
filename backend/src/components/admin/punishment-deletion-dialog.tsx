@@ -1,17 +1,27 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { Icon } from "@iconify/react";
 import SubmitButton from "../submit-button";
 
-export default function RegenerateImagesButton() {
+interface Props {
+	punishmentId: number;
+}
+
+export default function PunishmentDeletionDialog({ punishmentId }: Props) {
+	const router = useRouter();
+
 	const [isOpen, setIsOpen] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
 
 	const [error, setError] = useState<string | undefined>(undefined);
 
 	const handleSubmit = async () => {
-		const response = await fetch("/api/admin/regenerate-metadata-images", { method: "POST" });
+		const response = await fetch(`/api/admin/punish?id=${punishmentId}`, { method: "DELETE" });
 
 		if (!response.ok) {
 			const data = await response.json();
@@ -20,7 +30,7 @@ export default function RegenerateImagesButton() {
 			return;
 		}
 
-		close();
+		router.refresh();
 	};
 
 	const close = () => {
@@ -39,8 +49,8 @@ export default function RegenerateImagesButton() {
 
 	return (
 		<>
-			<button onClick={() => setIsOpen(true)} className="pill button w-fit">
-				Regenerate all Mii metadata images
+			<button onClick={() => setIsOpen(true)} aria-label="Delete Punishment" className="text-red-500 cursor-pointer hover:text-red-600 text-lg">
+				<Icon icon="material-symbols:close-rounded" />
 			</button>
 
 			{isOpen &&
@@ -59,13 +69,13 @@ export default function RegenerateImagesButton() {
 							}`}
 						>
 							<div className="flex justify-between items-center mb-2">
-								<h2 className="text-xl font-bold">Regenerate Images</h2>
+								<h2 className="text-xl font-bold">Punishment Deletion</h2>
 								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>
 
-							<p className="text-sm text-zinc-500">Are you sure? This will delete and regenerate every metadata image.</p>
+							<p className="text-sm text-zinc-500">Are you sure? This will delete the user&lsquo;s punishment and they will be able to come back.</p>
 
 							{error && <span className="text-red-400 font-bold mt-2">Error: {error}</span>}
 

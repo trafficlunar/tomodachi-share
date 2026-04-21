@@ -14,16 +14,7 @@ const punishSchema = z.object({
 		.number({ error: "Duration (days) must be a number" })
 		.int({ error: "Duration (days) must be an integer" })
 		.positive({ error: "Duration (days) must be valid" }),
-	notes: z.string(),
-	reasons: z.array(z.string()).optional(),
-	miiReasons: z
-		.array(
-			z.object({
-				id: z.number({ error: "Mii ID must be a number" }).int({ error: "Mii ID must be an integer" }).positive({ error: "Mii ID must be valid" }),
-				reason: z.string(),
-			}),
-		)
-		.optional(),
+	reason: z.string(),
 });
 
 export async function POST(request: NextRequest) {
@@ -42,7 +33,7 @@ export async function POST(request: NextRequest) {
 	const parsed = punishSchema.safeParse(body);
 
 	if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
-	const { type, duration, notes, reasons, miiReasons } = parsed.data;
+	const { type, duration, reason } = parsed.data;
 
 	const expiresAt = type === "TEMP_EXILE" ? dayjs().add(duration, "days").toDate() : null;
 
@@ -51,14 +42,7 @@ export async function POST(request: NextRequest) {
 			userId,
 			type: type as PunishmentType,
 			expiresAt,
-			notes,
-			reasons: reasons?.length !== 0 ? reasons : [],
-			violatingMiis: {
-				create: miiReasons?.map((mii) => ({
-					miiId: mii.id,
-					reason: mii.reason,
-				})),
-			},
+			reason,
 		},
 	});
 

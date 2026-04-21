@@ -21,8 +21,8 @@ import ProfileLayout from "./pages/profile/layout.tsx";
 import ProfileLikesPage from "./pages/profile/likes.tsx";
 import ReportMiiPage from "./pages/report/mii.tsx";
 import ReportUserPage from "./pages/report/user.tsx";
-import AdminPage from "./pages/admin.tsx";
 import EditMiiPage from "./pages/edit.tsx";
+import PunishedPage from "./pages/punished.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
@@ -47,7 +47,7 @@ createRoot(document.getElementById("root")!).render(
 						<Route path="/out" element={<LinkOutPage />} />
 						<Route path="/privacy" element={<PrivacyPage />} />
 						<Route path="/terms-of-service" element={<TermsOfServicePage />} />
-						<Route path="/admin" element={<AdminPage />} />
+						<Route path="/punished" element={<PunishedPage />} />
 						<Route path="*" element={<NotFoundPage />} />
 					</Routes>
 				</Layout>

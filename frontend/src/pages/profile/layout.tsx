@@ -105,10 +105,10 @@ export default function ProfileLayout() {
 						</Link>
 					)}
 					{isOwnProfile && isAdmin && (
-						<Link aria-label="Go to Admin" to="/admin">
+						<a aria-label="Go to Admin" href={`${import.meta.env.VITE_API_URL}/admin`}>
 							<Icon icon="mdi:shield-moon" />
 							<span>Admin</span>
-						</Link>
+						</a>
 					)}
 					{isOwnProfile && page !== "/profile/likes" && (
 						<Link aria-label="Go to My Likes" to="/profile/likes">

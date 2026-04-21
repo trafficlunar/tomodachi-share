@@ -17,17 +17,6 @@ export async function POST(request: NextRequest) {
 			userId: Number(session.user?.id),
 			returned: false,
 		},
-		include: {
-			violatingMiis: {
-				include: {
-					mii: {
-						select: {
-							name: true,
-						},
-					},
-				},
-			},
-		},
 	});
 
 	if (!activePunishment) return rateLimit.sendResponse({ error: "You have no active punishments!" }, 404);

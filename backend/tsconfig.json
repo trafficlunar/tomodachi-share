@@ -30,12 +30,10 @@
 		".next/types/**/*.ts",
 		".next/dev/types/**/*.ts",
 		"../shared/src/constants.ts",
-		"../frontend/src/lib/abbreviation.ts",
 		"../shared/src/qr-codes.ts",
 		"../shared/src/three-ds-tomodachi-life-mii.ts",
 		"../shared/src/types.d.ts",
 		"../shared/src/switch.ts",
-		"../frontend/src/components/provider.tsx",
 		"../shared/src/schemas.ts"
 	],
 	"exclude": ["node_modules"]

@@ -90,12 +90,9 @@ model Mii {
 
   createdAt DateTime @default(now())
 
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  likeCount Int  @default(0)
-
-  punishmentId Int?
-  punishments  MiiPunishment[]
-  likedBy      Like[]
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likeCount Int    @default(0)
+  likedBy   Like[]
 
   @@index([tags], type: Gin)
   @@index([createdAt])
@@ -142,28 +139,13 @@ model Report {
   @@map("reports")
 }
 
-model MiiPunishment {
-  punishmentId Int
-  miiId        Int
-  reason       String
-
-  punishment Punishment @relation(fields: [punishmentId], references: [id], onDelete: Cascade)
-  mii        Mii        @relation(fields: [miiId], references: [id], onDelete: Cascade)
-
-  @@id([punishmentId, miiId])
-  @@map("mii_punishments")
-}
-
 model Punishment {
   id       Int            @id @default(autoincrement())
   userId   Int
   type     PunishmentType
   returned Boolean        @default(false)
 
-  notes         String
-  reasons       String[]
-  violatingMiis MiiPunishment[]
-
+  reason    String
   expiresAt DateTime?
   createdAt DateTime  @default(now())
 
