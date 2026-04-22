@@ -29,17 +29,6 @@ export default async function ExiledPage() {
 			userId: Number(session?.user.id),
 			returned: false,
 		},
-		include: {
-			violatingMiis: {
-				include: {
-					mii: {
-						select: {
-							name: true,
-						},
-					},
-				},
-			},
-		},
 	});
 
 	if (!activePunishment) redirect("/");
@@ -74,35 +63,8 @@ export default async function ExiledPage() {
 				</p>
 
 				<p className="mt-1">
-					<span className="font-bold">Note:</span> {activePunishment.notes}
+					<span className="font-bold">Reason:</span> {activePunishment.reason}
 				</p>
-
-				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-4">
-					<hr className="grow border-zinc-300" />
-					<span>Violating Items</span>
-					<hr className="grow border-zinc-300" />
-				</div>
-
-				<div className="flex flex-col gap-2 p-4">
-					{activePunishment.reasons.map((index, reason) => (
-						<div key={index} className="bg-orange-100 rounded-xl border-2 border-orange-400 p-4">
-							<p>
-								<span className="font-bold">Reason:</span> {reason}
-							</p>
-						</div>
-					))}
-					{activePunishment.violatingMiis.map((mii) => (
-						<div key={mii.miiId} className="bg-orange-100 rounded-xl border-2 border-orange-400 flex">
-							<Image src={`/mii/${mii.miiId}/image?type=mii`} alt="mii image" width={96} height={96} />
-							<div className="p-4">
-								<p className="text-xl font-bold line-clamp-1">{mii.mii.name}</p>
-								<p className="text-sm">
-									<span className="font-bold">Reason:</span> {mii.reason}
-								</p>
-							</div>
-						</div>
-					))}
-				</div>
 
 				<hr className="border-zinc-300 mt-2 mb-4" />
 

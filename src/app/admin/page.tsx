@@ -43,15 +43,6 @@ export default async function AdminPage({ searchParams }: Props) {
 			</div>
 
 			<BannerForm />
-
-			{/* Separator */}
-			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-				<hr className="grow border-zinc-300" />
-				<span>Control Center</span>
-				<hr className="grow border-zinc-300" />
-			</div>
-
-			<ControlCenter />
 			<RegenerateImagesButton />
 
 			{/* Separator */}

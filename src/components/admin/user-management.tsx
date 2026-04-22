@@ -5,7 +5,7 @@
 import { useState } from "react";
 
 import { Icon } from "@iconify/react";
-import { Prisma, PunishmentType } from "@prisma/client";
+import { Prisma, Punishment, PunishmentType } from "@prisma/client";
 
 import ProfilePicture from "../profile-picture";
 import SubmitButton from "../submit-button";
@@ -16,11 +16,7 @@ interface ApiResponse {
 	name: string;
 	image: string;
 	createdAt: string;
-	punishments: Prisma.PunishmentGetPayload<{
-		include: {
-			violatingMiis: true;
-		};
-	}>[];
+	punishments: Punishment[];
 }
 
 interface MiiList {
@@ -170,7 +166,7 @@ export default function Punishments() {
 												</div>
 											</div>
 											<p className="text-sm text-zinc-600">
-												<strong>Notes:</strong> {punishment.notes}
+												<strong>Reason:</strong> {punishment.reason}
 											</p>
 											{punishment.type !== "WARNING" && (
 												<p className="text-sm text-zinc-600">
@@ -185,24 +181,6 @@ export default function Punishments() {
 													<strong>Returned:</strong> {JSON.stringify(punishment.returned)}
 												</p>
 											)}
-											<p className="text-sm text-zinc-600">
-												<strong>Reasons:</strong>
-											</p>
-											<ul className="ml-8 list-disc text-sm text-zinc-600">
-												{punishment.reasons.map((reason, index) => (
-													<li key={index}>{reason}</li>
-												))}
-											</ul>
-											<p className="text-sm text-zinc-600">
-												<strong>Mii Reasons:</strong>
-											</p>
-											<ul className="ml-8 list-disc text-sm text-zinc-600">
-												{punishment.violatingMiis.map((mii) => (
-													<li key={mii.miiId}>
-														{mii.miiId}: {mii.reason}
-													</li>
-												))}
-											</ul>
 										</div>
 									))}
 								</>
