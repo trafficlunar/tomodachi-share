@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useStore } from "@nanostores/react";
 
 import { userNameSchema } from "@tomodachi-share/shared/schemas";
 
@@ -7,6 +8,8 @@ import SubmitDialogButton from "./submit-dialog-button";
 import DeleteAccount from "./delete-account";
 import z from "zod";
 import { useNavigate } from "react-router";
+import { session } from "../../session";
+import { type Theme, applyTheme } from "../../lib/theme";
 
 interface Props {
 	currentDescription: string | null | undefined;
@@ -14,11 +17,21 @@ interface Props {
 
 export default function ProfileSettings({ currentDescription }: Props) {
 	const navigate = useNavigate();
+	const $session = useStore(session);
 	const [description, setDescription] = useState(currentDescription);
 	const [name, setName] = useState("");
+	const [selectedTheme, setSelectedTheme] = useState<Theme>("SYSTEM");
+	const [themeSaveError, setThemeSaveError] = useState<string | undefined>(undefined);
 
 	const [descriptionChangeError, setDescriptionChangeError] = useState<string | undefined>(undefined);
 	const [nameChangeError, setNameChangeError] = useState<string | undefined>(undefined);
+
+	// Initialize theme from session when it loads
+	useEffect(() => {
+		if ($session?.user?.theme) {
+			setSelectedTheme($session.user.theme);
+		}
+	}, [$session?.user?.theme]);
 
 	const handleSubmitDescriptionChange = async (close: () => void) => {
 		const parsed = z.string().trim().max(256).safeParse(description);
@@ -68,28 +81,50 @@ export default function ProfileSettings({ currentDescription }: Props) {
 		navigate(0);
 	};
 
+	const handleThemeSave = async (close: () => void) => {
+		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/theme`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ theme: selectedTheme }),
+			credentials: "include",
+		});
+
+		if (!response.ok) {
+			const { error } = await response.json();
+			setThemeSaveError(error);
+			return;
+		}
+
+		// Apply the theme immediately
+		applyTheme(selectedTheme);
+		close();
+		navigate(0);
+	};
+
 	return (
-		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-4">
+		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-4 dark:bg-slate-900 dark:border-slate-700">
 			<div>
-				<h2 className="text-2xl font-bold">Profile Settings</h2>
-				<p className="text-sm text-zinc-500">Update your profile picture, description, name, etc.</p>
+				<h2 className="text-2xl font-bold dark:text-slate-100">Settings</h2>
+				<p className="text-sm text-zinc-500 dark:text-slate-400">Update your account info, username, and site-wide theme.</p>
 			</div>
 
 			{/* Separator */}
-			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-1">
-				<hr className="grow border-zinc-300" />
+			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-1 dark:text-slate-400">
+				<hr className="grow border-zinc-300 dark:border-slate-600" />
 				<span>Account Info</span>
-				<hr className="grow border-zinc-300" />
+				<hr className="grow border-zinc-300 dark:border-slate-600" />
 			</div>
 
 			{/* Profile Picture */}
-			<ProfilePictureSettings />
+			<div className="dark:border-slate-600">
+				<ProfilePictureSettings />
+			</div>
 
 			{/* Description */}
 			<div className="grid grid-cols-5 gap-4 max-lg:grid-cols-1">
 				<div className="col-span-3">
-					<label className="font-semibold">About Me</label>
-					<p className="text-sm text-zinc-500">Write about yourself on your profile</p>
+					<label className="font-semibold dark:text-slate-100">About Me</label>
+					<p className="text-sm text-zinc-500 dark:text-slate-400">Write about yourself on your profile</p>
 				</div>
 
 				<div className="flex justify-end gap-1 h-min col-span-2">
@@ -102,7 +137,7 @@ export default function ProfileSettings({ currentDescription }: Props) {
 							value={description || ""}
 							onChange={(e) => setDescription(e.target.value)}
 						/>
-						<p className="text-xs text-zinc-400 mt-1 text-right">{(description || "").length}/256</p>
+						<p className="text-xs text-zinc-400 mt-1 text-right dark:text-slate-500">{(description || "").length}/256</p>
 					</div>
 
 					<SubmitDialogButton
@@ -117,8 +152,8 @@ export default function ProfileSettings({ currentDescription }: Props) {
 			{/* Change Name */}
 			<div className="grid grid-cols-5 gap-4 max-lg:grid-cols-1">
 				<div className="col-span-3">
-					<label className="font-semibold">Change Name</label>
-					<p className="text-sm text-zinc-500">This is your name shown on your profile and miis — feel free to change it anytime</p>
+					<label className="font-semibold dark:text-slate-100">Change Name</label>
+					<p className="text-sm text-zinc-500 dark:text-slate-400">This is your name shown on your profile and miis — feel free to change it anytime</p>
 				</div>
 
 				<div className="flex justify-end gap-1 h-min col-span-2">
@@ -129,26 +164,59 @@ export default function ProfileSettings({ currentDescription }: Props) {
 						error={nameChangeError}
 						onSubmit={handleSubmitNameChange}
 					>
-						<div className="bg-orange-100 rounded-xl border-2 border-amber-500 mt-4 px-2 py-1">
-							<p className="font-semibold">New name:</p>
-							<p className="indent-4">&apos;{name}&apos;</p>
+						<div className="bg-orange-100 rounded-xl border-2 border-amber-500 mt-4 px-2 py-1 dark:bg-slate-800 dark:border-slate-600">
+							<p className="font-semibold dark:text-slate-100">New name:</p>
+							<p className="indent-4 dark:text-slate-300">&apos;{name}&apos;</p>
 						</div>
 					</SubmitDialogButton>
 				</div>
 			</div>
 
-			{/* Separator */}
-			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-				<hr className="grow border-zinc-300" />
+			{/* Separator - Personalization */}
+			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1 dark:text-slate-400">
+				<hr className="grow border-zinc-300 dark:border-slate-600" />
+				<span>Personalization</span>
+				<hr className="grow border-zinc-300 dark:border-slate-600" />
+			</div>
+
+			{/* Theme Selection */}
+			<div className="grid grid-cols-5 gap-4 max-lg:grid-cols-1">
+				<div className="col-span-3">
+					<label className="font-semibold dark:text-slate-100">Site Theme</label>
+					<p className="text-sm text-zinc-500 dark:text-slate-400">Choose your preferred color theme for the site</p>
+				</div>
+
+				<div className="flex justify-end gap-1 h-min col-span-2">
+					<select
+						className="pill input flex-1 rounded-xl! cursor-pointer"
+						value={selectedTheme}
+						onChange={(e) => setSelectedTheme(e.target.value as Theme)}
+					>
+						<option value="LIGHT">Light</option>
+						<option value="DARK">Dark</option>
+						<option value="SYSTEM">System</option>
+					</select>
+					<SubmitDialogButton
+						title="Confirm Theme Change"
+						description="Are you sure you want to save this theme preference to your account?"
+						error={themeSaveError}
+						onSubmit={handleThemeSave}
+					/>
+				</div>
+			</div>
+
+			{/* Separator - Danger Zone */}
+			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1 dark:text-slate-400">
+				<hr className="grow border-zinc-300 dark:border-slate-600" />
 				<span>Danger Zone</span>
-				<hr className="grow border-zinc-300" />
+				<hr className="grow border-zinc-300 dark:border-slate-600" />
 			</div>
 
 			{/* Delete Account */}
 			<div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
 				<div>
-					<label className="font-semibold">Delete Account</label>
-					<p className="text-sm text-zinc-500">This will permanently remove your account and all uploaded Miis. This action cannot be undone</p>
+					<label className="font-semibold dark:text-slate-100">Delete Account</label>
+					<p className="text-sm text-zinc-500 dark:text-slate-400">This will permanently remove your account and all uploaded Miis. This action cannot be undone</p>
 				</div>
 
 				<DeleteAccount />

@@ -50,18 +50,18 @@ export default function SubmitDialogButton({ title, description, onSubmit, error
 						/>
 
 						<div
-							className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg p-6 w-full max-w-md transition-discrete duration-300 flex flex-col ${
+							className={`z-50 bg-orange-50 border-2 border-amber-500 rounded-2xl shadow-lg p-6 w-full max-w-md transition-discrete duration-300 flex flex-col dark:bg-slate-800 dark:border-slate-600 ${
 								isVisible ? "scale-100 opacity-100" : "scale-75 opacity-0"
 							}`}
 						>
 							<div className="flex justify-between items-center mb-2">
-								<h2 className="text-xl font-bold">{title}</h2>
+								<h2 className="text-xl font-bold dark:text-slate-100">{title}</h2>
 								<button onClick={close} aria-label="Close" className="text-red-400 hover:text-red-500 text-2xl cursor-pointer">
 									<Icon icon="material-symbols:close-rounded" />
 								</button>
 							</div>
 
-							<p className="text-sm text-zinc-500">{description}</p>
+							<p className="text-sm text-zinc-500 dark:text-slate-400">{description}</p>
 
 							{children}
 							{error && <span className="text-red-400 font-bold mt-2">Error: {error}</span>}

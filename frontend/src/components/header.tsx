@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import SearchBar from "./search-bar";
+import ThemeToggle from "./theme-toggle";
 import { Link } from "react-router";
 import { useStore } from "@nanostores/react";
 import { session } from "../session";
@@ -54,11 +55,16 @@ export default function Header() {
 					</Link>
 				</li>
 				{!$session?.user ? (
-					<li>
-						<Link to={"/login"} className="pill button h-full">
-							Login
-						</Link>
-					</li>
+					<>
+						<li>
+							<ThemeToggle size="md" />
+						</li>
+						<li>
+							<Link to={"/login"} className="pill button h-full">
+								Login
+							</Link>
+						</li>
+					</>
 				) : (
 					<>
 						<li title="Your profile">
@@ -81,6 +87,9 @@ export default function Header() {
 								/>
 								<span className="pr-4 overflow-hidden whitespace-nowrap text-ellipsis w-full">{$session?.user?.name ?? "unknown"}</span>
 							</Link>
+						</li>
+						<li>
+							<ThemeToggle size="md" />
 						</li>
 						<li title="Logout">
 							<Link

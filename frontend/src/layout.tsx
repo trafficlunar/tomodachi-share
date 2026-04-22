@@ -5,6 +5,7 @@ import Header from "./components/header";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { session } from "./session";
+import { initializeTheme } from "./lib/theme";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	const $session = useStore(session);
@@ -12,6 +13,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 	const location = useLocation();
 
 	const API_URL = import.meta.env.VITE_API_URL;
+
+	// Initialize theme from session/cookie
+	useEffect(() => {
+		initializeTheme($session?.user?.theme ?? null);
+	}, [$session?.user?.theme]);
 
 	// Calculate header height
 	useEffect(() => {
