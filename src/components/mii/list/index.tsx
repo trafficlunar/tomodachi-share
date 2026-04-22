@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 import SortSelect from "./sort-select";
+import TimeRangeSelect from "./time-range-select";
 import Pagination from "./pagination";
 import FilterMenu from "./filter-menu";
 import MiiGrid from "./mii-grid";
@@ -20,7 +21,7 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 	const parsed = searchSchema.safeParse(searchParams);
 	if (!parsed.success) return <h1>{parsed.error.issues[0].message}</h1>;
 
-	const { q: query, sort, tags, exclude, platform, gender, makeup, allowCopying, quarantined, page = 1, limit = 24 } = parsed.data;
+	const { q: query, sort, tags, exclude, platform, gender, makeup, allowCopying, quarantined, page = 1, limit = 24, timeRange } = parsed.data;
 
 	// My Likes page
 	let miiIdsLiked: number[] | undefined = undefined;
@@ -66,6 +67,14 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 		...(makeup && { makeup: { equals: makeup } }),
 		// Quarantined
 		...(!quarantined && !userId && { quarantined: false }),
+		// Time range
+		...(timeRange && {
+			createdAt: {
+				gte: new Date(
+					Date.now() - { day: 86400000, week: 604800000, month: 2592000000, year: 31536000000 }[timeRange],
+				),
+			},
+		}),
 	};
 
 	const select: Prisma.MiiSelect = {
@@ -140,6 +149,7 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 				<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
 					<FilterMenu />
 					<SortSelect />
+					<TimeRangeSelect />
 				</div>
 			</div>
 
