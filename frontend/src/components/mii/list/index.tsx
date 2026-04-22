@@ -20,9 +20,10 @@ interface ApiResponse {
 interface Props {
 	userId?: number;
 	parentPage?: "likes";
+	bypassCache?: boolean;
 }
 
-export default function MiiList({ parentPage, userId }: Props) {
+export default function MiiList({ parentPage, userId, bypassCache }: Props) {
 	const [searchParams] = useSearchParams();
 	const [data, setData] = useState<ApiResponse | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -34,6 +35,7 @@ export default function MiiList({ parentPage, userId }: Props) {
 		const params = new URLSearchParams(searchParams.toString());
 		if (userId) params.append("userId", userId.toString());
 		if (parentPage) params.append("parentPage", parentPage);
+		if (bypassCache) params.append("bypassCache", "true");
 
 		fetch(`${import.meta.env.VITE_API_URL}/api/mii/list?${params.toString()}`, { credentials: "include" })
 			.then((res) => {
@@ -71,7 +73,7 @@ export default function MiiList({ parentPage, userId }: Props) {
 							<span className="text-lg text-amber-700">{data.totalCount === 1 ? "Mii" : "Miis"}</span>
 						</div>
 
-						<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
+						<div className="relative flex flex-wrap items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
 							<FilterMenu />
 							<SortSelect />
 							<TimeRangeSelect />

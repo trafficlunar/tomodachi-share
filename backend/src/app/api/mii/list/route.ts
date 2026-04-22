@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
 		...(!quarantined && !userId && { quarantined: false }),
 		// Time range
 		...(timeRange && {
-			createdAt: {
+			reviewedAt: {
 				gte: new Date(Date.now() - { day: 86400000, week: 604800000, month: 2592000000, year: 31536000000 }[timeRange]),
 			},
 		}),
