@@ -22,6 +22,7 @@ export async function PATCH(request: NextRequest) {
 		},
 		data: {
 			in_queue: false,
+			reviewedAt: new Date(),
 		},
 	});
 

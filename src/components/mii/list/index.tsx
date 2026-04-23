@@ -69,10 +69,8 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 		...(!quarantined && !userId && { quarantined: false }),
 		// Time range
 		...(timeRange && {
-			createdAt: {
-				gte: new Date(
-					Date.now() - { day: 86400000, week: 604800000, month: 2592000000, year: 31536000000 }[timeRange],
-				),
+			reviewedAt: {
+				gte: new Date(Date.now() - { day: 86400000, week: 604800000, month: 2592000000, year: 31536000000 }[timeRange]),
 			},
 		}),
 	};
@@ -146,7 +144,7 @@ export default async function MiiList({ searchParams, userId, parentPage }: Prop
 					<span className="text-lg text-amber-700">{totalCount === 1 ? "Mii" : "Miis"}</span>
 				</div>
 
-				<div className="relative flex items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
+				<div className="relative flex flex-wrap items-center justify-end gap-2 w-full md:max-w-2/3 max-md:justify-center">
 					<FilterMenu />
 					<SortSelect />
 					<TimeRangeSelect />
