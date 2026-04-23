@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
 		},
 		data: {
 			in_queue: false,
+			reviewedAt: new Date(),
 		},
 	});
 
