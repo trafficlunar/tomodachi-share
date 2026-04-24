@@ -106,7 +106,7 @@ It's a good idea to build the project locally before submitting a pull request. 
 $ pnpm --filter backend build
 $ pnpm --filter frontend build
 
-# Run the built version (Vite likes to change the port when this happens, so you probably need to change both .env files)
+# Run the built version (Note: Vite likes to change the port when this happens, so you probably need to change both .env files)
 $ pnpm --filter backend start
 $ pnpm --filter frontend build
 ```
