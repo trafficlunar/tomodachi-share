@@ -12,13 +12,13 @@ export default function LoginPage() {
 
 	return (
 		<div className="grow flex items-center justify-center">
-			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg px-10 py-12 max-w-md text-center">
-				<h1 className="text-3xl font-bold mb-4">Welcome to TomodachiShare!</h1>
+			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg px-10 py-12 max-w-md text-center dark:bg-slate-800 dark:border-slate-600">
+				<h1 className="text-3xl font-bold mb-4 dark:text-slate-100">Welcome to TomodachiShare!</h1>
 
-				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-8">
-					<hr className="grow border-zinc-300" />
+				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-8 dark:text-slate-400">
+					<hr className="grow border-zinc-300 dark:border-slate-600" />
 					<span>Choose your login method</span>
-					<hr className="grow border-zinc-300" />
+					<hr className="grow border-zinc-300 dark:border-slate-600" />
 				</div>
 
 				<div className="flex flex-col items-center gap-2">
@@ -48,13 +48,13 @@ export default function LoginPage() {
 					</Link>
 				</div>
 
-				<p className="mt-8 text-xs text-zinc-400">
+				<p className="mt-8 text-xs text-zinc-400 dark:text-slate-500">
 					By signing up, you agree to the{" "}
-					<Link to="/terms-of-service" className="underline hover:text-zinc-600">
+					<Link to="/terms-of-service" className="underline hover:text-zinc-600 dark:hover:text-slate-300">
 						Terms of Service
 					</Link>{" "}
 					and{" "}
-					<Link to="/privacy" className="underline hover:text-zinc-600">
+					<Link to="/privacy" className="underline hover:text-zinc-600 dark:hover:text-slate-300">
 						Privacy Policy
 					</Link>
 					.

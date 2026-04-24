@@ -31,14 +31,8 @@ export default function ThemeToggle({ size = "md", className = "" }: ThemeToggle
 	const getIcon = () => {
 		if (theme === "DARK") return <Icon icon="mdi:moon" fontSize={iconSizes[size]} />;
 		if (theme === "LIGHT") return <Icon icon="mdi:white-balance-sunny" fontSize={iconSizes[size]} />;
-		// SYSTEM or undefined - show both
-		return (
-			<div className="flex items-center">
-				<Icon icon="mdi:white-balance-sunny" fontSize={iconSizes[size] - 4} />
-				<span className="mx-0.5 text-xs">/</span>
-				<Icon icon="mdi:moon" fontSize={iconSizes[size] - 4} />
-			</div>
-		);
+		// SYSTEM or undefined - show computer/monitor icon
+		return <Icon icon="mdi:monitor" fontSize={iconSizes[size]} />;
 	};
 
 	const getTooltip = () => {

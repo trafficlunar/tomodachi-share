@@ -43,14 +43,14 @@ export default function Header() {
 					<Link
 						to={`${import.meta.env.VITE_API_URL}/random`}
 						aria-label="Go to Random Link"
-						className="pill button p-0! h-full aspect-square"
+						className="pill button p-0! h-full aspect-square dark:bg-orange-300 dark:border-orange-400"
 						data-tooltip="Go to a Random Mii"
 					>
 						<Icon icon="mdi:dice-3" fontSize={28} />
 					</Link>
 				</li>
 				<li>
-					<Link to={"/submit"} className="pill button h-full">
+					<Link to={"/submit"} className="pill button h-full dark:bg-orange-300 dark:border-orange-400">
 						Submit
 					</Link>
 				</li>
@@ -60,7 +60,7 @@ export default function Header() {
 							<ThemeToggle size="md" />
 						</li>
 						<li>
-							<Link to={"/login"} className="pill button h-full">
+							<Link to={"/login"} className="pill button h-full dark:bg-orange-300 dark:border-orange-400">
 								Login
 							</Link>
 						</li>
@@ -71,7 +71,7 @@ export default function Header() {
 							<Link
 								to={`/profile/${$session?.user?.id}`}
 								aria-label="Go to profile"
-								className="pill button gap-2! p-0! h-full max-w-64"
+								className="pill button gap-2! p-0! h-full max-w-64 dark:bg-orange-300 dark:border-orange-400"
 								data-tooltip="Your Profile"
 							>
 								<img
@@ -95,7 +95,7 @@ export default function Header() {
 							<Link
 								to={`${import.meta.env.VITE_API_URL}/api/auth/signout`}
 								aria-label="Log Out"
-								className="pill button p-2! aspect-square h-full"
+								className="pill button p-2! aspect-square h-full dark:bg-orange-300 dark:border-orange-400"
 								data-tooltip="Log Out"
 							>
 								<Icon icon="ic:round-logout" fontSize={24} />

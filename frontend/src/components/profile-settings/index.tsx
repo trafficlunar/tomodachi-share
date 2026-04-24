@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useStore } from "@nanostores/react";
+import { useState } from "react";
 
 import { userNameSchema } from "@tomodachi-share/shared/schemas";
 
@@ -8,8 +7,6 @@ import SubmitDialogButton from "./submit-dialog-button";
 import DeleteAccount from "./delete-account";
 import z from "zod";
 import { useNavigate } from "react-router";
-import { session } from "../../session";
-import { type Theme, applyTheme } from "../../lib/theme";
 
 interface Props {
 	currentDescription: string | null | undefined;
@@ -17,21 +14,11 @@ interface Props {
 
 export default function ProfileSettings({ currentDescription }: Props) {
 	const navigate = useNavigate();
-	const $session = useStore(session);
 	const [description, setDescription] = useState(currentDescription);
 	const [name, setName] = useState("");
-	const [selectedTheme, setSelectedTheme] = useState<Theme>("SYSTEM");
-	const [themeSaveError, setThemeSaveError] = useState<string | undefined>(undefined);
 
 	const [descriptionChangeError, setDescriptionChangeError] = useState<string | undefined>(undefined);
 	const [nameChangeError, setNameChangeError] = useState<string | undefined>(undefined);
-
-	// Initialize theme from session when it loads
-	useEffect(() => {
-		if ($session?.user?.theme) {
-			setSelectedTheme($session.user.theme);
-		}
-	}, [$session?.user?.theme]);
 
 	const handleSubmitDescriptionChange = async (close: () => void) => {
 		const parsed = z.string().trim().max(256).safeParse(description);
@@ -81,31 +68,11 @@ export default function ProfileSettings({ currentDescription }: Props) {
 		navigate(0);
 	};
 
-	const handleThemeSave = async (close: () => void) => {
-		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/theme`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ theme: selectedTheme }),
-			credentials: "include",
-		});
-
-		if (!response.ok) {
-			const { error } = await response.json();
-			setThemeSaveError(error);
-			return;
-		}
-
-		// Apply the theme immediately
-		applyTheme(selectedTheme);
-		close();
-		navigate(0);
-	};
-
 	return (
 		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-4 dark:bg-slate-900 dark:border-slate-700">
 			<div>
 				<h2 className="text-2xl font-bold dark:text-slate-100">Settings</h2>
-				<p className="text-sm text-zinc-500 dark:text-slate-400">Update your account info, username, and site-wide theme.</p>
+				<p className="text-sm text-zinc-500 dark:text-slate-400">Update your account info and username.</p>
 			</div>
 
 			{/* Separator */}
@@ -169,39 +136,6 @@ export default function ProfileSettings({ currentDescription }: Props) {
 							<p className="indent-4 dark:text-slate-300">&apos;{name}&apos;</p>
 						</div>
 					</SubmitDialogButton>
-				</div>
-			</div>
-
-			{/* Separator - Personalization */}
-			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1 dark:text-slate-400">
-				<hr className="grow border-zinc-300 dark:border-slate-600" />
-				<span>Personalization</span>
-				<hr className="grow border-zinc-300 dark:border-slate-600" />
-			</div>
-
-			{/* Theme Selection */}
-			<div className="grid grid-cols-5 gap-4 max-lg:grid-cols-1">
-				<div className="col-span-3">
-					<label className="font-semibold dark:text-slate-100">Site Theme</label>
-					<p className="text-sm text-zinc-500 dark:text-slate-400">Choose your preferred color theme for the site</p>
-				</div>
-
-				<div className="flex justify-end gap-1 h-min col-span-2">
-					<select
-						className="pill input flex-1 rounded-xl! cursor-pointer"
-						value={selectedTheme}
-						onChange={(e) => setSelectedTheme(e.target.value as Theme)}
-					>
-						<option value="LIGHT">Light</option>
-						<option value="DARK">Dark</option>
-						<option value="SYSTEM">System</option>
-					</select>
-					<SubmitDialogButton
-						title="Confirm Theme Change"
-						description="Are you sure you want to save this theme preference to your account?"
-						error={themeSaveError}
-						onSubmit={handleThemeSave}
-					/>
 				</div>
 			</div>
 
