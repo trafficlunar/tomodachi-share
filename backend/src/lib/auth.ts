@@ -39,6 +39,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			if (user) {
 				session.user.id = user.id;
 				session.user.email = user.email;
+				// @ts-expect-error - theme is added to User model
+				session.user.theme = user.theme;
 			}
 			return session;
 		},

@@ -69,27 +69,29 @@ export default function ProfileSettings({ currentDescription }: Props) {
 	};
 
 	return (
-		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-4">
+		<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-4 dark:bg-slate-900 dark:border-slate-700">
 			<div>
-				<h2 className="text-2xl font-bold">Profile Settings</h2>
-				<p className="text-sm text-zinc-500">Update your profile picture, description, name, etc.</p>
+				<h2 className="text-2xl font-bold dark:text-slate-100">Settings</h2>
+				<p className="text-sm text-zinc-500 dark:text-slate-400">Update your account info and username.</p>
 			</div>
 
 			{/* Separator */}
-			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-1">
-				<hr className="grow border-zinc-300" />
+			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-1 dark:text-slate-400">
+				<hr className="grow border-zinc-300 dark:border-slate-600" />
 				<span>Account Info</span>
-				<hr className="grow border-zinc-300" />
+				<hr className="grow border-zinc-300 dark:border-slate-600" />
 			</div>
 
 			{/* Profile Picture */}
-			<ProfilePictureSettings />
+			<div className="dark:border-slate-600">
+				<ProfilePictureSettings />
+			</div>
 
 			{/* Description */}
 			<div className="grid grid-cols-5 gap-4 max-lg:grid-cols-1">
 				<div className="col-span-3">
-					<label className="font-semibold">About Me</label>
-					<p className="text-sm text-zinc-500">Write about yourself on your profile</p>
+					<label className="font-semibold dark:text-slate-100">About Me</label>
+					<p className="text-sm text-zinc-500 dark:text-slate-400">Write about yourself on your profile</p>
 				</div>
 
 				<div className="flex justify-end gap-1 h-min col-span-2">
@@ -102,7 +104,7 @@ export default function ProfileSettings({ currentDescription }: Props) {
 							value={description || ""}
 							onChange={(e) => setDescription(e.target.value)}
 						/>
-						<p className="text-xs text-zinc-400 mt-1 text-right">{(description || "").length}/256</p>
+						<p className="text-xs text-zinc-400 mt-1 text-right dark:text-slate-500">{(description || "").length}/256</p>
 					</div>
 
 					<SubmitDialogButton
@@ -117,8 +119,8 @@ export default function ProfileSettings({ currentDescription }: Props) {
 			{/* Change Name */}
 			<div className="grid grid-cols-5 gap-4 max-lg:grid-cols-1">
 				<div className="col-span-3">
-					<label className="font-semibold">Change Name</label>
-					<p className="text-sm text-zinc-500">This is your name shown on your profile and miis — feel free to change it anytime</p>
+					<label className="font-semibold dark:text-slate-100">Change Name</label>
+					<p className="text-sm text-zinc-500 dark:text-slate-400">This is your name shown on your profile and miis — feel free to change it anytime</p>
 				</div>
 
 				<div className="flex justify-end gap-1 h-min col-span-2">
@@ -129,26 +131,26 @@ export default function ProfileSettings({ currentDescription }: Props) {
 						error={nameChangeError}
 						onSubmit={handleSubmitNameChange}
 					>
-						<div className="bg-orange-100 rounded-xl border-2 border-amber-500 mt-4 px-2 py-1">
-							<p className="font-semibold">New name:</p>
-							<p className="indent-4">&apos;{name}&apos;</p>
+						<div className="bg-orange-100 rounded-xl border-2 border-amber-500 mt-4 px-2 py-1 dark:bg-slate-800 dark:border-slate-600">
+							<p className="font-semibold dark:text-slate-100">New name:</p>
+							<p className="indent-4 dark:text-slate-300">&apos;{name}&apos;</p>
 						</div>
 					</SubmitDialogButton>
 				</div>
 			</div>
 
-			{/* Separator */}
-			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
-				<hr className="grow border-zinc-300" />
+			{/* Separator - Danger Zone */}
+			<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1 dark:text-slate-400">
+				<hr className="grow border-zinc-300 dark:border-slate-600" />
 				<span>Danger Zone</span>
-				<hr className="grow border-zinc-300" />
+				<hr className="grow border-zinc-300 dark:border-slate-600" />
 			</div>
 
 			{/* Delete Account */}
 			<div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
 				<div>
-					<label className="font-semibold">Delete Account</label>
-					<p className="text-sm text-zinc-500">This will permanently remove your account and all uploaded Miis. This action cannot be undone</p>
+					<label className="font-semibold dark:text-slate-100">Delete Account</label>
+					<p className="text-sm text-zinc-500 dark:text-slate-400">This will permanently remove your account and all uploaded Miis. This action cannot be undone</p>
 				</div>
 
 				<DeleteAccount />

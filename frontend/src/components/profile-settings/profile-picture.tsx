@@ -43,8 +43,8 @@ export default function ProfilePictureSettings() {
 	return (
 		<div className="grid grid-cols-5 gap-4 max-lg:grid-cols-1">
 			<div className="col-span-3">
-				<label className="font-semibold">Profile Picture</label>
-				<p className="text-sm text-zinc-500">Manage your profile picture. Can only be changed once every 7 days.</p>
+				<label className="font-semibold dark:text-slate-100">Profile Picture</label>
+				<p className="text-sm text-zinc-500 dark:text-slate-400">Manage your profile picture. Can only be changed once every 7 days.</p>
 			</div>
 
 			<div className="flex flex-col col-span-2">
@@ -61,7 +61,7 @@ export default function ProfilePictureSettings() {
 							alt="new profile picture"
 							width={96}
 							height={96}
-							className="rounded-full aspect-square border-2 border-amber-500 object-cover"
+							className="rounded-full aspect-square border-2 border-amber-500 object-cover dark:border-slate-600"
 						/>
 					</Dropzone>
 				</div>
@@ -83,19 +83,19 @@ export default function ProfilePictureSettings() {
 						error={error}
 						onSubmit={handleSubmit}
 					>
-						<p className="text-sm text-zinc-500 mt-2">
+						<p className="text-sm text-zinc-500 mt-2 dark:text-slate-400">
 							After submitting, you can change it again on {changeDate.toDate().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
 							.
 						</p>
 
-						<div className="bg-orange-100 rounded-xl border-2 border-amber-500 mt-4 px-2 py-1 flex items-center">
-							<p className="font-semibold mb-2">New profile picture:</p>
+						<div className="bg-orange-100 rounded-xl border-2 border-amber-500 mt-4 px-2 py-1 flex items-center dark:bg-slate-800 dark:border-slate-600">
+							<p className="font-semibold mb-2 dark:text-slate-100">New profile picture:</p>
 							<img
 								src={newPicture ? URL.createObjectURL(newPicture) : "/guest.png"}
 								alt="new profile picture"
 								width={128}
 								height={128}
-								className="rounded-full aspect-square border-2 border-amber-500 ml-auto object-cover"
+								className="rounded-full aspect-square border-2 border-amber-500 ml-auto object-cover dark:border-slate-600"
 							/>
 						</div>
 					</SubmitDialogButton>

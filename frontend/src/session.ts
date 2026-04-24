@@ -1,10 +1,13 @@
 import { atom } from "nanostores";
 
+export type Theme = "LIGHT" | "DARK" | "SYSTEM";
+
 interface SessionData {
 	user?: {
 		id: string;
 		image: string;
 		name: string;
+		theme?: Theme;
 	};
 }
 

@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Theme {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
 model User {
   id            Int       @id @default(autoincrement())
   name          String
@@ -14,6 +20,7 @@ model User {
   emailVerified DateTime?
   image         String?
   description   String?   @db.VarChar(512)
+  theme         Theme     @default(SYSTEM)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

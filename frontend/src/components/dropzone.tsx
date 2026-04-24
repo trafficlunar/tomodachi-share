@@ -30,13 +30,13 @@ export default function Dropzone({ onDrop, options, children }: Props) {
 			{...getRootProps()}
 			onDragOver={() => setIsDraggingOver(true)}
 			onDragLeave={() => setIsDraggingOver(false)}
-			className={`relative bg-orange-200 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border-2 border-dashed border-amber-500 select-none size-full transition-all duration-200 ${
+			className={`relative bg-orange-200 flex flex-col justify-center items-center gap-2 p-4 rounded-xl border-2 border-dashed border-amber-500 select-none size-full transition-all duration-200 dark:bg-slate-800 dark:border-slate-600 ${
 				isDraggingOver && "scale-105 brightness-90 shadow-xl"
 			}`}
 		>
 			{/* Used to transition from border-dashed to border-solid */}
 			<div
-				className={`absolute inset-0 rounded-[10px] outline-2 outline-amber-500 transition-opacity duration-300 ${
+				className={`absolute inset-0 rounded-[10px] outline-2 outline-amber-500 transition-opacity duration-300 dark:outline-slate-500 ${
 					isDraggingOver ? "opacity-100" : "opacity-0"
 				}`}
 			></div>
