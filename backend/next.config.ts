@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
 					{ key: "Access-Control-Allow-Headers", value: "Content-Type" },
 				],
 			},
+			{
+				// for images
+				source: "/mii/:path*",
+				headers: [
+					{ key: "Access-Control-Allow-Origin", value: process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:4321" },
+					{ key: "Access-Control-Allow-Credentials", value: "true" },
+				],
+			},
 		];
 	},
 };

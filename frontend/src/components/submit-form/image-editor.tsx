@@ -92,7 +92,7 @@ export default function ImageEditorPortrait({ isOpen, setIsOpen, image, setImage
 
 				<div className="relative w-full flex justify-center">
 					<ReactCrop crop={crop} onChange={(c) => setCrop(c)} className="rounded-2xl border-2 border-amber-500 overflow-hidden max-h-96">
-						<img ref={imageRef} src={image} />
+						<img ref={imageRef} src={image} crossOrigin="anonymous" />
 					</ReactCrop>
 					<canvas ref={canvasRef} className="hidden" />
 				</div>
