@@ -69,7 +69,7 @@ export default function MiiEditor({ instructions }: Props) {
 				{(Object.keys(TAB_COMPONENTS) as Tab[]).map((t) => {
 					const TabComponent = TAB_COMPONENTS[t];
 					return (
-						<div key={t} className={t === tab ? "grow relative p-3" : "hidden"}>
+						<div key={t} className={t === tab ? "grow relative p-3 min-h-0" : "hidden"}>
 							<TabComponent instructions={instructions} />
 						</div>
 					);
