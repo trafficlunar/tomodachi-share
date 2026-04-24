@@ -43,8 +43,6 @@ export async function GET(request: NextRequest) {
 			? { in_queue: true } // Only show queued Miis
 			: userId
 				? {
-						// Include queued Miis if user is on their profile
-						...(Number(session?.user?.id) === userId ? {} : { in_queue: false, needsFixing: null }),
 						userId,
 					}
 				: {
