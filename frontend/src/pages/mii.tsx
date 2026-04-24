@@ -101,6 +101,16 @@ export default function MiiPage() {
 						</p>
 					</div>
 				)}
+				{mii.needsFixing && (
+					<div className="bg-orange-50 border-2 border-orange-400 rounded-2xl shadow-lg p-4 flex items-start gap-3 text-orange-700">
+						<Icon icon="material-symbols:warning-rounded" className="text-2xl shrink-0" />
+						<p className="font-medium">
+							This Mii won't show up on the main page until fixes are made.
+							<br />
+							Reason: {mii.needsFixing}
+						</p>
+					</div>
+				)}
 				<div className="relative grid grid-cols-3 gap-4 max-md:grid-cols-1">
 					<div className="bg-amber-50 rounded-3xl border-2 border-amber-500 shadow-lg p-4 h-min flex flex-col items-center max-w-md w-full max-md:place-self-center max-md:row-start-2">
 						{/* Mii Image */}

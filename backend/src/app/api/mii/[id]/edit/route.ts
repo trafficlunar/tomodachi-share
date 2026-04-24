@@ -26,6 +26,11 @@ const editSchema = z.object({
 		.enum(["true", "false"])
 		.transform((v) => v === "true")
 		.optional(),
+	needsFixingReason: z
+		.string()
+		.max(256)
+		.optional()
+		.transform((val) => (val === "" ? null : val)),
 	gender: z.enum(MiiGender).optional(),
 	makeup: z.enum(MiiMakeup).optional(),
 	miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
@@ -86,6 +91,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 		tags: rawTags,
 		description: formData.get("description") ?? undefined,
 		quarantined: formData.get("quarantined") ?? undefined,
+		needsFixingReason: formData.get("needsFixingReason") ?? undefined,
 		gender: formData.get("gender") ?? undefined,
 		makeup: formData.get("makeup") ?? undefined,
 		miiPortraitImage: formData.get("miiPortraitImage"),
@@ -103,8 +109,22 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 		const error = `${path}: ${firstIssue.message}`;
 		return rateLimit.sendResponse({ error }, 400);
 	}
-	const { name, tags, description, quarantined, gender, makeup, miiPortraitImage, miiFeaturesImage, youtubeId, instructions, image1, image2, image3 } =
-		parsed.data;
+	const {
+		name,
+		tags,
+		description,
+		quarantined,
+		needsFixingReason,
+		gender,
+		makeup,
+		miiPortraitImage,
+		miiFeaturesImage,
+		youtubeId,
+		instructions,
+		image1,
+		image2,
+		image3,
+	} = parsed.data;
 
 	// Validate image files
 	const customImages: File[] = [];
@@ -133,7 +153,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 	}
 
 	// Prevent non-admins from quarantining Miis
-	if (quarantined && session.user?.id?.toString() !== process.env.NEXT_PUBLIC_ADMIN_USER_ID)
+	if (quarantined && needsFixingReason && session.user?.id?.toString() !== process.env.NEXT_PUBLIC_ADMIN_USER_ID)
 		return rateLimit.sendResponse({ error: `You're not an admin!` }, 401);
 
 	// Edit Mii in database
@@ -142,6 +162,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 	if (tags !== undefined) updateData.tags = tags.map((t) => profanity.censor(t));
 	if (description !== undefined) updateData.description = profanity.censor(description);
 	if (quarantined !== undefined) updateData.quarantined = quarantined;
+	if (needsFixingReason !== undefined) updateData.needsFixing = needsFixingReason;
 	if (mii.platform === "SWITCH" && gender !== undefined) updateData.gender = gender;
 	if (makeup !== undefined) updateData.makeup = makeup;
 	if (youtubeId !== undefined) updateData.youtubeId = youtubeId;

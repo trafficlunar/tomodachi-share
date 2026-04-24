@@ -77,6 +77,7 @@ model Mii {
   platform    MiiPlatform @default(THREE_DS)
   quarantined Boolean     @default(false)
   in_queue    Boolean     @default(false)
+  needsFixing String?
 
   instructions Json?
   youtubeId    String?

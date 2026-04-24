@@ -99,6 +99,7 @@ export async function GET(request: NextRequest) {
 		allowedCopying: true,
 		quarantined: true,
 		in_queue: true,
+		needsFixing: true,
 		likeCount: true,
 		// Mii liked check
 		...(session?.user?.id && {

@@ -54,6 +54,7 @@ export default function EditMiiPage() {
 	const instructions = useRef<SwitchMiiInstructions>(defaultInstructions);
 
 	const [quarantined, setQuarantined] = useState(false);
+	const [needsFixingReason, setNeedsFixingReason] = useState("");
 	const hasCustomImagesChanged = useRef(false);
 	const hasMiiPortraitChanged = useRef(false);
 	const hasMiiFeaturesChanged = useRef(false);
@@ -80,6 +81,7 @@ export default function EditMiiPage() {
 		if (makeup != mii.makeup) formData.append("makeup", makeup);
 		if (miiPortraitUri) formData.append("miiPortraitUri", miiPortraitUri);
 		if (quarantined != mii.quarantined) formData.append("quarantined", JSON.stringify(quarantined));
+		if (needsFixingReason !== mii.needsFixing) formData.append("needsFixingReason", needsFixingReason);
 		if (youtubeId != mii.youtubeId) formData.append("youtubeId", youtubeId);
 		if (minifyInstructions(structuredClone(instructions.current)) !== (mii.instructions as object))
 			formData.append("instructions", JSON.stringify(instructions.current));
@@ -185,6 +187,7 @@ export default function EditMiiPage() {
 				setMiiFeaturesUri(`${API_URL}/mii/${data.id}/image?type=features`);
 				setYouTubeId(data.youtubeId ?? "");
 				setQuarantined(data.quarantined);
+				setNeedsFixingReason(data.needsFixing);
 				instructions.current = deepMerge(defaultInstructions, (data.instructions as object) ?? {});
 				setLoading(false);
 			})
@@ -295,6 +298,22 @@ export default function EditMiiPage() {
 
 							<div className="col-span-2 flex gap-1">
 								<input type="checkbox" id="quarantined" className="checkbox-alt" checked={quarantined} onChange={(e) => setQuarantined(e.target.checked)} />
+							</div>
+						</div>
+
+						<div className="w-full grid grid-cols-3 items-center">
+							<label htmlFor="needsFixing" className="font-semibold py-2">
+								Needs Fixing
+							</label>
+
+							<div className="col-span-2 flex gap-1">
+								<input
+									id="needsFixing"
+									placeholder="Put the reason here..."
+									className="pill input w-full col-span-2"
+									value={needsFixingReason ?? ""}
+									onChange={(e) => setNeedsFixingReason(e.target.value)}
+								/>
 							</div>
 						</div>
 					</>
