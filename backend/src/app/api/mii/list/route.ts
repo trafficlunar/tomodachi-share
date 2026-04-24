@@ -44,12 +44,13 @@ export async function GET(request: NextRequest) {
 			: userId
 				? {
 						// Include queued Miis if user is on their profile
-						...(Number(session?.user?.id) === userId ? {} : { in_queue: false }),
+						...(Number(session?.user?.id) === userId ? {} : { in_queue: false, needsFixing: null }),
 						userId,
 					}
 				: {
 						// Don't show queued Miis on main page
 						in_queue: false,
+						needsFixing: null,
 					}),
 		// Only show liked miis on likes page
 		...(parentPage === "likes" && miiIdsLiked && { id: { in: miiIdsLiked } }),
