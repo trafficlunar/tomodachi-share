@@ -78,6 +78,10 @@ export default function ReportUserPage() {
 					<p className="text-xl font-bold overflow-hidden text-ellipsis">{user.name}</p>
 				</div>
 
+				<p className="text-sm bg-orange-100 border border-orange-400 rounded-lg px-3 py-2">
+					<span className="font-semibold">REMINDER:</span> Be sure to add notes so we know what's wrong.
+				</p>
+
 				<div className="w-full grid grid-cols-3 items-center">
 					<label htmlFor="reason" className="font-semibold">
 						Reason

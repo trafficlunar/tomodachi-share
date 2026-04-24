@@ -413,7 +413,7 @@ export default function SubmitPage() {
 											className="size-20 object-cover rounded-xl border-2 border-orange-300 shrink-0 opacity-70"
 										/>
 									</div>
-									<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={setMiiFeaturesUri} />
+									<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={setMiiFeaturesUri} forceCrop />
 								</div>
 							</div>
 
