@@ -30,5 +30,14 @@ export async function POST(request: NextRequest) {
 		return rateLimit.sendResponse({ error: "Failed to update description" }, 500);
 	}
 
+	// Tell Cloudflare to purge cache
+	fetch(`https://api.cloudflare.com/client/v4/zones/${process.env.CLOUDFLARE_ZONE_ID}/purge_cache`, {
+		method: "POST",
+		headers: { Authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`, "Content-Type": "application/json" },
+		body: JSON.stringify({
+			files: [`${process.env.NEXT_PUBLIC_BASE_URL}/api/profile/${session.user?.id}/info`],
+		}),
+	});
+
 	return rateLimit.sendResponse({ success: true });
 }
