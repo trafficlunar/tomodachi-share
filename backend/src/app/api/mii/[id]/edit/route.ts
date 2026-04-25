@@ -156,6 +156,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 	if (quarantined && needsFixingReason && session.user?.id?.toString() !== process.env.NEXT_PUBLIC_ADMIN_USER_ID)
 		return rateLimit.sendResponse({ error: `You're not an admin!` }, 401);
 
+	const clearImages = formData.get("clearImages") === "true";
+
 	// Edit Mii in database
 	const updateData: Prisma.MiiUpdateInput = {};
 	if (name !== undefined) updateData.name = profanity.censor(name); // Censor potentially inappropriate words
@@ -168,8 +170,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 	if (youtubeId !== undefined) updateData.youtubeId = youtubeId;
 	if (instructions !== undefined) updateData.instructions = instructions;
 	if (customImages.length > 0) updateData.imageCount = customImages.length;
+	else if (clearImages) updateData.imageCount = 0;
 
-	const imagesChanged = customImages.length > 0 || miiPortraitImage || miiFeaturesImage;
+	const imagesChanged = customImages.length > 0 || clearImages || miiPortraitImage || miiFeaturesImage;
 	if (settings.queueEnabled && imagesChanged) updateData.in_queue = true;
 
 	if (Object.keys(updateData).length === 0) return rateLimit.sendResponse({ error: "Nothing was changed" }, 400);
@@ -192,7 +195,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 	await fs.mkdir(miiUploadsDirectory, { recursive: true });
 
 	// Only touch files if new images were uploaded
-	if (customImages.length > 0) {
+	if (customImages.length > 0 || clearImages) {
 		// Delete all custom images
 		const files = await fs.readdir(miiUploadsDirectory);
 		await Promise.all(files.filter((file) => file.startsWith("image")).map((file) => fs.unlink(path.join(miiUploadsDirectory, file))));

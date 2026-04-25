@@ -87,10 +87,9 @@ export default function EditMiiPage() {
 			formData.append("instructions", JSON.stringify(instructions.current));
 
 		if (hasCustomImagesChanged.current) {
-			files.forEach((file, index) => {
-				// image1, image2, etc.
-				formData.append(`image${index + 1}`, file);
-			});
+			// image1, image2, etc.
+			files.forEach((file, index) => formData.append(`image${index + 1}`, file));
+			if (files.length === 0) formData.append("clearImages", "true");
 		}
 
 		// Switch pictures
