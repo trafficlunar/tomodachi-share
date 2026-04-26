@@ -9,7 +9,7 @@ export default async function RandomPage() {
 
 	const randomIndex = Math.floor(Math.random() * count);
 	const randomMii = await prisma.mii.findFirst({
-		where: { in_queue: false, quarantined: false, needsFixing: { not: null } },
+		where: { in_queue: false, quarantined: false, needsFixing: null },
 		skip: randomIndex,
 		take: 1,
 		select: { id: true },
