@@ -61,6 +61,7 @@ export const searchSchema = z.object({
 	platform: z.enum(["THREE_DS", "SWITCH"], { error: "Platform must be either 'THREE_DS', or 'SWITCH'" }).optional(),
 	gender: z.enum(["MALE", "FEMALE", "NONBINARY"], { error: "Gender must be either 'MALE', 'FEMALE', or 'NONBINARY' if on Switch platform" }).optional(),
 	makeup: z.enum(["FULL", "PARTIAL", "NONE"], { error: "Makeup must be either 'FULL', 'PARTIAL', or 'NONE'" }).optional(),
+	isFromSaveFile: z.coerce.boolean({ error: "'isFromSaveFile' must be either true or false" }).optional(),
 	allowCopying: z.coerce.boolean({ error: "Allow Copying must be either true or false" }).optional(),
 	quarantined: z.coerce.boolean({ error: "Quarantined must be either true or false" }).optional(),
 	// Pages

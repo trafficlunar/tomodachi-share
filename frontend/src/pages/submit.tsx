@@ -58,13 +58,14 @@ export default function SubmitPage() {
 	const [platform, setPlatform] = useState<MiiPlatform>("SWITCH");
 	const [gender, setGender] = useState<MiiGender>("MALE");
 	const [makeup, setMakeup] = useState<MiiMakeup>("PARTIAL");
+	const [way, setWay] = useState<"savedata" | "manual" | null>(null);
+	const [miiDataFile, setMiiDataFile] = useState<File | undefined>();
 	const [youtubeId, setYouTubeId] = useState("");
 	const instructions = useRef<SwitchMiiInstructions>(defaultInstructions);
 
 	const [error, setError] = useState<string | undefined>(undefined);
 
 	const handleSubmit = async () => {
-		// Validate before sending request
 		const nameValidation = nameSchema.safeParse(name);
 		if (!nameValidation.success) {
 			setError(nameValidation.error.issues[0].message);
@@ -76,32 +77,26 @@ export default function SubmitPage() {
 			return;
 		}
 
-		// Send request to server
 		const formData = new FormData();
 		formData.append("platform", platform);
 		formData.append("name", name);
 		formData.append("tags", JSON.stringify(tags));
 		formData.append("description", description);
-		formData.append("youtubeId", youtubeId);
 		files.forEach((file, index) => {
-			// image1, image2, etc.
 			formData.append(`image${index + 1}`, file);
 		});
 
 		if (platform === "THREE_DS") {
 			formData.append("qrBytesRaw", JSON.stringify(qrBytesRaw));
-		} else if (platform === "SWITCH") {
+		} else if (platform === "SWITCH" && way) {
 			const portraitResponse = await fetch(miiPortraitUri!);
-			const featuresResponse = await fetch(miiFeaturesUri!);
-
-			if (!portraitResponse.ok || !featuresResponse.ok) {
-				setError("Failed to get Mii portrait/features screenshot. Did you upload one?");
+			if (!portraitResponse.ok) {
+				setError("Failed to get Mii portrait screenshot. Did you upload one?");
 				return;
 			}
 
 			const portraitBlob = await portraitResponse.blob();
-			const featuresBlob = await featuresResponse.blob();
-			if (!portraitBlob.type.startsWith("image/") || !featuresBlob.type.startsWith("image/")) {
+			if (!portraitBlob.type.startsWith("image/")) {
 				setError("Invalid image file found");
 				return;
 			}
@@ -109,8 +104,32 @@ export default function SubmitPage() {
 			formData.append("gender", gender);
 			formData.append("makeup", makeup);
 			formData.append("miiPortraitImage", portraitBlob);
+			formData.append("way", way);
+
+			const featuresResponse = await fetch(miiFeaturesUri!);
+			if (!featuresResponse.ok) {
+				setError("Failed to get Mii features screenshot. Did you upload one?");
+				return;
+			}
+
+			const featuresBlob = await featuresResponse.blob();
+			if (!featuresBlob.type.startsWith("image/")) {
+				setError("Invalid image file found");
+				return;
+			}
+
+			if (way === "savedata") {
+				if (!miiDataFile) {
+					setError("Failed to find Mii data file, did you upload one?");
+					return;
+				}
+				formData.append("miiDataFile", miiDataFile);
+			}
+
 			formData.append("miiFeaturesImage", featuresBlob);
 			formData.append("instructions", JSON.stringify(instructions.current));
+
+			formData.append("youtubeId", youtubeId);
 		}
 
 		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/submit`, {
@@ -121,7 +140,7 @@ export default function SubmitPage() {
 		const { id, error } = await response.json();
 
 		if (!response.ok) {
-			setError(String(error)); // app can crash if error message is not a string
+			setError(String(error));
 			return;
 		}
 
@@ -129,19 +148,17 @@ export default function SubmitPage() {
 	};
 
 	useEffect(() => {
-		if (platform === "SWITCH" || qrBytesRaw.length == 0) return;
+		if (platform !== "THREE_DS" || qrBytesRaw.length === 0) return;
 		const qrBytes = new Uint8Array(qrBytesRaw);
 
 		const preview = async () => {
 			setError("");
 
-			// Validate QR code size
 			if (qrBytesRaw.length !== 372) {
 				setError("QR code size is not a valid Tomodachi Life QR code");
 				return;
 			}
 
-			// Convert QR code to JS (3DS)
 			let conversion: { mii: Mii; tomodachiLifeMii: ThreeDsTomodachiLifeMii };
 			try {
 				conversion = convertQrCode(qrBytes);
@@ -151,13 +168,11 @@ export default function SubmitPage() {
 				return;
 			}
 
-			// Generate a new QR code for aesthetic reasons
 			try {
 				const byteString = String.fromCharCode(...qrBytes);
 				const generatedCode = qrcode(0, "L");
 				generatedCode.addData(byteString, "Byte");
 				generatedCode.make();
-
 				setGeneratedQrCodeUri(generatedCode.createDataURL());
 			} catch {
 				setError("Failed to regenerate QR code");
@@ -194,7 +209,6 @@ export default function SubmitPage() {
 								</span>
 							))}
 						</div>
-
 						<div className="mt-auto">
 							<LikeButton likes={0} isLiked={false} disabled />
 						</div>
@@ -209,7 +223,6 @@ export default function SubmitPage() {
 						<p className="text-sm text-zinc-500">Share your creation for others to see.</p>
 					</div>
 
-					{/* Separator */}
 					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
 						<hr className="grow border-zinc-300" />
 						<span>Info</span>
@@ -222,33 +235,23 @@ export default function SubmitPage() {
 							Platform
 						</label>
 						<div className="relative col-span-2 grid grid-cols-2 bg-orange-300 border-2 border-orange-400 rounded-4xl shadow-md inset-shadow-sm/10">
-							{/* Animated indicator */}
-							{/* TODO: maybe change width as part of animation? */}
 							<div
 								className={`absolute inset-0 w-1/2 bg-orange-200 rounded-4xl transition-transform duration-300 ${
 									platform === "SWITCH" ? "translate-x-0" : "translate-x-full"
 								}`}
-							></div>
-
-							{/* Switch button */}
+							/>
 							<button
 								type="button"
 								onClick={() => setPlatform("SWITCH")}
-								className={`p-2 text-slate-800/35 cursor-pointer flex justify-center items-center gap-2 z-10 transition-colors ${
-									platform === "SWITCH" && "text-slate-800!"
-								}`}
+								className={`p-2 text-slate-800/35 cursor-pointer flex justify-center items-center gap-2 z-10 transition-colors ${platform === "SWITCH" && "text-slate-800!"}`}
 							>
 								<Icon icon="cib:nintendo-switch" className="text-2xl" />
 								Switch
 							</button>
-
-							{/* 3DS button */}
 							<button
 								type="button"
 								onClick={() => setPlatform("THREE_DS")}
-								className={`p-2 text-slate-800/35 cursor-pointer flex justify-center items-center gap-2 z-10 transition-colors ${
-									platform === "THREE_DS" && "text-slate-800!"
-								}`}
+								className={`p-2 text-slate-800/35 cursor-pointer flex justify-center items-center gap-2 z-10 transition-colors ${platform === "THREE_DS" && "text-slate-800!"}`}
 							>
 								<Icon icon="cib:nintendo-3ds" className="text-2xl" />
 								3DS
@@ -307,43 +310,34 @@ export default function SubmitPage() {
 								onClick={() => setGender("MALE")}
 								aria-label="Filter for Male Miis"
 								data-tooltip="Male"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-blue-400! after:border-blue-400! before:border-b-blue-400!  ${
-									gender === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
+								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-blue-400! after:border-blue-400! before:border-b-blue-400! ${gender === "MALE" ? "bg-blue-100 border-blue-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"}`}
 							>
 								<Icon icon="foundation:male" className="text-blue-400" />
 							</button>
-
 							<button
 								type="button"
 								onClick={() => setGender("FEMALE")}
 								aria-label="Filter for Female Miis"
 								data-tooltip="Female"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${
-									gender === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
+								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-pink-400! after:border-pink-400! before:border-b-pink-400! ${gender === "FEMALE" ? "bg-pink-100 border-pink-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"}`}
 							>
 								<Icon icon="foundation:female" className="text-pink-400" />
 							</button>
-
 							<button
 								type="button"
 								onClick={() => setGender("NONBINARY")}
 								aria-label="Filter for Nonbinary Miis"
 								data-tooltip="Nonbinary"
-								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400!  ${
-									gender === "NONBINARY" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"
-								}`}
+								className={`cursor-pointer rounded-xl flex justify-center items-center size-11 text-4xl border-2 transition-all after:bg-purple-400! after:border-purple-400! before:border-b-purple-400! ${gender === "NONBINARY" ? "bg-purple-100 border-purple-400 shadow-md" : "bg-white border-gray-300 hover:border-gray-400"}`}
 							>
 								<Icon icon="mdi:gender-non-binary" className="text-purple-400" />
 							</button>
 						</div>
 					</div>
 
-					{/* Makeup (switch only) */}
+					{/* Makeup (switch only) — unchanged from base */}
 					<div className={`w-full grid grid-cols-3 items-start ${platform === "SWITCH" ? "" : "hidden"}`}>
 						<label className="font-semibold py-2">Face Paint</label>
-
 						<div className="col-span-2 flex flex-col gap-1.5">
 							{[
 								{ value: "FULL", label: "Full", desc: "Most of the face/features are covered", color: "pink" },
@@ -365,9 +359,34 @@ export default function SubmitPage() {
 						</div>
 					</div>
 
-					{/* (Switch Only) Mii Screenshots */}
+					{/* (Switch only) Choose a Way */}
 					<div className={`${platform === "SWITCH" ? "" : "hidden"}`}>
-						{/* Separator */}
+						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+							<hr className="grow border-zinc-300" />
+							<span>Choose a Way</span>
+							<hr className="grow border-zinc-300" />
+						</div>
+						<div className="grid grid-cols-2 gap-4 w-full">
+							<button
+								onClick={() => setWay("savedata")}
+								type="button"
+								className={`flex flex-col justify-center items-center rounded-xl p-4 shadow-md border-2 cursor-pointer text-center text-sm transition hover:scale-[1.03] ${way === "savedata" ? "bg-cyan-100 border-cyan-600" : "bg-zinc-50 border-zinc-300 hover:bg-cyan-100 hover:border-cyan-600"}`}
+							>
+								ShareMii file (.ltd) (Modded)
+							</button>
+							<button
+								onClick={() => setWay("manual")}
+								type="button"
+								className={`flex flex-col justify-center items-center rounded-xl p-4 shadow-md border-2 cursor-pointer text-center text-sm transition hover:scale-[1.03] ${way === "manual" ? "bg-cyan-100 border-cyan-600" : "bg-zinc-50 border-zinc-300 hover:bg-cyan-100 hover:border-cyan-600"}`}
+							>
+								Manual
+							</button>
+						</div>
+						<p className="text-xs text-zinc-400 text-center mt-2">To see a tutorial, select a method above and click the 'How to?' buttons that appear.</p>
+					</div>
+
+					{/* (Switch only) Mii Screenshots */}
+					<div className={`${platform === "SWITCH" && way ? "" : "hidden"}`}>
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
 							<hr className="grow border-zinc-300" />
 							<span>Mii Screenshots</span>
@@ -396,7 +415,7 @@ export default function SubmitPage() {
 							</div>
 
 							{/* Step 2 - Features */}
-							<div className="flex flex-col items-center gap-2 w-full">
+							<div className="flex flex-col items-center gap-2 w-full mt-4">
 								<div className="flex items-center gap-2 self-start">
 									<span className="bg-orange-400 text-white text-xs font-bold rounded-full size-5 flex items-center justify-center shrink-0">2</span>
 									<span className="text-sm font-semibold text-zinc-600">
@@ -415,12 +434,27 @@ export default function SubmitPage() {
 									</div>
 									<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={setMiiFeaturesUri} forceCrop />
 								</div>
+								<SwitchSubmitTutorialButton type="manual" />
+								<p className="text-xs text-zinc-400 text-center">A tutorial on how to screenshot the features is above.</p>
 							</div>
-
-							<SwitchSubmitTutorialButton />
 						</div>
+					</div>
 
-						<p className="text-xs text-zinc-400 text-center mt-2">A tutorial on how to screenshot the features is above.</p>
+					{/* (Switch only) ShareMii file upload */}
+					<div className={`${platform === "SWITCH" && way === "savedata" ? "" : "hidden"}`}>
+						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
+							<hr className="grow border-zinc-300" />
+							<span>ShareMii File</span>
+							<hr className="grow border-zinc-300" />
+						</div>
+						<div className="flex flex-col items-center gap-2">
+							<SwitchFileUpload type="file" text="your Mii's .ltd file" file={miiDataFile} setFile={setMiiDataFile} />
+							<SwitchSubmitTutorialButton type="savedata" />
+							<p className="text-xs text-zinc-400 text-center">Only the v3 format is supported, please make sure ShareMii is up to date.</p>
+							<p className="text-xs text-zinc-400 text-center mb-2">
+								Unfortunately, at this time we can't automatically generate instructions from a .ltd file.
+							</p>
+						</div>
 					</div>
 
 					{/* (3DS only) QR code scanning */}
@@ -430,33 +464,27 @@ export default function SubmitPage() {
 							<span>QR Code</span>
 							<hr className="grow border-zinc-300" />
 						</div>
-
 						<div className="flex flex-col items-center gap-2">
 							<QrUpload setQrBytesRaw={setQrBytesRaw} />
 							<span>or</span>
-
 							<button type="button" aria-label="Use your camera" onClick={() => setIsQrScannerOpen(true)} className="pill button gap-2">
 								<Icon icon="mdi:camera" fontSize={20} />
 								Use your camera
 							</button>
-
 							<Camera isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
 							<ThreeDsScanTutorialButton />
-
 							<span className="text-xs text-zinc-400">For emulators, aes_keys.txt is required.</span>
 						</div>
 					</div>
 
-					{/* (Switch only) Mii instructions */}
-					<div className={`${platform === "SWITCH" ? "" : "hidden"}`}>
+					{/* (Switch only) Mii Instructions */}
+					<div className={`${platform === "SWITCH" && way ? "" : "hidden"}`}>
 						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-8 mb-2">
 							<hr className="grow border-zinc-300" />
 							<span>Mii Instructions</span>
 							<hr className="grow border-zinc-300" />
 						</div>
-
 						<div className="flex flex-col items-center gap-2">
-							{/* YouTube */}
 							<div className="w-full grid grid-cols-3 items-center">
 								<label htmlFor="youtube" className="font-semibold">
 									YouTube Video
@@ -476,40 +504,37 @@ export default function SubmitPage() {
 									}}
 								/>
 							</div>
-
 							<MiiEditor instructions={instructions} />
-							<SwitchSubmitTutorialButton />
+							<SwitchSubmitTutorialButton type="manual" />
 							<span className="text-xs text-zinc-400 text-center px-32 max-sm:px-8">
-								Mii editor may be inaccurate. Instructions are REALLY recommended, but you do not have to add every instruction.
+								Mii editor may be inaccurate. Instructions are recommended, but not required - you do not have to add every instruction.
 							</span>
 						</div>
 					</div>
 
 					{/* Custom images selector */}
-					<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-6 mb-2">
-						<hr className="grow border-zinc-300" />
-						<span>Custom images</span>
-						<hr className="grow border-zinc-300" />
+					<div className={`${platform === "THREE_DS" || way ? "" : "hidden"} flex flex-col justify-center`}>
+						<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mt-6 mb-2">
+							<hr className="grow border-zinc-300" />
+							<span>Custom images</span>
+							<hr className="grow border-zinc-300" />
+						</div>
+						<div className="max-w-md w-full self-center flex flex-col items-center">
+							<Dropzone onDrop={handleDrop}>
+								<p className="text-center text-sm">
+									Drag and drop your images here
+									<br />
+									or click to open
+								</p>
+							</Dropzone>
+							<span className="text-xs text-zinc-400 mt-2">Animated images currently not supported.</span>
+						</div>
+						<ImageList files={files} setFiles={setFiles} />
 					</div>
-
-					<div className="max-w-md w-full self-center flex flex-col items-center">
-						<Dropzone onDrop={handleDrop}>
-							<p className="text-center text-sm">
-								Drag and drop your images here
-								<br />
-								or click to open
-							</p>
-						</Dropzone>
-
-						<span className="text-xs text-zinc-400 mt-2">Animated images currently not supported.</span>
-					</div>
-
-					<ImageList files={files} setFiles={setFiles} />
 
 					<hr className="border-zinc-300 my-2" />
 					<div className="flex justify-between items-center">
 						{error && <span className="text-red-400 font-bold">Error: {error}</span>}
-
 						<SubmitButton onClick={handleSubmit} className="ml-auto" />
 					</div>
 				</div>

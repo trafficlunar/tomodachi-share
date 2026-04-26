@@ -15,60 +15,56 @@ import { nameSchema, switchMiiInstructionsSchema, tagsSchema } from "@tomodachi-
 import { RateLimit } from "@/lib/rate-limit";
 import { generateMetadataImage, validateImage } from "@/lib/images";
 import Mii from "../../../../../shared/src/mii.js/mii";
-import { convertQrCode, minifyInstructions, ThreeDsTomodachiLifeMii } from "@tomodachi-share/shared";
+import { convertQrCode, minifyInstructions, SwitchTomodachiLifeMii, ThreeDsTomodachiLifeMii } from "@tomodachi-share/shared";
 
 import { SwitchMiiInstructions } from "@tomodachi-share/shared";
 import { settings } from "../../../lib/settings";
+import { CharInfoEx } from "charinfo-ex";
 
 const uploadsDirectory = path.join(process.cwd(), "uploads", "mii");
 
-const submitSchema = z
-	.object({
-		platform: z.enum(MiiPlatform).default("THREE_DS"),
-		name: nameSchema,
-		tags: tagsSchema,
-		description: z.string().trim().max(512).optional(),
+const submitSchema = z.object({
+	platform: z.enum(MiiPlatform).default("THREE_DS"),
+	name: nameSchema,
+	tags: tagsSchema,
+	description: z.string().trim().max(512).optional(),
 
-		// Switch
-		gender: z.enum(MiiGender).default("MALE"),
-		makeup: z.enum(MiiMakeup).default("PARTIAL"),
-		miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
-		miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
-		youtubeId: z
-			.string()
-			.trim()
-			.transform((val) => (val === "" ? null : val))
-			.refine((val) => val === null || /^[a-zA-Z0-9_-]{11}$/.test(val), "Invalid YouTube video ID")
-			.optional(),
-		instructions: switchMiiInstructionsSchema,
+	// Switch
+	gender: z.enum(MiiGender).default("MALE"),
+	makeup: z.enum(MiiMakeup).default("PARTIAL"),
+	miiPortraitImage: z.union([z.instanceof(File), z.any()]).optional(),
+	youtubeId: z
+		.string()
+		.trim()
+		.transform((val) => (val === "" ? null : val))
+		.refine((val) => val === null || /^[a-zA-Z0-9_-]{11}$/.test(val), "Invalid YouTube video ID")
+		.optional(),
 
-		// QR code
-		qrBytesRaw: z
-			.array(z.number(), { error: "A QR code is required" })
-			.length(372, {
-				error: "QR code size is not a valid Tomodachi Life QR code",
-			})
-			.nullish(),
+	way: z.enum(["savedata", "manual"]).optional(),
 
-		// Custom images
-		image1: z.union([z.instanceof(File), z.any()]).optional(),
-		image2: z.union([z.instanceof(File), z.any()]).optional(),
-		image3: z.union([z.instanceof(File), z.any()]).optional(),
-	})
-	// This refine function is probably useless
-	.refine(
-		(data) => {
-			// If platform is Switch, gender, miiPortraitImage, and miiFeaturesImage must be present
-			if (data.platform === "SWITCH") {
-				return data.gender !== undefined && data.miiPortraitImage !== undefined && data.miiFeaturesImage !== undefined;
-			}
-			return true;
-		},
-		{
-			message: "Gender, Mii portrait & features image are required for Switch platform",
-			path: ["gender", "miiPortraitImage", "miiFeaturesImage"],
-		},
-	);
+	// Save data way
+	miiDataFile: z
+		.instanceof(File)
+		.refine((blob) => blob.size < 1024 * 1024 * 0.1, "File too large") // TODO: actual size
+		.optional(),
+
+	// Manual way
+	miiFeaturesImage: z.union([z.instanceof(File), z.any()]).optional(),
+	instructions: switchMiiInstructionsSchema,
+
+	// QR code
+	qrBytesRaw: z
+		.array(z.number(), { error: "A QR code is required" })
+		.length(372, {
+			error: "QR code size is not a valid Tomodachi Life QR code",
+		})
+		.nullish(),
+
+	// Custom images
+	image1: z.union([z.instanceof(File), z.any()]).optional(),
+	image2: z.union([z.instanceof(File), z.any()]).optional(),
+	image3: z.union([z.instanceof(File), z.any()]).optional(),
+});
 
 export async function POST(request: NextRequest) {
 	const session = await auth();
@@ -106,8 +102,12 @@ export async function POST(request: NextRequest) {
 		gender: formData.get("gender") ?? undefined, // ZOD MOMENT
 		makeup: formData.get("makeup") ?? undefined,
 		miiPortraitImage: formData.get("miiPortraitImage"),
-		miiFeaturesImage: formData.get("miiFeaturesImage"),
 		youtubeId: formData.get("youtubeId"),
+		way: formData.get("way"),
+
+		miiDataFile: formData.get("miiDataFile") ?? undefined,
+
+		miiFeaturesImage: formData.get("miiFeaturesImage"),
 		instructions: minifiedInstructions,
 
 		qrBytesRaw: rawQrBytesRaw,
@@ -131,6 +131,8 @@ export async function POST(request: NextRequest) {
 		qrBytesRaw,
 		gender,
 		makeup,
+		way,
+		miiDataFile,
 		miiPortraitImage,
 		miiFeaturesImage,
 		youtubeId,
@@ -161,9 +163,10 @@ export async function POST(request: NextRequest) {
 	// Check Mii portrait & features image (Switch)
 	if (platform === "SWITCH") {
 		const portraitValidation = await validateImage(miiPortraitImage);
-		const featuresValidation = await validateImage(miiFeaturesImage);
 		if (!portraitValidation.valid)
 			return rateLimit.sendResponse({ error: `Failed to verify portrait: ${portraitValidation.error}` }, portraitValidation.status ?? 400);
+
+		const featuresValidation = await validateImage(miiFeaturesImage);
 		if (!featuresValidation.valid)
 			return rateLimit.sendResponse({ error: `Failed to verify features: ${featuresValidation.error}` }, featuresValidation.status ?? 400);
 	}
@@ -177,6 +180,21 @@ export async function POST(request: NextRequest) {
 			conversion = convertQrCode(qrBytes);
 		} catch (error) {
 			return rateLimit.sendResponse({ error: error instanceof Error ? error.message : String(error) }, 400);
+		}
+	}
+
+	const miiDataFileBuffer = miiDataFile ? await miiDataFile.arrayBuffer() : undefined;
+	const miiData = miiDataFileBuffer ? CharInfoEx.FromShareMiiFileArrayBuffer(miiDataFileBuffer) : undefined;
+
+	let parsedSwitchMii: SwitchTomodachiLifeMii | undefined = undefined;
+
+	if (way === "savedata") {
+		if (!miiData || !miiDataFileBuffer) return rateLimit.sendResponse({ error: "No valid Mii data provided" }, 400);
+		try {
+			parsedSwitchMii = new SwitchTomodachiLifeMii(miiDataFileBuffer, miiData);
+		} catch (error) {
+			console.warn("Failed to verify Switch Mii data", error);
+			return rateLimit.sendResponse({ error: "Failed to verify Mii data: is your ShareMii file up to date?" }, 400);
 		}
 	}
 
@@ -204,6 +222,7 @@ export async function POST(request: NextRequest) {
 						youtubeId,
 						instructions: minifiedInstructions,
 						makeup: makeup ?? "PARTIAL",
+						...(way === "savedata" && { isFromSaveFile: true }),
 					}),
 		},
 	});
@@ -228,18 +247,20 @@ export async function POST(request: NextRequest) {
 		} else if (platform === "SWITCH") {
 			portraitBuffer = Buffer.from(await miiPortraitImage.arrayBuffer());
 
-			// Save features image
 			const featuresBuffer = Buffer.from(await miiFeaturesImage.arrayBuffer());
-			const pngBuffer = await sharp(featuresBuffer)
-				.resize({
-					height: 800,
-					fit: "inside",
-					withoutEnlargement: true,
-				})
-				.png({ quality: 85 })
-				.toBuffer();
-			const fileLocation = path.join(miiUploadsDirectory, "features.png");
-			await fs.writeFile(fileLocation, pngBuffer);
+			const pngBuffer = await sharp(featuresBuffer).resize({ height: 800, fit: "inside", withoutEnlargement: true }).png({ quality: 85 }).toBuffer();
+			await fs.writeFile(path.join(miiUploadsDirectory, "features.png"), pngBuffer);
+
+			if (way === "savedata" && miiDataFileBuffer) {
+				await fs.writeFile(path.join(miiUploadsDirectory, "data.ltd"), Buffer.from(miiDataFileBuffer));
+
+				if (parsedSwitchMii) {
+					const pngBuffer = await parsedSwitchMii.extractFacePaintImage();
+					if (pngBuffer) await fs.writeFile(path.join(miiUploadsDirectory, "facepaint.png"), pngBuffer);
+				} else {
+					return rateLimit.sendResponse({ error: "Failed to extract Switch Mii data" }, 500);
+				}
+			}
 		}
 
 		// Save portrait image

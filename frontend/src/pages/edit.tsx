@@ -423,7 +423,7 @@ export default function EditMiiPage() {
 							<div className="flex flex-col items-center gap-2">
 								<SwitchFileUpload text="a screenshot of your Mii here" image={miiPortraitUri} setImage={handleMiiPortraitChange} forceCrop />
 								<SwitchFileUpload text="a screenshot of your Mii's features here" image={miiFeaturesUri} setImage={handleMiiFeaturesChange} />
-								<SwitchSubmitTutorialButton />
+								<SwitchSubmitTutorialButton type="manual" />
 							</div>
 
 							<p className="text-xs text-zinc-400 text-center mt-2">You must upload a screenshot of the features, check tutorial on how.</p>
@@ -457,7 +457,7 @@ export default function EditMiiPage() {
 						</div>
 
 						<MiiEditor instructions={instructions} />
-						<SwitchSubmitTutorialButton />
+						<SwitchSubmitTutorialButton type="manual" />
 					</>
 				)}
 

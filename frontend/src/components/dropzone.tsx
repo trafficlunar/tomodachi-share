@@ -3,12 +3,13 @@ import { type DropzoneOptions, type FileWithPath, useDropzone } from "react-drop
 import { Icon } from "@iconify/react";
 
 interface Props {
+	type?: "file" | "image";
 	onDrop: (acceptedFiles: FileWithPath[]) => void;
 	options?: DropzoneOptions;
 	children?: ReactNode;
 }
 
-export default function Dropzone({ onDrop, options, children }: Props) {
+export default function Dropzone({ type = "image", onDrop, options, children }: Props) {
 	const [isDraggingOver, setIsDraggingOver] = useState(false);
 
 	const handleDrop = (acceptedFiles: FileWithPath[]) => {
@@ -19,9 +20,7 @@ export default function Dropzone({ onDrop, options, children }: Props) {
 	const { getRootProps, getInputProps } = useDropzone({
 		onDrop: handleDrop,
 		maxFiles: 3,
-		accept: {
-			"image/*": [".png", ".jpg", ".jpeg", ".bmp", ".png", ".heic"],
-		},
+		accept: type === "image" ? { "image/*": [".png", ".jpg", ".jpeg", ".bmp", ".png", ".heic"] } : { "application/octet-stream": [".ltd"] },
 		...options,
 	});
 

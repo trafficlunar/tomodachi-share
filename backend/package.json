@@ -14,7 +14,9 @@
 		"@2toad/profanity": "^3.3.0",
 		"@auth/prisma-adapter": "2.11.1",
 		"@prisma/client": "^6.19.2",
+		"@tomodachi-share/shared": "workspace:*",
 		"bit-buffer": "^0.3.0",
+		"charinfo-ex": "^0.0.5",
 		"dayjs": "^1.11.20",
 		"downshift": "^9.3.2",
 		"file-type": "^22.0.1",
@@ -27,8 +29,7 @@
 		"satori": "^0.26.0",
 		"sharp": "^0.34.5",
 		"sjcl-with-all": "1.0.8",
-		"zod": "^4.3.6",
-		"@tomodachi-share/shared": "workspace:*"
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.5",

@@ -5,9 +5,15 @@ type ReportReason = "INAPPROPRIATE" | "SPAM" | "BAD_QUALITY" | "OTHER";
 
 export interface SwitchMiiInstructions {
 	head: {
+		type: number | null;
+
 		skinColor: number | null; // Additional 14 are not in color menu, default is 2
 	};
 	hair: {
+		set: number | null;
+		bangs: number | null;
+		back: number | null;
+
 		color: number | null;
 		subColor: number | null; // Default is none
 		subColor2: number | null; // Only used when bangs/back is selected
@@ -15,6 +21,8 @@ export interface SwitchMiiInstructions {
 		isFlipped: boolean; // Only for sets and fringe
 	};
 	eyebrows: {
+		type: number | null;
+
 		color: number | null;
 		height: number | null;
 		distance: number | null;
@@ -24,6 +32,8 @@ export interface SwitchMiiInstructions {
 	};
 	eyes: {
 		main: {
+			type: number | null;
+
 			color: number | null;
 			height: number | null;
 			distance: number | null;
@@ -32,6 +42,8 @@ export interface SwitchMiiInstructions {
 			stretch: number | null;
 		};
 		eyelashesTop: {
+			type: number | null;
+
 			height: number | null;
 			distance: number | null;
 			rotation: number | null;
@@ -39,6 +51,8 @@ export interface SwitchMiiInstructions {
 			stretch: number | null;
 		};
 		eyelashesBottom: {
+			type: number | null;
+
 			height: number | null;
 			distance: number | null;
 			rotation: number | null;
@@ -46,6 +60,8 @@ export interface SwitchMiiInstructions {
 			stretch: number | null;
 		};
 		eyelidTop: {
+			type: number | null;
+
 			height: number | null;
 			distance: number | null;
 			rotation: number | null;
@@ -53,6 +69,8 @@ export interface SwitchMiiInstructions {
 			stretch: number | null;
 		};
 		eyelidBottom: {
+			type: number | null;
+
 			height: number | null;
 			distance: number | null;
 			rotation: number | null;
@@ -60,9 +78,12 @@ export interface SwitchMiiInstructions {
 			stretch: number | null;
 		};
 		eyeliner: {
+			type: boolean;
 			color: number | null;
 		};
 		pupil: {
+			type: number | null;
+
 			height: number | null;
 			distance: number | null;
 			rotation: number | null;
@@ -71,10 +92,14 @@ export interface SwitchMiiInstructions {
 		};
 	};
 	nose: {
+		type: number | null;
+
 		height: number | null;
 		size: number | null;
 	};
 	lips: {
+		type: number | null;
+
 		color: number | null;
 		height: number | null;
 		rotation: number | null;
@@ -83,10 +108,15 @@ export interface SwitchMiiInstructions {
 		hasLipstick: boolean;
 	};
 	ears: {
+		type: number | null;
+
 		height: number | null; // Does not work for default
 		size: number | null; // Does not work for default
 	};
 	glasses: {
+		type: number | null;
+		type2: number | null;
+
 		ringColor: number | null;
 		shadesColor: number | null; // Only works after gap
 		height: number | null;
@@ -96,37 +126,50 @@ export interface SwitchMiiInstructions {
 	other: {
 		// names were assumed
 		wrinkles1: {
+			type: number | null;
+
 			height: number | null;
 			distance: number | null;
 			size: number | null;
 			stretch: number | null;
 		};
 		wrinkles2: {
+			type: number | null;
+
 			height: number | null;
 			distance: number | null;
 			size: number | null;
 			stretch: number | null;
 		};
 		beard: {
+			type: number | null;
+
 			color: number | null;
 		};
 		moustache: {
-			color: number | null; // is this same as hair?
+			type: number | null;
+
+			color: number | null;
 			height: number | null;
 			isFlipped: boolean;
 			size: number | null;
 			stretch: number | null;
 		};
 		goatee: {
+			type: number | null;
+
 			color: number | null;
 		};
 		mole: {
-			color: number | null; // is this same as hair?
+			type: boolean;
+
 			height: number | null;
 			distance: number | null;
 			size: number | null;
 		};
 		eyeShadow: {
+			type: number | null;
+
 			color: number | null;
 			height: number | null;
 			distance: number | null;
@@ -134,6 +177,8 @@ export interface SwitchMiiInstructions {
 			stretch: number | null;
 		};
 		blush: {
+			type: number | null;
+
 			color: number | null;
 			height: number | null;
 			distance: number | null;
@@ -141,7 +186,6 @@ export interface SwitchMiiInstructions {
 			stretch: number | null;
 		};
 	};
-	// makeup, use video?
 	height: number | null;
 	weight: number | null;
 	datingPreferences: MiiGender[];

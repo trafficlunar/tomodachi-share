@@ -135,13 +135,47 @@ export default function MiiPage() {
 								/>
 							</div>
 						) : (
-							<ImageViewer
-								src={`${API_URL}/mii/${mii.id}/image?type=features`}
-								alt="mii features"
-								width={300}
-								height={300}
-								className="rounded-lg hover:brightness-90 mb-4 transition-all"
-							/>
+							<>
+								<ImageViewer
+									src={`${API_URL}/mii/${mii.id}/image?type=features`}
+									alt="mii features"
+									width={300}
+									height={300}
+									className="rounded-lg hover:brightness-90 mb-4 transition-all"
+								/>
+
+								{mii.isFromSaveFile && (
+									<>
+										<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-4 w-full">
+											<hr className="grow border-zinc-300" />
+											<span>Face Paint Texture</span>
+											<hr className="grow border-zinc-300" />
+										</div>
+
+										<div
+											className="rounded-lg mb-4 overflow-hidden"
+											style={{
+												backgroundImage: `
+            linear-gradient(45deg, #ccc 25%, transparent 25%),
+            linear-gradient(-45deg, #ccc 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #ccc 75%),
+            linear-gradient(-45deg, transparent 75%, #ccc 75%)
+        `,
+												backgroundSize: "16px 16px",
+												backgroundPosition: "0 0, 0 8px, 8px -8px, -8px 0px",
+											}}
+										>
+											<ImageViewer
+												src={`${API_URL}/mii/${mii.id}/image?type=facepaint`}
+												alt="mii facepaint"
+												width={300}
+												height={300}
+												className="rounded-lg hover:brightness-90 transition-all"
+											/>
+										</div>
+									</>
+								)}
+							</>
 						)}
 						<hr className="w-full border-t-2 border-t-amber-400" />
 
@@ -340,9 +374,15 @@ export default function MiiPage() {
 						</div>
 
 						{/* Buttons */}
-						<div className="flex gap-3 w-fit bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 text-3xl text-orange-400 max-md:place-self-center *:size-12 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-xs">
+						<div className="flex gap-4 w-fit bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 text-3xl text-orange-400 max-md:place-self-center *:size-12 *:flex *:flex-col *:items-center *:gap-1 **:transition-discrete **:duration-150 *:hover:brightness-75 *:hover:scale-[1.08] *:[&_span]:text-xs">
 							<AuthorButtons mii={mii} />
 
+							{mii.isFromSaveFile && (
+								<a aria-label="Download Mii" href={`${API_URL}/mii/${mii.id}/download`} download>
+									<Icon icon="material-symbols:download" />
+									<span>Download</span>
+								</a>
+							)}
 							<ShareMiiButton miiId={mii.id} />
 							<Link aria-label="Report Mii" to={`/report/mii/${mii.id}`}>
 								<Icon icon="material-symbols:flag-rounded" />
@@ -353,11 +393,16 @@ export default function MiiPage() {
 
 						{/* Instructions */}
 						{mii.platform === "SWITCH" && (
-							<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col gap-3 max-h-96 overflow-y-auto">
+							<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg p-4 flex flex-col max-h-96 overflow-y-auto">
 								<h2 className="text-xl font-semibold text-amber-700 flex items-center gap-2">
 									<Icon icon="fa7-solid:list" />
 									Instructions
 								</h2>
+								<p className="text-xs text-amber-800 mb-3">
+									All instructions are based off of the default Male Mii.
+									<br />
+									{mii.isFromSaveFile && "If you're on modded/emulator, you can download the .ltd file above."}
+								</p>
 
 								{mii.youtubeId && (
 									<iframe

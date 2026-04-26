@@ -79,10 +79,11 @@ model Mii {
   in_queue    Boolean     @default(false)
   needsFixing String?
 
-  instructions Json?
-  youtubeId    String?
-  gender       MiiGender?
-  makeup       MiiMakeup?
+  isFromSaveFile Boolean    @default(false)
+  instructions   Json?
+  youtubeId      String?
+  gender         MiiGender?
+  makeup         MiiMakeup?
 
   firstName      String?
   lastName       String?

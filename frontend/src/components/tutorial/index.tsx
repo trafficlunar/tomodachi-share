@@ -4,9 +4,9 @@ import { Icon } from "@iconify/react";
 import confetti from "canvas-confetti";
 
 interface Slide {
-	// step is never used, undefined is assumed as a step
-	type?: "start" | "step" | "finish";
+	type?: "start" | "step" | "finish"; // step is never specified, undefined is assumed as step
 	text?: string;
+	link?: string;
 	imageSrc?: string;
 }
 
@@ -156,7 +156,13 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 										</div>
 									) : (
 										<>
-											<p className="text-sm text-zinc-500 mb-2 text-center">{slide.text}</p>
+											{slide.link ? (
+												<a href={slide.link} className="text-sm text-blue-600 mb-2 text-center">
+													{slide.text}
+												</a>
+											) : (
+												<p className="text-sm text-zinc-500 mb-2 text-center">{slide.text}</p>
+											)}
 
 											<img
 												src={slide.imageSrc ?? "/missing.svg"}

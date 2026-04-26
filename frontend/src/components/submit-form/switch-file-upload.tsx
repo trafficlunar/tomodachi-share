@@ -7,34 +7,40 @@ import ImageEditorPortrait from "./image-editor";
 
 interface Props {
 	text: string;
+	type?: "file" | "image";
 	forceCrop?: boolean;
+	file?: string | File | undefined;
+	setFile?: (value: File | undefined) => void;
 	image?: string | undefined;
-	setImage: (value: string | undefined) => void;
+	setImage?: (value: string | undefined) => void;
 }
 
-export default function SwitchFileUpload({ text, forceCrop, image, setImage }: Props) {
+export default function SwitchFileUpload({ text, type = "image", forceCrop, file, setFile, image, setImage }: Props) {
 	const [isCameraOpen, setIsCameraOpen] = useState(false);
 	const [isCropOpen, setIsCropOpen] = useState(false);
 
 	const handleDrop = useCallback(
 		(acceptedFiles: FileWithPath[]) => {
 			const file = acceptedFiles[0];
-			// Convert to Data URI
-			const reader = new FileReader();
-			reader.onload = async (event) => {
-				setImage(event.target!.result as string);
-				if (forceCrop) setIsCropOpen(true);
-			};
-			reader.readAsDataURL(file);
+			if (type === "file") {
+				setFile!(file);
+			} else {
+				const reader = new FileReader();
+				reader.onload = (event) => {
+					setImage!(event.target!.result as string);
+					if (forceCrop) setIsCropOpen(true);
+				};
+				reader.readAsDataURL(file);
+			}
 		},
-		[setImage],
+		[setFile, setImage],
 	);
 
 	return (
 		<div className="max-w-md w-full flex flex-col items-center gap-2">
-			<Dropzone onDrop={handleDrop} options={{ maxFiles: 1 }}>
+			<Dropzone type={type} onDrop={handleDrop} options={{ maxFiles: 1 }}>
 				<p className="text-center text-sm">
-					{!image ? (
+					{!file && !image ? (
 						<>
 							Drag and drop {text}
 							<br />
@@ -46,28 +52,32 @@ export default function SwitchFileUpload({ text, forceCrop, image, setImage }: P
 				</p>
 			</Dropzone>
 
-			<span>or</span>
+			{type === "image" && (
+				<>
+					<span>or</span>
 
-			<div className="flex gap-2 max-sm:flex-col">
-				<button type="button" aria-label="Use your camera" onClick={() => setIsCameraOpen(true)} className="pill button gap-2">
-					<Icon icon="mdi:camera" fontSize={20} />
-					Use your camera
-				</button>
-				<button type="button" aria-label="Crop image" onClick={() => setIsCropOpen(true)} className="pill button gap-2">
-					<Icon icon="mdi:image-edit" fontSize={20} />
-					Edit Image
-				</button>
-			</div>
+					<div className="flex gap-2 max-sm:flex-col">
+						<button type="button" aria-label="Use your camera" onClick={() => setIsCameraOpen(true)} className="pill button gap-2">
+							<Icon icon="mdi:camera" fontSize={20} />
+							Use your camera
+						</button>
+						<button type="button" aria-label="Crop image" onClick={() => setIsCropOpen(true)} className="pill button gap-2">
+							<Icon icon="mdi:image-edit" fontSize={20} />
+							Edit Image
+						</button>
+					</div>
 
-			<Camera
-				isOpen={isCameraOpen}
-				setIsOpen={setIsCameraOpen}
-				setImage={setImage}
-				onCapture={() => {
-					if (forceCrop) setIsCropOpen(true);
-				}}
-			/>
-			<ImageEditorPortrait isOpen={isCropOpen} setIsOpen={setIsCropOpen} image={image} setImage={setImage} />
+					<Camera
+						isOpen={isCameraOpen}
+						setIsOpen={setIsCameraOpen}
+						setImage={setImage}
+						onCapture={() => {
+							if (forceCrop) setIsCropOpen(true);
+						}}
+					/>
+					<ImageEditorPortrait isOpen={isCropOpen} setIsOpen={setIsCropOpen} image={image} setImage={setImage!} />
+				</>
+			)}
 		</div>
 	);
 }

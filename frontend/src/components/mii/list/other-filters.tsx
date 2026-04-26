@@ -9,8 +9,26 @@ export default function OtherFilters() {
 	const [, startTransition] = useTransition();
 
 	const platform = (searchParams.get("platform") as MiiPlatform) || undefined;
+	const [hasShareMiiFile, setHasShareMiiFile] = useState<boolean>((searchParams.get("sharemii") as unknown as boolean) ?? false);
 	const [allowCopying, setAllowCopying] = useState<boolean>((searchParams.get("allowCopying") as unknown as boolean) ?? false);
 	const [quarantined, setQuarantined] = useState<boolean>((searchParams.get("quarantined") as unknown as boolean) ?? false);
+
+	const handleChangeHasShareMiiFile = (e: ChangeEvent<HTMLInputElement>) => {
+		setHasShareMiiFile(e.target.checked);
+
+		const params = new URLSearchParams(searchParams);
+		params.set("page", "1");
+
+		if (!hasShareMiiFile) {
+			params.set("isFromSaveFile", "true");
+		} else {
+			params.delete("isFromSaveFile");
+		}
+
+		startTransition(() => {
+			navigate(`?${params.toString()}`);
+		});
+	};
 
 	const handleChangeAllowCopying = (e: ChangeEvent<HTMLInputElement>) => {
 		setAllowCopying(e.target.checked);
@@ -59,6 +77,14 @@ export default function OtherFilters() {
 				<hr className="grow border-zinc-300" />
 			</div>
 
+			{platform !== "THREE_DS" && (
+				<div className="flex justify-between items-center w-full mb-1">
+					<label htmlFor="ltdfile" className="text-sm">
+						Has ShareMii File
+					</label>
+					<input type="checkbox" id="ltdfile" className="checkbox-alt" checked={hasShareMiiFile} onChange={handleChangeHasShareMiiFile} />
+				</div>
+			)}
 			{showAllowCopying && (
 				<div className="flex justify-between items-center w-full mb-1">
 					<label htmlFor="allowCopying" className="text-sm">

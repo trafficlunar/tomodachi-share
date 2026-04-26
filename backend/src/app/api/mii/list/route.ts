@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
 		makeup,
 		allowCopying,
 		quarantined,
+		isFromSaveFile,
 		page = 1,
 		limit = 24,
 		parentPage,
@@ -59,17 +60,13 @@ export async function GET(request: NextRequest) {
 		// Tag filtering
 		...(tags && tags.length > 0 && { tags: { hasEvery: tags } }),
 		...(exclude && exclude.length > 0 && { NOT: { tags: { hasSome: exclude } } }),
-		// Platform
+		// Other
 		...(platform && { platform: { equals: platform } }),
-		// Gender
 		...(gender && { gender: { equals: gender } }),
-		// Allow Copying
 		...(allowCopying && { allowedCopying: true }),
-		// Makeup
 		...(makeup && { makeup: { equals: makeup } }),
-		// Quarantined
 		...(!quarantined && !userId && { quarantined: false }),
-		// Time range
+		...(isFromSaveFile && { isFromSaveFile: true }),
 		...(timeRange && {
 			reviewedAt: {
 				gte: new Date(Date.now() - { day: 86400000, week: 604800000, month: 2592000000, year: 31536000000 }[timeRange]),

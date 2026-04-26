@@ -92,7 +92,7 @@ function Section({ name, instructions, children, isSubSection }: SectionProps) {
 	const stretch = "stretch" in instructions ? instructions.stretch : undefined;
 
 	return (
-		<div className={`p-3 w-max ${isSubSection ? "not-first:mt-2 pt-0!" : "border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5"}`}>
+		<div className={`p-3 w-max not-last:mb-3 ${isSubSection ? "not-first:mt-2 pt-0!" : "border-l-4 border-amber-400 bg-amber-100/50 rounded-r-lg py-2.5"}`}>
 			<h3 className="font-semibold text-xl text-amber-800 mb-1">{name}</h3>
 
 			<table className="w-full">
@@ -188,7 +188,7 @@ export default function MiiInstructions({ instructions }: Props) {
 						{other.moustache && other.moustache.isFlipped && <TableCell label="Flipped">{other.moustache.isFlipped ? "Yes" : "No"}</TableCell>}
 					</Section>
 					<Section isSubSection name="Tab 5" instructions={other.goatee} />
-					<Section isSubSection name="Tab 6" instructions={other.mole} />
+					<Section isSubSection name="Tab 6" instructions={other.mole as any} />
 					<Section isSubSection name="Tab 7" instructions={other.eyeShadow} />
 					<Section isSubSection name="Tab 8" instructions={other.blush} />
 				</Section>
