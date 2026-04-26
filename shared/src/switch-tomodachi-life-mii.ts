@@ -50,22 +50,22 @@ export class SwitchTomodachiLifeMii {
 		};
 
 		// Validate
-		if (bytes[0x01a9] > 1 || bytes[0x01aa] > 1 || bytes[0x01ab] > 1) throw new Error("Invalid dating preference bytes");
-		if (this.birthday.month < 1 || this.birthday.month > 12) throw new Error("Invalid birthday month");
-		if (this.birthday.day < 1 || this.birthday.day > 31) throw new Error("Invalid birthday day");
-		if (
-			this.personality.movement < 0 ||
-			this.personality.movement > 4 ||
-			this.personality.speech < 0 ||
-			this.personality.speech > 4 ||
-			this.personality.energy < 0 ||
-			this.personality.energy > 4 ||
-			this.personality.thinking < 0 ||
-			this.personality.thinking > 4 ||
-			this.personality.overall < 0 ||
-			this.personality.overall > 4
-		)
-			throw new Error("Invalid personality values");
+		// if (bytes[0x01a9] > 1 || bytes[0x01aa] > 1 || bytes[0x01ab] > 1) throw new Error("Invalid dating preference bytes");
+		// if (this.birthday.month < 1 || this.birthday.month > 12) throw new Error("Invalid birthday month");
+		// if (this.birthday.day < 1 || this.birthday.day > 31) throw new Error("Invalid birthday day");
+		// if (
+		// 	this.personality.movement < 0 ||
+		// 	this.personality.movement > 4 ||
+		// 	this.personality.speech < 0 ||
+		// 	this.personality.speech > 4 ||
+		// 	this.personality.energy < 0 ||
+		// 	this.personality.energy > 4 ||
+		// 	this.personality.thinking < 0 ||
+		// 	this.personality.thinking > 4 ||
+		// 	this.personality.overall < 0 ||
+		// 	this.personality.overall > 4
+		// )
+		// 	throw new Error("Invalid personality values");
 	}
 
 	// There's a UGC Texture image but we're ignoring it
