@@ -51,9 +51,7 @@ export default function ProfileLayout() {
 	const joinDate = new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" });
 	const metaTitle = `${user.name} - TomodachiShare`;
 	const metaDescription = `View ${user.name}'s profile on TomodachiShare. Creator of ${user._count.miis} Miis. Member since ${joinDate}.`;
-	const metaImage = user.image.startsWith("/profile")
-		? `${import.meta.env.VITE_API_URL}${user.image}`
-		: (user.image ?? `${import.meta.env.VITE_API_URL}/guest.png`);
+	const metaImage = user.image ? (user.image.startsWith("/profile") ? `${import.meta.env.VITE_API_URL}${user.image}` : user.image) : "/guest.png";
 
 	return (
 		<div>
@@ -81,7 +79,7 @@ export default function ProfileLayout() {
 					{/* Profile picture */}
 					<Link to={`/profile/${user.id}`} className="size-28 aspect-square">
 						<img
-							src={user.image.startsWith("/profile") ? `${import.meta.env.VITE_API_URL}${user.image}` : user.image}
+							src={user.image ? (user.image.startsWith("/profile") ? `${import.meta.env.VITE_API_URL}${user.image}` : user.image) : "/guest.png"}
 							onError={(e) => {
 								e.currentTarget.onerror = null; // Prevent infinite loops
 								e.currentTarget.src = "/guest.png";

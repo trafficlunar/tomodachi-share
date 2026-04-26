@@ -69,7 +69,13 @@ export default function Header() {
 								data-tooltip="Your Profile"
 							>
 								<img
-									src={$session.user.image.startsWith("/profile") ? `${import.meta.env.VITE_API_URL}${$session.user.image}` : $session.user.image}
+									src={
+										$session?.user?.image
+											? $session.user.image.startsWith("/profile")
+												? `${import.meta.env.VITE_API_URL}${$session.user.image}`
+												: $session.user.image
+											: "/guest.png"
+									}
 									onError={(e) => {
 										e.currentTarget.onerror = null; // Prevent infinite loops
 										e.currentTarget.src = "/guest.png";

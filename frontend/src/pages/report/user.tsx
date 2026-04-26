@@ -65,7 +65,7 @@ export default function ReportUserPage() {
 
 				<div className="bg-orange-100 rounded-xl border-2 border-orange-400 flex p-4 gap-4">
 					<img
-						src={user.image.startsWith("/profile") ? `${import.meta.env.VITE_API_URL}${user.image}` : user.image}
+						src={user.image ? (user.image.startsWith("/profile") ? `${import.meta.env.VITE_API_URL}${user.image}` : user.image) : "/guest.png"}
 						onError={(e) => {
 							e.currentTarget.onerror = null; // Prevent infinite loops
 							e.currentTarget.src = "/guest.png";
