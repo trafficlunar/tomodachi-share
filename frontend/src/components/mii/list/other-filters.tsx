@@ -1,5 +1,5 @@
 import type { MiiPlatform } from "@tomodachi-share/shared";
-import { type ChangeEvent, useState, useTransition } from "react";
+import { type ChangeEvent, useTransition } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 
 export default function OtherFilters() {
@@ -9,16 +9,14 @@ export default function OtherFilters() {
 	const [, startTransition] = useTransition();
 
 	const platform = (searchParams.get("platform") as MiiPlatform) || undefined;
-	const [allowCopying, setAllowCopying] = useState<boolean>((searchParams.get("allowCopying") as unknown as boolean) ?? false);
-	const [quarantined, setQuarantined] = useState<boolean>((searchParams.get("quarantined") as unknown as boolean) ?? false);
+	const allowCopying = searchParams.get("allowCopying") === "true";
+	const quarantined = searchParams.get("quarantined") === "true";
 
 	const handleChangeAllowCopying = (e: ChangeEvent<HTMLInputElement>) => {
-		setAllowCopying(e.target.checked);
-
 		const params = new URLSearchParams(searchParams);
 		params.set("page", "1");
 
-		if (!allowCopying) {
+		if (e.target.checked) {
 			params.set("allowCopying", "true");
 		} else {
 			params.delete("allowCopying");
@@ -30,12 +28,10 @@ export default function OtherFilters() {
 	};
 
 	const handleChangeQuarantined = (e: ChangeEvent<HTMLInputElement>) => {
-		setQuarantined(e.target.checked);
-
 		const params = new URLSearchParams(searchParams);
 		params.set("page", "1");
 
-		if (!quarantined) {
+		if (e.target.checked) {
 			params.set("quarantined", "true");
 		} else {
 			params.delete("quarantined");

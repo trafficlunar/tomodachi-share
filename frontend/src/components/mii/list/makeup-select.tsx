@@ -1,4 +1,4 @@
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { Icon } from "@iconify/react";
 import type { MiiMakeup } from "@tomodachi-share/shared";
 import { useNavigate, useSearchParams } from "react-router";
@@ -8,11 +8,10 @@ export default function MakeupSelect() {
 	const [searchParams] = useSearchParams();
 	const [, startTransition] = useTransition();
 
-	const [selected, setSelected] = useState<MiiMakeup | null>((searchParams.get("makeup") as MiiMakeup) ?? null);
+	const selected = (searchParams.get("makeup") as MiiMakeup) ?? null;
 
 	const handleClick = (makeup: MiiMakeup) => {
 		const filter = selected === makeup ? null : makeup;
-		setSelected(filter);
 
 		const params = new URLSearchParams(searchParams);
 		params.set("page", "1");

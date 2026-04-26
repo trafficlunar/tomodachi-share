@@ -1,4 +1,4 @@
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { Icon } from "@iconify/react";
 import type { MiiPlatform } from "@tomodachi-share/shared";
 import { useNavigate, useSearchParams } from "react-router";
@@ -7,19 +7,22 @@ export default function PlatformSelect() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 	const [, startTransition] = useTransition();
-
-	const [selected, setSelected] = useState<MiiPlatform | null>((searchParams.get("platform") as MiiPlatform) ?? null);
+	const selected = (searchParams.get("platform") as MiiPlatform) ?? null;
 
 	const handleClick = (platform: MiiPlatform) => {
 		const filter = selected === platform ? null : platform;
-		setSelected(filter);
 
 		const params = new URLSearchParams(searchParams);
+		params.set("page", "1");
+
 		if (filter) {
 			params.set("platform", filter);
 		} else {
 			params.delete("platform");
 		}
+		if (params.get("gender") === "NONBINARY") params.delete("gender");
+		params.delete("makeup");
+		params.delete("allowCopying");
 
 		startTransition(() => {
 			navigate(`?${params.toString()}`);
