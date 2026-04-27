@@ -46,7 +46,7 @@ export default function ProfileLayout() {
 
 	const isAdmin = userId === Number(import.meta.env.VITE_ADMIN_USER_ID);
 	const isContributor = import.meta.env.VITE_CONTRIBUTORS_USER_IDS?.split(",").includes(String(user?.id));
-	const isOwnProfile = userId === user?.id;
+	const isOwnProfile = $session?.user?.id && userId === Number($session.user.id);
 
 	const joinDate = new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" });
 	const metaTitle = `${user.name} - TomodachiShare`;

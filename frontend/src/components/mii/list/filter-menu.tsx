@@ -21,6 +21,7 @@ export default function FilterMenu() {
 	const rawTags = searchParams.get("tags") || "";
 	const rawExclude = searchParams.get("exclude") || "";
 	const allowCopying = (searchParams.get("allowCopying") as unknown as boolean) || false;
+	const isFromSaveFile = (searchParams.get("isFromSaveFile") as unknown as boolean) || false;
 
 	const tags = useMemo(
 		() =>
@@ -66,9 +67,10 @@ export default function FilterMenu() {
 		if (gender) count++;
 		if (allowCopying) count++;
 		if (makeup) count++;
+		if (isFromSaveFile) count++;
 
 		setFilterCount(count);
-	}, [tags, exclude, platform, gender, allowCopying, makeup]);
+	}, [tags, exclude, platform, gender, allowCopying, makeup, isFromSaveFile]);
 
 	return (
 		<div className="relative">
