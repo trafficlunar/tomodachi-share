@@ -51,7 +51,7 @@ export default function AdminBanner() {
 	return (
 		<>
 			{shouldShow && message && (
-				<div className="relative w-full min-h-10 bg-orange-300 border-y-2 border-y-orange-400 mt-1 pl-2 shadow-md flex justify-center text-orange-900 text-nowrap overflow-x-auto font-semibold max-sm:justify-between">
+				<div className="relative w-full min-h-10 bg-orange-300 border-y-2 border-y-orange-400 mt-1 pl-2 shadow-md flex justify-center items-center text-orange-900 text-nowrap overflow-x-auto font-semibold max-sm:justify-between">
 					<div className="flex gap-2 h-full items-center w-fit">
 						<Icon icon="humbleicons:exclamation" className="text-2xl min-w-6" />
 						<span>{message}</span>
