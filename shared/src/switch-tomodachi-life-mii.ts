@@ -91,6 +91,15 @@ export class SwitchTomodachiLifeMii {
 			const decompressed = Buffer.from(fzstd.decompress(canvasData));
 			const deswizzled = new BytesDeswizzle(decompressed, [256, 256], [1, 1], 4, 4).deswizzle();
 
+			// Issue (#47)
+			const gamma = 0.4545;
+
+			for (let i = 0; i < deswizzled.length; i += 4) {
+				deswizzled[i] = Math.min(255, Math.round(255 * Math.pow(deswizzled[i] / 255, gamma)));
+				deswizzled[i + 1] = Math.min(255, Math.round(255 * Math.pow(deswizzled[i + 1] / 255, gamma)));
+				deswizzled[i + 2] = Math.min(255, Math.round(255 * Math.pow(deswizzled[i + 2] / 255, gamma)));
+			}
+
 			return await sharp(deswizzled, {
 				raw: { width: 256, height: 256, channels: 4 },
 			})
