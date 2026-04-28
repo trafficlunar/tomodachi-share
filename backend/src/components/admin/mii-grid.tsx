@@ -60,12 +60,20 @@ export default function MiiGrid({ miis, totalCount, lastPage }: Props) {
 									key={mii.id}
 									className={`flex flex-col relative bg-zinc-50 border-zinc-300 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300 bg-red-50!" : ""}`}
 								>
-									{mii.in_queue && (
-										<div className="absolute top-2 left-2 z-10 bg-zinc-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm flex items-center gap-1">
-											<Icon icon="mdi:clock-outline" className="text-base" />
-											In Queue
-										</div>
-									)}
+									<div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+										{mii.in_queue && (
+											<div className="bg-zinc-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm flex items-center gap-1 w-fit">
+												<Icon icon="mdi:clock-outline" className="text-base" />
+												In Queue
+											</div>
+										)}
+										{mii.needsFixing && (
+											<div className="bg-orange-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm flex items-center gap-1 w-fit">
+												<Icon icon="mdi:alert-outline" className="text-base" />
+												Needs Fixing
+											</div>
+										)}
+									</div>
 
 									<div className="grid grid-cols-2 gap-1 rounded-xl bg-zinc-200">
 										{[
