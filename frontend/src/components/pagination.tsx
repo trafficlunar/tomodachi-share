@@ -11,6 +11,10 @@ export default function Pagination({ lastPage }: Props) {
 	const [searchParams] = useSearchParams();
 	const page = Number(searchParams.get("page") ?? 1);
 
+	const scrollToTop = useCallback(() => {
+		window.scrollTo({ top: 0 });
+	}, []);
+
 	const createPageUrl = useCallback(
 		(pageNumber: number) => {
 			const params = new URLSearchParams(searchParams);
@@ -37,6 +41,7 @@ export default function Pagination({ lastPage }: Props) {
 			{/* Go to first page */}
 			<Link
 				to={page === 1 ? "#" : createPageUrl(1)}
+				onClick={page === 1 ? undefined : scrollToTop}
 				aria-label="Go to First Page"
 				aria-disabled={page === 1}
 				tabIndex={page === 1 ? -1 : undefined}
@@ -48,6 +53,7 @@ export default function Pagination({ lastPage }: Props) {
 			{/* Previous page */}
 			<Link
 				to={page === 1 ? "#" : createPageUrl(page - 1)}
+				onClick={page === 1 ? undefined : scrollToTop}
 				aria-label="Go to Previous Page"
 				aria-disabled={page === 1}
 				tabIndex={page === 1 ? -1 : undefined}
@@ -62,6 +68,7 @@ export default function Pagination({ lastPage }: Props) {
 					<Link
 						key={number}
 						to={createPageUrl(number)}
+						onClick={scrollToTop}
 						aria-label={`Go to Page ${number}`}
 						aria-current={number === page ? "page" : undefined}
 						className={`pill p-0! w-8 h-8 text-center rounded-md! ${number == page ? "bg-orange-400!" : "bg-orange-100! hover:bg-orange-400!"}`}
@@ -74,6 +81,7 @@ export default function Pagination({ lastPage }: Props) {
 			{/* Next page */}
 			<Link
 				to={page >= lastPage ? "#" : createPageUrl(page + 1)}
+				onClick={page >= lastPage ? undefined : scrollToTop}
 				aria-label="Go to Next Page"
 				aria-disabled={page >= lastPage}
 				tabIndex={page >= lastPage ? -1 : undefined}
@@ -85,6 +93,7 @@ export default function Pagination({ lastPage }: Props) {
 			{/* Go to last page */}
 			<Link
 				to={page >= lastPage ? "#" : createPageUrl(lastPage)}
+				onClick={page >= lastPage ? undefined : scrollToTop}
 				aria-label="Go to Last Page"
 				aria-disabled={page >= lastPage}
 				tabIndex={page >= lastPage ? -1 : undefined}
