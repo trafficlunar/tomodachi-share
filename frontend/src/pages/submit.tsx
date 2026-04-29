@@ -23,7 +23,7 @@ import SwitchFileUpload from "../components/submit-form/switch-file-upload";
 import SwitchSubmitTutorialButton from "../components/tutorial/switch-submit";
 import QrUpload from "../components/submit-form/qr-upload";
 import Camera from "../components/submit-form/camera";
-import ThreeDsScanTutorialButton from "../components/tutorial/3ds-scan";
+import ThreeDsSubmitTutorialButton from "../components/tutorial/3ds-submit";
 import Dropzone from "../components/dropzone";
 import ImageList from "../components/submit-form/image-list";
 import SubmitButton from "../components/submit-button";
@@ -472,7 +472,7 @@ export default function SubmitPage() {
 								Use your camera
 							</button>
 							<Camera isOpen={isQrScannerOpen} setIsOpen={setIsQrScannerOpen} setQrBytesRaw={setQrBytesRaw} />
-							<ThreeDsScanTutorialButton />
+							<ThreeDsSubmitTutorialButton />
 							<span className="text-xs text-zinc-400">For emulators, aes_keys.txt is required.</span>
 						</div>
 					</div>

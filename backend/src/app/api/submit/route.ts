@@ -38,7 +38,7 @@ const submitSchema = z.object({
 		.trim()
 		.transform((val) => (val === "" ? null : val))
 		.refine((val) => val === null || /^[a-zA-Z0-9_-]{11}$/.test(val), "Invalid YouTube video ID")
-		.optional(),
+		.nullish(),
 
 	way: z.enum(["savedata", "manual"]).optional(),
 
@@ -102,8 +102,8 @@ export async function POST(request: NextRequest) {
 		gender: formData.get("gender") ?? undefined, // ZOD MOMENT
 		makeup: formData.get("makeup") ?? undefined,
 		miiPortraitImage: formData.get("miiPortraitImage"),
-		youtubeId: formData.get("youtubeId"),
-		way: formData.get("way"),
+		youtubeId: formData.get("youtubeId") ?? undefined,
+		way: formData.get("way") ?? undefined,
 
 		miiDataFile: formData.get("miiDataFile") ?? undefined,
 
