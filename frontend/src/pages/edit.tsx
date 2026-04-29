@@ -6,6 +6,7 @@ import { type FileWithPath } from "react-dropzone";
 
 import { nameSchema, tagsSchema } from "@tomodachi-share/shared/schemas";
 import { type MiiGender, type MiiMakeup, type SwitchMiiInstructions, deepMerge, defaultInstructions, minifyInstructions } from "@tomodachi-share/shared";
+import { errorMessageAfterJsonFailure, interpretMiiEditResponse } from "../lib/mii-edit-notifications";
 import Carousel from "../components/carousel";
 import LikeButton from "../components/like-button";
 import TagSelector from "../components/tag-selector";
@@ -60,6 +61,8 @@ export default function EditMiiPage() {
 	const hasMiiFeaturesChanged = useRef(false);
 
 	const handleSubmit = async () => {
+		setError(undefined);
+
 		// Validate before sending request
 		const nameValidation = nameSchema.safeParse(name);
 		if (!nameValidation.success) {
@@ -118,19 +121,34 @@ export default function EditMiiPage() {
 			if (blob) formData.append("miiFeaturesImage", blob);
 		}
 
-		const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mii/${mii.id}/edit`, {
-			method: "POST",
-			body: formData,
-			credentials: "include",
-		});
-		const { error } = await response.json();
+		setError(undefined);
 
-		if (!response.ok) {
-			setError(error);
+		let response: Response;
+		try {
+			response = await fetch(`${import.meta.env.VITE_API_URL}/api/mii/${mii.id}/edit`, {
+				method: "POST",
+				body: formData,
+				credentials: "include",
+			});
+		} catch {
+			setError("Network error. Check your connection and try again.");
 			return;
 		}
 
-		navigate(`/mii/${mii.id}`);
+		let data: { success?: boolean; error?: unknown; message?: unknown };
+		try {
+			data = await response.json();
+		} catch {
+			setError(errorMessageAfterJsonFailure(response));
+			return;
+		}
+
+		const outcome = interpretMiiEditResponse(response, data, mii.id);
+		if (outcome.kind === "failure") {
+			setError(outcome.error);
+			return;
+		}
+		navigate(outcome.navigate.path, { state: outcome.navigate.state });
 	};
 
 	const handleMiiPortraitChange = (uri: string | undefined) => {
@@ -243,6 +261,17 @@ export default function EditMiiPage() {
 					<h2 className="text-2xl font-bold">Edit your Mii</h2>
 					<p className="text-sm text-zinc-500">Make changes to your existing Mii.</p>
 				</div>
+
+				{error && (
+					<div
+						className="bg-red-50 border-2 border-red-400 rounded-xl p-3 flex items-start gap-2 text-red-800 text-sm font-medium"
+						role="alert"
+						aria-live="assertive"
+					>
+						<Icon icon="material-symbols:error-rounded" className="text-xl shrink-0 mt-0.5" />
+						<span>{error}</span>
+					</div>
+				)}
 
 				{/* Separator */}
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium my-1">
@@ -481,9 +510,7 @@ export default function EditMiiPage() {
 				<ImageList files={files} setFiles={handleFilesChange} />
 
 				<hr className="border-zinc-300 my-2" />
-				<div className="flex justify-between items-center">
-					{error && <span className="text-red-400 font-bold">Error: {error}</span>}
-
+				<div className="flex justify-end items-center">
 					<SubmitButton onClick={handleSubmit} text="Edit" className="ml-auto" />
 				</div>
 			</div>

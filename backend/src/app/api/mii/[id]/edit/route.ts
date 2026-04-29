@@ -281,5 +281,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 		console.error("Cloudflare cache purge failed:", err);
 	});
 
-	return rateLimit.sendResponse({ success: true });
+	return rateLimit.sendResponse({
+		success: true,
+		message: "Mii updated successfully.",
+	});
 }

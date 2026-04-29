@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"forceConsistentCasingInFileNames": true
+	},
+	"files": [],
+	"references": [
+		{ "path": "./frontend/tsconfig.json" },
+		{ "path": "./backend/tsconfig.json" },
+		{ "path": "./shared/tsconfig.json" }
+	]
+}

@@ -30,6 +30,7 @@ import SubmitButton from "../components/submit-button";
 import MiiEditor from "../components/submit-form/mii-editor";
 
 import { session } from "../session";
+import { interpretSubmitResponse } from "../lib/submit-response";
 import qrcode from "qrcode-generator";
 
 export default function SubmitPage() {
@@ -137,14 +138,19 @@ export default function SubmitPage() {
 			body: formData,
 			credentials: "include",
 		});
-		const { id, error } = await response.json();
-
-		if (!response.ok) {
-			setError(String(error));
+		let data: unknown;
+		try {
+			data = await response.json();
+		} catch {
+			setError("Invalid response from server.");
 			return;
 		}
-
-		navigate(`/mii/${id}`);
+		const outcome = interpretSubmitResponse(response, data);
+		if (outcome.kind === "failure") {
+			setError(outcome.error);
+			return;
+		}
+		navigate(`/mii/${outcome.miiId}`);
 	};
 
 	useEffect(() => {
