@@ -57,7 +57,7 @@ export default function AdminBanner() {
 						<span>{message}</span>
 					</div>
 
-					<button onClick={handleClose} className="sm:absolute right-2 cursor-pointer p-1.5">
+					<button onClick={handleClose} aria-label="Close banner" title="Close banner" className="sm:absolute right-2 cursor-pointer p-1.5">
 						<Icon icon="humbleicons:times" className="text-2xl min-w-6" />
 					</button>
 				</div>

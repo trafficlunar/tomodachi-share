@@ -94,8 +94,11 @@ export default function DeleteMiiButton({ miiId, miiName, likes, inMiiPage }: Pr
 								</div>
 							</div>
 
-							<p className="text-sm text-zinc-500 my-2">Type the Mii's name below to delete:</p>
+							<label htmlFor={`delete-mii-name-${miiId}`} className="text-sm text-zinc-500 my-2 block">
+								Type the Mii's name below to delete:
+							</label>
 							<input
+								id={`delete-mii-name-${miiId}`}
 								type="text"
 								className="pill input"
 								value={inputMiiName}

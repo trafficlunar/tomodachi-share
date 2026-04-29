@@ -78,14 +78,15 @@ export default function ProfileLayout() {
 				<div className="flex w-full gap-4 overflow-x-scroll">
 					{/* Profile picture */}
 					<Link to={`/profile/${user.id}`} className="size-28 aspect-square">
-						<img
-							src={user.image ? (user.image.startsWith("/profile") ? `${import.meta.env.VITE_API_URL}${user.image}` : user.image) : "/guest.png"}
-							onError={(e) => {
-								e.currentTarget.onerror = null; // Prevent infinite loops
-								e.currentTarget.src = "/guest.png";
-							}}
-							className="rounded-full bg-white border-2 border-orange-400 shadow w-full max-md:self-center"
-						/>
+					<img
+						src={user.image ? (user.image.startsWith("/profile") ? `${import.meta.env.VITE_API_URL}${user.image}` : user.image) : "/guest.png"}
+						alt={`${user.name}'s profile picture`}
+						onError={(e) => {
+							e.currentTarget.onerror = null; // Prevent infinite loops
+							e.currentTarget.src = "/guest.png";
+						}}
+						className="rounded-full bg-white border-2 border-orange-400 shadow w-full max-md:self-center"
+					/>
 					</Link>
 					{/* User information */}
 					<div className="flex flex-col w-full relative py-3">

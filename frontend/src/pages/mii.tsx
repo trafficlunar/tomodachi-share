@@ -9,20 +9,31 @@ import SwitchAddMiiTutorialButton from "../components/tutorial/switch-add-mii";
 import MiiInstructions from "../components/mii/instructions";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import AuthorButtons from "../components/mii/author-buttons";
 import { useStore } from "@nanostores/react";
 import { session } from "../session";
+import { deriveEditSuccessFlashFromLocationState } from "../lib/mii-edit-notifications";
 
 export default function MiiPage() {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const location = useLocation();
 	const $session = useStore(session);
 	const [mii, setMii] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 	const [isLiked, setIsLiked] = useState(false);
+	const [editSuccessFlash, setEditSuccessFlash] = useState<{ show: boolean; message?: string }>(() =>
+		deriveEditSuccessFlashFromLocationState(location.state),
+	);
 
 	const API_URL = import.meta.env.VITE_API_URL;
+
+	useEffect(() => {
+		const s = location.state as { miiEdited?: boolean } | null;
+		if (!s?.miiEdited) return;
+		navigate(".", { replace: true, state: null });
+	}, [location.state, navigate]);
 
 	useEffect(() => {
 		fetch(`${API_URL}/api/mii/${id}/info`)
@@ -85,6 +96,22 @@ export default function MiiPage() {
 			<meta name="twitter:creator" content={`@${mii.user.name}`} />
 
 			<div className="max-w-5xl w-full flex flex-col gap-4">
+				{editSuccessFlash.show && (
+					<div className="bg-green-50 border-2 border-green-500 rounded-2xl shadow-lg p-4 flex items-start gap-3 text-green-900">
+						<Icon icon="mdi:check-circle" className="text-2xl shrink-0 mt-0.5" aria-hidden />
+						<p className="font-medium grow">
+							{editSuccessFlash.message ?? "Your Mii was updated successfully."}
+						</p>
+						<button
+							type="button"
+							className="pill button text-sm shrink-0"
+							onClick={() => setEditSuccessFlash({ show: false })}
+							aria-label="Dismiss update confirmation"
+						>
+							Dismiss
+						</button>
+					</div>
+				)}
 				{mii.quarantined && (
 					<div className="bg-red-100 border-2 border-red-400 rounded-2xl shadow-lg p-4 flex items-center gap-3 text-red-700">
 						<Icon icon="material-symbols:warning-rounded" className="text-2xl shrink-0" />
@@ -152,19 +179,7 @@ export default function MiiPage() {
 											<hr className="grow border-zinc-300" />
 										</div>
 
-										<div
-											className="rounded-lg mb-4 overflow-hidden"
-											style={{
-												backgroundImage: `
-            linear-gradient(45deg, #ccc 25%, transparent 25%),
-            linear-gradient(-45deg, #ccc 25%, transparent 25%),
-            linear-gradient(45deg, transparent 75%, #ccc 75%),
-            linear-gradient(-45deg, transparent 75%, #ccc 75%)
-        `,
-												backgroundSize: "16px 16px",
-												backgroundPosition: "0 0, 0 8px, 8px -8px, -8px 0px",
-											}}
-										>
+									<div className="rounded-lg mb-4 overflow-hidden checkerboard">
 											<ImageViewer
 												src={`${API_URL}/mii/${mii.id}/image?type=facepaint`}
 												alt="mii facepaint"
@@ -192,7 +207,7 @@ export default function MiiPage() {
 									From: <span className="text-right font-medium">{mii.islandName} Island</span>
 								</li>
 								<li>
-									Allowed Copying: <input type="checkbox" checked={mii.allowedCopying ?? false} disabled className="checkbox cursor-auto!" />
+									Allowed Copying: <input type="checkbox" checked={mii.allowedCopying ?? false} disabled aria-label="Allowed copying" title="Allowed copying" className="checkbox cursor-auto!" />
 								</li>
 							</ul>
 						)}

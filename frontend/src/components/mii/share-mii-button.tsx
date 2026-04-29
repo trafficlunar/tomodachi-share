@@ -85,7 +85,16 @@ export default function ShareMiiButton({ miiId }: Props) {
 							</div>
 
 							<div className="relative">
-								<input type="text" disabled className="pill input w-full text-sm" value={url} />
+								<label htmlFor={`share-mii-url-${miiId}`} className="sr-only">
+									Share link
+								</label>
+								<input
+									id={`share-mii-url-${miiId}`}
+									type="text"
+									disabled
+									className="pill input w-full text-sm"
+									value={url}
+								/>
 
 								{/* Copy button */}
 								<button className="absolute! top-2.5 right-2.5 cursor-pointer" data-tooltip={hasCopiedUrl ? "Copied!" : "Copy URL"} onClick={handleCopyUrl}>
