@@ -23,6 +23,7 @@ import ReportMiiPage from "./pages/report/mii.tsx";
 import ReportUserPage from "./pages/report/user.tsx";
 import EditMiiPage from "./pages/edit.tsx";
 import PunishedPage from "./pages/punished.tsx";
+import BreachNoticePage from "./pages/breach-notice.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
@@ -48,6 +49,7 @@ createRoot(document.getElementById("root")!).render(
 						<Route path="/privacy" element={<PrivacyPage />} />
 						<Route path="/terms-of-service" element={<TermsOfServicePage />} />
 						<Route path="/punished" element={<PunishedPage />} />
+						<Route path="/breach-notice" element={<BreachNoticePage />} />
 						<Route path="*" element={<NotFoundPage />} />
 					</Routes>
 				</Layout>
