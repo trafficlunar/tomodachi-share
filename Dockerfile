@@ -3,7 +3,7 @@ FROM node:23-alpine AS base
 WORKDIR /app
 
 RUN apk add --no-cache libc6-compat
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@11.1.1 --activate
 
 FROM base AS deps
 WORKDIR /app
