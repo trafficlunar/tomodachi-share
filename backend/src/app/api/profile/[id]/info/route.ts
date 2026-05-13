@@ -18,6 +18,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 			image: true,
 			description: true,
 			createdAt: true,
+   updatedAt: true,
+   imageUpdatedAt: true,
 			_count: {
 				select: {
 					likes: true,
