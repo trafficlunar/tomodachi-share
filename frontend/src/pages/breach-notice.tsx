@@ -29,9 +29,12 @@ export default function BreachNoticePage() {
 				The only data that wouldn't normally be viewable is your email address (the same thing you would give to people to receive emails), everything else was
 				publicly viewable (such as on the profile pages). The code that caused this to happen has already been fixed.
 			</p>
-			<p>
+			<p className="mb-2">
 				As far as I'm aware, no other information have been collected. The breach has been notified to the Information Commissioner's Office. Please take care
 				when opening any suspicious emails. <strong>TomodachiShare does not send any emails.</strong> Please do not click on any suspicious links.
+			</p>
+			<p>
+				<strong>Your Discord/Google/GitHub accounts are completely unaffected by this.</strong>
 			</p>
 		</div>
 	);
