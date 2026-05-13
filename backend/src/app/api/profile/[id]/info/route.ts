@@ -12,7 +12,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 		where: {
 			id: userId,
 		},
-		include: {
+		select: {
+			id: true,
+			name: true,
+			image: true,
+			description: true,
+			createdAt: true,
 			_count: {
 				select: {
 					likes: true,

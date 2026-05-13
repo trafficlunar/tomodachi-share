@@ -13,7 +13,7 @@
 	"dependencies": {
 		"@2toad/profanity": "^3.3.0",
 		"@auth/prisma-adapter": "2.11.1",
-		"@prisma/client": "^6.19.2",
+		"@prisma/client": "^6.19.3",
 		"@tomodachi-share/shared": "workspace:*",
 		"bit-buffer": "^0.3.0",
 		"charinfo-ex": "^0.0.5",
@@ -23,28 +23,28 @@
 		"next": "16.2.3",
 		"next-auth": "5.0.0-beta.30",
 		"qrcode-generator": "^2.0.4",
-		"react": "^19.2.5",
-		"react-dom": "^19.2.5",
-		"redis": "^5.11.0",
+		"react": "^19.2.6",
+		"react-dom": "^19.2.6",
+		"redis": "^5.12.1",
 		"satori": "^0.26.0",
 		"sharp": "^0.34.5",
 		"sjcl-with-all": "1.0.8",
-		"zod": "^4.3.6"
+		"zod": "^4.4.3"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.5",
 		"@iconify/react": "^6.0.2",
-		"@tailwindcss/postcss": "^4.2.2",
-		"@types/node": "^25.6.0",
+		"@tailwindcss/postcss": "^4.3.0",
+		"@types/node": "^25.7.0",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"@types/sjcl": "^1.0.34",
-		"eslint": "^10.2.0",
+		"eslint": "^10.3.0",
 		"eslint-config-next": "16.2.3",
-		"prisma": "^6.19.2",
+		"prisma": "^6.19.3",
 		"schema-dts": "^2.0.0",
-		"tailwindcss": "^4.2.2",
-		"typescript": "^6.0.2"
+		"tailwindcss": "^4.3.0",
+		"typescript": "^6.0.3"
 	},
 	"exports": {
 		".": "./src/types.d.ts"
