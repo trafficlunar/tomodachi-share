@@ -15,10 +15,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			name: process.env.NODE_ENV === "production" ? "__Secure-next-auth.session-token" : "next-auth.session-token",
 			options: {
 				httpOnly: true,
-				sameSite: "none",
+				sameSite: "lax",
 				path: "/",
-				secure: true,
-				domain: process.env.NODE_ENV === "production" ? ".tomodachishare.com" : "localhost",
+				secure: process.env.NODE_ENV === "production",
+				domain: process.env.NODE_ENV === "production" ? ".tomodachishare.com" : undefined,
 			},
 		},
 	},
