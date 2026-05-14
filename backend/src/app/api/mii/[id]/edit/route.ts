@@ -153,7 +153,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 	}
 
 	// Prevent non-admins from quarantining Miis
-	if (quarantined && needsFixingReason && session.user?.id?.toString() !== process.env.NEXT_PUBLIC_ADMIN_USER_ID)
+	if ((quarantined || needsFixingReason) && session.user?.id?.toString() !== process.env.NEXT_PUBLIC_ADMIN_USER_ID)
 		return rateLimit.sendResponse({ error: `You're not an admin!` }, 401);
 
 	const clearImages = formData.get("clearImages") === "true";
