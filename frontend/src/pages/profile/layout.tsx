@@ -22,7 +22,7 @@ export default function ProfileLayout() {
 			return;
 		}
 
-		fetch(`${import.meta.env.VITE_API_URL}/api/profile/${userId}/info`)
+		fetch(`${import.meta.env.VITE_API_URL}/api/profile/${userId}/info`, { cache: "no-store" })
 			.then((res) => {
 				if (!res.ok) throw new Error("Failed to fetch profile");
 				return res.json();

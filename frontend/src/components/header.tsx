@@ -90,7 +90,7 @@ export default function Header() {
 						</li>
 						<li title="Logout">
 							<Link
-								to={`${import.meta.env.VITE_API_URL}/api/auth/signout`}
+								to={`${import.meta.env.VITE_API_URL}/api/auth/logout`}
 								aria-label="Log Out"
 								className="pill button p-2! aspect-square h-full"
 								data-tooltip="Log Out"
