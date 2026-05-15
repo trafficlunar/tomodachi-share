@@ -24,6 +24,7 @@ import ReportUserPage from "./pages/report/user.tsx";
 import EditMiiPage from "./pages/edit.tsx";
 import PunishedPage from "./pages/punished.tsx";
 import BreachNoticePage from "./pages/breach-notice.tsx";
+import AccountDeletionPage from "./pages/account-deletion.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
@@ -50,6 +51,7 @@ createRoot(document.getElementById("root")!).render(
 						<Route path="/terms-of-service" element={<TermsOfServicePage />} />
 						<Route path="/punished" element={<PunishedPage />} />
 						<Route path="/breach-notice" element={<BreachNoticePage />} />
+						<Route path="/account-deletion" element={<AccountDeletionPage />} />
 						<Route path="*" element={<NotFoundPage />} />
 					</Routes>
 				</Layout>

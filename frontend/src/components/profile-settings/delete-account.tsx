@@ -19,7 +19,7 @@ export default function DeleteAccount() {
 			return;
 		}
 
-		navigate("/404");
+		navigate("/account-deletion");
 	};
 
 	const close = () => {
