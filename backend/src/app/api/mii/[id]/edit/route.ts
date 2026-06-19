@@ -269,7 +269,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 		headers: { Authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`, "Content-Type": "application/json" },
 		body: JSON.stringify({
 			files: [
-				{ url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/mii/${miiId}/info`, headers: { Origin: process.env.NEXT_PUBLIC_BASE_URL } },
+				{ url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/mii/${miiId}/info`, headers: { Origin: process.env.NEXT_PUBLIC_FRONTEND_URL } },
 				`${process.env.NEXT_PUBLIC_BASE_URL}/mii/${miiId}/image?type=mii`,
 				`${process.env.NEXT_PUBLIC_BASE_URL}/mii/${miiId}/image?type=features`,
 				`${process.env.NEXT_PUBLIC_BASE_URL}/mii/${miiId}/image?type=image0`,

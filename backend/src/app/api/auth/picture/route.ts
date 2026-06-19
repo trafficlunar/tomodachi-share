@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
 		headers: { Authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`, "Content-Type": "application/json" },
 		body: JSON.stringify({
 			files: [
-				{ url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/profile/${session.user?.id}/info`, headers: { Origin: process.env.NEXT_PUBLIC_BASE_URL } },
+				{ url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/profile/${session.user?.id}/info`, headers: { Origin: process.env.NEXT_PUBLIC_FRONTEND_URL } },
 				`${process.env.NEXT_PUBLIC_BASE_URL}/profile/${session.user?.id}/picture`,
 			],
 		}),
