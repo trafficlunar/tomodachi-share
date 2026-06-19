@@ -9,3 +9,5 @@ allowBuilds:
   prisma: true
   sharp: true
   unrs-resolver: false
+minimumReleaseAgeExclude:
+  - '@types/node@26.0.0'
