@@ -5,6 +5,7 @@ import Header from "./components/header";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { session } from "./session";
+import { Icon } from "@iconify/react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	const $session = useStore(session);
@@ -56,7 +57,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 		<>
 			<Header />
 			<AdminBanner />
-			<main className="px-4 py-8 max-w-7xl w-full grow flex flex-col">{children}</main>
+			<a
+				href="https://ko-fi.com/trafficlunar"
+				target="_blank"
+				aria-label="Support on Ko-fi"
+				className="pill button h-full bg-[#FF5E5B]! hover:bg-[#e04f4c]! border-[#e04f4c]! text-white! inline-flex items-center gap-2 mt-4"
+				data-tooltip-span
+			>
+				<div className="tooltip bg-[#FF5E5B]! border-[#FF5E5B]! before:border-b-[#FF5E5B]!">Support me (trafficlunar) on Ko-fi</div>
+				<Icon icon="simple-icons:kofi" fontSize={20} />
+				Support me!
+			</a>
+			<main className="px-4 py-8 pt-4 max-w-7xl w-full grow flex flex-col">{children}</main>
 			<Footer />
 		</>
 	);
