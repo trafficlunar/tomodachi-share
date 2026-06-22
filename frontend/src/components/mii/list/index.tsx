@@ -158,7 +158,10 @@ export default function MiiList({ parentPage, userId, bypassCache }: Props) {
 					<Pagination lastPage={data.lastPage} />
 				</div>
 			) : (
-				<p>No Miis found, has the server died?</p>
+				<>
+					<p className="text-2xl text-center">No Miis found, has the server died?</p>
+					<p className="text-center font-bold text-lg">Please try refreshing first!</p>
+				</>
 			)}
 		</>
 	);
