@@ -33,6 +33,7 @@ COPY --from=builder /app/backend/public ./public
 COPY --from=builder /app/backend/.next ./.next
 COPY --from=builder /app/backend/.next/static ./.next/standalone/backend/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/backend/prisma ./prisma
+RUN chown -R nextjs:nodejs ./.next
 
 RUN mkdir -p /app/.next/standalone/backend/uploads && chown -R nextjs:nodejs /app/.next/standalone/backend/uploads
 
