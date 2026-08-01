@@ -11,3 +11,9 @@ allowBuilds:
   unrs-resolver: false
 minimumReleaseAgeExclude:
   - '@types/node@26.0.0'
+  - '@redis/bloom@6.2.0'
+  - '@redis/client@6.2.0'
+  - '@redis/json@6.2.0'
+  - '@redis/search@6.2.0'
+  - '@redis/time-series@6.2.0'
+  - redis@6.2.0

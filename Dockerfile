@@ -1,9 +1,9 @@
-FROM node:23-alpine AS base
+FROM node:26-alpine AS base
 
 WORKDIR /app
 
 RUN apk add --no-cache libc6-compat
-RUN corepack enable && corepack prepare pnpm@11.1.1 --activate
+RUN npm install -g pnpm
 
 FROM base AS deps
 WORKDIR /app
@@ -28,7 +28,7 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# I know all the paths are messed up but I don't have time to fix it
+# I know all the paths are messed up
 COPY --from=builder /app/backend/public ./public
 COPY --from=builder /app/backend/.next ./.next
 COPY --from=builder /app/backend/.next/static ./.next/standalone/backend/.next/static

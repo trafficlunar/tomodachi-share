@@ -1,10 +1,10 @@
 import { type ReactNode, useState } from "react";
-import { type DropzoneOptions, type FileWithPath, useDropzone } from "react-dropzone";
+import { type DropzoneOptions, useDropzone } from "react-dropzone";
 import { Icon } from "@iconify/react";
 
 interface Props {
 	type?: "file" | "image";
-	onDrop: (acceptedFiles: FileWithPath[]) => void;
+	onDrop: (acceptedFiles: File[]) => void;
 	options?: DropzoneOptions;
 	children?: ReactNode;
 }
@@ -12,7 +12,7 @@ interface Props {
 export default function Dropzone({ type = "image", onDrop, options, children }: Props) {
 	const [isDraggingOver, setIsDraggingOver] = useState(false);
 
-	const handleDrop = (acceptedFiles: FileWithPath[]) => {
+	const handleDrop = (acceptedFiles: File[]) => {
 		setIsDraggingOver(false);
 		onDrop(acceptedFiles);
 	};

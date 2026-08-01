@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from "react";
-import { type FileWithPath } from "react-dropzone";
 import jsQR from "jsqr";
 import Dropzone from "../dropzone";
 
@@ -12,7 +11,7 @@ export default function QrUpload({ setQrBytesRaw }: Props) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	const handleDrop = useCallback(
-		(acceptedFiles: FileWithPath[]) => {
+		(acceptedFiles: File[]) => {
 			const file = acceptedFiles[0];
 
 			// Scan QR code

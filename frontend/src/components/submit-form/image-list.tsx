@@ -1,10 +1,9 @@
-import { type FileWithPath } from "react-dropzone";
 import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { Icon } from "@iconify/react";
 
 interface Props {
-	files: readonly FileWithPath[];
-	setFiles: React.Dispatch<React.SetStateAction<FileWithPath[]>>;
+	files: readonly File[];
+	setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
 export default function ImageList({ files, setFiles }: Props) {

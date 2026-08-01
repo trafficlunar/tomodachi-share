@@ -8,7 +8,7 @@
 		"fzstd": "^0.1.1",
 		"sharp": "^0.34.5",
 		"sjcl-with-all": "1.0.8",
-		"zod": "^4.3.6"
+		"zod": "^4.4.3"
 	},
 	"exports": {
 		".": "./src/index.ts",
@@ -17,7 +17,7 @@
 	},
 	"types": "./src/index.ts",
 	"devDependencies": {
-		"@types/node": "^25.6.0",
+		"@types/node": "^26.1.2",
 		"@types/sjcl": "^1.0.34"
 	}
 }

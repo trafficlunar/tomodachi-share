@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import { type FileWithPath } from "react-dropzone";
 import { Icon } from "@iconify/react";
 import Dropzone from "../dropzone";
 import Camera from "./camera";
@@ -20,7 +19,7 @@ export default function SwitchFileUpload({ text, type = "image", forceCrop, file
 	const [isCropOpen, setIsCropOpen] = useState(false);
 
 	const handleDrop = useCallback(
-		(acceptedFiles: FileWithPath[]) => {
+		(acceptedFiles: File[]) => {
 			const file = acceptedFiles[0];
 			if (type === "file") {
 				setFile!(file);

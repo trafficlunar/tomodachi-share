@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import { type FileWithPath } from "react-dropzone";
 
 import { Icon } from "@iconify/react";
 import dayjs from "dayjs";
@@ -11,7 +10,7 @@ import { useNavigate } from "react-router";
 export default function ProfilePictureSettings() {
 	const navigate = useNavigate();
 	const [error, setError] = useState<string | undefined>(undefined);
-	const [newPicture, setNewPicture] = useState<FileWithPath | undefined>();
+	const [newPicture, setNewPicture] = useState<File | undefined>();
 
 	const changeDate = dayjs().add(7, "days");
 
@@ -35,7 +34,7 @@ export default function ProfilePictureSettings() {
 		navigate(0);
 	};
 
-	const handleDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+	const handleDrop = useCallback((acceptedFiles: File[]) => {
 		if (!acceptedFiles[0]) return;
 		setNewPicture(acceptedFiles[0]);
 	}, []);

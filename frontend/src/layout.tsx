@@ -66,7 +66,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 			>
 				<div className="tooltip bg-[#FF5E5B]! border-[#FF5E5B]! before:border-b-[#FF5E5B]!">Support me (trafficlunar) on Ko-fi</div>
 				<Icon icon="simple-icons:kofi" fontSize={20} />
-				Support me!
+				Support TomodachiShare's costs!
 			</a>
 			<main className="px-4 py-8 pt-4 max-w-7xl w-full grow flex flex-col">{children}</main>
 			<Footer />

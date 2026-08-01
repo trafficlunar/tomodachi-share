@@ -1,4 +1,3 @@
-import { Icon } from "@iconify/react";
 import { Link } from "react-router";
 
 export default function Footer() {
@@ -15,32 +14,15 @@ export default function Footer() {
 					<Link to="/terms-of-service" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline">
 						Terms of Service
 					</Link>
-
 					<span className="text-zinc-400 hidden sm:inline" aria-hidden="true">
 						•
 					</span>
-
 					<Link to="/privacy" className="text-zinc-500 hover:text-zinc-700 transition-colors duration-200 hover:underline">
 						Privacy Policy
 					</Link>
-
 					<span className="text-zinc-400 hidden sm:inline" aria-hidden="true">
 						•
 					</span>
-
-					<Link
-						to="https://discord.gg/48cXBFKvWQ"
-						target="_blank"
-						className="text-[#5865F2] hover:text-[#454FBF] transition-colors duration-200 hover:underline inline-flex items-end gap-1"
-					>
-						<Icon icon="ic:baseline-discord" className="text-lg" />
-						Discord
-					</Link>
-
-					<span className="text-zinc-400 hidden sm:inline" aria-hidden="true">
-						•
-					</span>
-
 					<Link
 						to="https://trafficlunar.net"
 						target="_blank"
@@ -48,6 +30,19 @@ export default function Footer() {
 					>
 						Made by <span className="text-orange-400 group-hover:text-orange-500 font-medium transition-colors duration-200">trafficlunar</span>
 					</Link>
+				</div>
+
+				{/* Contact / feedback */}
+				<div className="text-center mt-2">
+					<p className="text-xs text-zinc-500">
+						Questions, bugs, or feature ideas? Contact me at{" "}
+						<a
+							href="mailto:hello@trafficlunar.net"
+							className="text-orange-400 hover:text-orange-500 font-medium hover:underline transition-colors duration-200"
+						>
+							hello@trafficlunar.net
+						</a>
+					</p>
 				</div>
 
 				{/* Copyright */}

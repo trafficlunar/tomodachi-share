@@ -2,7 +2,6 @@ import { useStore } from "@nanostores/react";
 import { Navigate, useNavigate, useParams } from "react-router";
 import { session } from "../session";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { type FileWithPath } from "react-dropzone";
 
 import { nameSchema, tagsSchema } from "@tomodachi-share/shared/schemas";
 import { type MiiGender, type MiiMakeup, type SwitchMiiInstructions, deepMerge, defaultInstructions, minifyInstructions } from "@tomodachi-share/shared";
@@ -24,15 +23,15 @@ export default function EditMiiPage() {
 	const [mii, setMii] = useState<any>(null);
 	const [loading, setLoading] = useState(true);
 
-	const [files, setFiles] = useState<FileWithPath[]>([]);
+	const [files, setFiles] = useState<File[]>([]);
 
-	const handleFilesChange: React.Dispatch<React.SetStateAction<FileWithPath[]>> = (updater) => {
+	const handleFilesChange: React.Dispatch<React.SetStateAction<File[]>> = (updater) => {
 		hasCustomImagesChanged.current = true;
 		setFiles(updater);
 	};
 
 	const handleDrop = useCallback(
-		(acceptedFiles: FileWithPath[]) => {
+		(acceptedFiles: File[]) => {
 			if (files.length >= 3) return;
 			hasCustomImagesChanged.current = true;
 

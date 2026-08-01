@@ -1,7 +1,6 @@
 import { useStore } from "@nanostores/react";
 import { Navigate, useNavigate } from "react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { FileWithPath } from "react-dropzone";
 import { Icon } from "@iconify/react";
 
 import {
@@ -35,10 +34,10 @@ import qrcode from "qrcode-generator";
 export default function SubmitPage() {
 	const navigate = useNavigate();
 	const $session = useStore(session);
-	const [files, setFiles] = useState<FileWithPath[]>([]);
+	const [files, setFiles] = useState<File[]>([]);
 
 	const handleDrop = useCallback(
-		(acceptedFiles: FileWithPath[]) => {
+		(acceptedFiles: File[]) => {
 			if (files.length >= 3) return;
 			setFiles((prev) => [...prev, ...acceptedFiles]);
 		},
@@ -338,6 +337,10 @@ export default function SubmitPage() {
 					{/* Makeup (switch only) — unchanged from base */}
 					<div className={`w-full grid grid-cols-3 items-start ${platform === "SWITCH" ? "" : "hidden"}`}>
 						<label className="font-semibold py-2">Face Paint</label>
+
+						{/* Force Tailwind to load bg-gray-100 */}
+						<div className="bg-gray-100 hidden"></div>
+
 						<div className="col-span-2 flex flex-col gap-1.5">
 							{[
 								{ value: "FULL", label: "Full", desc: "Most of the face/features are covered", color: "pink" },
