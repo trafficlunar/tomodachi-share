@@ -21,7 +21,7 @@
 		"downshift": "^9.4.0",
 		"file-type": "^22.0.1",
 		"next": "16.2.12",
-		"next-auth": "5.0.0-beta.30",
+		"next-auth": "5.0.0-beta.32",
 		"qrcode-generator": "^2.0.4",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8",
