@@ -10,4 +10,4 @@ Disallow: /report/mii/*
 Disallow: /report/user/*
 Disallow: /admin
 
-Sitemap: https://api.tomodachishare.com/sitemap.xml
+Sitemap: https://api.tomodachishare.com/sitemap-index.xml
