@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
 import type { MetadataRoute } from "next";
 
 type SitemapRoute = MetadataRoute.Sitemap[0];
