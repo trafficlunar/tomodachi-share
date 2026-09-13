@@ -161,17 +161,19 @@ export default function Tutorial({ tutorials, isOpen, setIsOpen }: Props) {
 													{slide.text}
 												</a>
 											) : (
-												<p className="text-sm text-zinc-500 mb-2 text-center">{slide.text}</p>
+												<p className={`mb-2 text-center ${slide.imageSrc ? "text-sm" : "text-lg font-medium mt-auto mb-auto"}`}>{slide.text}</p>
 											)}
 
-											<img
-												src={slide.imageSrc ?? "/missing.svg"}
-												alt="step image"
-												width={396}
-												height={320}
-												loading="eager"
-												className="rounded-lg w-full h-full object-contain bg-black flex-1"
-											/>
+											{slide.imageSrc && (
+												<img
+													src={slide.imageSrc ?? "/missing.svg"}
+													alt="step image"
+													width={396}
+													height={320}
+													loading="eager"
+													className="rounded-lg w-full h-full object-contain bg-black flex-1"
+												/>
+											)}
 										</>
 									)}
 								</div>

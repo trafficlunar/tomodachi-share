@@ -3,7 +3,11 @@ import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
 import Tutorial from ".";
 
-export default function SwitchAddMiiTutorialButton() {
+interface Props {
+	hasShareMiiFile: boolean;
+}
+
+export default function SwitchAddMiiTutorialButton({ hasShareMiiFile }: Props) {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
@@ -22,20 +26,37 @@ export default function SwitchAddMiiTutorialButton() {
 								thumbnail: "/tutorial/switch/adding-mii/modded/thumbnail.png",
 								steps: [
 									{ type: "start" },
-									{
-										text: "1. Download ShareMii  - click here for link",
-										link: "https://gamebanana.com/tools/22305",
-										imageSrc: "/tutorial/switch/adding-mii/modded/step1.jpg",
-									},
-									{
-										text: "2. Download the .ltd file, it is above the instructions next to all the other buttons",
-										imageSrc: "/tutorial/switch/adding-mii/modded/step2.png",
-									},
-									{
-										text: "3. Follow the instructions by the creator (scroll down to importing) - click here for link",
-										link: "https://docs.google.com/document/d/e/2PACX-1vRSaPbTe0pijDSETzdeGhvQ7zYHlx9Qnxn7WdUqG9cveZYyk405A0LSbYnl8ygTNI_ZZqMrIZLeHenr/pub",
-										imageSrc: "/tutorial/switch/adding-mii/modded/step3.jpg",
-									},
+									...(hasShareMiiFile
+										? [
+												{
+													text: "1. Download ShareMii - click here for link",
+													link: "https://gamebanana.com/tools/22305",
+													imageSrc: "/tutorial/switch/adding-mii/modded/step1.jpg",
+												},
+												{
+													text: "2. Download the .ltd file, it is above the instructions next to all the other buttons",
+													imageSrc: "/tutorial/switch/adding-mii/modded/step2.png",
+												},
+												{
+													text: "3. Follow the instructions by the creator (scroll down to importing) - click here for link",
+													link: "https://docs.google.com/document/d/e/2PACX-1vRSaPbTe0pijDSETzdeGhvQ7zYHlx9Qnxn7WdUqG9cveZYyk405A0LSbYnl8ygTNI_ZZqMrIZLeHenr/pub",
+													imageSrc: "/tutorial/switch/adding-mii/modded/step3.jpg",
+												},
+											]
+										: [
+												{ text: "This Mii does not have a ShareMii file. You can filter the search to only show Miis that do: (go to next step)" },
+												{
+													text: "1. Go back to the search page, open the filters and press 'Has ShareMii File'",
+													imageSrc: "/tutorial/switch/adding-mii/modded/filter.png",
+												},
+												{
+													text: "2. The search will automatically update to show only Miis with ShareMii files",
+												},
+												{
+													text: "3. Open the tutorial again on those Miis to find out how to use the ShareMii file. (You should see this as the first step)",
+													imageSrc: "/tutorial/switch/adding-mii/modded/success.png",
+												},
+											]),
 									{ type: "finish" },
 								],
 							},

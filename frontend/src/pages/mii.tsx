@@ -388,7 +388,7 @@ export default function MiiPage() {
 								<Icon icon="material-symbols:flag-rounded" />
 								<span>Report</span>
 							</Link>
-							{mii.platform === "THREE_DS" ? <ThreeDsScanTutorialButton /> : <SwitchAddMiiTutorialButton />}
+							{mii.platform === "THREE_DS" ? <ThreeDsScanTutorialButton /> : <SwitchAddMiiTutorialButton hasShareMiiFile={mii.isFromSaveFile} />}
 						</div>
 
 						{/* Instructions */}
