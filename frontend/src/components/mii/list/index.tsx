@@ -80,87 +80,93 @@ export default function MiiList({ parentPage, userId, bypassCache }: Props) {
 						</div>
 					</div>
 
-					<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[30rem]:grid-cols-1">
-						{data.miis.map((mii) => (
-							<div
-								key={mii.id}
-								className={`flex flex-col relative bg-zinc-50 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300 bg-red-50!" : mii.in_queue ? "border-zinc-400 opacity-70" : "border-zinc-300"}`}
-							>
-								<div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
-									{mii.in_queue && (
-										<div className="bg-zinc-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm flex items-center gap-1 w-fit">
-											<Icon icon="mdi:clock-outline" className="text-base" />
-											In Queue
-										</div>
-									)}
-									{mii.needsFixing && (
-										<div className="bg-orange-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm flex items-center gap-1 w-fit">
-											<Icon icon="mdi:alert-outline" className="text-base" />
-											Needs Fixing
-										</div>
-									)}
-								</div>
+					<p className="text-xs mb-2 text-zinc-600 text-right">Not finding what you're looking for? Try including controversial Miis in filters.</p>
 
-								<Link to={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
-									<img
-										src={`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`}
-										width={240}
-										height={160}
-										alt="mii image"
-										className="w-full h-auto aspect-3/2 object-contain"
-									/>
-								</Link>
-
-								<div className="p-4 flex flex-col gap-1 h-full">
-									<div className="flex justify-between">
-										<Link to={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1 w-full text-ellipsis wrap-break-word" title={mii.name}>
-											{mii.name}
-										</Link>
-										<div title={mii.platform === "SWITCH" ? "Switch" : "3DS"} className="text-[1.25rem] opacity-25">
-											{mii.platform === "SWITCH" ? (
-												<Icon icon="cib:nintendo-switch" className="text-red-400" />
-											) : (
-												<Icon icon="cib:nintendo-3ds" className="text-sky-400" />
-											)}
-										</div>
-									</div>
-
-									<div id="tags" className="flex flex-wrap gap-1">
-										{mii.tags.map((tag: string) => (
-											<Link to={`?tags=${tag}`} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
-												{tag}
-											</Link>
-										))}
-									</div>
-
-									<div className="mt-auto grid grid-cols-2 items-center">
-										<LikeButton likes={mii.likeCount} miiId={mii.id} isLiked={likedIds.has(mii.id)} abbreviate />
-
-										{!userId && (
-											<Link to={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis whitespace-nowrap">
-												@{mii.user?.name}
-											</Link>
+					{data.miis.length !== 0 ? (
+						<div className="grid grid-cols-4 gap-4 max-lg:grid-cols-3 max-md:grid-cols-2 max-[30rem]:grid-cols-1">
+							{data.miis.map((mii) => (
+								<div
+									key={mii.id}
+									className={`flex flex-col relative bg-zinc-50 rounded-3xl border-2 shadow-lg p-[0.8rem] transition hover:scale-105 hover:bg-cyan-100 hover:border-cyan-600 ${mii.quarantined ? "border-red-300 bg-red-50!" : mii.in_queue ? "border-zinc-400 opacity-70" : "border-zinc-300"}`}
+								>
+									<div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+										{mii.in_queue && (
+											<div className="bg-zinc-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm flex items-center gap-1 w-fit">
+												<Icon icon="mdi:clock-outline" className="text-base" />
+												In Queue
+											</div>
 										)}
-
-										{userId && Number($session?.user?.id) == userId && (
-											<div className="flex gap-1 text-2xl justify-end text-zinc-400">
-												<Link to={`/edit/${mii.id}`} title="Edit Mii" aria-label="Edit Mii" data-tooltip="Edit">
-													<Icon icon="mdi:pencil" />
-												</Link>
-												<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likeCount} />
+										{mii.needsFixing && (
+											<div className="bg-orange-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-sm flex items-center gap-1 w-fit">
+												<Icon icon="mdi:alert-outline" className="text-base" />
+												Needs Fixing
 											</div>
 										)}
 									</div>
+
+									<Link to={`/mii/${mii.id}`} className="overflow-hidden rounded-xl bg-zinc-300 shrink-0">
+										<img
+											src={`${import.meta.env.VITE_API_URL}/mii/${mii.id}/image?type=mii`}
+											width={240}
+											height={160}
+											alt="mii image"
+											className="w-full h-auto aspect-3/2 object-contain"
+										/>
+									</Link>
+
+									<div className="p-4 flex flex-col gap-1 h-full">
+										<div className="flex justify-between">
+											<Link to={`/mii/${mii.id}`} className="relative font-bold text-2xl line-clamp-1 w-full text-ellipsis wrap-break-word" title={mii.name}>
+												{mii.name}
+											</Link>
+											<div title={mii.platform === "SWITCH" ? "Switch" : "3DS"} className="text-[1.25rem] opacity-25">
+												{mii.platform === "SWITCH" ? (
+													<Icon icon="cib:nintendo-switch" className="text-red-400" />
+												) : (
+													<Icon icon="cib:nintendo-3ds" className="text-sky-400" />
+												)}
+											</div>
+										</div>
+
+										<div id="tags" className="flex flex-wrap gap-1">
+											{mii.tags.map((tag: string) => (
+												<Link to={`?tags=${tag}`} key={tag} className="px-2 py-1 bg-orange-300 rounded-full text-xs">
+													{tag}
+												</Link>
+											))}
+										</div>
+
+										<div className="mt-auto grid grid-cols-2 items-center">
+											<LikeButton likes={mii.likeCount} miiId={mii.id} isLiked={likedIds.has(mii.id)} abbreviate />
+
+											{!userId && (
+												<Link to={`/profile/${mii.user?.id}`} className="text-sm text-right overflow-hidden text-ellipsis whitespace-nowrap">
+													@{mii.user?.name}
+												</Link>
+											)}
+
+											{userId && Number($session?.user?.id) == userId && (
+												<div className="flex gap-1 text-2xl justify-end text-zinc-400">
+													<Link to={`/edit/${mii.id}`} title="Edit Mii" aria-label="Edit Mii" data-tooltip="Edit">
+														<Icon icon="mdi:pencil" />
+													</Link>
+													<DeleteMiiButton miiId={mii.id} miiName={mii.name} likes={mii.likeCount} />
+												</div>
+											)}
+										</div>
+									</div>
 								</div>
-							</div>
-						))}
-					</div>
+							))}
+						</div>
+					) : (
+						<p className="text-2xl font-bold text-center">No Miis found!</p>
+					)}
 					<Pagination lastPage={data.lastPage} />
 				</div>
 			) : (
 				<>
-					<p className="text-2xl text-center">No Miis found, has the server died?</p>
-					<p className="text-center font-bold text-lg">Please try refreshing first!</p>
+					<p className="text-2xl font-bold *:text-center">No Miis found, has the server died?</p>
+					<p className="text-center">Try refreshing!</p>
 				</>
 			)}
 		</>
