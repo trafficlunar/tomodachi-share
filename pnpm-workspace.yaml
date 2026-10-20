@@ -18,3 +18,4 @@ minimumReleaseAgeExclude:
   - '@redis/time-series@6.2.0'
   - redis@6.2.0
   - zod@4.5.4
+  - satori@0.63.2

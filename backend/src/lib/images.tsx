@@ -70,6 +70,7 @@ const fontCache: Record<string, Font | null> = {
 	extraBold: null,
 	black: null,
 };
+let logoCache: string | null = null;
 
 // Load fonts only once and cache them
 const loadFonts = async (): Promise<Font[]> => {
@@ -98,11 +99,20 @@ const loadFonts = async (): Promise<Font[]> => {
 	);
 };
 
+// Load logo only once and cache them
+const loadLogo = async (): Promise<string> => {
+	if (!logoCache) {
+		const data = await fs.readFile(path.join(process.cwd(), "public/logo.svg"));
+		logoCache = `data:image/svg+xml;base64,${data.toString("base64")}`;
+	}
+	return logoCache;
+};
+
 export async function generateMetadataImage(mii: Mii, author: string): Promise<{ buffer?: Buffer; error?: string; status?: number }> {
 	const miiUploadsDirectory = path.join(uploadsDirectory, mii.id.toString());
 
 	// Load assets concurrently
-	const [miiImage, qrCodeImage, fonts] = await Promise.all([
+	const [miiImage, qrCodeImage, fonts, logoImage] = await Promise.all([
 		// Read and convert the images to data URI
 		fs.readFile(path.join(miiUploadsDirectory, "mii.png")).then((buffer) =>
 			sharp(buffer)
@@ -123,6 +133,7 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 				)
 			: Promise.resolve(null),
 		loadFonts(),
+		loadLogo(),
 	]);
 
 	const jsx: ReactNode = (
@@ -132,7 +143,7 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 				<div
 					tw={`h-62 rounded-xl flex justify-center items-center mr-2 ${mii.platform === "THREE_DS" ? "w-80" : "w-100"}`}
 					style={{
-						backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a);",
+						backgroundImage: "linear-gradient(to bottom, #fef3c7, #fde68a)",
 					}}
 				>
 					<img
@@ -177,7 +188,7 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 						))}
 					</div>
 
-					<div tw="absolute inset-0" style={{ position: "absolute", backgroundImage: "linear-gradient(to right, #fffbeb00 70%, #fffbeb);" }}></div>
+					<div tw="absolute inset-0" style={{ position: "absolute", backgroundImage: "linear-gradient(to right, #fffbeb00 70%, #fffbeb)" }}></div>
 				</div>
 
 				{/* Author */}
@@ -190,7 +201,7 @@ export async function generateMetadataImage(mii: Mii, author: string): Promise<{
 
 				{/* Watermark */}
 				<div tw="absolute bottom-0 right-0 flex items-center">
-					<img src={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/logo.svg`} height={32} />
+					<img src={logoImage} height={32} />
 					{/* I tried using text-orange-400 but it wasn't correct..? */}
 					<span tw="ml-2 font-black text-xl" style={{ color: "#FF8904" }}>
 						TomodachiShare
