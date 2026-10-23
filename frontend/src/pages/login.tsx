@@ -1,19 +1,33 @@
 import { Icon } from "@iconify/react";
 import { useStore } from "@nanostores/react";
-import { Link, Navigate } from "react-router";
+import { Link, Navigate, useSearchParams } from "react-router";
 import { session } from "../session";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+const ERRORS: Record<string, string> = {
+	OAuthAccountNotLinked:
+		"An account with this email already exists, but it was created with a different login method. Please sign in with the provider you originally used.",
+	AccessDenied: "You don't have permission to sign in with this account.",
+	Configuration: "There is a problem with the server configuration. Please e-mail hello@trafficlunar.net or message @trafficlunar on Discord",
+};
 
 export default function LoginPage() {
 	const $session = useStore(session);
+	const [searchParams] = useSearchParams();
+
 	if ($session === undefined) return <div className="p-6 text-center">Loading...</div>;
 	if ($session) return <Navigate to="/" replace />;
 
-	const API_URL = import.meta.env.VITE_API_URL;
+	const code = searchParams.get("error");
+	const errorMessage = code ? (ERRORS[code] ?? "Something went wrong while signing in. Please try again. Message trafficlunar if this continues") : null;
 
 	return (
 		<div className="grow flex items-center justify-center">
 			<div className="bg-amber-50 border-2 border-amber-500 rounded-2xl shadow-lg px-10 py-12 max-w-md text-center">
 				<h1 className="text-3xl font-bold mb-4">Welcome to TomodachiShare!</h1>
+
+				{errorMessage && <p className="mb-6 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">Error: {errorMessage}</p>}
 
 				<div className="flex items-center gap-4 text-zinc-500 text-sm font-medium mb-8">
 					<hr className="grow border-zinc-300" />

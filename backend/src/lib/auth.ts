@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	adapter: PrismaAdapter(prisma),
-	providers: [Discord, Github({ issuer: "https://github.com/login/oauth" }), Google],
+	providers: [Discord({ issuer: "https://discord.com" }), Github({ issuer: "https://github.com/login/oauth" }), Google],
 	trustHost: true,
 	cookies: {
 		sessionToken: {
@@ -26,6 +26,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		strategy: "database",
 		maxAge: 30 * 24 * 60 * 60,
 	},
+	pages: { signIn: "/login", error: "/login" },
 	callbacks: {
 		async signIn({ user }) {
 			const blacklist = process.env.BLACKLISTED_EMAILS ? process.env.BLACKLISTED_EMAILS.split(",").map((item) => item.trim().toLowerCase()) : [];
